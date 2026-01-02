@@ -1,0 +1,25 @@
+{
+    "name": "DescrioGames.Features",
+    "rootNamespace": "DescrioGames.Features",
+    "references": [
+        "DescrioGames.Core",
+        "DescrioGames.Domain",
+        "DescrioGames.Commands",
+        "DescrioGames.Lib.AI",
+        "DescrioGames.Shared",
+        "Unity.TextMeshPro",
+        "Unity.InputSystem",
+        "UniTask",
+        "R3.Unity",
+        "Cinemachine"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

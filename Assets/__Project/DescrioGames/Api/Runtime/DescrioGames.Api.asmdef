@@ -1,0 +1,19 @@
+{
+    "name": "DescrioGames.Api",
+    "rootNamespace": "DescrioGames.Api",
+    "references": [
+        "DescrioGames.Core",
+        "DescrioGames.Commands",
+        "DescrioGames.Domain",
+        "DescrioGames.UseCases"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

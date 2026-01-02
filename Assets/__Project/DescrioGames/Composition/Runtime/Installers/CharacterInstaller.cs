@@ -1,0 +1,29 @@
+using DescrioGames.Features.Characters.Audios;
+using DescrioGames.Features.Combat;
+using DescrioGames.Infrastructure.Factories;
+using DescrioGames.Infrastructure.Repositories;
+using VContainer;
+using VContainer.Unity;
+
+namespace DescrioGames.Composition.Installers
+{
+    public class CharacterInstaller : IInstaller
+    {
+        public void Install(IContainerBuilder builder)
+        {
+            // Character management
+            builder.Register<CharacterRepository>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<CharacterActorRepository>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<CharacterTypeRepository>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<CharacterFactory>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<CharacterBrainFactory>(Lifetime.Singleton).AsImplementedInterfaces();
+
+            // Combat
+            builder.Register<CombatFeedbackService>(Lifetime.Singleton);
+            builder.Register<CombatMethodFactory>(Lifetime.Singleton).AsImplementedInterfaces();
+
+            // Misc
+            builder.Register<CharacterFootstepService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+        }
+    }
+}

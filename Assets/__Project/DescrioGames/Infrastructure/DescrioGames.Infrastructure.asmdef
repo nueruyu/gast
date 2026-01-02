@@ -1,0 +1,25 @@
+{
+    "name": "DescrioGames.Infrastructure",
+    "rootNamespace": "DescrioGames.Infrastructure",
+    "references": [
+        "DescrioGames.Core",
+        "DescrioGames.Commands",
+        "DescrioGames.Api",
+        "DescrioGames.Domain",
+        "DescrioGames.UseCases",
+        "DescrioGames.Features",
+        "DescrioGames.Shared",
+        "UniTask",
+        "R3.Unity",
+        "VContainer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

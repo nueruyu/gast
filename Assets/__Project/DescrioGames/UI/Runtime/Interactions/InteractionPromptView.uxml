@@ -1,0 +1,12 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/__Project/DescrioGames/UI/Runtime/Interactions/InteractionPromptView.uss?fileID=7433441132597879392&amp;guid=ef17c3398f9289c4180ec86b6229d104&amp;type=3#InteractionPromptView"/>
+    <ui:VisualElement name="container" class="interaction-prompt">
+        <ui:VisualElement class="interaction-prompt__content">
+            <ui:Label name="key-text" text="E" class="interaction-prompt__key"/>
+            <ui:Label name="action-text" text="Action Text" class="interaction-prompt__action"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="progress-circle" class="interaction-prompt__progress-circle">
+            <ui:VisualElement name="progress-fill" class="interaction-prompt__progress-fill"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

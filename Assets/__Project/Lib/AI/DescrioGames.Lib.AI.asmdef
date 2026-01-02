@@ -1,0 +1,17 @@
+{
+    "name": "DescrioGames.Lib.AI",
+    "rootNamespace": "DescrioGames.Lib.AI",
+    "references": [
+        "DescrioGames.Domain",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

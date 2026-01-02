@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d4439c716167b64882d49ba4036ec14, type: 3}
+  m_Name: DefaultHuman
+  m_EditorClassIdentifier: DescrioGames.Systems.Characters::DescrioGames.Systems.Characters.CharacterTypeDefinitionSO
+  reference: {fileID: 11400000, guid: e9db19cfea39ace4fb8ba7c43866f726, type: 2}
+  displayName: Default Human
+  maxHealth: 100
+  walkSpeed: 4
+  sprintSpeed: 7
+  jumpForce: 15
+  dashForce: 20
+  dashDuration: 0.4
+  dashCooldown: 1
+  attackCooldown: 1
+  dashSpeedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  canGuard: 1
+  initialMoney: 100
+  slotCapacity: 20
+  characterPrefab: {fileID: 3056424131087975470, guid: 0b12064fcc816e540a373842a74f91ce, type: 3}
+  visualPrefab: {fileID: 4611385902212945303, guid: 70834d1079c462649938635b9e93b508, type: 3}
+  combatMethodSettings: {fileID: 11400000, guid: a79320f9854584e4a95cbde0f3b5f073, type: 2}
+  footstepSettings: {fileID: 11400000, guid: f0dc487c825578f4bbf87c21123919c2, type: 2}
+  lootTable: {fileID: 11400000, guid: fc6cc90b2a9c8104b951d1b95e27d22b, type: 2}
+  sensorViewRadius: 30
+  sensorViewAngle: 360
+  sensorEyeOffset: {x: 0, y: 1.5, z: 0}
+  navigationStoppingDistance: 0.5

@@ -1,0 +1,16 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:ui="UnityEngine.UIElements" 
+    noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" 
+    editor-extension-mode="False"
+    class="game-hud"
+>
+    <Style src="GameHudView.uss"/>
+    <ui:VisualElement name="StatusGroup" class="game-hud__status-group">
+        <ui:VisualElement name="HpContainer" class="game-hud__hp-container">
+            <ui:VisualElement name="HpFill" class="game-hud__hp-fill"/>
+            <ui:Label name="HpLabel" text="100/100" class="game-hud__hp-label"/>
+        </ui:VisualElement>
+        <ui:Label name="MoneyLabel" text="100G" class="game-hud__money-label"/>
+    </ui:VisualElement>
+    <ui:VisualElement name="InventoryContainer" class="game-hud__inventory-container"/>
+</ui:UXML>
