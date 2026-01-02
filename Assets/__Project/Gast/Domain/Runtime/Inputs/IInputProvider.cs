@@ -16,5 +16,6 @@ namespace Gast.Domain.Inputs
         bool Attack { get; }
         bool Dash { get; }
         bool GuardHeld { get; }
+        bool MenuToggle { get; }
     }
 }

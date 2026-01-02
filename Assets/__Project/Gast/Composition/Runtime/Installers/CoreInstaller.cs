@@ -31,6 +31,7 @@ namespace Gast.Composition.Installers
 
             // Camera
             builder.Register<CameraService>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<CameraInputController>(Lifetime.Singleton).As<ILifecycleTask>();
 
             // Player
             builder.Register<PlayerBrain>(Lifetime.Singleton);

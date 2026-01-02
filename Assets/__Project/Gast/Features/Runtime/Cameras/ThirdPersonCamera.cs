@@ -26,8 +26,15 @@ namespace Gast.Features.Cameras
         float horizontalAngle = 0f;
 
         [SerializeField, Tooltip("Vertical angle from horizontal plane (0 = eye level, 90 = top-down)")]
-        [Range(0f, 89f)]
+        [Range(-89f, 89f)]
         float verticalAngle = 45f;
+
+        [Header("Rotation Settings")]
+        [SerializeField]
+        Vector2 rotationSensitivity = new(2.0f, 2.0f);
+
+        [SerializeField]
+        Vector2 verticalAngleLimits = new(-30f, 80f);
 
         [Header("Damping Settings")]
         [SerializeField, Tooltip("How smoothly the camera follows the target")]
@@ -62,6 +69,14 @@ namespace Gast.Features.Cameras
             transposer.m_ZDamping = dampingSpeed;
         }
 
+        void LateUpdate()
+        {
+            if (Application.isPlaying)
+            {
+                UpdateCameraTransform();
+            }
+        }
+
         void OnValidate()
         {
             if (Application.isPlaying && transposer != null)
@@ -70,6 +85,23 @@ namespace Gast.Features.Cameras
                 UpdateLookAtOffset();
                 UpdateDamping();
             }
+        }
+
+        /// <summary>
+        /// Rotates the camera based on input delta.
+        /// </summary>
+        /// <param name="delta">The input delta from mouse or joystick.</param>
+        public void Rotate(Vector2 delta)
+        {
+            horizontalAngle += delta.x * rotationSensitivity.x;
+            verticalAngle -= delta.y * rotationSensitivity.y;
+
+            // Clamp vertical angle
+            verticalAngle = Mathf.Clamp(verticalAngle, verticalAngleLimits.x, verticalAngleLimits.y);
+
+            // Keep horizontal angle in 0-360 range
+            if (horizontalAngle > 360f) horizontalAngle -= 360f;
+            if (horizontalAngle < 0f) horizontalAngle += 360f;
         }
 
         /// <summary>
@@ -121,7 +153,7 @@ namespace Gast.Features.Cameras
         /// <param name="angle">Angle in degrees (0 = eye level, 90 = top-down)</param>
         public void SetVerticalAngle(float angle)
         {
-            verticalAngle = Mathf.Clamp(angle, 0f, 89f);
+            verticalAngle = Mathf.Clamp(angle, verticalAngleLimits.x, verticalAngleLimits.y);
             UpdateCameraTransform();
         }
 

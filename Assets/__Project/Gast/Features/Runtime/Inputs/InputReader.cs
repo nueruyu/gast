@@ -25,6 +25,7 @@ namespace Gast.Features.Inputs
         readonly InputAction interactAction;
         readonly InputAction attackAction;
         readonly InputAction guardAction;
+        readonly InputAction menuToggleAction;
 
         public Vector2 Move { get; private set; }
         public Vector2 Look { get; private set; }
@@ -35,6 +36,7 @@ namespace Gast.Features.Inputs
         public bool Attack { get; private set; }
         public bool Dash { get; private set; }
         public bool GuardHeld { get; private set; }
+        public bool MenuToggle { get; private set; }
 
         public InputReader(InputSettings settings)
         {
@@ -49,6 +51,7 @@ namespace Gast.Features.Inputs
             interactAction = playerActionMap.FindAction("Interact");
             attackAction = playerActionMap.FindAction("Attack");
             guardAction = playerActionMap.FindAction("Guard");
+            menuToggleAction = playerActionMap.FindAction("MenuToggle");
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
@@ -60,6 +63,7 @@ namespace Gast.Features.Inputs
             interactAction.canceled += OnInteractCanceled;
             attackAction.performed += OnAttackPerformed;
             sprintAction.performed += OnSprintPerformed;
+            menuToggleAction.performed += OnMenuTogglePerformed;
 
             try
             {
@@ -78,6 +82,7 @@ namespace Gast.Features.Inputs
                     InteractPressed = false;
                     Attack = false;
                     Dash = false;
+                    MenuToggle = false;
 
                     await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
                 }
@@ -90,6 +95,7 @@ namespace Gast.Features.Inputs
                 interactAction.canceled -= OnInteractCanceled;
                 attackAction.performed -= OnAttackPerformed;
                 sprintAction.performed -= OnSprintPerformed;
+                menuToggleAction.performed -= OnMenuTogglePerformed;
             }
         }
 
@@ -120,6 +126,11 @@ namespace Gast.Features.Inputs
             {
                 Dash = true;
             }
+        }
+
+        void OnMenuTogglePerformed(InputAction.CallbackContext _)
+        {
+            MenuToggle = true;
         }
     }
 }

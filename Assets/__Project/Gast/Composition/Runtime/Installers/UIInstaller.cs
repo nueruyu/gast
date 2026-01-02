@@ -1,7 +1,9 @@
+using Gast.Core.Tasks;
 using Gast.UI;
 using Gast.UI.Hud;
 using Gast.UI.Interactions;
 using Gast.UI.Root;
+using Gast.UI.System;
 using VContainer;
 using VContainer.Unity;
 
@@ -21,6 +23,8 @@ namespace Gast.Composition.Installers
             builder.Register<InteractionPromptViewFactory>(Lifetime.Singleton);
 
             builder.Register<ItemStackViewModelFactory>(Lifetime.Singleton);
+
+            builder.Register<CursorController>(Lifetime.Singleton).As<ILifecycleTask>();
         }
     }
 }
