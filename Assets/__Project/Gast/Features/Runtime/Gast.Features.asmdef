@@ -1,0 +1,25 @@
+{
+    "name": "Gast.Features",
+    "rootNamespace": "Gast.Features",
+    "references": [
+        "Gast.Core",
+        "Gast.Domain",
+        "Gast.Commands",
+        "Gast.Lib.AI",
+        "Gast.Shared",
+        "Unity.TextMeshPro",
+        "Unity.InputSystem",
+        "UniTask",
+        "R3.Unity",
+        "Cinemachine"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

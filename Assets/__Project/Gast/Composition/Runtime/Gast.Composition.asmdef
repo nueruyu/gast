@@ -1,0 +1,26 @@
+{
+    "name": "Gast.Composition",
+    "rootNamespace": "Gast.Composition",
+    "references": [
+        "Gast.Core",
+        "Gast.Domain",
+        "Gast.Shared",
+        "Gast.UseCases",
+        "Gast.Commands",
+        "Gast.Features",
+        "Gast.UI",
+        "Gast.Api",
+        "Gast.Infrastructure",
+        "VContainer",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

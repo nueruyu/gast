@@ -1,0 +1,17 @@
+{
+    "name": "Gast.Lib.AI",
+    "rootNamespace": "Gast.Lib.AI",
+    "references": [
+        "Gast.Domain",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

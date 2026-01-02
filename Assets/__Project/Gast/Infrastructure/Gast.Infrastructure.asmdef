@@ -1,0 +1,25 @@
+{
+    "name": "Gast.Infrastructure",
+    "rootNamespace": "Gast.Infrastructure",
+    "references": [
+        "Gast.Core",
+        "Gast.Commands",
+        "Gast.Api",
+        "Gast.Domain",
+        "Gast.UseCases",
+        "Gast.Features",
+        "Gast.Shared",
+        "UniTask",
+        "R3.Unity",
+        "VContainer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
