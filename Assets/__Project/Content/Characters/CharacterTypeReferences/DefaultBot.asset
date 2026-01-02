@@ -11,5 +11,5 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1206cc837750441428799047d7f45525, type: 3}
   m_Name: DefaultBot
-  m_EditorClassIdentifier: DescrioGames.Features::DescrioGames.Features.Characters.CharacterTypeReference
+  m_EditorClassIdentifier: Gast.Features::Gast.Features.Characters.CharacterTypeReference
   id: 1db032f1-62c5-4271-b752-e0b6a953f8aa

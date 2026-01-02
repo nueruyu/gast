@@ -7,7 +7,7 @@ namespace Gast.Features.Inputs
     /// Settings container for Input System configuration.
     /// Holds reference to the InputActionAsset.
     /// </summary>
-    [CreateAssetMenu(menuName = "DescrioGames/Inputs/Settings")]
+    [CreateAssetMenu(menuName = "Gast/Inputs/Settings")]
     public class InputSettings : ScriptableObject
     {
         [SerializeField]

@@ -1,10 +1,8 @@
 {
-    "name": "DescrioGames.UseCases",
-    "rootNamespace": "DescrioGames.UseCases",
+    "name": "Gast.Domain",
+    "rootNamespace": "Gast.Domain",
     "references": [
-        "DescrioGames.Core",
-        "DescrioGames.Domain",
-        "DescrioGames.Shared"
+        "Gast.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

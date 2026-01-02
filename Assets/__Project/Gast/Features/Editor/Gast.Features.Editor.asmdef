@@ -1,15 +1,10 @@
 {
-    "name": "DescrioGames.UI",
-    "rootNamespace": "DescrioGames.UI",
+    "name": "Gast.Features.Characters.Editor",
+    "rootNamespace": "Gast.Features.Characters.Editor",
     "references": [
-        "DescrioGames.Core",
-        "DescrioGames.Domain",
-        "DescrioGames.Commands",
-        "DescrioGames.Shared",
-        "Unity.TextMeshPro",
-        "Unity.InputSystem",
-        "UniTask",
-        "R3.Unity"
+        "Gast.Core",
+        "Gast.Domain",
+        "Gast.Features"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

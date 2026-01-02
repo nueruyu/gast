@@ -80,7 +80,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9598ca866406ae34eac042ea99a239dc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Systems.Animations::DescrioGames.Systems.Animations.TimedEventBehaviour
+  m_EditorClassIdentifier: Gast.Systems.Animations::Gast.Systems.Animations.TimedEventBehaviour
   isLooping: 0
   mode: 0
   events:
@@ -616,7 +616,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9598ca866406ae34eac042ea99a239dc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Systems.Animations::DescrioGames.Systems.Animations.TimedEventBehaviour
+  m_EditorClassIdentifier: Gast.Systems.Animations::Gast.Systems.Animations.TimedEventBehaviour
   isLooping: 1
   mode: 0
   events:

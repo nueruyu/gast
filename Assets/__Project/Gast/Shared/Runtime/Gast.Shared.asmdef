@@ -1,10 +1,10 @@
 {
-    "name": "DescrioGames.Features.Characters.Editor",
-    "rootNamespace": "DescrioGames.Features.Characters.Editor",
+    "name": "Gast.Shared",
+    "rootNamespace": "Gast.Shared",
     "references": [
-        "DescrioGames.Core",
-        "DescrioGames.Domain",
-        "DescrioGames.Features"
+        "Gast.Core",
+        "UniTask",
+        "R3.Unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

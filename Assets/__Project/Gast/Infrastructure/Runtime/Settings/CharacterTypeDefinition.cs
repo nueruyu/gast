@@ -10,7 +10,7 @@ namespace Gast.Infrastructure.Settings
     /// ScriptableObject implementation of ICharacterTypeDefinition.
     /// Stores character type configuration data.
     /// </summary>
-    [CreateAssetMenu(fileName = "CharacterType", menuName = "DescrioGames/Characters/Type Definition")]
+    [CreateAssetMenu(fileName = "CharacterType", menuName = "Gast/Characters/Type Definition")]
     public class CharacterTypeDefinition : ScriptableObject, ICharacterTypeDefinition
     {
         [SerializeField]

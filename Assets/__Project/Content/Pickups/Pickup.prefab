@@ -45,7 +45,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7627b65b289743d458cfa0e14023ce7d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Features.Pickups::DescrioGames.Features.Pickups.PickupInteractable
+  m_EditorClassIdentifier: Gast.Features.Pickups::Gast.Features.Pickups.PickupInteractable
   canInteract: 1
   dropImpulse: 2
 --- !u!54 &3436741002053040089

@@ -1,9 +1,15 @@
 {
-    "name": "DescrioGames.Lib.AI",
-    "rootNamespace": "DescrioGames.Lib.AI",
+    "name": "Gast.UI",
+    "rootNamespace": "Gast.UI",
     "references": [
-        "DescrioGames.Domain",
-        "UniTask"
+        "Gast.Core",
+        "Gast.Domain",
+        "Gast.Commands",
+        "Gast.Shared",
+        "Unity.TextMeshPro",
+        "Unity.InputSystem",
+        "UniTask",
+        "R3.Unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -11,5 +11,5 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 262bd28ad06184f40a64094a0bcad0eb, type: 3}
   m_Name: PickupSystemSettings
-  m_EditorClassIdentifier: DescrioGames.Systems.Loot::DescrioGames.Systems.Loot.LootSystemSettings
+  m_EditorClassIdentifier: Gast.Systems.Loot::Gast.Systems.Loot.LootSystemSettings
   pickupPrefab: {fileID: 4929765868813266088, guid: d5e3dc381d6ff9b48afac00a929e3eb7, type: 3}

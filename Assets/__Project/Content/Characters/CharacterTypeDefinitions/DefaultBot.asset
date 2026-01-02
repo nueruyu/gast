@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d4439c716167b64882d49ba4036ec14, type: 3}
   m_Name: DefaultBot
-  m_EditorClassIdentifier: DescrioGames.Systems.Characters::DescrioGames.Systems.Characters.CharacterTypeDefinitionSO
+  m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: 74743be7f3db9d647b1ca2d8167fc767, type: 2}
   displayName: Default Bot
   maxHealth: 30

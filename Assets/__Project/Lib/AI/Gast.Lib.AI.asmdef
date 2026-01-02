@@ -1,8 +1,9 @@
 {
-    "name": "DescrioGames.Domain",
-    "rootNamespace": "DescrioGames.Domain",
+    "name": "Gast.Lib.AI",
+    "rootNamespace": "Gast.Lib.AI",
     "references": [
-        "DescrioGames.Core"
+        "Gast.Domain",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

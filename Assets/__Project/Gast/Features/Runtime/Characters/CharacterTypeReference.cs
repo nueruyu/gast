@@ -4,7 +4,7 @@ using Gast.Domain.Characters;
 
 namespace Gast.Features.Characters
 {
-    [CreateAssetMenu(fileName = "CharacterTypeReference", menuName = "DescrioGames/Characters/Character Type Reference")]
+    [CreateAssetMenu(fileName = "CharacterTypeReference", menuName = "Gast/Characters/Character Type Reference")]
     public class CharacterTypeReference : ScriptableObject
     {
         [SerializeField]

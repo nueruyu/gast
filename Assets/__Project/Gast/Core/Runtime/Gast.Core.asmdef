@@ -1,10 +1,7 @@
 {
-    "name": "DescrioGames.Commands",
-    "rootNamespace": "DescrioGames.Commands",
-    "references": [
-        "DescrioGames.Core",
-        "DescrioGames.Domain"
-    ],
+    "name": "Gast.Core",
+    "rootNamespace": "Gast.Core",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

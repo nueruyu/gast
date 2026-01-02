@@ -6,7 +6,7 @@ namespace Gast.Infrastructure.Settings
     /// Configuration for character audio effects such as footsteps.
     /// Allows reusing audio settings across different character types.
     /// </summary>
-    [CreateAssetMenu(fileName = "CharacterFootstepSettings", menuName = "DescrioGames/Characters/Footstep Settings")]
+    [CreateAssetMenu(fileName = "CharacterFootstepSettings", menuName = "Gast/Characters/Footstep Settings")]
     public class CharacterFootstepSettings : ScriptableObject
     {
         [Header("Footsteps")]

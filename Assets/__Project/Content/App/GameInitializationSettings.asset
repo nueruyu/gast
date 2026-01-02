@@ -11,5 +11,5 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fa473e4719453f44b454d40e00742e9, type: 3}
   m_Name: GameInitializationSettings
-  m_EditorClassIdentifier: DescrioGames.App::DescrioGames.App.GameInitializationSettings
+  m_EditorClassIdentifier: Gast.App::Gast.App.GameInitializationSettings
   playerCharacterTypeReference: {fileID: 11400000, guid: e9db19cfea39ace4fb8ba7c43866f726, type: 2}

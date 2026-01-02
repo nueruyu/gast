@@ -5,7 +5,7 @@ namespace Gast.Features.Interactions
     /// <summary>
     /// Settings for InteractionDetector.
     /// </summary>
-    [CreateAssetMenu(fileName = "InteractionSystemSettings", menuName = "DescrioGames/Interactions/System Settings")]
+    [CreateAssetMenu(fileName = "InteractionSystemSettings", menuName = "Gast/Interactions/System Settings")]
     public class InteractionSystemSettings : ScriptableObject
     {
         [Header("Detection")]

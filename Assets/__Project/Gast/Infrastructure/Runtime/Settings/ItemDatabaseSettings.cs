@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Gast.Infrastructure.Settings
 {
-    [CreateAssetMenu(fileName = "ItemDatabase", menuName = "DescrioGames/Economy/Item Database")]
+    [CreateAssetMenu(fileName = "ItemDatabase", menuName = "Gast/Economy/Item Database")]
     public class ItemDatabaseSettings : ScriptableObject
     {
         [SerializeField]

@@ -8,7 +8,7 @@ namespace Gast.Features.Gameplay
     /// Settings for game initialization and startup configuration.
     /// Defines default player character type and other initialization parameters.
     /// </summary>
-    [CreateAssetMenu(fileName = "GameInitializationSettings", menuName = "DescrioGames/Game/Initialization Settings")]
+    [CreateAssetMenu(fileName = "GameInitializationSettings", menuName = "Gast/Game/Initialization Settings")]
     public class GameInitializationSettings : ScriptableObject
     {
         [SerializeField]

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0438dd7ed94f8d3418b2506d79267fba, type: 3}
   m_Name: UIAssetSettings
-  m_EditorClassIdentifier: DescrioGames.UI::DescrioGames.UI.Root.UIAssetSettings
+  m_EditorClassIdentifier: Gast.UI::Gast.UI.Root.UIAssetSettings
   gameRootView: {fileID: 9197481963319205126, guid: 2e00c26648d3fab489016fb4c8453fd0, type: 3}
   gameHudView: {fileID: 9197481963319205126, guid: 1a5565e4c785bb943a41eff142f5f2aa, type: 3}
   interactionPromptView: {fileID: 9197481963319205126, guid: 78957609e947f8d44b67db9c9419bcf7, type: 3}

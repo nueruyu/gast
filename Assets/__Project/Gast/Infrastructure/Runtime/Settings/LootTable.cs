@@ -8,7 +8,7 @@ using Gast.Features.Economy;
 
 namespace Gast.Infrastructure.Settings
 {
-    [CreateAssetMenu(fileName = "NewLootTable", menuName = "DescrioGames/Loot/Loot Table")]
+    [CreateAssetMenu(fileName = "NewLootTable", menuName = "Gast/Loot/Loot Table")]
     public class LootTable : ScriptableObject, ILootTable
     {
         [SerializeField]

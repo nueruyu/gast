@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1173fc0843ebfb44aa44801fd0bffd17, type: 3}
   m_Name: Melee Method Settings
-  m_EditorClassIdentifier: DescrioGames.Features::DescrioGames.Features.Combat.Methods.MeleeMethodSettings
+  m_EditorClassIdentifier: Gast.Features::Gast.Features.Combat.Methods.MeleeMethodSettings
   damageAreaPrefab: {fileID: 7280661990936345562, guid: 44b4c0a5d8f9aa247a47b8c41fbf1cc1, type: 3}
   duration: 0.1
   range: 1.5

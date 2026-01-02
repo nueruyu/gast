@@ -6,7 +6,7 @@ namespace Gast.Features.Editor
 {
     public class AvatarMaskMaker : MonoBehaviour
     {
-        [MenuItem("DescrioGames/Tools/Create Avatar Mask")]
+        [MenuItem("Gast/Tools/Create Avatar Mask")]
         static void CreateUpperBodyMask()
         {
             var rootObj = Selection.activeGameObject;

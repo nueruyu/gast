@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Gast.Infrastructure.Settings
 {
-    [CreateAssetMenu(menuName = "DescrioGames/Characters/Brain Factory Settings")]
+    [CreateAssetMenu(menuName = "Gast/Characters/Brain Factory Settings")]
     public class CharacterBrainFactorySettings : ScriptableObject
     {
         [SerializeField]

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ebfac28d2a23c84db4b506ac3f477ef, type: 3}
   m_Name: CharacterFootstepSettings
-  m_EditorClassIdentifier: DescrioGames.Features.Characters::DescrioGames.Features.Characters.Audio.CharacterAudioSettings
+  m_EditorClassIdentifier: Gast.Features.Characters::Gast.Features.Characters.Audio.CharacterAudioSettings
   footstepClips:
   - {fileID: 8300000, guid: eee229d3898f72f4f9d8b5e68776ed09, type: 3}
   footstepVolume: 1

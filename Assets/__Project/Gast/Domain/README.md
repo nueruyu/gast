@@ -1,4 +1,4 @@
-# DescrioGames.Core
+# Gast.Core
 
 Foundation assembly containing pure C# interfaces and utilities with no Unity dependencies.
 
@@ -31,22 +31,23 @@ This assembly provides the core data contracts, interfaces, and platform-agnosti
 ### Interface-Only Design
 
 Core defines **data interfaces** without implementations. This allows:
+
 - Unity assemblies to provide MonoBehaviour implementations
-- Descrio to provide YAML-based implementations
 - Testing without Unity dependencies
 - Future platform flexibility
 
 ### Data vs Behavior Separation
 
 Interfaces in Core should contain only data properties, not behavior methods:
+
 - ✅ `IInteractable` has `Config` and `CanInteract` properties
 - ❌ `IInteractable` should NOT have `OnInteract()` methods
 
-Behavior is provided by implementation assemblies (e.g., `InteractableBase` in `DescrioGames.Interactions`).
+Behavior is provided by implementation assemblies (e.g., `InteractableBase` in `Gast.Interactions`).
 
 ## Integration
 
 Other assemblies implement Core interfaces:
-- **DescrioGames.Interactions**: Unity MonoBehaviour implementations
-- **DescrioGames.Scripting**: Descrio YAML integration
+
+- **Gast.Interactions**: Unity MonoBehaviour implementations
 - **Future assemblies**: Can provide alternative implementations

@@ -7,7 +7,7 @@ namespace Gast.Infrastructure.Settings
     /// Settings container for character type definitions.
     /// Holds references to all CharacterTypeDefinitionSO assets.
     /// </summary>
-    [CreateAssetMenu(menuName = "DescrioGames/Characters/Database Settings")]
+    [CreateAssetMenu(menuName = "Gast/Characters/Database Settings")]
     public class CharacterDatabaseSettings : ScriptableObject
     {
         [SerializeField]

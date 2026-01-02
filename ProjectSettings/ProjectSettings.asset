@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: descrio-games-
+  productName: gast
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -865,14 +865,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: descrio-games-
+  metroPackageName: gast
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: descrio-games-
+  metroApplicationDescription: gast
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -946,7 +946,7 @@ PlayerSettings:
   cloudProjectId: 8b09e2f1-1fe7-4a28-b29a-f833a0d35b2b
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: descrio-games-
+  projectName: gast
   organizationId: unity_fa94c380ac33c09e6d42
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

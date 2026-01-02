@@ -163,7 +163,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: abab0129eefdc704e99a0409241d1377, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Features::DescrioGames.Features.Economy.Shop
+  m_EditorClassIdentifier: Gast.Features::Gast.Features.Economy.Shop
 --- !u!1 &28649252
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,7 +192,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82bbd915a5771e947b9be48f2c0f2c5d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Systems.Gameplay::DescrioGames.Systems.Gameplay.PlayerSpawnPoint
+  m_EditorClassIdentifier: Gast.Systems.Gameplay::Gast.Systems.Gameplay.PlayerSpawnPoint
 --- !u!4 &28649254
 Transform:
   m_ObjectHideFlags: 0
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6bb4d93def0b1fd4b8f216d7899b42ca, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Features::DescrioGames.Features.Economy.ShopRegistry
+  m_EditorClassIdentifier: Gast.Features::Gast.Features.Economy.ShopRegistry
   shops:
   - {fileID: 28485939}
 --- !u!4 &34930244
@@ -686,7 +686,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8db3c93ce79fb104f8170a45da8b2ddb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Features::DescrioGames.Features.Cameras.CameraRegistry
+  m_EditorClassIdentifier: Gast.Features::Gast.Features.Cameras.CameraRegistry
   mainCamera: {fileID: 1152554091}
   cameraController: {fileID: 687701543}
 --- !u!1 &482675437
@@ -782,7 +782,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69a4583e4c32e5f48b166acffb1def27, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Cameras::DescrioGames.Cameras.ThirdPersonCamera
+  m_EditorClassIdentifier: Gast.Cameras::Gast.Cameras.ThirdPersonCamera
   followTarget: {fileID: 0}
   lookAtOffset: {x: 0, y: 1.5, z: 0}
   distance: 20
@@ -887,7 +887,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 250c095a896a6eb488bcb3ee87b0c014, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Features.Gathering::DescrioGames.Features.Gathering.GatheringSpotAnchor
+  m_EditorClassIdentifier: Gast.Features.Gathering::Gast.Features.Gathering.GatheringSpotAnchor
   itemReference: {fileID: 11400000, guid: 21b8dc3903c58e342a1fcd2c075bff66, type: 2}
   quantity: 1
   respawnTime: 10
@@ -937,7 +937,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 585b82ad3adcd9b4ba44679b7c139f76, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Features.Gathering::DescrioGames.Features.Gathering.GatheringSpotRegistry
+  m_EditorClassIdentifier: Gast.Features.Gathering::Gast.Features.Gathering.GatheringSpotRegistry
   gatheringSpots:
   - {fileID: 767286377}
   - {fileID: 999295515}
@@ -986,7 +986,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 165934a2f03963242bd71f7159a96194, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Features::DescrioGames.Features.SpawnSites.SpawnSiteRegistry
+  m_EditorClassIdentifier: Gast.Features::Gast.Features.SpawnSites.SpawnSiteRegistry
   spawnSites:
   - {fileID: 2084794414}
   - {fileID: 2037068027}
@@ -1210,7 +1210,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 250c095a896a6eb488bcb3ee87b0c014, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Features.Gathering::DescrioGames.Features.Gathering.GatheringSpotAnchor
+  m_EditorClassIdentifier: Gast.Features.Gathering::Gast.Features.Gathering.GatheringSpotAnchor
   itemReference: {fileID: 11400000, guid: 21b8dc3903c58e342a1fcd2c075bff66, type: 2}
   quantity: 1
   respawnTime: 10
@@ -2343,7 +2343,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a2a5e38478a35ac438dacc6833a5ebc7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Systems.SpawnSites::DescrioGames.Systems.SpawnSites.SpawnSiteAnchor
+  m_EditorClassIdentifier: Gast.Systems.SpawnSites::Gast.Systems.SpawnSites.SpawnSiteAnchor
   entries:
   - characterTypeReference: {fileID: 11400000, guid: 74743be7f3db9d647b1ca2d8167fc767, type: 2}
     localPosition: {x: 1.98, y: 0, z: 1}
@@ -2386,7 +2386,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 884c20993b65d2d4cb18f9ceadd55ace, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.App::DescrioGames.App.GameLifetimeScope
+  m_EditorClassIdentifier: Gast.App::Gast.App.GameLifetimeScope
   parentReference:
     TypeName: 
   autoRun: 1
@@ -2510,7 +2510,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a2a5e38478a35ac438dacc6833a5ebc7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Systems.SpawnSites::DescrioGames.Systems.SpawnSites.SpawnSiteAnchor
+  m_EditorClassIdentifier: Gast.Systems.SpawnSites::Gast.Systems.SpawnSites.SpawnSiteAnchor
   entries:
   - characterTypeReference: {fileID: 11400000, guid: 74743be7f3db9d647b1ca2d8167fc767, type: 2}
     localPosition: {x: 1.98, y: 0, z: 1}

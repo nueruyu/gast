@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 namespace Gast.UI
 {
-    [CreateAssetMenu(fileName = "UIAssetSettings", menuName = "DescrioGames/UI/Asset Settings")]
+    [CreateAssetMenu(fileName = "UIAssetSettings", menuName = "Gast/UI/Asset Settings")]
     public class UIAssetSettings : ScriptableObject
     {
         [Header("Root")]

@@ -4,27 +4,21 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Run MCP SuperAssistant Proxy via npx",
-      "type": "shell",
-      "command": "npx @srbhptl39/mcp-superassistant-proxy@latest --config ./mcp-config.json",
-      "problemMatcher": []
-    },
-    {
-      "label": "Bundle Games",
+      "label": "Bundle Source",
       "type": "shell",
       "command": "bundle-md",
-      "args": ["Assets/__Project", "Builds/bundle-outputs/descrio-games.md"]
+      "args": ["Assets/__Project", "Builds/bundle-outputs/gast.md"]
     },
     {
-      "label": "Bundle And Copy Games",
+      "label": "Bundle And Copy Source",
       "type": "shell",
       "dependsOn": "Bundle Games",
       "problemMatcher": [],
       "windows": {
-        "command": "Set-Clipboard -Path \"Builds/bundle-outputs/descrio-games.md\""
+        "command": "Set-Clipboard -Path \"Builds/bundle-outputs/gast.md\""
       },
       "osx": {
-        "command": "osascript -e 'tell app \"Finder\" to set the clipboard to ( POSIX file \"Builds/bundle-outputs/descrio-games.md\" )'"
+        "command": "osascript -e 'tell app \"Finder\" to set the clipboard to ( POSIX file \"Builds/bundle-outputs/gast.md\" )'"
       },
       "group": {
         "kind": "build",

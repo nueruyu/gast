@@ -9,7 +9,7 @@ namespace Gast.Features.Combat.MethodSettings
     /// <summary>
     /// Configuration for melee attack behavior.
     /// </summary>
-    [CreateAssetMenu(menuName = "DescrioGames/Combat/Method Settings/Melee")]
+    [CreateAssetMenu(menuName = "Gast/Combat/Method Settings/Melee")]
     public class MeleeMethodSettings : CombatMethodSettings
     {
         [Header("Damage Area")]

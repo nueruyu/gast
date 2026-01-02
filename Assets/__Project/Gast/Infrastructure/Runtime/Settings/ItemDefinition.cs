@@ -5,7 +5,7 @@ using Gast.Features.Economy;
 
 namespace Gast.Infrastructure.Settings
 {
-    [CreateAssetMenu(fileName = "NewItem", menuName = "DescrioGames/Economy/Item Definition")]
+    [CreateAssetMenu(fileName = "NewItem", menuName = "Gast/Economy/Item Definition")]
     public class ItemDefinition : ScriptableObject, IItemDefinition
     {
         [SerializeField]

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a16a7827505a5c847a277b2ca5a20d1e, type: 3}
   m_Name: InteractionSystemSettings
-  m_EditorClassIdentifier: DescrioGames.Systems.Interactions::DescrioGames.Systems.Interactions.InteractionDetectorSettings
+  m_EditorClassIdentifier: Gast.Systems.Interactions::Gast.Systems.Interactions.InteractionDetectorSettings
   detectionRadius: 2
   interactableLayer:
     serializedVersion: 2

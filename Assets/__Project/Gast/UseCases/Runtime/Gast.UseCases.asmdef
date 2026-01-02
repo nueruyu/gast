@@ -1,10 +1,10 @@
 {
-    "name": "DescrioGames.Shared",
-    "rootNamespace": "DescrioGames.Shared",
+    "name": "Gast.UseCases",
+    "rootNamespace": "Gast.UseCases",
     "references": [
-        "DescrioGames.Core",
-        "UniTask",
-        "R3.Unity"
+        "Gast.Core",
+        "Gast.Domain",
+        "Gast.Shared"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

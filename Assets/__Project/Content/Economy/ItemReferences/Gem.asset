@@ -11,5 +11,5 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b5f9eb7513a5bf6439bf110cf5336e3d, type: 3}
   m_Name: Gem
-  m_EditorClassIdentifier: DescrioGames.Features::DescrioGames.Features.Economy.ItemReference
+  m_EditorClassIdentifier: Gast.Features::Gast.Features.Economy.ItemReference
   id: 58d36adf-70d7-4e47-91a4-10db1ee6727a

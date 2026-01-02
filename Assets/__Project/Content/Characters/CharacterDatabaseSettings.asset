@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6c666b1f0d97fc48a641af63bd2543b, type: 3}
   m_Name: CharacterDatabaseSettings
-  m_EditorClassIdentifier: DescrioGames.Systems.Characters::DescrioGames.Systems.Characters.CharacterDatabaseSettings
+  m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterDatabaseSettings
   definitions:
   - {fileID: 11400000, guid: f909baa4683098042acc8c6af3062bd0, type: 2}
   - {fileID: 11400000, guid: 3f950f92f71700041b0a8524b199dfc9, type: 2}

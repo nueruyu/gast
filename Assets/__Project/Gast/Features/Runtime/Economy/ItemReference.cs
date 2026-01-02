@@ -4,7 +4,7 @@ using Gast.Domain.Economy;
 
 namespace Gast.Features.Economy
 {
-    [CreateAssetMenu(fileName = "ItemReference", menuName = "DescrioGames/Economy/Item Reference")]
+    [CreateAssetMenu(fileName = "ItemReference", menuName = "Gast/Economy/Item Reference")]
     public class ItemReference : ScriptableObject
     {
         [SerializeField]

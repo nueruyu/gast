@@ -364,7 +364,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 29d517bf9742ba741afeffc8d264b848, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Features.Characters::DescrioGames.Features.Characters.Animations.CharacterAnimationReceiver
+  m_EditorClassIdentifier: Gast.Features.Characters::Gast.Features.Characters.Animations.CharacterAnimationReceiver
 --- !u!114 &3829598260519486141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -376,5 +376,5 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d00d4c550a4d4c40bc592bb179d3892, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Features::DescrioGames.Features.Characters.CharacterAnimator
+  m_EditorClassIdentifier: Gast.Features::Gast.Features.Characters.CharacterAnimator
   dampTime: 0.1

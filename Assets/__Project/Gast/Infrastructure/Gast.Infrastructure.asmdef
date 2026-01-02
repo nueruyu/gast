@@ -1,17 +1,17 @@
 {
-    "name": "DescrioGames.Features",
-    "rootNamespace": "DescrioGames.Features",
+    "name": "Gast.Infrastructure",
+    "rootNamespace": "Gast.Infrastructure",
     "references": [
-        "DescrioGames.Core",
-        "DescrioGames.Domain",
-        "DescrioGames.Commands",
-        "DescrioGames.Lib.AI",
-        "DescrioGames.Shared",
-        "Unity.TextMeshPro",
-        "Unity.InputSystem",
+        "Gast.Core",
+        "Gast.Commands",
+        "Gast.Api",
+        "Gast.Domain",
+        "Gast.UseCases",
+        "Gast.Features",
+        "Gast.Shared",
         "UniTask",
         "R3.Unity",
-        "Cinemachine"
+        "VContainer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

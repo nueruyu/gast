@@ -124,4 +124,4 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 87af08fadb19284489a3df5ae7b748a0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Systems.Combat::DescrioGames.Systems.Combat.Components.DamageArea
+  m_EditorClassIdentifier: Gast.Systems.Combat::Gast.Systems.Combat.Components.DamageArea

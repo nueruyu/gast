@@ -1,7 +1,12 @@
 {
-    "name": "DescrioGames.Core",
-    "rootNamespace": "DescrioGames.Core",
-    "references": [],
+    "name": "Gast.Api",
+    "rootNamespace": "Gast.Api",
+    "references": [
+        "Gast.Core",
+        "Gast.Commands",
+        "Gast.Domain",
+        "Gast.UseCases"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

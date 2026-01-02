@@ -73,7 +73,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad31b77f12b3f6e4094f730a6a57db8f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Systems.Characters::DescrioGames.Systems.Characters.CharacterBody
+  m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterBody
   gravity: -50
 --- !u!114 &3056424131087975470
 MonoBehaviour:
@@ -86,7 +86,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad95e424b541b3d43932df06d024b1db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Systems.Characters::DescrioGames.Systems.Characters.Character
+  m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.Character
 --- !u!1 &2859229745262432229
 GameObject:
   m_ObjectHideFlags: 0
@@ -131,7 +131,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 67fb0af50c6489e40b473af7c116848a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Features.Characters::DescrioGames.Features.Characters.Audios.CharacterAudioController
+  m_EditorClassIdentifier: Gast.Features.Characters::Gast.Features.Characters.Audios.CharacterAudioController
   audioSource: {fileID: 8874509523021616004}
 --- !u!1 &4172856136449196397
 GameObject:
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be0bc2e178cf3924aa4691763ead5f38, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Systems.Sensors::DescrioGames.Systems.Sensors.ConeVisionSensor
+  m_EditorClassIdentifier: Gast.Systems.Sensors::Gast.Systems.Sensors.ConeVisionSensor
   viewRadius: 30
   viewAngle: 360
   targetMask:
@@ -252,7 +252,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8fcedcc1108750249af50035f4e842d4, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: DescrioGames.Systems.AI::DescrioGames.Systems.AI.Navigation.NavMeshNavigator
+  m_EditorClassIdentifier: Gast.Systems.AI::Gast.Systems.AI.Navigation.NavMeshNavigator
 --- !u!1 &5141751950464796096
 GameObject:
   m_ObjectHideFlags: 0

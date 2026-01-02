@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88233fdd31549bb49b9e10d7814f6f64, type: 3}
   m_Name: LootTable
-  m_EditorClassIdentifier: DescrioGames.Systems.Loot::DescrioGames.Systems.Loot.LootTableSO
+  m_EditorClassIdentifier: Gast.Systems.Loot::Gast.Systems.Loot.LootTableSO
   entries:
   - itemReference: {fileID: 11400000, guid: 9e1d5333592db124b8fc062071ce6cef, type: 2}
     dropRate: 1
