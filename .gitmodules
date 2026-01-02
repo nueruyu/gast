@@ -1,0 +1,4 @@
+[submodule "External/descrio-dotnet"]
+	path = External/descrio-dotnet
+	url = https://github.com/nueruyu/descrio-dotnet.git
+	branch = feature/fix-import-path
