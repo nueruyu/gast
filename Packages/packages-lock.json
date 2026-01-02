@@ -32,12 +32,6 @@
       "dependencies": {},
       "hash": "34432703a177c97631a4eb1d908f086037c67969"
     },
-    "com.nueruyu.descrio": {
-      "version": "file:com.nueruyu.descrio",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
     "com.unity.ai.navigation": {
       "version": "2.0.9",
       "depth": 0,
