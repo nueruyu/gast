@@ -12,7 +12,7 @@
     {
       "label": "Bundle And Copy Source",
       "type": "shell",
-      "dependsOn": "Bundle Games",
+      "dependsOn": "Bundle Source",
       "problemMatcher": [],
       "windows": {
         "command": "Set-Clipboard -Path \"Builds/bundle-outputs/gast.md\""
