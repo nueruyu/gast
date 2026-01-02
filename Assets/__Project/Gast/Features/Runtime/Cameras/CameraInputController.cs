@@ -22,10 +22,13 @@ namespace Gast.Features.Cameras
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                var lookDelta = inputProvider.Look;
-                if (lookDelta.sqrMagnitude > 0.01f)
+                if (Cursor.lockState == CursorLockMode.Locked)
                 {
-                    cameraRegistry.CameraController.Rotate(lookDelta);
+                    var lookDelta = inputProvider.Look;
+                    if (lookDelta.sqrMagnitude > 0.01f)
+                    {
+                        cameraRegistry.CameraController.Rotate(lookDelta);
+                    }
                 }
 
                 await UniTask.Yield(cancellationToken);
