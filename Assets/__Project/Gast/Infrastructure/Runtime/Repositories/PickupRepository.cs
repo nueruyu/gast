@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using DescrioGames.Domain.Pickups;
+using Gast.Domain.Pickups;
 
-namespace DescrioGames.Infrastructure.Repositories
+namespace Gast.Infrastructure.Repositories
 {
     public class PickupRepository : IPickupRepository
     {

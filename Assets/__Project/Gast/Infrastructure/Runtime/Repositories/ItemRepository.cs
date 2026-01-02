@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DescrioGames.Domain.Economy;
-using DescrioGames.Infrastructure.Settings;
+using Gast.Domain.Economy;
+using Gast.Infrastructure.Settings;
 
-namespace DescrioGames.Infrastructure.Repositories
+namespace Gast.Infrastructure.Repositories
 {
     public class ItemRepository : IItemRepository
     {

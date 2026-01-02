@@ -1,7 +1,7 @@
-using DescrioGames.Domain.Characters;
+using Gast.Domain.Characters;
 using UnityEngine;
 
-namespace DescrioGames.UseCases.Characters
+namespace Gast.UseCases.Characters
 {
     /// <summary>
     /// Use case for creating an AI-controlled (NPC) character.

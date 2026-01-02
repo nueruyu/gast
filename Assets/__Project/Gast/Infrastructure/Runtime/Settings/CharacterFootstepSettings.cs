@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Infrastructure.Settings
+namespace Gast.Infrastructure.Settings
 {
     /// <summary>
     /// Configuration for character audio effects such as footsteps.

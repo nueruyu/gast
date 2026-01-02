@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Domain.Cameras
+namespace Gast.Domain.Cameras
 {
     public interface ICamera
     {

@@ -1,9 +1,9 @@
 using System;
-using DescrioGames.Core.Commands;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Economy;
+using Gast.Core.Commands;
+using Gast.Domain.Characters;
+using Gast.Domain.Economy;
 
-namespace DescrioGames.Commands
+namespace Gast.Commands
 {
     [Serializable]
     public readonly struct BuyItemCommand : ICommand<bool>

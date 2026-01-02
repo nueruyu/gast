@@ -1,11 +1,11 @@
-using DescrioGames.Core.Commands;
-using DescrioGames.Core.Tasks;
-using DescrioGames.Domain.Economy;
-using DescrioGames.Features.Economy;
+using Gast.Core.Commands;
+using Gast.Core.Tasks;
+using Gast.Domain.Economy;
+using Gast.Features.Economy;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DescrioGames.Infrastructure.Services
+namespace Gast.Infrastructure.Services
 {
     public class ShopInitializer : ILifecycleTask
     {

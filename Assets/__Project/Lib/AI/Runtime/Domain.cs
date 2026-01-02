@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DescrioGames.Lib.AI
+namespace Gast.Lib.AI
 {
     public class Domain<TWorldState> where TWorldState : struct
     {

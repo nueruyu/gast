@@ -1,14 +1,14 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Domain.Combat;
-using DescrioGames.Features.Characters;
-using DescrioGames.Features.Combat.MethodSettings;
-using DescrioGames.Shared.Observables;
+using Gast.Domain.Combat;
+using Gast.Features.Characters;
+using Gast.Features.Combat.MethodSettings;
+using Gast.Shared.Observables;
 using R3;
 using System;
 using System.Threading;
 using UnityEngine;
 
-namespace DescrioGames.Features.Combat.Methods
+namespace Gast.Features.Combat.Methods
 {
     /// <summary>
     /// Melee method implementation.

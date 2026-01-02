@@ -1,13 +1,13 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Core.Commands;
-using DescrioGames.Core.Tasks;
+using Gast.Core.Commands;
+using Gast.Core.Tasks;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace DescrioGames.Features.SpawnSites
+namespace Gast.Features.SpawnSites
 {
     /// <summary>
     /// System that manages all spawn sites in the scene.

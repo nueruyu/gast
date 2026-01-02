@@ -1,6 +1,6 @@
 using System;
 
-namespace DescrioGames.Core.Observables
+namespace Gast.Core.Observables
 {
     /// <summary>
     /// Extension methods for IDisposable to enable fluent API.

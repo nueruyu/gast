@@ -2,7 +2,7 @@ using System;
 using R3;
 using UnityEngine.UIElements;
 
-namespace DescrioGames.UI.Hud
+namespace Gast.UI.Hud
 {
     /// <summary>
     /// Visual representation of the game HUD.

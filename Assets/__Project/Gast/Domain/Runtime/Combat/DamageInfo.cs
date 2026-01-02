@@ -1,7 +1,7 @@
 using UnityEngine;
-using DescrioGames.Domain.Characters;
+using Gast.Domain.Characters;
 
-namespace DescrioGames.Domain.Combat
+namespace Gast.Domain.Combat
 {
     /// <summary>
     /// Information about damage dealt to a character.

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Infrastructure.Settings;
+using Gast.Domain.Characters;
+using Gast.Infrastructure.Settings;
 using UnityEngine;
 
-namespace DescrioGames.Infrastructure.Repositories
+namespace Gast.Infrastructure.Repositories
 {
     /// <summary>
     /// Pure C# repository for accessing character type definitions.

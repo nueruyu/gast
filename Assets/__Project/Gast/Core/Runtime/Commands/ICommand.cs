@@ -1,4 +1,4 @@
-namespace DescrioGames.Core.Commands
+namespace Gast.Core.Commands
 {
     /// <summary>
     /// Marker interface for a command that does not return a value.

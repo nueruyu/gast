@@ -1,6 +1,6 @@
 using System;
 
-namespace DescrioGames.Core.Observables
+namespace Gast.Core.Observables
 {
     /// <summary>
     /// Read-only interface for a live property that holds a current value and notifies on changes.

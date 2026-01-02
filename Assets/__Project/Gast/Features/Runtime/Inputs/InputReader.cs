@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using DescrioGames.Core.Tasks;
-using DescrioGames.Domain.Inputs;
+using Gast.Core.Tasks;
+using Gast.Domain.Inputs;
 
-namespace DescrioGames.Features.Inputs
+namespace Gast.Features.Inputs
 {
     /// <summary>
     /// Reads input from the Input System and provides a clean interface for gameplay code.

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace DescrioGames.Features.SpawnSites
+namespace Gast.Features.SpawnSites
 {
     public class SpawnSiteRegistry : MonoBehaviour
     {

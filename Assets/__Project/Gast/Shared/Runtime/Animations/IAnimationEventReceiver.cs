@@ -1,4 +1,4 @@
-namespace DescrioGames.Shared.Animations
+namespace Gast.Shared.Animations
 {
     /// <summary>
     /// Interface for receiving animation events from StateMachineBehaviour.

@@ -1,6 +1,6 @@
-using DescrioGames.Domain.Characters;
+using Gast.Domain.Characters;
 
-namespace DescrioGames.Features.Characters
+namespace Gast.Features.Characters
 {
     public interface ICharacterActorRepository
     {

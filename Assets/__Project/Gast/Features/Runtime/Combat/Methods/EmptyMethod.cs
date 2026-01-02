@@ -1,8 +1,8 @@
-using DescrioGames.Features.Characters;
+using Gast.Features.Characters;
 using R3;
 using System;
 
-namespace DescrioGames.Features.Combat.Methods
+namespace Gast.Features.Combat.Methods
 {
     /// <summary>
     /// Empty method that does nothing.

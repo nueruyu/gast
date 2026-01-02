@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DescrioGames.Lib.AI.Selectors
+namespace Gast.Lib.AI.Selectors
 {
     public class PrioritySelector<T> : IMethodSelector<T> where T : struct
     {

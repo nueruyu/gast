@@ -1,4 +1,4 @@
-namespace DescrioGames.Domain.Characters
+namespace Gast.Domain.Characters
 {
     /// <summary>
     /// Repository for accessing character type definitions.

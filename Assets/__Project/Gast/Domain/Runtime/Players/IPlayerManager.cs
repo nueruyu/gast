@@ -1,7 +1,7 @@
-﻿using DescrioGames.Core.Observables;
-using DescrioGames.Domain.Characters;
+﻿using Gast.Core.Observables;
+using Gast.Domain.Characters;
 
-namespace DescrioGames.Domain.Players
+namespace Gast.Domain.Players
 {
     public interface IPlayerManager
     {

@@ -1,7 +1,7 @@
-using DescrioGames.Features.Characters;
+using Gast.Features.Characters;
 using System;
 
-namespace DescrioGames.Features.Combat
+namespace Gast.Features.Combat
 {
     /// <summary>
     /// Strategy interface for attack implementations.

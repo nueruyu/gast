@@ -1,12 +1,12 @@
-using DescrioGames.Core.Observables;
-using DescrioGames.Domain.AI;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Combat;
-using DescrioGames.Domain.Economy;
-using DescrioGames.Domain.Sensors;
+using Gast.Core.Observables;
+using Gast.Domain.AI;
+using Gast.Domain.Characters;
+using Gast.Domain.Combat;
+using Gast.Domain.Economy;
+using Gast.Domain.Sensors;
 using UnityEngine;
 
-namespace DescrioGames.Features.Characters
+namespace Gast.Features.Characters
 {
     /// <summary>
     /// Composition root that connects a brain (decision-making) with a body (physics execution).

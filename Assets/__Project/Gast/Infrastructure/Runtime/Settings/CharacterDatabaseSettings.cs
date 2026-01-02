@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DescrioGames.Infrastructure.Settings
+namespace Gast.Infrastructure.Settings
 {
     /// <summary>
     /// Settings container for character type definitions.

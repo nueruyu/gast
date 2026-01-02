@@ -1,11 +1,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using DescrioGames.Core.Tasks;
-using DescrioGames.Domain.Inputs;
-using DescrioGames.Domain.Interactions;
+using Gast.Core.Tasks;
+using Gast.Domain.Inputs;
+using Gast.Domain.Interactions;
 
-namespace DescrioGames.Features.Interactions
+namespace Gast.Features.Interactions
 {
     /// <summary>
     /// Connects input system to InteractionDetector.

@@ -1,9 +1,9 @@
 using System;
-using DescrioGames.Core.Commands;
-using DescrioGames.Domain.Characters;
+using Gast.Core.Commands;
+using Gast.Domain.Characters;
 using UnityEngine;
 
-namespace DescrioGames.Commands
+namespace Gast.Commands
 {
     [Serializable]
     public readonly struct CreatePlayerCommand : ICommand<ICharacter>

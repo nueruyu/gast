@@ -1,16 +1,16 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Commands;
-using DescrioGames.Core.Commands;
-using DescrioGames.Core.Observables;
-using DescrioGames.Domain.Economy;
-using DescrioGames.Domain.Pickups;
-using DescrioGames.Features.Characters;
-using DescrioGames.Features.Interactions;
+using Gast.Commands;
+using Gast.Core.Commands;
+using Gast.Core.Observables;
+using Gast.Domain.Economy;
+using Gast.Domain.Pickups;
+using Gast.Features.Characters;
+using Gast.Features.Interactions;
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace DescrioGames.Features.Pickups
+namespace Gast.Features.Pickups
 {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(Interactable))]

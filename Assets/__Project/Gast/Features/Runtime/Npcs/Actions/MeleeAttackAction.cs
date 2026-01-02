@@ -1,9 +1,9 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Lib.AI;
+using Gast.Lib.AI;
 using System;
 using UnityEngine;
 
-namespace DescrioGames.Features.Npcs.Actions
+namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
     public class MeleeAttackAction : PrimitiveTask<CombatWorldState>

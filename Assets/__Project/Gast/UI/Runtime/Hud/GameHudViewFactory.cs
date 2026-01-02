@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace DescrioGames.UI.Hud
+namespace Gast.UI.Hud
 {
     public class GameHudViewFactory
     {

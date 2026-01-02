@@ -1,10 +1,10 @@
-using DescrioGames.Core.Observables;
-using DescrioGames.Domain.Interactions;
-using DescrioGames.Features.Characters;
+using Gast.Core.Observables;
+using Gast.Domain.Interactions;
+using Gast.Features.Characters;
 using System;
 using UnityEngine;
 
-namespace DescrioGames.Features.Interactions
+namespace Gast.Features.Interactions
 {
     public class Interactable : MonoBehaviour, IInteractable
     {

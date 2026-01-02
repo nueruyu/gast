@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Features.Npcs
+namespace Gast.Features.Npcs
 {
     /// <summary>
     /// World state for melee combat behavior.

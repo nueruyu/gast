@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
 
-namespace DescrioGames.UI.Root
+namespace Gast.UI.Root
 {
     /// <summary>
     /// Root visual element that manages the SPA-style UI structure with layered Z-order.

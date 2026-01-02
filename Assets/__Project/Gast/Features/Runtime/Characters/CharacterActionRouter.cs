@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DescrioGames.Features.Characters
+namespace Gast.Features.Characters
 {
     /// <summary>
     /// Manages action execution lifecycle and exclusive control via priority-based interruption.

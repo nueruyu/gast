@@ -1,20 +1,20 @@
-using DescrioGames.Composition.Installers;
-using DescrioGames.Core.Exceptions;
-using DescrioGames.Features.Cameras;
-using DescrioGames.Features.Economy;
-using DescrioGames.Features.Gameplay;
-using DescrioGames.Features.Gathering;
-using DescrioGames.Features.Inputs;
-using DescrioGames.Features.Interactions;
-using DescrioGames.Features.SpawnSites;
-using DescrioGames.Infrastructure.Settings;
-using DescrioGames.UI;
+using Gast.Composition.Installers;
+using Gast.Core.Exceptions;
+using Gast.Features.Cameras;
+using Gast.Features.Economy;
+using Gast.Features.Gameplay;
+using Gast.Features.Gathering;
+using Gast.Features.Inputs;
+using Gast.Features.Interactions;
+using Gast.Features.SpawnSites;
+using Gast.Infrastructure.Settings;
+using Gast.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
 using VContainer.Unity;
 
-namespace DescrioGames.Composition
+namespace Gast.Composition
 {
     public class GameLifetimeScope : LifetimeScope
     {

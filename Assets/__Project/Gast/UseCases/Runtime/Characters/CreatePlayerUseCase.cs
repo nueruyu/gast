@@ -1,8 +1,8 @@
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Players;
+using Gast.Domain.Characters;
+using Gast.Domain.Players;
 using UnityEngine;
 
-namespace DescrioGames.UseCases.Characters
+namespace Gast.UseCases.Characters
 {
     /// <summary>
     /// Use case for creating a player-controlled character.

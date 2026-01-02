@@ -1,11 +1,11 @@
-using DescrioGames.Api;
-using DescrioGames.Core.Commands;
+using Gast.Api;
+using Gast.Core.Commands;
 using System;
 using System.Linq;
 using System.Reflection;
 using VContainer;
 
-namespace DescrioGames.Infrastructure.Services
+namespace Gast.Infrastructure.Services
 {
     public class CommandDispatcher : ICommandDispatcher
     {

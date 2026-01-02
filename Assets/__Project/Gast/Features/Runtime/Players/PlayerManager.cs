@@ -1,10 +1,10 @@
 using UnityEngine;
-using DescrioGames.Core.Observables;
-using DescrioGames.Features.Characters;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Players;
+using Gast.Core.Observables;
+using Gast.Features.Characters;
+using Gast.Domain.Characters;
+using Gast.Domain.Players;
 
-namespace DescrioGames.Features.Players
+namespace Gast.Features.Players
 {
     /// <summary>
     /// Manages player possession of different characters.

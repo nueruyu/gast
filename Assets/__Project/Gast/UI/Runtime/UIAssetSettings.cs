@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace DescrioGames.UI
+namespace Gast.UI
 {
     [CreateAssetMenu(fileName = "UIAssetSettings", menuName = "DescrioGames/UI/Asset Settings")]
     public class UIAssetSettings : ScriptableObject

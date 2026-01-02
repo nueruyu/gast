@@ -1,4 +1,4 @@
-namespace DescrioGames.Domain.Interactions
+namespace Gast.Domain.Interactions
 {
     /// <summary>
     /// Type of interaction.

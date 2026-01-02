@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace DescrioGames.Features.Inputs
+namespace Gast.Features.Inputs
 {
     /// <summary>
     /// Settings container for Input System configuration.

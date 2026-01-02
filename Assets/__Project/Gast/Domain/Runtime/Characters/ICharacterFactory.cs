@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Domain.Characters
+namespace Gast.Domain.Characters
 {
     /// <summary>
     /// Factory interface for creating character instances.

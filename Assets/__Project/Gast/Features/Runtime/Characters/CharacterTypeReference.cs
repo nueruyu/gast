@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
-using DescrioGames.Domain.Characters;
+using Gast.Domain.Characters;
 
-namespace DescrioGames.Features.Characters
+namespace Gast.Features.Characters
 {
     [CreateAssetMenu(fileName = "CharacterTypeReference", menuName = "DescrioGames/Characters/Character Type Reference")]
     public class CharacterTypeReference : ScriptableObject

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Features.Gameplay
+namespace Gast.Features.Gameplay
 {
     /// <summary>
     /// Marker component indicating where the player character should spawn.

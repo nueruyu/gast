@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DescrioGames.Domain.Loot
+namespace Gast.Domain.Loot
 {
     public interface ILootTable
     {

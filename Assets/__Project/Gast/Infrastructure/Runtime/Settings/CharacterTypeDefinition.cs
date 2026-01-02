@@ -1,10 +1,10 @@
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Loot;
-using DescrioGames.Features.Characters;
-using DescrioGames.Features.Combat;
+using Gast.Domain.Characters;
+using Gast.Domain.Loot;
+using Gast.Features.Characters;
+using Gast.Features.Combat;
 using UnityEngine;
 
-namespace DescrioGames.Infrastructure.Settings
+namespace Gast.Infrastructure.Settings
 {
     /// <summary>
     /// ScriptableObject implementation of ICharacterTypeDefinition.

@@ -1,7 +1,7 @@
-using DescrioGames.Commands;
-using DescrioGames.UseCases.Economy;
+using Gast.Commands;
+using Gast.UseCases.Economy;
 
-namespace DescrioGames.Api.CommandHandlers
+namespace Gast.Api.CommandHandlers
 {
     public class EconomyCommandHandler :
         ICommandHandler<BuyItemCommand, bool>

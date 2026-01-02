@@ -1,8 +1,8 @@
-using DescrioGames.Domain.Characters;
-using DescrioGames.Features.Characters;
+using Gast.Domain.Characters;
+using Gast.Features.Characters;
 using UnityEngine;
 
-namespace DescrioGames.Features.Gameplay
+namespace Gast.Features.Gameplay
 {
     /// <summary>
     /// Settings for game initialization and startup configuration.

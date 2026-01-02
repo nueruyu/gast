@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Features.Characters
+namespace Gast.Features.Characters
 {
     /// <summary>
     /// Base interface for all character actions.

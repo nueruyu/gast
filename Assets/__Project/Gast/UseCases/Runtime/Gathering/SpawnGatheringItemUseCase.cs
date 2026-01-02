@@ -1,9 +1,9 @@
 using System;
-using DescrioGames.Domain.Economy;
-using DescrioGames.Domain.Pickups;
+using Gast.Domain.Economy;
+using Gast.Domain.Pickups;
 using UnityEngine;
 
-namespace DescrioGames.UseCases.Gathering
+namespace Gast.UseCases.Gathering
 {
     /// <summary>
     /// Use case for spawning a gathering item (pickup) in the world.

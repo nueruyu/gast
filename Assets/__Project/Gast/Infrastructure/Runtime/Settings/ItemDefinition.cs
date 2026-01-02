@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
-using DescrioGames.Domain.Economy;
-using DescrioGames.Features.Economy;
+using Gast.Domain.Economy;
+using Gast.Features.Economy;
 
-namespace DescrioGames.Infrastructure.Settings
+namespace Gast.Infrastructure.Settings
 {
     [CreateAssetMenu(fileName = "NewItem", menuName = "DescrioGames/Economy/Item Definition")]
     public class ItemDefinition : ScriptableObject, IItemDefinition

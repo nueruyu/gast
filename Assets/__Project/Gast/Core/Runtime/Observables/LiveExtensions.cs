@@ -1,6 +1,6 @@
 using System;
 
-namespace DescrioGames.Core.Observables
+namespace Gast.Core.Observables
 {
     public static class LiveExtensions
     {

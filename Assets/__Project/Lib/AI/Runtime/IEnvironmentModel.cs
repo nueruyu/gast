@@ -1,4 +1,4 @@
-namespace DescrioGames.Lib.AI
+namespace Gast.Lib.AI
 {
     public interface IEnvironmentModel<TWorldState> where TWorldState : struct
     {

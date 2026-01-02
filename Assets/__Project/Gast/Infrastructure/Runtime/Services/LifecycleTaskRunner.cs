@@ -4,9 +4,9 @@ using System.Threading;
 using UnityEngine;
 using VContainer.Unity;
 using Cysharp.Threading.Tasks;
-using DescrioGames.Core.Tasks;
+using Gast.Core.Tasks;
 
-namespace DescrioGames.Infrastructure.Services
+namespace Gast.Infrastructure.Services
 {
     /// <summary>
     /// Manages and runs all registered ILifecycleTask instances.

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DescrioGames.Lib.AI.Selectors
+namespace Gast.Lib.AI.Selectors
 {
     public class SimulationSelector<T> : IMethodSelector<T> where T : struct
     {

@@ -1,7 +1,7 @@
 using UnityEngine;
 using Cinemachine;
 
-namespace DescrioGames.Features.Cameras
+namespace Gast.Features.Cameras
 {
     /// <summary>
     /// Third-person camera controller using Cinemachine for fixed overhead view.

@@ -1,18 +1,18 @@
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Economy;
-using DescrioGames.Features.Navigations;
-using DescrioGames.Features.Characters;
-using DescrioGames.Features.Characters.Actions;
-using DescrioGames.Features.Sensors;
-using DescrioGames.Infrastructure.Repositories;
-using DescrioGames.Infrastructure.Settings;
+using Gast.Domain.Characters;
+using Gast.Domain.Economy;
+using Gast.Features.Navigations;
+using Gast.Features.Characters;
+using Gast.Features.Characters.Actions;
+using Gast.Features.Sensors;
+using Gast.Infrastructure.Repositories;
+using Gast.Infrastructure.Settings;
 using System;
 using UnityEngine;
-using DescrioGames.Features.Combat;
-using DescrioGames.Features.Characters.Audios;
-using DescrioGames.Shared.UnityExtensions;
+using Gast.Features.Combat;
+using Gast.Features.Characters.Audios;
+using Gast.Shared.UnityExtensions;
 
-namespace DescrioGames.Infrastructure.Factories
+namespace Gast.Infrastructure.Factories
 {
     /// <summary>
     /// Factory implementation for creating character instances.

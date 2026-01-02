@@ -1,4 +1,4 @@
-namespace DescrioGames.Domain.Economy
+namespace Gast.Domain.Economy
 {
     /// <summary>
     /// Item slot in inventory. Pairs an item with its quantity.

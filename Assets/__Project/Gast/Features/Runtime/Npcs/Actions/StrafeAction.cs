@@ -1,10 +1,10 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Lib.AI;
+using Gast.Lib.AI;
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace DescrioGames.Features.Npcs.Actions
+namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
     public class StrafeAction : PrimitiveTask<CombatWorldState>

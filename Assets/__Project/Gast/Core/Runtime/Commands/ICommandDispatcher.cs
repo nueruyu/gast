@@ -1,4 +1,4 @@
-namespace DescrioGames.Core.Commands
+namespace Gast.Core.Commands
 {
     /// <summary>
     /// Dispatches commands to their respective handlers.

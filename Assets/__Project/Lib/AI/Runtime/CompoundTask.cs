@@ -5,7 +5,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace DescrioGames.Lib.AI
+namespace Gast.Lib.AI
 {
     public class CompoundTask<TWorldState> : ITask<TWorldState>
         where TWorldState : struct

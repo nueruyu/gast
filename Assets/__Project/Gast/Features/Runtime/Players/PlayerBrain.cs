@@ -1,13 +1,13 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Domain.Cameras;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Inputs;
+using Gast.Domain.Cameras;
+using Gast.Domain.Characters;
+using Gast.Domain.Inputs;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace DescrioGames.Features.Players
+namespace Gast.Features.Players
 {
     /// <summary>
     /// Player-controlled brain implementation.

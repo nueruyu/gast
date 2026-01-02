@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DescrioGames.Core.Exceptions
+namespace Gast.Core.Exceptions
 {
     public class ApplicationException : Exception
     {

@@ -1,8 +1,8 @@
-using DescrioGames.Domain.Combat;
+using Gast.Domain.Combat;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
-namespace DescrioGames.Features.Characters.Actions
+namespace Gast.Features.Characters.Actions
 {
     /// <summary>
     /// Handles hit reaction: plays animation and applies knockback.

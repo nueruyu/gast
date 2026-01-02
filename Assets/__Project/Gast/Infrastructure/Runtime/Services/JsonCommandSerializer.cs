@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DescrioGames.Core.Commands;
+using Gast.Core.Commands;
 using Newtonsoft.Json;
 
-namespace DescrioGames.Infrastructure.Services
+namespace Gast.Infrastructure.Services
 {
     /// <summary>
     /// An implementation of ICommandSerializer that uses Newtonsoft.Json.
@@ -84,7 +84,7 @@ namespace DescrioGames.Infrastructure.Services
 
         static bool IsCommandsAssembly(Assembly assembly)
         {
-            return assembly.FullName.Contains($"{nameof(DescrioGames)}.{nameof(Commands)}");
+            return assembly.FullName.Contains($"{nameof(Gast)}.{nameof(Commands)}");
         }
 
         static bool IsCommandType(Type type)

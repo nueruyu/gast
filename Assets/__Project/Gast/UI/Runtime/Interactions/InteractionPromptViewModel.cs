@@ -1,10 +1,10 @@
 using System;
-using DescrioGames.Domain.Interactions;
-using DescrioGames.Shared.Observables;
+using Gast.Domain.Interactions;
+using Gast.Shared.Observables;
 using R3;
 using UnityEngine;
 
-namespace DescrioGames.UI.Interactions
+namespace Gast.UI.Interactions
 {
     public class InteractionPromptViewModel : IDisposable
     {

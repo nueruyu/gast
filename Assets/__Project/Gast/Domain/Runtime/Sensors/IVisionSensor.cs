@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using DescrioGames.Domain.Characters;
+using Gast.Domain.Characters;
 using UnityEngine;
 
-namespace DescrioGames.Domain.Sensors
+namespace Gast.Domain.Sensors
 {
     public interface IVisionSensor
     {

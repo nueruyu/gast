@@ -1,6 +1,6 @@
 using System;
 
-namespace DescrioGames.Domain.Economy
+namespace Gast.Domain.Economy
 {
     /// <summary>
     /// Unique identifier for items.

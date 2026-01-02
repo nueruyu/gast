@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Lib.AI
+namespace Gast.Lib.AI
 {
     public struct CheckOptions
     {

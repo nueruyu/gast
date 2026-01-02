@@ -1,13 +1,13 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Lib.AI;
-using DescrioGames.Lib.AI.Builders;
+using Gast.Domain.Characters;
+using Gast.Lib.AI;
+using Gast.Lib.AI.Builders;
 using System;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
 
-namespace DescrioGames.Features.Npcs
+namespace Gast.Features.Npcs
 {
     public class SoldierBrain : ICharacterBrain
     {

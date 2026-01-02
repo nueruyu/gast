@@ -1,6 +1,6 @@
-using DescrioGames.Features.Characters;
+using Gast.Features.Characters;
 
-namespace DescrioGames.Features.Combat
+namespace Gast.Features.Combat
 {
     public interface ICombatMethodFactory
     {

@@ -1,7 +1,7 @@
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Economy;
+using Gast.Domain.Characters;
+using Gast.Domain.Economy;
 
-namespace DescrioGames.UseCases.Economy
+namespace Gast.UseCases.Economy
 {
     /// <summary>
     /// Use case for picking up items and adding them to inventory.

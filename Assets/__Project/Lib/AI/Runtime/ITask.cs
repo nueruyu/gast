@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
 
-namespace DescrioGames.Lib.AI
+namespace Gast.Lib.AI
 {
     public interface ITask<TWorldState> where TWorldState : struct
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Features.Characters
+namespace Gast.Features.Characters
 {
     public class CharacterAudio : MonoBehaviour
     {

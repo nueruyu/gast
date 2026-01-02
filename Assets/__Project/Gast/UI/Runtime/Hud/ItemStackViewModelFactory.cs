@@ -1,6 +1,6 @@
-using DescrioGames.Domain.Economy;
+using Gast.Domain.Economy;
 
-namespace DescrioGames.UI.Hud
+namespace Gast.UI.Hud
 {
     public class ItemStackViewModelFactory
     {

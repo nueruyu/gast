@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Domain.Interactions
+namespace Gast.Domain.Interactions
 {
     /// <summary>
     /// Defines an object that can be interacted with.

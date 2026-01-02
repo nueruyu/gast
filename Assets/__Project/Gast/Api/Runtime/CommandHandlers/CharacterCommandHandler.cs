@@ -1,8 +1,8 @@
-using DescrioGames.Commands;
-using DescrioGames.Domain.Characters;
-using DescrioGames.UseCases.Characters;
+using Gast.Commands;
+using Gast.Domain.Characters;
+using Gast.UseCases.Characters;
 
-namespace DescrioGames.Api.CommandHandlers
+namespace Gast.Api.CommandHandlers
 {
     public class CharacterCommandHandler :
         ICommandHandler<CreatePlayerCommand, ICharacter>,

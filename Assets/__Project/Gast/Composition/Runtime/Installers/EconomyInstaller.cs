@@ -1,10 +1,10 @@
-using DescrioGames.Infrastructure.Factories;
-using DescrioGames.Infrastructure.Repositories;
-using DescrioGames.Infrastructure.Services;
+using Gast.Infrastructure.Factories;
+using Gast.Infrastructure.Repositories;
+using Gast.Infrastructure.Services;
 using VContainer;
 using VContainer.Unity;
 
-namespace DescrioGames.Composition.Installers
+namespace Gast.Composition.Installers
 {
     public class EconomyInstaller : IInstaller
     {

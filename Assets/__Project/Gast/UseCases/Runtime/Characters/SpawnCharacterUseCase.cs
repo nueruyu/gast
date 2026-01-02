@@ -1,9 +1,9 @@
 using System;
-using DescrioGames.Core.Observables;
-using DescrioGames.Domain.Characters;
+using Gast.Core.Observables;
+using Gast.Domain.Characters;
 using UnityEngine;
 
-namespace DescrioGames.UseCases.Characters
+namespace Gast.UseCases.Characters
 {
     /// <summary>
     /// Use case for spawning a character in the game world.

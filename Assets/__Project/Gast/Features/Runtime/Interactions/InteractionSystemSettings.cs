@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Features.Interactions
+namespace Gast.Features.Interactions
 {
     /// <summary>
     /// Settings for InteractionDetector.

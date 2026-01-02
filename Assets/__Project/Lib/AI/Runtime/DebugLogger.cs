@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Lib.AI
+namespace Gast.Lib.AI
 {
     /// <summary>
     /// Simple logging system for HTN planning and execution.

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Domain.AI
+namespace Gast.Domain.AI
 {
     public interface INavigationProvider
     {

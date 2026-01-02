@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
-using DescrioGames.Domain.Economy;
+using Gast.Domain.Economy;
 
-namespace DescrioGames.Features.Economy
+namespace Gast.Features.Economy
 {
     [CreateAssetMenu(fileName = "ItemReference", menuName = "DescrioGames/Economy/Item Reference")]
     public class ItemReference : ScriptableObject

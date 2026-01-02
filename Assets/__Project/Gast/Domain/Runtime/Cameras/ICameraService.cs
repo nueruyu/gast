@@ -1,6 +1,6 @@
-using DescrioGames.Domain.Characters;
+using Gast.Domain.Characters;
 
-namespace DescrioGames.Domain.Cameras
+namespace Gast.Domain.Cameras
 {
     public interface ICameraService
     {

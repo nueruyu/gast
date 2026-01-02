@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Domain.Characters
+namespace Gast.Domain.Characters
 {
     /// <summary>
     /// Read-only interface for querying character physical state.

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DescrioGames.Lib.AI.Builders
+namespace Gast.Lib.AI.Builders
 {
     public class MethodBuilder<TWorldState> where TWorldState : struct
     {

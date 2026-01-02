@@ -1,4 +1,4 @@
-namespace DescrioGames.Infrastructure.Services
+namespace Gast.Infrastructure.Services
 {
     /// <summary>
     /// Internal transport DTO used by NewtonsoftCommandSerializer for command serialization.

@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
-using DescrioGames.Core.Observables;
+using Gast.Core.Observables;
 
-namespace DescrioGames.Domain.Economy
+namespace Gast.Domain.Economy
 {
     /// <summary>
     /// Currency (money) management.

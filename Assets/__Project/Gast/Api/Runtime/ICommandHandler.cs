@@ -1,6 +1,6 @@
-using DescrioGames.Core.Commands;
+using Gast.Core.Commands;
 
-namespace DescrioGames.Api
+namespace Gast.Api
 {
     /// <summary>
     /// Defines a handler for a command that does not return a value.

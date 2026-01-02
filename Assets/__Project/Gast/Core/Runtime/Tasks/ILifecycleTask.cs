@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DescrioGames.Core.Tasks
+namespace Gast.Core.Tasks
 {
     /// <summary>
     /// Represents a task that runs continuously during the application or scope lifetime.

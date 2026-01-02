@@ -1,4 +1,4 @@
-namespace DescrioGames.Domain.Characters
+namespace Gast.Domain.Characters
 {
     /// <summary>
     /// Interface for character decision-making systems.

@@ -1,12 +1,12 @@
-using DescrioGames.Core.Tasks;
-using DescrioGames.UI.Hud;
-using DescrioGames.UI.Interactions;
-using DescrioGames.UI.Root;
+using Gast.Core.Tasks;
+using Gast.UI.Hud;
+using Gast.UI.Interactions;
+using Gast.UI.Root;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.UIElements;
 
-namespace DescrioGames.UI
+namespace Gast.UI
 {
     public class UIBootstrap : ILifecycleTask
     {

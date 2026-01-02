@@ -1,12 +1,12 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Commands;
-using DescrioGames.Core.Commands;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Economy;
+using Gast.Commands;
+using Gast.Core.Commands;
+using Gast.Domain.Characters;
+using Gast.Domain.Economy;
 using System;
 using UnityEngine;
 
-namespace DescrioGames.Features.Economy
+namespace Gast.Features.Economy
 {
     public class Shop : MonoBehaviour
     {

@@ -1,7 +1,7 @@
-﻿using DescrioGames.Core.Observables;
-using DescrioGames.Domain.Characters;
+﻿using Gast.Core.Observables;
+using Gast.Domain.Characters;
 
-namespace DescrioGames.Domain.Interactions
+namespace Gast.Domain.Interactions
 {
     public interface IInteractionSystem
     {

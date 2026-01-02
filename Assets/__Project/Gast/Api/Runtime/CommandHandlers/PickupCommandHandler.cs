@@ -1,10 +1,10 @@
-using DescrioGames.Commands;
-using DescrioGames.Domain.Pickups;
-using DescrioGames.UseCases.Economy;
-using DescrioGames.UseCases.Gathering;
-using DescrioGames.UseCases.Loot;
+using Gast.Commands;
+using Gast.Domain.Pickups;
+using Gast.UseCases.Economy;
+using Gast.UseCases.Gathering;
+using Gast.UseCases.Loot;
 
-namespace DescrioGames.Api.CommandHandlers
+namespace Gast.Api.CommandHandlers
 {
     public class PickupCommandHandler :
         ICommandHandler<PickUpItemCommand, bool>,

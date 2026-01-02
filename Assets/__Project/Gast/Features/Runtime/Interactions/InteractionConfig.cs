@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
-using DescrioGames.Domain.Interactions;
+using Gast.Domain.Interactions;
 
-namespace DescrioGames.Features.Interactions
+namespace Gast.Features.Interactions
 {
     /// <summary>
     /// Default implementation of IInteractionConfig.

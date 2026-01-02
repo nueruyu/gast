@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace DescrioGames.Infrastructure.Settings
+namespace Gast.Infrastructure.Settings
 {
     [CreateAssetMenu(fileName = "ItemDatabase", menuName = "DescrioGames/Economy/Item Database")]
     public class ItemDatabaseSettings : ScriptableObject

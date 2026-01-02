@@ -1,15 +1,15 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Commands;
-using DescrioGames.Core.Commands;
-using DescrioGames.Core.Observables;
-using DescrioGames.Core.Tasks;
-using DescrioGames.Domain.Characters;
+using Gast.Commands;
+using Gast.Core.Commands;
+using Gast.Core.Observables;
+using Gast.Core.Tasks;
+using Gast.Domain.Characters;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace DescrioGames.Features.Loot
+namespace Gast.Features.Loot
 {
     public class LootSystem : ILifecycleTask
     {

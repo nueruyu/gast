@@ -1,17 +1,17 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Core.Observables;
-using DescrioGames.Core.Tasks;
-using DescrioGames.Domain.Cameras;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Interactions;
-using DescrioGames.Domain.Players;
-using DescrioGames.Features.Players;
+using Gast.Core.Observables;
+using Gast.Core.Tasks;
+using Gast.Domain.Cameras;
+using Gast.Domain.Characters;
+using Gast.Domain.Interactions;
+using Gast.Domain.Players;
+using Gast.Features.Players;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace DescrioGames.Features.Gameplay
+namespace Gast.Features.Gameplay
 {
     /// <summary>
     /// Binds player character changes to dependent systems (camera, interactions).

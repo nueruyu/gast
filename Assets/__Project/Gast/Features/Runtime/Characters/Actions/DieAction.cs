@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Features.Characters.Actions
+namespace Gast.Features.Characters.Actions
 {
     /// <summary>
     /// Death action with highest priority (99).

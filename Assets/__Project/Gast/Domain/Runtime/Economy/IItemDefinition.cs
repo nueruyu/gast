@@ -1,4 +1,4 @@
-namespace DescrioGames.Domain.Economy
+namespace Gast.Domain.Economy
 {
     /// <summary>
     /// Item definition data.

@@ -1,9 +1,9 @@
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Pickups;
+using Gast.Domain.Characters;
+using Gast.Domain.Pickups;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace DescrioGames.UseCases.Loot
+namespace Gast.UseCases.Loot
 {
     public class SpawnLootUseCase
     {

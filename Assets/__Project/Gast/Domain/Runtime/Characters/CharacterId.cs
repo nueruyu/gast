@@ -1,6 +1,6 @@
 using System;
 
-namespace DescrioGames.Domain.Characters
+namespace Gast.Domain.Characters
 {
     /// <summary>
     /// Unique identifier for a character instance.

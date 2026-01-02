@@ -1,8 +1,8 @@
 using System;
-using DescrioGames.Core.Observables;
+using Gast.Core.Observables;
 using R3;
 
-namespace DescrioGames.Shared.Observables
+namespace Gast.Shared.Observables
 {
     /// <summary>
     /// Extension methods to bridge Core's ILive&lt;T&gt; and ISignal to R3's Observable.

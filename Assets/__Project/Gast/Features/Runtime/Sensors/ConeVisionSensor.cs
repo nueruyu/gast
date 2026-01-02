@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Sensors;
+using Gast.Domain.Characters;
+using Gast.Domain.Sensors;
 using UnityEngine;
 
-namespace DescrioGames.Features.Sensors
+namespace Gast.Features.Sensors
 {
     public class ConeVisionSensor : MonoBehaviour, IVisionSensor
     {

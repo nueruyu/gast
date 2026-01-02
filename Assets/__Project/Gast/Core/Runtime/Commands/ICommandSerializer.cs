@@ -1,4 +1,4 @@
-namespace DescrioGames.Core.Commands
+namespace Gast.Core.Commands
 {
     /// <summary>
     /// Defines the contract for serializing and deserializing command objects.

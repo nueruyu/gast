@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DescrioGames.Domain.Pickups
+namespace Gast.Domain.Pickups
 {
     public interface IPickupRepository
     {

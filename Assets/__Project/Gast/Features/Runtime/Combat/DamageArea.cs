@@ -1,13 +1,13 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using DescrioGames.Core.Observables;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Combat;
-using DescrioGames.Features.Characters;
+using Gast.Core.Observables;
+using Gast.Domain.Characters;
+using Gast.Domain.Combat;
+using Gast.Features.Characters;
 using UnityEngine;
 
-namespace DescrioGames.Features.Combat
+namespace Gast.Features.Combat
 {
     /// <summary>
     /// Temporary collision detection object for attacks.

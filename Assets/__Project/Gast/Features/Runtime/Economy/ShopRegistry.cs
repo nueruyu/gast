@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace DescrioGames.Features.Economy
+namespace Gast.Features.Economy
 {
     public class ShopRegistry : MonoBehaviour
     {

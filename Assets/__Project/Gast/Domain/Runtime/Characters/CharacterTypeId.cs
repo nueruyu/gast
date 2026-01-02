@@ -1,6 +1,6 @@
 using System;
 
-namespace DescrioGames.Domain.Characters
+namespace Gast.Domain.Characters
 {
     /// <summary>
     /// Identifier for a character type definition (e.g., "soldier", "villager").

@@ -1,8 +1,8 @@
-using DescrioGames.Domain.Characters;
-using DescrioGames.Features.Characters;
+using Gast.Domain.Characters;
+using Gast.Features.Characters;
 using System.Collections.Generic;
 
-namespace DescrioGames.Infrastructure.Repositories
+namespace Gast.Infrastructure.Repositories
 {
     public class CharacterActorRepository : ICharacterActorRepository
     {

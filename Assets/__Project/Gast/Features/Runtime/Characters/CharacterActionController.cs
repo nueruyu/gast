@@ -1,8 +1,8 @@
 using UnityEngine;
-using DescrioGames.Domain.Combat;
-using DescrioGames.Features.Characters.Actions;
+using Gast.Domain.Combat;
+using Gast.Features.Characters.Actions;
 
-namespace DescrioGames.Features.Characters
+namespace Gast.Features.Characters
 {
     /// <summary>
     /// Manages character actions through an ActionRouter.

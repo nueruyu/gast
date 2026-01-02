@@ -1,11 +1,11 @@
-using DescrioGames.Features.Gathering;
-using DescrioGames.Features.Interactions;
-using DescrioGames.Features.Loot;
-using DescrioGames.Features.SpawnSites;
+using Gast.Features.Gathering;
+using Gast.Features.Interactions;
+using Gast.Features.Loot;
+using Gast.Features.SpawnSites;
 using VContainer;
 using VContainer.Unity;
 
-namespace DescrioGames.Composition.Installers
+namespace Gast.Composition.Installers
 {
     public class GameplaySystemInstaller : IInstaller
     {

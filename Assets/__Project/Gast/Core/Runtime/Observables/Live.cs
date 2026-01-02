@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DescrioGames.Core.Observables
+namespace Gast.Core.Observables
 {
     /// <summary>
     /// A property that holds a current value and notifies subscribers when it changes.

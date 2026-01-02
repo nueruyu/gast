@@ -1,8 +1,8 @@
-using DescrioGames.Features.Npcs.Actions;
+using Gast.Features.Npcs.Actions;
 using System;
 using UnityEngine;
 
-namespace DescrioGames.Features.Npcs
+namespace Gast.Features.Npcs
 {
     [Serializable]
     public class SoldierBrainSettings

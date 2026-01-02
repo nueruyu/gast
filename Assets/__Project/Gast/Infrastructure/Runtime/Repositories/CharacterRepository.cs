@@ -1,9 +1,9 @@
-using DescrioGames.Core.Observables;
-using DescrioGames.Domain.Characters;
+using Gast.Core.Observables;
+using Gast.Domain.Characters;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DescrioGames.Infrastructure.Repositories
+namespace Gast.Infrastructure.Repositories
 {
     /// <summary>
     /// In-memory repository for managing runtime character instances.

@@ -3,7 +3,7 @@ using R3;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace DescrioGames.UI.Interactions
+namespace Gast.UI.Interactions
 {
     public class InteractionPromptView : VisualElement
     {

@@ -1,12 +1,12 @@
-using DescrioGames.Commands;
-using DescrioGames.Core.Commands;
-using DescrioGames.Core.Tasks;
-using DescrioGames.Domain.Characters;
+using Gast.Commands;
+using Gast.Core.Commands;
+using Gast.Core.Tasks;
+using Gast.Domain.Characters;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace DescrioGames.Features.Gameplay
+namespace Gast.Features.Gameplay
 {
     /// <summary>
     /// Entry point for game initialization.

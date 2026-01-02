@@ -1,8 +1,8 @@
 using System;
 using System.Threading;
-using DescrioGames.Domain.Characters;
+using Gast.Domain.Characters;
 
-namespace DescrioGames.Lib.AI
+namespace Gast.Lib.AI
 {
     public readonly struct Context<TWorldState> where TWorldState : struct
     {

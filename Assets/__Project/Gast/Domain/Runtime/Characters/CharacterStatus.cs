@@ -1,7 +1,7 @@
 using UnityEngine;
-using DescrioGames.Core.Observables;
+using Gast.Core.Observables;
 
-namespace DescrioGames.Domain.Characters
+namespace Gast.Domain.Characters
 {
     /// <summary>
     /// Manages dynamic character stats (Health, IsAlive).

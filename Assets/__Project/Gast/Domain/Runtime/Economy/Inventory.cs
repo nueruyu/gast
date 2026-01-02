@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using DescrioGames.Core.Observables;
+using Gast.Core.Observables;
 
-namespace DescrioGames.Domain.Economy
+namespace Gast.Domain.Economy
 {
     /// <summary>
     /// Manages item possession state.

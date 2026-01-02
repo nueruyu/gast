@@ -1,8 +1,8 @@
-using DescrioGames.Core.Observables;
-using DescrioGames.Domain.Economy;
+using Gast.Core.Observables;
+using Gast.Domain.Economy;
 using UnityEngine;
 
-namespace DescrioGames.Domain.Pickups
+namespace Gast.Domain.Pickups
 {
     public interface IPickup
     {

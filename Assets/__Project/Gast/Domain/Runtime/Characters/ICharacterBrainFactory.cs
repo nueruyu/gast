@@ -1,4 +1,4 @@
-﻿namespace DescrioGames.Domain.Characters
+﻿namespace Gast.Domain.Characters
 {
     public interface ICharacterBrainFactory
     {

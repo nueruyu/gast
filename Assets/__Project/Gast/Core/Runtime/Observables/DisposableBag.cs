@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DescrioGames.Core.Observables
+namespace Gast.Core.Observables
 {
     /// <summary>
     /// Container for managing multiple IDisposable objects.

@@ -1,15 +1,15 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Commands;
-using DescrioGames.Core.Commands;
-using DescrioGames.Core.Observables;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Features.Characters;
+using Gast.Commands;
+using Gast.Core.Commands;
+using Gast.Core.Observables;
+using Gast.Domain.Characters;
+using Gast.Features.Characters;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-namespace DescrioGames.Features.SpawnSites
+namespace Gast.Features.SpawnSites
 {
     /// <summary>
     /// Scene placement marker for a spawn site.

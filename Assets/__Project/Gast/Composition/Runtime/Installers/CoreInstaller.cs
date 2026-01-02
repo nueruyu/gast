@@ -1,16 +1,16 @@
-using DescrioGames.Api.CommandHandlers;
-using DescrioGames.Core.Commands;
-using DescrioGames.Core.Tasks;
-using DescrioGames.Domain.Inputs;
-using DescrioGames.Features.Cameras;
-using DescrioGames.Features.Gameplay;
-using DescrioGames.Features.Inputs;
-using DescrioGames.Features.Players;
-using DescrioGames.Infrastructure.Services;
+using Gast.Api.CommandHandlers;
+using Gast.Core.Commands;
+using Gast.Core.Tasks;
+using Gast.Domain.Inputs;
+using Gast.Features.Cameras;
+using Gast.Features.Gameplay;
+using Gast.Features.Inputs;
+using Gast.Features.Players;
+using Gast.Infrastructure.Services;
 using VContainer;
 using VContainer.Unity;
 
-namespace DescrioGames.Composition.Installers
+namespace Gast.Composition.Installers
 {
     public class CoreInstaller : IInstaller
     {

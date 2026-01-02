@@ -1,12 +1,12 @@
-using DescrioGames.Core.Commands;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Economy;
-using DescrioGames.Domain.Loot;
-using DescrioGames.Domain.Pickups;
+using Gast.Core.Commands;
+using Gast.Domain.Characters;
+using Gast.Domain.Economy;
+using Gast.Domain.Loot;
+using Gast.Domain.Pickups;
 using System;
 using UnityEngine;
 
-namespace DescrioGames.Commands
+namespace Gast.Commands
 {
     [Serializable]
     public readonly struct SpawnGatheringItemCommand : ICommand<IPickup>

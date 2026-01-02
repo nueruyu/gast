@@ -1,4 +1,4 @@
-namespace DescrioGames.Domain.Economy
+namespace Gast.Domain.Economy
 {
     public interface IItemRepository
     {

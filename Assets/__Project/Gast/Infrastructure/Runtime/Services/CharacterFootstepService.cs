@@ -1,14 +1,14 @@
 using UnityEngine;
-using DescrioGames.Core.Observables;
+using Gast.Core.Observables;
 using Cysharp.Threading.Tasks;
-using DescrioGames.Shared.Observables;
+using Gast.Shared.Observables;
 using R3;
 using System;
-using DisposableBag = DescrioGames.Core.Observables.DisposableBag;
+using DisposableBag = Gast.Core.Observables.DisposableBag;
 using Random = UnityEngine.Random;
-using DescrioGames.Infrastructure.Settings;
+using Gast.Infrastructure.Settings;
 
-namespace DescrioGames.Features.Characters.Audios
+namespace Gast.Features.Characters.Audios
 {
     public class CharacterFootstepService : IDisposable
     {

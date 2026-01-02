@@ -1,10 +1,10 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Features.Characters;
-using DescrioGames.Features.Combat.Methods;
+using Gast.Features.Characters;
+using Gast.Features.Combat.Methods;
 using R3;
 using UnityEngine;
 
-namespace DescrioGames.Features.Combat.MethodSettings
+namespace Gast.Features.Combat.MethodSettings
 {
     /// <summary>
     /// Configuration for melee attack behavior.

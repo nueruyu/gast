@@ -1,7 +1,7 @@
-using DescrioGames.Domain.Economy;
+using Gast.Domain.Economy;
 using UnityEngine;
 
-namespace DescrioGames.Domain.Pickups
+namespace Gast.Domain.Pickups
 {
     public interface IPickupFactory
     {

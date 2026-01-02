@@ -1,14 +1,14 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Commands;
-using DescrioGames.Core.Commands;
-using DescrioGames.Core.Observables;
-using DescrioGames.Domain.Pickups;
-using DescrioGames.Features.Economy;
+using Gast.Commands;
+using Gast.Core.Commands;
+using Gast.Core.Observables;
+using Gast.Domain.Pickups;
+using Gast.Features.Economy;
 using System;
 using System.Threading;
 using UnityEngine;
 
-namespace DescrioGames.Features.Gathering
+namespace Gast.Features.Gathering
 {
     /// <summary>
     /// Represents a location where items can be gathered.

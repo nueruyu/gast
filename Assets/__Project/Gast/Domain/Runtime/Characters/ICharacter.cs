@@ -1,11 +1,11 @@
-using DescrioGames.Core.Observables;
-using DescrioGames.Domain.AI;
-using DescrioGames.Domain.Combat;
-using DescrioGames.Domain.Economy;
-using DescrioGames.Domain.Sensors;
+using Gast.Core.Observables;
+using Gast.Domain.AI;
+using Gast.Domain.Combat;
+using Gast.Domain.Economy;
+using Gast.Domain.Sensors;
 using UnityEngine;
 
-namespace DescrioGames.Domain.Characters
+namespace Gast.Domain.Characters
 {
     /// <summary>
     /// Interface representing a character entity in the game world.

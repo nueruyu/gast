@@ -1,10 +1,10 @@
-using DescrioGames.Domain.Characters;
-using DescrioGames.Features.Npcs;
-using DescrioGames.Infrastructure.Settings;
+using Gast.Domain.Characters;
+using Gast.Features.Npcs;
+using Gast.Infrastructure.Settings;
 using System;
 using System.Collections.Generic;
 
-namespace DescrioGames.Infrastructure.Factories
+namespace Gast.Infrastructure.Factories
 {
     public class CharacterBrainFactory : ICharacterBrainFactory
     {

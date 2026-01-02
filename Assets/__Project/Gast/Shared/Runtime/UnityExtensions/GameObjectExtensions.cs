@@ -1,7 +1,7 @@
-using DescrioGames.Shared.Exceptions;
+using Gast.Shared.Exceptions;
 using UnityEngine;
 
-namespace DescrioGames.Shared.UnityExtensions
+namespace Gast.Shared.UnityExtensions
 {
     public static class GameObjectExtensions
     {

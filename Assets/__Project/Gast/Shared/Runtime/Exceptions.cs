@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ApplicationException = DescrioGames.Core.Exceptions.ApplicationException;
+using ApplicationException = Gast.Core.Exceptions.ApplicationException;
 
-namespace DescrioGames.Shared.Exceptions
+namespace Gast.Shared.Exceptions
 {
     public class ComponentNotFoundException : ApplicationException
     {

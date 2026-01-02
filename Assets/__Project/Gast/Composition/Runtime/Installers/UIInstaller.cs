@@ -1,11 +1,11 @@
-using DescrioGames.UI;
-using DescrioGames.UI.Hud;
-using DescrioGames.UI.Interactions;
-using DescrioGames.UI.Root;
+using Gast.UI;
+using Gast.UI.Hud;
+using Gast.UI.Interactions;
+using Gast.UI.Root;
 using VContainer;
 using VContainer.Unity;
 
-namespace DescrioGames.Composition.Installers
+namespace Gast.Composition.Installers
 {
     public class UIInstaller : IInstaller
     {

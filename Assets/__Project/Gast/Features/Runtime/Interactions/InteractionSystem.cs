@@ -2,16 +2,16 @@ using System;
 using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-using DescrioGames.Core.Tasks;
-using DescrioGames.Core.Observables;
-using DescrioGames.Domain.Interactions;
+using Gast.Core.Tasks;
+using Gast.Core.Observables;
+using Gast.Domain.Interactions;
 using System.Threading.Tasks;
-using DescrioGames.Features.Characters;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Shared.Observables;
+using Gast.Features.Characters;
+using Gast.Domain.Characters;
+using Gast.Shared.Observables;
 using R3;
 
-namespace DescrioGames.Features.Interactions
+namespace Gast.Features.Interactions
 {
     /// <summary>
     /// Detects nearby interactable objects and manages interaction state.

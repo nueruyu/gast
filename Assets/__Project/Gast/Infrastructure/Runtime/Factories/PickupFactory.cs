@@ -1,12 +1,12 @@
-using DescrioGames.Core.Commands;
-using DescrioGames.Domain.Economy;
-using DescrioGames.Domain.Pickups;
-using DescrioGames.Features.Pickups;
-using DescrioGames.Infrastructure.Settings;
+using Gast.Core.Commands;
+using Gast.Domain.Economy;
+using Gast.Domain.Pickups;
+using Gast.Features.Pickups;
+using Gast.Infrastructure.Settings;
 using System;
 using UnityEngine;
 
-namespace DescrioGames.Infrastructure.Factories
+namespace Gast.Infrastructure.Factories
 {
     public class PickupFactory : IPickupFactory
     {

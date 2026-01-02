@@ -1,6 +1,6 @@
-using DescrioGames.Domain.Economy;
+using Gast.Domain.Economy;
 
-namespace DescrioGames.Domain.Loot
+namespace Gast.Domain.Loot
 {
     public interface ILootTableEntry
     {

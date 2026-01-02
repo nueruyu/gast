@@ -1,12 +1,12 @@
-using DescrioGames.Domain.Players;
-using DescrioGames.Shared.Observables;
+using Gast.Domain.Players;
+using Gast.Shared.Observables;
 using R3;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace DescrioGames.UI.Hud
+namespace Gast.UI.Hud
 {
     /// <summary>
     /// ViewModel for the game HUD that processes character status data for UI presentation.

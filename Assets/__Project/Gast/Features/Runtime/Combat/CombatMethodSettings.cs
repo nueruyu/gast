@@ -1,7 +1,7 @@
-using DescrioGames.Features.Characters;
+using Gast.Features.Characters;
 using UnityEngine;
 
-namespace DescrioGames.Features.Combat
+namespace Gast.Features.Combat
 {
     public abstract class CombatMethodSettings : ScriptableObject
     {

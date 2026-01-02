@@ -1,8 +1,8 @@
-using DescrioGames.Domain.AI;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Sensors;
+using Gast.Domain.AI;
+using Gast.Domain.Characters;
+using Gast.Domain.Sensors;
 
-namespace DescrioGames.Features.Characters
+namespace Gast.Features.Characters
 {
     public record CharacterContext(
         CharacterId Id,

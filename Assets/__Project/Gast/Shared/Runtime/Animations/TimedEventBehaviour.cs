@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DescrioGames.Shared.Animations
+namespace Gast.Shared.Animations
 {
     /// <summary>
     /// StateMachineBehaviour that triggers events at specified timings during animation playback.

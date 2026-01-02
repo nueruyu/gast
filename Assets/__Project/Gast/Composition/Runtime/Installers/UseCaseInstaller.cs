@@ -1,11 +1,11 @@
-using DescrioGames.UseCases.Characters;
-using DescrioGames.UseCases.Economy;
-using DescrioGames.UseCases.Gathering;
-using DescrioGames.UseCases.Loot;
+using Gast.UseCases.Characters;
+using Gast.UseCases.Economy;
+using Gast.UseCases.Gathering;
+using Gast.UseCases.Loot;
 using VContainer;
 using VContainer.Unity;
 
-namespace DescrioGames.Composition.Installers
+namespace Gast.Composition.Installers
 {
     public class UseCaseInstaller : IInstaller
     {

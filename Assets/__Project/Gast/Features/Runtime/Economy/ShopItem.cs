@@ -1,13 +1,13 @@
 using UnityEngine;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Economy;
-using DescrioGames.Features.Interactions;
+using Gast.Domain.Characters;
+using Gast.Domain.Economy;
+using Gast.Features.Interactions;
 using Cysharp.Threading.Tasks;
-using DescrioGames.Features.Characters;
+using Gast.Features.Characters;
 using System;
-using DescrioGames.Core.Observables;
+using Gast.Core.Observables;
 
-namespace DescrioGames.Features.Economy
+namespace Gast.Features.Economy
 {
     [RequireComponent(typeof(Interactable))]
     public class ShopItem : MonoBehaviour

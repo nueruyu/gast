@@ -1,11 +1,11 @@
-using DescrioGames.Features.Characters.Audios;
-using DescrioGames.Features.Combat;
-using DescrioGames.Infrastructure.Factories;
-using DescrioGames.Infrastructure.Repositories;
+using Gast.Features.Characters.Audios;
+using Gast.Features.Combat;
+using Gast.Infrastructure.Factories;
+using Gast.Infrastructure.Repositories;
 using VContainer;
 using VContainer.Unity;
 
-namespace DescrioGames.Composition.Installers
+namespace Gast.Composition.Installers
 {
     public class CharacterInstaller : IInstaller
     {

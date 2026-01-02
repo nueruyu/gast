@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Domain.Inputs
+namespace Gast.Domain.Inputs
 {
     /// <summary>
     /// Provides input data for gameplay systems.

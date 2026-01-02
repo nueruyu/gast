@@ -1,9 +1,9 @@
 using UnityEngine;
-using DescrioGames.Domain.Characters;
-using DescrioGames.Domain.Combat;
-using DescrioGames.Features.Combat;
+using Gast.Domain.Characters;
+using Gast.Domain.Combat;
+using Gast.Features.Combat;
 
-namespace DescrioGames.Features.Characters.Actions
+namespace Gast.Features.Characters.Actions
 {
     /// <summary>
     /// Attack action that stops movement and executes the attack method.

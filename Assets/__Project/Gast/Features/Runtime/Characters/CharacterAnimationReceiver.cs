@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
-using DescrioGames.Core.Observables;
-using DescrioGames.Shared.Animations;
+using Gast.Core.Observables;
+using Gast.Shared.Animations;
 
-namespace DescrioGames.Features.Characters
+namespace Gast.Features.Characters
 {
     /// <summary>
     /// Receives animation events from StateMachineBehaviours and exposes them as C# events.

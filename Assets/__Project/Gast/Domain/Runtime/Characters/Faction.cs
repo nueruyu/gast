@@ -1,4 +1,4 @@
-namespace DescrioGames.Domain.Characters
+namespace Gast.Domain.Characters
 {
     /// <summary>
     /// Represents a character's faction affiliation.

@@ -1,6 +1,6 @@
 using System;
 
-namespace DescrioGames.Domain.Pickups
+namespace Gast.Domain.Pickups
 {
     public readonly struct PickupId : IEquatable<PickupId>
     {

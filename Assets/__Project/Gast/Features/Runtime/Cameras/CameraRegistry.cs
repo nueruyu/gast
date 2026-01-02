@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Features.Cameras
+namespace Gast.Features.Cameras
 {
     public class CameraRegistry : MonoBehaviour
     {

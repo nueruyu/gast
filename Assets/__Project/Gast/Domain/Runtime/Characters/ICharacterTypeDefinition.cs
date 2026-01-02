@@ -1,6 +1,6 @@
-using DescrioGames.Domain.Loot;
+using Gast.Domain.Loot;
 
-namespace DescrioGames.Domain.Characters
+namespace Gast.Domain.Characters
 {
     /// <summary>
     /// Definition data for a character type (e.g., soldier, villager).

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DescrioGames.Features.Combat
+namespace Gast.Features.Combat
 {
     /// <summary>
     /// Service for managing combat feedback effects (VFX and SFX).

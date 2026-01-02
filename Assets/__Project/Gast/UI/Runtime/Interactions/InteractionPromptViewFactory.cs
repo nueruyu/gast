@@ -1,7 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace DescrioGames.UI.Interactions
+namespace Gast.UI.Interactions
 {
     public class InteractionPromptViewFactory
     {

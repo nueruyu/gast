@@ -1,12 +1,12 @@
 using Cysharp.Threading.Tasks;
-using DescrioGames.Core.Commands;
-using DescrioGames.Core.Tasks;
+using Gast.Core.Commands;
+using Gast.Core.Tasks;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace DescrioGames.Features.Gathering
+namespace Gast.Features.Gathering
 {
     /// <summary>
     /// System that manages all gathering spots in the scene.

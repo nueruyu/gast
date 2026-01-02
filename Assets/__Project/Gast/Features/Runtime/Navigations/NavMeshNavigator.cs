@@ -1,8 +1,8 @@
-using DescrioGames.Domain.AI;
+using Gast.Domain.AI;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace DescrioGames.Features.Navigations
+namespace Gast.Features.Navigations
 {
     [RequireComponent(typeof(NavMeshAgent))]
     public class NavMeshNavigator : MonoBehaviour, INavigationProvider
