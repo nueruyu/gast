@@ -19,6 +19,9 @@ namespace Gast.Composition.Installers
             builder.Register<GameHudViewModel>(Lifetime.Singleton);
             builder.Register<GameHudViewFactory>(Lifetime.Singleton);
 
+            builder.Register<MenuViewModel>(Lifetime.Singleton);
+            builder.Register<MenuViewFactory>(Lifetime.Singleton);
+
             builder.Register<InteractionPromptViewModel>(Lifetime.Singleton);
             builder.Register<InteractionPromptViewFactory>(Lifetime.Singleton);
 

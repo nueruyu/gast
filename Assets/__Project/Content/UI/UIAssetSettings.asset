@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gast.UI::Gast.UI.Root.UIAssetSettings
   gameRootView: {fileID: 9197481963319205126, guid: 2e00c26648d3fab489016fb4c8453fd0, type: 3}
   gameHudView: {fileID: 9197481963319205126, guid: 1a5565e4c785bb943a41eff142f5f2aa, type: 3}
+  menuView: {fileID: 9197481963319205126, guid: 768d9a1ea10633144aaadf1e1e8b6663, type: 3}
   interactionPromptView: {fileID: 9197481963319205126, guid: 78957609e947f8d44b67db9c9419bcf7, type: 3}

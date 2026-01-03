@@ -1,5 +1,7 @@
 using System;
+using Gast.Shared.UnityExtensions;
 using R3;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Gast.UI.Hud
@@ -27,6 +29,9 @@ namespace Gast.UI.Hud
         public GameHudView(VisualTreeAsset asset)
         {
             asset.CloneTree(this);
+
+            focusable = true;
+            //tabIndex = -1; // Prevent focusing via keyboard navigation
 
             hpFill = this.Q<VisualElement>(HpFillName);
             hpLabel = this.Q<Label>(HpLabelName);
@@ -75,6 +80,16 @@ namespace Gast.UI.Hud
                     }
                 })
                 .AddTo(disposables);
+
+            this.SubscribeEvent<FocusInEvent>(evt =>
+            {
+                viewModel.SetFocus(true);
+            }).AddTo(disposables);
+            
+            this.SubscribeEvent<FocusOutEvent>(evt =>
+            {
+                viewModel.SetFocus(false);
+            }).AddTo(disposables);
 
             return disposables;
         }

@@ -97,7 +97,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "MenuToggle",
+                    "name": "ShowMenu",
                     "type": "Button",
                     "id": "1ced0205-098f-45a0-a131-d7e66d508b4e",
                     "expectedControlType": "",
@@ -521,7 +521,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "MenuToggle",
+                    "action": "ShowMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -1038,6 +1038,34 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Menu",
+            "id": "091ca3e9-91d3-4a87-aaca-43f1a1df83fb",
+            "actions": [
+                {
+                    "name": "HideMenu",
+                    "type": "Button",
+                    "id": "c20ec31b-7e37-4c4d-9d4b-09e321f5488a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "297057b7-b775-4e6e-9637-7190fb3a887e",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "HideMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

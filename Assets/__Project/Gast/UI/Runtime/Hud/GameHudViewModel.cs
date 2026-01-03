@@ -1,3 +1,4 @@
+using Gast.Domain.Inputs;
 using Gast.Domain.Players;
 using Gast.Shared.Observables;
 using R3;
@@ -14,12 +15,14 @@ namespace Gast.UI.Hud
     public class GameHudViewModel : IDisposable
     {
         readonly CompositeDisposable disposables = new();
+        readonly ReactiveProperty<bool> hasFocus = new(false);
 
         public ReadOnlyReactiveProperty<float> HpRatio { get; }
         public ReadOnlyReactiveProperty<string> HpText { get; }
         public ReadOnlyReactiveProperty<bool> IsVisible { get; }
         public ReadOnlyReactiveProperty<int> CurrentMoney { get; }
         public ReadOnlyReactiveProperty<IReadOnlyList<ItemStackViewModel>> InventoryItems { get; }
+        public ReadOnlyReactiveProperty<bool> HasFocus => hasFocus;
 
         public GameHudViewModel(
             IPlayerManager playerManager,
@@ -98,6 +101,11 @@ namespace Gast.UI.Hud
                 .Switch()
                 .ToReadOnlyReactiveProperty()
                 .AddTo(disposables);
+        }
+
+        public void SetFocus(bool hasFocus)
+        {
+            this.hasFocus.Value = hasFocus;
         }
 
         public void Dispose()

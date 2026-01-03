@@ -9,16 +9,25 @@ namespace Gast.UI
         [Header("Root")]
         [SerializeField]
         VisualTreeAsset gameRootView;
+
         public VisualTreeAsset GameRootView => gameRootView;
 
         [Header("HUD")]
         [SerializeField]
         VisualTreeAsset gameHudView;
+
         public VisualTreeAsset GameHudView => gameHudView;
+
+        [Header("Menu")]
+        [SerializeField]
+        VisualTreeAsset menuView;
+
+        public VisualTreeAsset MenuView => menuView;
 
         [Header("Interaction")]
         [SerializeField]
         VisualTreeAsset interactionPromptView;
+
         public VisualTreeAsset InteractionPromptView => interactionPromptView;
     }
 }

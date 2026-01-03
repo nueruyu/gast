@@ -9,32 +9,30 @@ namespace Gast.UI.System
 {
     public class CursorController : ILifecycleTask
     {
-        readonly IInputProvider inputProvider;
-        bool isCursorLocked = true;
+        readonly IInputModeManager inputModeManager;
 
-        public CursorController(IInputProvider inputProvider)
+        public CursorController(IInputModeManager inputModeManager)
         {
-            this.inputProvider = inputProvider;
+            this.inputModeManager = inputModeManager;
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            SetCursorState(true);
-
-            while (!cancellationToken.IsCancellationRequested)
+            inputModeManager.CurrentMode.SubscribeWithCurrent(mode =>
             {
-                if (inputProvider.MenuToggle)
+                switch (mode)
                 {
-                    ToggleCursorState();
-                }
-                await UniTask.Yield(cancellationToken);
-            }
-        }
+                    case InputMode.Gameplay:
+                        SetCursorState(true);
+                        break;
 
-        void ToggleCursorState()
-        {
-            isCursorLocked = !isCursorLocked;
-            SetCursorState(isCursorLocked);
+                    default:
+                        SetCursorState(false);
+                        break;
+                }
+            }).AddTo(cancellationToken);
+
+            await UniTask.WaitUntilCanceled(cancellationToken);
         }
 
         void SetCursorState(bool locked)

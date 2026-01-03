@@ -8,6 +8,7 @@
         "Gast.Domain",
         "Gast.UseCases",
         "Gast.Features",
+        "Gast.UI",
         "Gast.Shared",
         "UniTask",
         "R3.Unity",

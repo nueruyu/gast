@@ -61,20 +61,21 @@ namespace Gast.Features.Cameras
 
         void LateUpdate()
         {
-            if (Application.isPlaying)
-            {
-                UpdateCameraTransform();
-            }
+            if (!Application.isPlaying)
+                return;
+            UpdateCameraTransform();
         }
 
         void OnValidate()
         {
-            if (Application.isPlaying)
-            {
-                UpdateCameraTransform();
-                UpdateLookAtOffset();
-                UpdateDamping();
-            }
+            if (!Application.isPlaying)
+                return;
+            if (!virtualCamera)
+                return;
+
+            UpdateCameraTransform();
+            UpdateLookAtOffset();
+            UpdateDamping();
         }
 
         public void Rotate(Vector2 delta)
