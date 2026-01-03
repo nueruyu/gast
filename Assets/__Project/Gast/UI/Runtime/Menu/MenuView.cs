@@ -9,7 +9,7 @@ namespace Gast.UI.Interactions
         public MenuView(VisualTreeAsset asset)
         {
             asset.CloneTree(this);
-            //focusable = true;
+            focusable = true;
         }
 
         public IDisposable Bind(MenuViewModel viewModel)
@@ -22,10 +22,10 @@ namespace Gast.UI.Interactions
                     var display = visible ? DisplayStyle.Flex : DisplayStyle.None;
                     style.display = display;
 
-                    //if (visible)
-                    //{
-                    //    Focus();
-                    //}
+                    if (visible)
+                    {
+                        Focus();
+                    }
                 })
                 .AddTo(disposables);
 

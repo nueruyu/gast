@@ -42,7 +42,7 @@ namespace Gast.UI
             rootView.MenuLayer.Add(menuView);
 
             var interactionPromptView = interactionPromptViewFactory.Create(cancellationToken);
-            rootView.DialogLayer.Add(interactionPromptView);
+            rootView.HudLayer.Add(interactionPromptView);
 
             return Task.CompletedTask;
         }

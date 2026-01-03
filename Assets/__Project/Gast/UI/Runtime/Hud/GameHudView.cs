@@ -31,7 +31,7 @@ namespace Gast.UI.Hud
             asset.CloneTree(this);
 
             focusable = true;
-            //tabIndex = -1; // Prevent focusing via keyboard navigation
+            tabIndex = -1; // Prevent focusing via keyboard navigation
 
             hpFill = this.Q<VisualElement>(HpFillName);
             hpLabel = this.Q<Label>(HpLabelName);
@@ -88,7 +88,11 @@ namespace Gast.UI.Hud
             
             this.SubscribeEvent<FocusOutEvent>(evt =>
             {
-                viewModel.SetFocus(false);
+                if (evt.relatedTarget is VisualElement target && 
+                    !Contains(target))
+                {
+                    viewModel.SetFocus(false);
+                }
             }).AddTo(disposables);
 
             return disposables;

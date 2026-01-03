@@ -9,10 +9,9 @@ namespace Gast.UI.Interactions
         readonly CompositeDisposable disposables = new();
         readonly ReactiveProperty<bool> visible = new(false);
 
-        public ReadOnlyReactiveProperty<bool> Visible { get; }
+        public ReadOnlyReactiveProperty<bool> Visible => visible;
 
         public MenuViewModel(
-            IInputModeManager inputModeManager,
             IInputProvider inputProvider)
         {
             inputProvider.ShowMenu
@@ -27,10 +26,6 @@ namespace Gast.UI.Interactions
                 {
                     visible.Value = false;
                 })
-                .AddTo(disposables);
-
-            Visible = visible
-                .ToReadOnlyReactiveProperty()
                 .AddTo(disposables);
         }
 
