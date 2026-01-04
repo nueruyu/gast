@@ -4,7 +4,8 @@
     "references": [
         "Gast.Core",
         "UniTask",
-        "R3.Unity"
+        "R3.Unity",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
