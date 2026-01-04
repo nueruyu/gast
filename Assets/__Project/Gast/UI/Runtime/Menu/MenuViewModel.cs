@@ -2,7 +2,7 @@ using Gast.Domain.Inputs;
 using R3;
 using System;
 
-namespace Gast.UI.Interactions
+namespace Gast.UI.Menu
 {
     public class MenuViewModel : IDisposable
     {

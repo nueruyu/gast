@@ -7,6 +7,7 @@ using Gast.Features.Gameplay;
 using Gast.Features.Inputs;
 using Gast.Features.Players;
 using Gast.Infrastructure.Services;
+using Gast.UI.System;
 using VContainer;
 using VContainer.Unity;
 

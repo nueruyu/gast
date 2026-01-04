@@ -107,7 +107,7 @@ namespace Gast.Features.Inputs
             finally
             {
                 playerActionMap.Disable();
-                hideMenuAction.Disable();
+                menuActionMap.Disable();
             }
         }
 
