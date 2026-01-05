@@ -6,6 +6,7 @@
         "Gast.Domain",
         "Gast.Commands",
         "Gast.Shared",
+        "Gast.UseCases",
         "Unity.TextMeshPro",
         "Unity.InputSystem",
         "UniTask",

@@ -1,7 +1,9 @@
 using Gast.Api.CommandHandlers;
 using Gast.Core.Commands;
+using Gast.Core.Events;
 using Gast.Core.Tasks;
 using Gast.Domain.Inputs;
+using Gast.Domain.Npcs;
 using Gast.Features.Cameras;
 using Gast.Features.Gameplay;
 using Gast.Features.Inputs;
@@ -24,6 +26,13 @@ namespace Gast.Composition.Installers
             builder.Register<CharacterCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<EconomyCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<PickupCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
+
+            // Domain Event System
+            builder.Register<DomainEventPublisher>(Lifetime.Singleton)
+                .As<IDomainEventPublisher, IDomainEventSubscriber>();
+
+            // AI Server Client
+            builder.Register<AIAgentService>(Lifetime.Singleton).As<IAIAgentService>();
 
             // Input system
             builder.Register<InputReader>(Lifetime.Singleton).AsImplementedInterfaces();

@@ -1,24 +1,26 @@
-using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gast.UI.Command;
 
 namespace Gast.UI.Hud
 {
     public class GameHudViewFactory
     {
-        readonly GameHudViewModel viewModel;
+        readonly GameHudViewModel hudViewModel;
+        readonly CommandViewModel commandViewModel;
         readonly UIAssetSettings assetSettings;
 
-        public GameHudViewFactory(GameHudViewModel viewModel, UIAssetSettings assetSettings)
+        public GameHudViewFactory(GameHudViewModel hudViewModel, CommandViewModel commandViewModel, UIAssetSettings assetSettings)
         {
-            this.viewModel = viewModel;
+            this.hudViewModel = hudViewModel;
+            this.commandViewModel = commandViewModel;
             this.assetSettings = assetSettings;
         }
 
         public GameHudView Create(CancellationToken cancellationToken)
         {
             var view = new GameHudView(assetSettings.GameHudView);
-            view.Bind(viewModel).AddTo(cancellationToken);
+            view.Bind(hudViewModel, commandViewModel).AddTo(cancellationToken);
             return view;
         }
     }

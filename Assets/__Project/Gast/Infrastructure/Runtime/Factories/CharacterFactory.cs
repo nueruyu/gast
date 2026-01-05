@@ -11,6 +11,7 @@ using UnityEngine;
 using Gast.Features.Combat;
 using Gast.Features.Characters.Audios;
 using Gast.Shared.UnityExtensions;
+using Gast.Core.Events;
 
 namespace Gast.Infrastructure.Factories
 {
@@ -23,17 +24,20 @@ namespace Gast.Infrastructure.Factories
         readonly ICharacterActorRepository characterActorRepository;
         readonly CharacterFootstepService footstepService;
         readonly ICombatMethodFactory combatMethodFactory;
+        readonly IDomainEventPublisher eventPublisher;
 
         public CharacterFactory(
             CharacterTypeRepository typeRepository,
             ICharacterActorRepository characterActorRepository,
             CharacterFootstepService footstepService,
-            ICombatMethodFactory combatMethodFactory)
+            ICombatMethodFactory combatMethodFactory,
+            IDomainEventPublisher eventPublisher)
         {
             this.typeRepository = typeRepository ?? throw new ArgumentNullException(nameof(typeRepository));
             this.characterActorRepository = characterActorRepository ?? throw new ArgumentNullException(nameof(characterActorRepository));
             this.footstepService = footstepService ?? throw new ArgumentNullException(nameof(footstepService));
             this.combatMethodFactory = combatMethodFactory ?? throw new ArgumentNullException(nameof(combatMethodFactory));
+            this.eventPublisher = eventPublisher ?? throw new ArgumentNullException(nameof(eventPublisher));
         }
 
         public ICharacter Create(CharacterTypeId typeId, Vector3 position, Quaternion rotation, Faction faction)
@@ -64,7 +68,8 @@ namespace Gast.Infrastructure.Factories
                 actionController,
                 status,
                 wallet,
-                inventory);
+                inventory,
+                eventPublisher);
 
             characterActorRepository.Register(character);
             footstepService.Register(context, definition.FootstepSettings);

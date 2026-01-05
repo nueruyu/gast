@@ -40,6 +40,9 @@ namespace Gast.Composition
         [SerializeField]
         CharacterBrainFactorySettings characterBrainFactorySettings;
 
+        [SerializeField]
+        AIServerSettings aiServerSettings;
+
         [Header("Camera")]
         [SerializeField]
         CameraRegistry cameraRegistry;
@@ -73,6 +76,7 @@ namespace Gast.Composition
             Install(builder, new CoreInstaller());
             Install(builder, new UseCaseInstaller());
             Install(builder, new CharacterInstaller());
+            Install(builder, new AIInstaller());
             Install(builder, new EconomyInstaller());
             Install(builder, new GameplaySystemInstaller());
             Install(builder, new UIInstaller());
@@ -87,6 +91,7 @@ namespace Gast.Composition
             RegisterSetting(builder, pickupSystemSettings, nameof(pickupSystemSettings));
             RegisterSetting(builder, itemDatabase, nameof(itemDatabase));
             RegisterSetting(builder, characterBrainFactorySettings, nameof(characterBrainFactorySettings));
+            RegisterSetting(builder, aiServerSettings, nameof(aiServerSettings));
             RegisterSetting(builder, uiAssetSettings, nameof(uiAssetSettings));
         }
 

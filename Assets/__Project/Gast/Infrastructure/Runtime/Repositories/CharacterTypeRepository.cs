@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Gast.Domain.Characters;
 using Gast.Infrastructure.Settings;
-using UnityEngine;
 
 namespace Gast.Infrastructure.Repositories
 {
@@ -40,6 +39,11 @@ namespace Gast.Infrastructure.Repositories
         ICharacterTypeDefinition ICharacterTypeRepository.Get(CharacterTypeId id)
         {
             return Get(id);
+        }
+
+        public IEnumerable<CharacterTypeDefinition> GetAllDefinitions()
+        {
+            return definitionMap.Values;
         }
     }
 }

@@ -29,5 +29,11 @@ namespace Gast.UI
         VisualTreeAsset interactionPromptView;
 
         public VisualTreeAsset InteractionPromptView => interactionPromptView;
+
+        [Header("Command")]
+        [SerializeField]
+        VisualTreeAsset commandView;
+
+        public VisualTreeAsset CommandView => commandView;
     }
 }

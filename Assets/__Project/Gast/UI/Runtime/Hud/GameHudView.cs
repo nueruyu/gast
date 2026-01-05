@@ -1,5 +1,6 @@
 using System;
 using Gast.Shared.UnityExtensions;
+using Gast.UI.Command;
 using R3;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -21,6 +22,7 @@ namespace Gast.UI.Hud
         readonly VisualElement hpFill;
         readonly Label hpLabel;
         readonly Label moneyLabel;
+        readonly Button commandButton;
         readonly VisualElement inventoryContainer;
 
         /// <summary>
@@ -36,6 +38,7 @@ namespace Gast.UI.Hud
             hpFill = this.Q<VisualElement>(HpFillName);
             hpLabel = this.Q<Label>(HpLabelName);
             moneyLabel = this.Q<Label>(MoneyLabelName);
+            commandButton = this.Q<Button>("CommandButton");
             inventoryContainer = this.Q<VisualElement>(InventoryContainerName);
         }
 
@@ -85,14 +88,29 @@ namespace Gast.UI.Hud
             {
                 viewModel.SetFocus(true);
             }).AddTo(disposables);
-            
+
             this.SubscribeEvent<FocusOutEvent>(evt =>
             {
-                if (evt.relatedTarget is VisualElement target && 
+                if (evt.relatedTarget is VisualElement target &&
                     !Contains(target))
                 {
                     viewModel.SetFocus(false);
                 }
+            }).AddTo(disposables);
+
+            return disposables;
+        }
+
+        /// <summary>
+        /// Binds the view to a ViewModel and CommandViewModel for command button functionality.
+        /// </summary>
+        public IDisposable Bind(GameHudViewModel hudViewModel, CommandViewModel commandViewModel)
+        {
+            var disposables = (CompositeDisposable)Bind(hudViewModel);
+
+            commandButton.SubscribeEvent<ClickEvent>(_ =>
+            {
+                commandViewModel.IsVisible.Value = true;
             }).AddTo(disposables);
 
             return disposables;

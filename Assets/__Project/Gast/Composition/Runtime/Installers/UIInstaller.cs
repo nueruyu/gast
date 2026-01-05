@@ -1,5 +1,6 @@
 using Gast.Core.Tasks;
 using Gast.UI;
+using Gast.UI.Command;
 using Gast.UI.Hud;
 using Gast.UI.Interactions;
 using Gast.UI.Menu;
@@ -25,6 +26,9 @@ namespace Gast.Composition.Installers
 
             builder.Register<InteractionPromptViewModel>(Lifetime.Singleton);
             builder.Register<InteractionPromptViewFactory>(Lifetime.Singleton);
+
+            builder.Register<CommandViewModel>(Lifetime.Singleton);
+            builder.Register<CommandViewFactory>(Lifetime.Singleton);
 
             builder.Register<ItemStackViewModelFactory>(Lifetime.Singleton);
 

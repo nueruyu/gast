@@ -118,5 +118,10 @@ namespace Gast.Domain.Characters
         /// Apply damage and hit reaction to the character.
         /// </summary>
         void TakeDamage(DamageInfo info);
+
+        /// <summary>
+        /// Get the currently attached brain.
+        /// </summary>
+        ICharacterBrain GetBrain();
     }
 }

@@ -4,7 +4,8 @@
     "references": [
         "Gast.Core",
         "Gast.Domain",
-        "Gast.Shared"
+        "Gast.Shared",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

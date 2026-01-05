@@ -1,8 +1,10 @@
+using Gast.Core.Events;
 using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Combat;
 using Gast.Domain.Economy;
+using Gast.Domain.Events;
 using Gast.Domain.Sensors;
 using UnityEngine;
 
@@ -17,6 +19,7 @@ namespace Gast.Features.Characters
         ICharacterTypeDefinition typeDefinition;
         CharacterStatus status;
         ICharacterBrain currentBrain;
+        IDomainEventPublisher eventPublisher;
 
         CharacterActionController actionController;
         CharacterContext context;
@@ -81,7 +84,8 @@ namespace Gast.Features.Characters
             CharacterActionController actionController,
             CharacterStatus status,
             Wallet wallet,
-            Inventory inventory)
+            Inventory inventory,
+            IDomainEventPublisher eventPublisher)
         {
             this.context = context;
             this.typeDefinition = typeDefinition;
@@ -89,6 +93,7 @@ namespace Gast.Features.Characters
             this.status = status;
             Wallet = wallet;
             Inventory = inventory;
+            this.eventPublisher = eventPublisher;
         }
 
         /// <summary>
@@ -203,12 +208,18 @@ namespace Gast.Features.Characters
             {
                 Debug.Log($"[{Id}] Died.");
                 actionController.Die();
+                eventPublisher?.Publish(new CharacterDefeatedEvent(this, info.AttackerId));
             }
             else
             {
                 actionController.TakeHit(info);
             }
         }
+
+        /// <summary>
+        /// Get the currently attached brain.
+        /// </summary>
+        public ICharacterBrain GetBrain() => currentBrain;
 
         void OnDestroy()
         {
