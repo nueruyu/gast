@@ -1,7 +1,7 @@
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 
-namespace Gast.UseCases.Economy
+namespace Gast.Application.UseCases.Economy
 {
     /// <summary>
     /// Use case for purchasing items by spending currency.

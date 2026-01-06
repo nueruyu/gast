@@ -3,7 +3,7 @@ using Gast.Domain.Pickups;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Gast.UseCases.Loot
+namespace Gast.Application.UseCases.Loot
 {
     public class SpawnLootUseCase
     {

@@ -1,12 +1,11 @@
 using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
-using Gast.Domain.Loot;
 using Gast.Domain.Pickups;
 using System;
 using UnityEngine;
 
-namespace Gast.Commands
+namespace Gast.Api.Pickups
 {
     [Serializable]
     public readonly struct SpawnGatheringItemCommand : ICommand<IPickup>

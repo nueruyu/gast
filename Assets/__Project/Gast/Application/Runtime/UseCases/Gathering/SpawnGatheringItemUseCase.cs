@@ -3,7 +3,7 @@ using Gast.Domain.Economy;
 using Gast.Domain.Pickups;
 using UnityEngine;
 
-namespace Gast.UseCases.Gathering
+namespace Gast.Application.UseCases.Gathering
 {
     /// <summary>
     /// Use case for spawning a gathering item (pickup) in the world.

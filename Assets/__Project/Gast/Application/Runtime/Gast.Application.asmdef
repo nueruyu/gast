@@ -1,6 +1,6 @@
 {
-    "name": "Gast.UseCases",
-    "rootNamespace": "Gast.UseCases",
+    "name": "Gast.Application",
+    "rootNamespace": "Gast.Application",
     "references": [
         "Gast.Core",
         "Gast.Domain",

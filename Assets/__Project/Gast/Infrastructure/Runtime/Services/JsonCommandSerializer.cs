@@ -84,7 +84,7 @@ namespace Gast.Infrastructure.Services
 
         static bool IsCommandsAssembly(Assembly assembly)
         {
-            return assembly.FullName.Contains($"{nameof(Gast)}.{nameof(Commands)}");
+            return assembly.FullName.Contains($"{nameof(Gast)}.{nameof(Api)}");
         }
 
         static bool IsCommandType(Type type)

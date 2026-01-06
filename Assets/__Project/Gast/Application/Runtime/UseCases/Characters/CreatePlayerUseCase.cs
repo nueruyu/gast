@@ -2,7 +2,7 @@ using Gast.Domain.Characters;
 using Gast.Domain.Players;
 using UnityEngine;
 
-namespace Gast.UseCases.Characters
+namespace Gast.Application.UseCases.Characters
 {
     /// <summary>
     /// Use case for creating a player-controlled character.

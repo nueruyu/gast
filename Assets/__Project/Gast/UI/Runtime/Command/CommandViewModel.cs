@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Gast.UseCases.Npcs;
+using Gast.Application.UseCases.Npcs;
 using R3;
 using UnityEngine;
 

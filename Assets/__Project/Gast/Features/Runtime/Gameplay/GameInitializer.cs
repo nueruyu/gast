@@ -1,4 +1,4 @@
-using Gast.Commands;
+using Gast.Api.Characters;
 using Gast.Core.Commands;
 using Gast.Core.Tasks;
 using Gast.Domain.Characters;

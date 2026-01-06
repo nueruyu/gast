@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using Gast.Api.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
-using Gast.Domain.Npcs.Goals;
 
 namespace Gast.Features.Npcs
 {

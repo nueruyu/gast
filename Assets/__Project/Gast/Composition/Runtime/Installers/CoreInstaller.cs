@@ -1,13 +1,9 @@
-using Gast.Api.CommandHandlers;
-using Gast.Core.Commands;
-using Gast.Core.Events;
-using Gast.Core.Tasks;
-using Gast.Domain.Inputs;
-using Gast.Domain.Npcs;
+using Gast.Application.CommandHandlers;
 using Gast.Features.Cameras;
 using Gast.Features.Gameplay;
 using Gast.Features.Inputs;
 using Gast.Features.Players;
+using Gast.Infrastructure.Remoting.AI;
 using Gast.Infrastructure.Services;
 using Gast.UI.System;
 using VContainer;
@@ -28,11 +24,10 @@ namespace Gast.Composition.Installers
             builder.Register<PickupCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // Domain Event System
-            builder.Register<DomainEventPublisher>(Lifetime.Singleton)
-                .As<IDomainEventPublisher, IDomainEventSubscriber>();
+            builder.Register<DomainEventPublisher>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // AI Server Client
-            builder.Register<AIAgentService>(Lifetime.Singleton).As<IAIAgentService>();
+            builder.Register<AIAgentService>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // Input system
             builder.Register<InputReader>(Lifetime.Singleton).AsImplementedInterfaces();

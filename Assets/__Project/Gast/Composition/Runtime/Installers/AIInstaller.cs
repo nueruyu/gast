@@ -1,5 +1,5 @@
+using Gast.Application.UseCases.Npcs;
 using Gast.Features.Npcs;
-using Gast.UseCases.Npcs;
 using VContainer;
 using VContainer.Unity;
 

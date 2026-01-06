@@ -4,12 +4,11 @@
     "references": [
         "Gast.Core",
         "Gast.Domain",
+        "Gast.Application",
+        "Gast.Api",
         "Gast.Shared",
-        "Gast.UseCases",
-        "Gast.Commands",
         "Gast.Features",
         "Gast.UI",
-        "Gast.Api",
         "Gast.Infrastructure",
         "VContainer",
         "UniTask"

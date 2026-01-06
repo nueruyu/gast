@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Gast.Domain.Npcs.Goals;
+using Gast.Api.AI;
 
-namespace Gast.Domain.Npcs
+namespace Gast.Application.Services
 {
     /// <summary>
     /// Interface for AI server communication.

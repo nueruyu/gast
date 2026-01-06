@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using Gast.Domain.Npcs.Goals;
 
-namespace Gast.Domain.Npcs
+namespace Gast.Api.AI
 {
     /// <summary>
     /// Interface for brain components that can receive goal assignments.

@@ -3,7 +3,7 @@ using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using UnityEngine;
 
-namespace Gast.Commands
+namespace Gast.Api.Characters
 {
     [Serializable]
     public readonly struct CreatePlayerCommand : ICommand<ICharacter>

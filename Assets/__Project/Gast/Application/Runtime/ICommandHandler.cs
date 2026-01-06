@@ -1,6 +1,6 @@
 using Gast.Core.Commands;
 
-namespace Gast.Api
+namespace Gast.Application
 {
     /// <summary>
     /// Defines a handler for a command that does not return a value.

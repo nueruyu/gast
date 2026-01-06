@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gast.Infrastructure.Settings
+namespace Gast.Infrastructure.Remoting.AI
 {
     [CreateAssetMenu(fileName = "AIServerSettings", menuName = "Gast/AI/Server Settings")]
     public class AIServerSettings : ScriptableObject

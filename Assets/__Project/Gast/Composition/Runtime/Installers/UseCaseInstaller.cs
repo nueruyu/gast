@@ -1,7 +1,7 @@
-using Gast.UseCases.Characters;
-using Gast.UseCases.Economy;
-using Gast.UseCases.Gathering;
-using Gast.UseCases.Loot;
+using Gast.Application.UseCases.Characters;
+using Gast.Application.UseCases.Economy;
+using Gast.Application.UseCases.Gathering;
+using Gast.Application.UseCases.Loot;
 using VContainer;
 using VContainer.Unity;
 

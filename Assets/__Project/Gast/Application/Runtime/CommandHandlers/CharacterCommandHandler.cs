@@ -1,8 +1,8 @@
-using Gast.Commands;
+using Gast.Api.Characters;
+using Gast.Application.UseCases.Characters;
 using Gast.Domain.Characters;
-using Gast.UseCases.Characters;
 
-namespace Gast.Api.CommandHandlers
+namespace Gast.Application.CommandHandlers
 {
     public class CharacterCommandHandler :
         ICommandHandler<CreatePlayerCommand, ICharacter>,

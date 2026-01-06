@@ -1,11 +1,10 @@
 using Cysharp.Threading.Tasks;
+using Gast.Api.AI;
+using Gast.Api.AI.Goals;
+using Gast.Application.Services;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
-using Gast.Domain.Npcs;
-using Gast.Domain.Npcs.Goals;
-using Gast.Infrastructure.Remoting;
 using Gast.Infrastructure.Repositories;
-using Gast.Infrastructure.Settings;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Gast.Infrastructure.Services
+namespace Gast.Infrastructure.Remoting.AI
 {
     public class AIAgentService : IAIAgentService
     {
@@ -45,7 +44,7 @@ namespace Gast.Infrastructure.Services
                 httpResponse.EnsureSuccessStatusCode();
 
                 var responseJson = await httpResponse.Content.ReadAsStringAsync();
-                var responseDto = JsonConvert.DeserializeObject<AiResponse>(responseJson);
+                var responseDto = JsonConvert.DeserializeObject<AIResponse>(responseJson);
 
                 return ParseGoals(responseDto);
             }
@@ -56,7 +55,7 @@ namespace Gast.Infrastructure.Services
             }
         }
 
-        AiRequest CreateRequestDto(string instruction)
+        AIRequest CreateRequestDto(string instruction)
         {
             var characterTypes = characterTypeRepository.GetAllDefinitions()
                 .Select(def => new CharacterTypeDto { Id = def.TypeId.ToString(), Name = def.DisplayName })
@@ -66,7 +65,7 @@ namespace Gast.Infrastructure.Services
                 .Select(def => new ItemDto { Id = def.Id.ToString(), Name = def.Name })
                 .ToList();
 
-            return new AiRequest
+            return new AIRequest
             {
                 Instruction = instruction,
                 CharacterTypes = characterTypes,
@@ -74,7 +73,7 @@ namespace Gast.Infrastructure.Services
             };
         }
 
-        List<IGoal> ParseGoals(AiResponse response)
+        List<IGoal> ParseGoals(AIResponse response)
         {
             var goals = new List<IGoal>();
             if (response?.Output?.Goals == null)

@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gast.Api.AI;
+using Gast.Api.AI.Goals;
 using Gast.Core.Events;
 using Gast.Domain.Events;
-using Gast.Domain.Npcs.Goals;
 using R3;
 
 namespace Gast.Features.Npcs

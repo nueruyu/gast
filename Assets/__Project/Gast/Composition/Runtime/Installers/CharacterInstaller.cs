@@ -1,7 +1,7 @@
-using Gast.Features.Characters.Audios;
 using Gast.Features.Combat;
 using Gast.Infrastructure.Factories;
 using Gast.Infrastructure.Repositories;
+using Gast.Infrastructure.Services;
 using VContainer;
 using VContainer.Unity;
 

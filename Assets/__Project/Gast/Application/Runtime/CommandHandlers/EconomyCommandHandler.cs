@@ -1,7 +1,7 @@
-using Gast.Commands;
-using Gast.UseCases.Economy;
+using Gast.Api.Economy;
+using Gast.Application.UseCases.Economy;
 
-namespace Gast.Api.CommandHandlers
+namespace Gast.Application.CommandHandlers
 {
     public class EconomyCommandHandler :
         ICommandHandler<BuyItemCommand, bool>

@@ -1,7 +1,7 @@
 using Gast.Domain.Characters;
 using UnityEngine;
 
-namespace Gast.UseCases.Characters
+namespace Gast.Application.UseCases.Characters
 {
     /// <summary>
     /// Use case for creating an AI-controlled (NPC) character.

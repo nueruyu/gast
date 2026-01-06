@@ -7,6 +7,7 @@ using Gast.Features.Gathering;
 using Gast.Features.Inputs;
 using Gast.Features.Interactions;
 using Gast.Features.SpawnSites;
+using Gast.Infrastructure.Remoting.AI;
 using Gast.Infrastructure.Settings;
 using Gast.UI;
 using UnityEngine;

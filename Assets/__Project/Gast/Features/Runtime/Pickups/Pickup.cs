@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Gast.Commands;
+using Gast.Api.Economy;
 using Gast.Core.Commands;
 using Gast.Core.Observables;
 using Gast.Domain.Economy;

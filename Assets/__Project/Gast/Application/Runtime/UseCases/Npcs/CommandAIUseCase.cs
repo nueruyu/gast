@@ -1,11 +1,12 @@
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gast.Api.AI;
+using Gast.Application.Services;
 using Gast.Domain.Characters;
-using Gast.Domain.Npcs;
 using UnityEngine;
 
-namespace Gast.UseCases.Npcs
+namespace Gast.Application.UseCases.Npcs
 {
     public class CommandAIUseCase
     {

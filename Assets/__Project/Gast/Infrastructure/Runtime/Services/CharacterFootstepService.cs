@@ -7,8 +7,9 @@ using System;
 using DisposableBag = Gast.Core.Observables.DisposableBag;
 using Random = UnityEngine.Random;
 using Gast.Infrastructure.Settings;
+using Gast.Features.Characters;
 
-namespace Gast.Features.Characters.Audios
+namespace Gast.Infrastructure.Services
 {
     public class CharacterFootstepService : IDisposable
     {

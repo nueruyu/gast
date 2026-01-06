@@ -1,10 +1,11 @@
-using Gast.Commands;
+using Gast.Api.Economy;
+using Gast.Api.Pickups;
+using Gast.Application.UseCases.Economy;
+using Gast.Application.UseCases.Gathering;
+using Gast.Application.UseCases.Loot;
 using Gast.Domain.Pickups;
-using Gast.UseCases.Economy;
-using Gast.UseCases.Gathering;
-using Gast.UseCases.Loot;
 
-namespace Gast.Api.CommandHandlers
+namespace Gast.Application.CommandHandlers
 {
     public class PickupCommandHandler :
         ICommandHandler<PickUpItemCommand, bool>,

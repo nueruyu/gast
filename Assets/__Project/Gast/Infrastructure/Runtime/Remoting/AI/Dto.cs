@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Gast.Infrastructure.Remoting
+namespace Gast.Infrastructure.Remoting.AI
 {
     // Data sent to the AI server
-    public class AiRequest
+    public class AIRequest
     {
         [JsonProperty("instruction")]
         public string Instruction { get; set; }
@@ -35,13 +35,13 @@ namespace Gast.Infrastructure.Remoting
     }
 
     // Data received from the AI server
-    public class AiResponse
+    public class AIResponse
     {
         [JsonProperty("output")]
-        public AiResponseOutput Output { get; set; }
+        public AIResponseOutput Output { get; set; }
     }
 
-    public class AiResponseOutput
+    public class AIResponseOutput
     {
         [JsonProperty("goals")]
         public List<GoalDto> Goals { get; set; }

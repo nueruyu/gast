@@ -3,10 +3,9 @@
     "rootNamespace": "Gast.Infrastructure",
     "references": [
         "Gast.Core",
-        "Gast.Commands",
-        "Gast.Api",
         "Gast.Domain",
-        "Gast.UseCases",
+        "Gast.Api",
+        "Gast.Application",
         "Gast.Features",
         "Gast.UI",
         "Gast.Shared",

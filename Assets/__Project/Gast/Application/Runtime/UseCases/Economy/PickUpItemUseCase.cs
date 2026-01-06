@@ -3,7 +3,7 @@ using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Domain.Events;
 
-namespace Gast.UseCases.Economy
+namespace Gast.Application.UseCases.Economy
 {
     /// <summary>
     /// Use case for picking up items and adding them to inventory.

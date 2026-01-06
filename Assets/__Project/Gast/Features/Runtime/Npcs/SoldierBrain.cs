@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gast.Api.AI;
+using Gast.Api.AI.Goals;
 using Gast.Domain.Characters;
-using Gast.Domain.Npcs;
-using Gast.Domain.Npcs.Goals;
 using Gast.Lib.AI;
 using UnityEngine;
 

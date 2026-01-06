@@ -9,9 +9,9 @@ using Gast.Infrastructure.Settings;
 using System;
 using UnityEngine;
 using Gast.Features.Combat;
-using Gast.Features.Characters.Audios;
 using Gast.Shared.UnityExtensions;
 using Gast.Core.Events;
+using Gast.Infrastructure.Services;
 
 namespace Gast.Infrastructure.Factories
 {

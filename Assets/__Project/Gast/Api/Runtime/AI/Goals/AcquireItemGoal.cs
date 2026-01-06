@@ -1,6 +1,6 @@
 using Gast.Domain.Economy;
 
-namespace Gast.Domain.Npcs.Goals
+namespace Gast.Api.AI.Goals
 {
     public class AcquireItemGoal : IGoal
     {
