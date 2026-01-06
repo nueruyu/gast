@@ -16,3 +16,4 @@ MonoBehaviour:
   gameHudView: {fileID: 9197481963319205126, guid: 1a5565e4c785bb943a41eff142f5f2aa, type: 3}
   menuView: {fileID: 9197481963319205126, guid: 768d9a1ea10633144aaadf1e1e8b6663, type: 3}
   interactionPromptView: {fileID: 9197481963319205126, guid: 78957609e947f8d44b67db9c9419bcf7, type: 3}
+  commandView: {fileID: 9197481963319205126, guid: 5b0644e9f1ef97c44a7468d6a0bbd73a, type: 3}

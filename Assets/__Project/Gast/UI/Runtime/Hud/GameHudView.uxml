@@ -11,7 +11,6 @@
             <ui:Label name="HpLabel" text="100/100" class="game-hud__hp-label"/>
         </ui:VisualElement>
         <ui:Label name="MoneyLabel" text="100G" class="game-hud__money-label"/>
-        <ui:Button name="CommandButton" text="Command AI" class="game-hud__command-button"/>
     </ui:VisualElement>
     <ui:VisualElement name="InventoryContainer" class="game-hud__inventory-container"/>
 </ui:UXML>

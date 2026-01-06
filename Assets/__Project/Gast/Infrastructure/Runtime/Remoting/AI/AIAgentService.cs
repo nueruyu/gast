@@ -22,7 +22,7 @@ namespace Gast.Infrastructure.Remoting.AI
         readonly AIServerSettings settings;
         readonly CharacterTypeRepository characterTypeRepository;
         readonly ItemRepository itemRepository;
-        static readonly HttpClient HttpClient = new HttpClient();
+        readonly HttpClient httpClient = new();
 
         public AIAgentService(AIServerSettings settings, CharacterTypeRepository characterTypeRepository, ItemRepository itemRepository)
         {
@@ -40,7 +40,7 @@ namespace Gast.Infrastructure.Remoting.AI
 
             try
             {
-                var httpResponse = await HttpClient.PostAsync(settings.ServerUrl, content, cancellationToken);
+                var httpResponse = await httpClient.PostAsync(settings.ServerUrl, content, cancellationToken);
                 httpResponse.EnsureSuccessStatusCode();
 
                 var responseJson = await httpResponse.Content.ReadAsStringAsync();
@@ -48,9 +48,10 @@ namespace Gast.Infrastructure.Remoting.AI
 
                 return ParseGoals(responseDto);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Debug.LogError($"[AiServerClient] Failed to get goals: {e.Message}");
+                Debug.LogError($"[AiServerClient] Failed to get goals: {ex.Message}");
+                Debug.LogException(ex);
                 return new List<IGoal>();
             }
         }
@@ -96,9 +97,10 @@ namespace Gast.Infrastructure.Remoting.AI
                             break;
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Debug.LogWarning($"[AiServerClient] Failed to parse a goal: {e.Message}");
+                    Debug.LogWarning($"[AiServerClient] Failed to parse a goal: {ex.Message}");
+                    Debug.LogException(ex);
                 }
             }
             return goals;

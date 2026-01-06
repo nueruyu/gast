@@ -1,4 +1,6 @@
 using System;
+using Gast.Shared.UnityExtensions;
+using Gast.UI.Command;
 using R3;
 using UnityEngine.UIElements;
 
@@ -6,13 +8,16 @@ namespace Gast.UI.Menu
 {
     public class MenuView : VisualElement
     {
+        readonly Button commandButton;
+
         public MenuView(VisualTreeAsset asset)
         {
             asset.CloneTree(this);
             focusable = true;
+            commandButton = this.Q<Button>("CommandButton");
         }
 
-        public IDisposable Bind(MenuViewModel viewModel)
+        public IDisposable Bind(MenuViewModel viewModel, CommandViewModel commandViewModel)
         {
             var disposables = new CompositeDisposable();
 
@@ -28,6 +33,11 @@ namespace Gast.UI.Menu
                     }
                 })
                 .AddTo(disposables);
+
+            commandButton.SubscribeEvent<ClickEvent>(_ =>
+            {
+                commandViewModel.IsVisible.Value = true;
+            }).AddTo(disposables);
 
             return disposables;
         }
