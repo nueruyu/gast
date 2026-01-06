@@ -19,30 +19,54 @@ namespace Gast.Application.UseCases.Npcs
             this.characterRepository = characterRepository;
         }
 
-        public async UniTask Execute(string instruction, CancellationToken cancellationToken)
+        public async UniTask<CommandAIResult> Execute(string instruction, CancellationToken cancellationToken)
         {
-            var goals = await aiAgentService.GetGoalsAsync(instruction, cancellationToken);
+            var result = await aiAgentService.GetGoalsAsync(instruction, cancellationToken);
 
-            if (goals.Count == 0)
+            if (!result.IsSuccess)
             {
-                Debug.LogWarning("AI server returned no goals.");
-                return;
+                return CommandAIResult.Failure(result.Error.Message);
+            }
+
+            if (result.Goals.Count == 0)
+            {
+                return CommandAIResult.Failure("AI server returned no goals");
             }
 
             // Assign goals to the first available NPC with a goal-assignable brain
             var npc = characterRepository.GetAll()
                 .FirstOrDefault(c => c.GetBrain() is IGoalAssignable);
 
-            if (npc != null)
+            if (npc == null)
             {
-                var brain = npc.GetBrain() as IGoalAssignable;
-                brain?.SetGoals(goals);
-                Debug.Log($"Assigned {goals.Count} goals to NPC {npc.Id}.");
+                return CommandAIResult.Failure("No suitable NPC found to assign goals");
             }
-            else
-            {
-                Debug.LogWarning("No suitable NPC with IGoalAssignable brain found to assign goals.");
-            }
+
+            var brain = npc.GetBrain() as IGoalAssignable;
+            brain?.SetGoals(result.Goals);
+
+            Debug.Log($"[CommandAIUseCase] Assigned {result.Goals.Count} goals to NPC {npc.Id}");
+            return CommandAIResult.Success(result.Goals.Count);
         }
+    }
+
+    public readonly struct CommandAIResult
+    {
+        public bool IsSuccess { get; }
+        public int GoalCount { get; }
+        public string ErrorMessage { get; }
+
+        CommandAIResult(bool isSuccess, int goalCount, string errorMessage)
+        {
+            IsSuccess = isSuccess;
+            GoalCount = goalCount;
+            ErrorMessage = errorMessage;
+        }
+
+        public static CommandAIResult Success(int goalCount)
+            => new(true, goalCount, null);
+
+        public static CommandAIResult Failure(string errorMessage)
+            => new(false, 0, errorMessage);
     }
 }

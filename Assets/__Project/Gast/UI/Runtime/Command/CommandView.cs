@@ -7,13 +7,18 @@ namespace Gast.UI.Command
 {
     public class CommandView : VisualElement
     {
+        const string StatusErrorClass = "command-modal__status--error";
+        const string StatusSuccessClass = "command-modal__status--success";
+
         readonly TextField instructionInput;
+        readonly Label statusLabel;
         readonly Button sendButton;
 
         public CommandView(VisualTreeAsset asset)
         {
             asset.CloneTree(this);
             instructionInput = this.Q<TextField>("InstructionInput");
+            statusLabel = this.Q<Label>("StatusLabel");
             sendButton = this.Q<Button>("SendButton");
         }
 
@@ -27,6 +32,9 @@ namespace Gast.UI.Command
                 if (visible)
                 {
                     instructionInput.Focus();
+                    statusLabel.text = "";
+                    statusLabel.RemoveFromClassList(StatusErrorClass);
+                    statusLabel.RemoveFromClassList(StatusSuccessClass);
                 }
             }).AddTo(d);
 
@@ -42,6 +50,26 @@ namespace Gast.UI.Command
                 {
                     instructionInput.value = text;
                 }
+            }).AddTo(d);
+
+            // Status message binding
+            viewModel.StatusMessage.Subscribe(message =>
+            {
+                statusLabel.text = message;
+            }).AddTo(d);
+
+            viewModel.HasError.Subscribe(hasError =>
+            {
+                statusLabel.EnableInClassList(StatusErrorClass, hasError);
+                statusLabel.EnableInClassList(StatusSuccessClass, !hasError && !string.IsNullOrEmpty(statusLabel.text));
+            }).AddTo(d);
+
+            // Loading state binding
+            viewModel.IsLoading.Subscribe(isLoading =>
+            {
+                sendButton.SetEnabled(!isLoading);
+                instructionInput.SetEnabled(!isLoading);
+                sendButton.text = isLoading ? "Sending..." : "Send";
             }).AddTo(d);
 
             sendButton.SubscribeEvent<ClickEvent>(_ => viewModel.SendInstruction()).AddTo(d);

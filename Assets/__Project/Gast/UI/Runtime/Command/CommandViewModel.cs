@@ -15,6 +15,9 @@ namespace Gast.UI.Command
 
         public ReactiveProperty<bool> IsVisible { get; } = new(false);
         public ReactiveProperty<string> InstructionText { get; } = new("");
+        public ReactiveProperty<bool> IsLoading { get; } = new(false);
+        public ReactiveProperty<string> StatusMessage { get; } = new("");
+        public ReactiveProperty<bool> HasError { get; } = new(false);
 
         public CommandViewModel(CommandAIUseCase commandAiUseCase)
         {
@@ -26,11 +29,52 @@ namespace Gast.UI.Command
             if (string.IsNullOrWhiteSpace(InstructionText.Value))
                 return;
 
-            Debug.Log($"Sending instruction: {InstructionText.Value}");
-            commandAiUseCase.Execute(InstructionText.Value, cts.Token).Forget();
+            if (IsLoading.Value)
+                return;
 
+            SendInstructionAsync().Forget();
+        }
+
+        async UniTaskVoid SendInstructionAsync()
+        {
+            var instruction = InstructionText.Value;
             InstructionText.Value = "";
-            IsVisible.Value = false; // Hide after sending
+            StatusMessage.Value = "";
+            HasError.Value = false;
+            IsLoading.Value = true;
+
+            Debug.Log($"[CommandViewModel] Sending instruction: {instruction}");
+
+            try
+            {
+                var result = await commandAiUseCase.Execute(instruction, cts.Token);
+
+                if (result.IsSuccess)
+                {
+                    StatusMessage.Value = $"Assigned {result.GoalCount} goal(s) to NPC";
+                    HasError.Value = false;
+                    IsVisible.Value = false;
+                }
+                else
+                {
+                    StatusMessage.Value = result.ErrorMessage;
+                    HasError.Value = true;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Ignore cancellation
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+                StatusMessage.Value = "An unexpected error occurred";
+                HasError.Value = true;
+            }
+            finally
+            {
+                IsLoading.Value = false;
+            }
         }
 
         public void Dispose()

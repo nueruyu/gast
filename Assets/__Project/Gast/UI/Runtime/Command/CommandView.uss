@@ -39,6 +39,21 @@
     border-radius: 4px;
 }
 
+.command-modal__status {
+    font-size: 14px;
+    color: rgb(180, 180, 180);
+    margin-bottom: 10px;
+    min-height: 20px;
+}
+
+.command-modal__status--error {
+    color: rgb(255, 100, 100);
+}
+
+.command-modal__status--success {
+    color: rgb(100, 255, 100);
+}
+
 .command-modal__button {
     height: 45px;
     font-size: 18px;
@@ -50,4 +65,9 @@
 
 .command-modal__button:hover {
     background-color: royalblue;
+}
+
+.command-modal__button:disabled {
+    background-color: rgb(80, 80, 80);
+    color: rgb(120, 120, 120);
 }
