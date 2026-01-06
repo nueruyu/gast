@@ -4,6 +4,7 @@
     "references": [
         "Gast.Core",
         "Gast.Domain",
+        "Gast.Api",
         "Gast.Shared",
         "UniTask"
     ],
