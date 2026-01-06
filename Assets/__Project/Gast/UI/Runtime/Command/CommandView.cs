@@ -10,6 +10,7 @@ namespace Gast.UI.Command
         const string StatusErrorClass = "command-modal__status--error";
         const string StatusSuccessClass = "command-modal__status--success";
 
+        readonly VisualElement container;
         readonly TextField instructionInput;
         readonly Label statusLabel;
         readonly Button sendButton;
@@ -17,6 +18,7 @@ namespace Gast.UI.Command
         public CommandView(VisualTreeAsset asset)
         {
             asset.CloneTree(this);
+            container = this.Q<VisualElement>(className: "command-modal__container");
             instructionInput = this.Q<TextField>("InstructionInput");
             statusLabel = this.Q<Label>("StatusLabel");
             sendButton = this.Q<Button>("SendButton");
@@ -35,6 +37,15 @@ namespace Gast.UI.Command
                     statusLabel.text = "";
                     statusLabel.RemoveFromClassList(StatusErrorClass);
                     statusLabel.RemoveFromClassList(StatusSuccessClass);
+                }
+            }).AddTo(d);
+
+            // Close modal when clicking backdrop
+            this.SubscribeEvent<ClickEvent>(evt =>
+            {
+                if (evt.target == this)
+                {
+                    viewModel.IsVisible.Value = false;
                 }
             }).AddTo(d);
 
