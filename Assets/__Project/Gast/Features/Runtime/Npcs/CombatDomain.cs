@@ -3,7 +3,7 @@ using Gast.Lib.AI.Builders;
 
 namespace Gast.Features.Npcs
 {
-    public static class CombatDomainFactory
+    public static class CombatDomain
     {
         public static Domain<CombatWorldState> Create(SoldierBrainSettings settings)
         {

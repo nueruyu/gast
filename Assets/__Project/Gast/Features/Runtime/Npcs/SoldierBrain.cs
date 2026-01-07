@@ -24,7 +24,7 @@ namespace Gast.Features.Npcs
         public SoldierBrain(SoldierBrainSettings settings, GoalManager goalManager)
         {
             this.goalManager = goalManager;
-            this.combatDomain = CombatDomainFactory.Create(settings);
+            this.combatDomain = CombatDomain.Create(settings);
         }
 
         public void OnAttached(ICharacter character)
@@ -37,7 +37,7 @@ namespace Gast.Features.Npcs
                 CombatRange = 4.5f
             };
 
-            cts = new CancellationTokenSource();
+            cts = new();
             RunAsync(cts.Token).Forget();
         }
 
