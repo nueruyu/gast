@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -51,7 +52,7 @@ namespace Gast.Features.Npcs
             cts = null;
         }
 
-        public void SetGoals(System.Collections.Generic.List<IGoal> goals)
+        public void SetGoals(List<IGoal> goals)
         {
             goalManager.SetGoals(goals);
         }
