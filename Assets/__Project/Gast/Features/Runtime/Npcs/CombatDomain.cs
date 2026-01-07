@@ -7,41 +7,40 @@ namespace Gast.Features.Npcs
     {
         public static Domain<CombatWorldState> Create(SoldierBrainSettings settings)
         {
-            return new DomainBuilder<CombatWorldState>()
-                .RegisterTask(settings.ChaseTargetAction)
-                .RegisterTask(settings.MeleeAttackAction)
-                .RegisterTask(settings.BackOffAction)
-                .RegisterTask(settings.StrafeAction)
-                .RegisterTask(settings.IdleAction)
-                .DefineCompound("EngageTarget")
-                    .AddMethod("Attack")
-                        .Condition(s => s.IsInAttackRange && s.IsReadyToAttack)
-                        .Do(settings.MeleeAttackAction)
-                    .End()
-                    .AddMethod("Withdraw")
-                        .Condition(s => s.IsInAttackRange && !s.IsReadyToAttack)
-                        .Do(settings.BackOffAction)
-                    .End()
-                    .AddMethod("Approach_Tactical")
-                        .Condition(s => !s.IsInAttackRange && s.IsInCombatRange)
-                        .Do(settings.StrafeAction)
-                    .End()
-                    .AddMethod("Chase")
-                        .Condition(s => !s.IsInCombatRange)
-                        .Do(settings.ChaseTargetAction)
-                    .End()
+            var builder = new DomainBuilder<CombatWorldState>();
+
+            builder.RegisterTask(settings.ChaseTargetAction)
+                   .RegisterTask(settings.MeleeAttackAction)
+                   .RegisterTask(settings.BackOffAction)
+                   .RegisterTask(settings.StrafeAction);
+
+            builder.DefineCompound("EngageTarget")
+                .AddMethod("Attack")
+                    .Condition(s => s.IsInAttackRange && s.IsReadyToAttack)
+                    .Do(settings.MeleeAttackAction)
                 .End()
-                .DefineRoot()
-                    .AddMethod("Combat")
-                        .Condition(s => s.HasTarget)
-                        .Do("EngageTarget")
-                    .End()
-                    .AddMethod("Idle")
-                        .Condition(s => !s.HasTarget)
-                        .Do(settings.IdleAction)
-                    .End()
+                .AddMethod("Withdraw")
+                    .Condition(s => s.IsInAttackRange && !s.IsReadyToAttack)
+                    .Do(settings.BackOffAction)
                 .End()
-                .Build();
+                .AddMethod("Approach_Tactical")
+                    .Condition(s => !s.IsInAttackRange && s.IsInCombatRange)
+                    .Do(settings.StrafeAction)
+                .End()
+                .AddMethod("Chase")
+                    .Condition(s => !s.IsInCombatRange)
+                    .Do(settings.ChaseTargetAction)
+                .End()
+            .End();
+
+            builder.DefineRoot()
+                .AddMethod("Combat")
+                    .Condition(s => s.HasTarget)
+                    .Do("EngageTarget")
+                .End()
+            .End();
+
+            return builder.Build();
         }
     }
 }

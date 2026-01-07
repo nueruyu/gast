@@ -1,5 +1,6 @@
 using Gast.Domain.Characters;
 using Gast.Features.Npcs;
+using Gast.Features.Npcs.Actions;
 using Gast.Infrastructure.Settings;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,6 @@ namespace Gast.Infrastructure.Factories
     {
         readonly CharacterBrainFactorySettings settings;
         readonly IObjectResolver resolver;
-
         readonly Dictionary<CharacterTypeId, Func<ICharacterBrain>> factoryMap = new();
 
         public CharacterBrainFactory(CharacterBrainFactorySettings settings, IObjectResolver resolver)
@@ -35,8 +35,26 @@ namespace Gast.Infrastructure.Factories
 
         ICharacterBrain CreateSoldierBrain()
         {
-            var goalManager = resolver.Resolve<GoalManager>();
-            return new SoldierBrain(settings.SoldierBrainSettings, goalManager);
+            using (var scope = resolver.CreateScope(builder =>
+            {
+                builder.Register<SharedAIState>(Lifetime.Scoped);
+            }))
+            {
+                var goalManager = resolver.Resolve<GoalManager>();
+
+                var findTargetForGoalAction = scope.Resolve<FindTargetForGoalAction>();
+                var findThreatAction = scope.Resolve<FindThreatAction>();
+                var clearTargetAction = scope.Resolve<ClearTargetAction>();
+                var sharedState = scope.Resolve<SharedAIState>();
+
+                var strategicDomain = StrategicDomain.Create(
+                    findTargetForGoalAction,
+                    findThreatAction,
+                    clearTargetAction
+                );
+
+                return new SoldierBrain(settings.SoldierBrainSettings, goalManager, strategicDomain, sharedState);
+            }
         }
     }
 }
