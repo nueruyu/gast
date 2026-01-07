@@ -11,16 +11,22 @@ namespace Gast.Features.Npcs.Actions
     [Serializable]
     public class FindTargetForGoalAction : PrimitiveTask<StrategicWorldState>
     {
+        readonly ICharacterRepository characterRepository;
         readonly SharedAIState sharedState;
 
-        public FindTargetForGoalAction(SharedAIState sharedState) : base("FindTargetForGoalAction")
+        public FindTargetForGoalAction(
+            ICharacterRepository characterRepository,
+            SharedAIState sharedState) : base("FindTargetForGoalAction")
         {
+            this.characterRepository = characterRepository;
             this.sharedState = sharedState;
         }
 
         protected override bool CheckCondition(StrategicWorldState state) => state.HasGoal;
 
-        protected override void ApplyEffect(ref StrategicWorldState state, ISimulationContext context) { }
+        protected override void ApplyEffect(ref StrategicWorldState state, ISimulationContext context)
+        {
+        }
 
         protected override UniTask ExecuteAsync(Context<StrategicWorldState> ctx)
         {
@@ -38,8 +44,9 @@ namespace Gast.Features.Npcs.Actions
 
         private ICharacter FindClosestCharacterOfType(ICharacter self, CharacterTypeId typeId)
         {
-            return self.VisionSensor.VisibleCharacters
+            return characterRepository.GetAll()
                 .Where(c => c.TypeId == typeId && c.IsAlive)
+                .Where(c => c.Status.Faction != self.Status.Faction)
                 .OrderBy(c => Vector3.Distance(self.Body.Position, c.Body.Position))
                 .FirstOrDefault();
         }
