@@ -1,5 +1,6 @@
-﻿using Gast.Core.Observables;
+using Gast.Core.Observables;
 using Gast.Domain.Characters;
+using System.Threading.Tasks;
 
 namespace Gast.Domain.Interactions
 {
@@ -16,5 +17,7 @@ namespace Gast.Domain.Interactions
         void SetInteractor(CharacterId interactorId);
 
         void UnsetInteractor();
+
+        ValueTask<bool> RequestInteractionAsync(CharacterId interactorId, InteractableId interactableId);
     }
 }

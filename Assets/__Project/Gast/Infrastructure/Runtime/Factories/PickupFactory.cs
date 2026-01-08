@@ -1,10 +1,12 @@
+using System;
 using Gast.Core.Commands;
 using Gast.Domain.Economy;
 using Gast.Domain.Pickups;
+using Gast.Features.Interactions;
 using Gast.Features.Pickups;
 using Gast.Infrastructure.Settings;
-using System;
 using UnityEngine;
+using VContainer;
 
 namespace Gast.Infrastructure.Factories
 {
@@ -13,15 +15,18 @@ namespace Gast.Infrastructure.Factories
         readonly PickupSystemSettings settings;
         readonly ICommandDispatcher commandDispatcher;
         readonly IItemRepository itemRepository;
+        readonly InteractionSystem interactionSystem;
 
         public PickupFactory(
             PickupSystemSettings settings,
             ICommandDispatcher commandDispatcher,
-            IItemRepository itemRepository)
+            IItemRepository itemRepository,
+            InteractionSystem interactionSystem)
         {
             this.settings = settings;
             this.commandDispatcher = commandDispatcher;
             this.itemRepository = itemRepository;
+            this.interactionSystem = interactionSystem;
         }
 
         public IPickup Create(ItemId itemId, int quantity, Vector3 position)
@@ -39,7 +44,8 @@ namespace Gast.Infrastructure.Factories
                 itemId,
                 itemDefinition.Name,
                 quantity,
-                commandDispatcher);
+                commandDispatcher,
+                interactionSystem);
 
             return pickup;
         }

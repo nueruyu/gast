@@ -3,6 +3,7 @@ using Gast.Api.Economy;
 using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
+using Gast.Features.Interactions;
 using System;
 using UnityEngine;
 
@@ -10,12 +11,17 @@ namespace Gast.Features.Economy
 {
     public class Shop : MonoBehaviour
     {
-        public void Initialize(ICommandDispatcher commandDispatcher, IItemRepository itemRepository)
+        public void Initialize(
+            ICommandDispatcher commandDispatcher,
+            IItemRepository itemRepository,
+            InteractionSystem interactionSystem)
         {
             if (commandDispatcher is null)
                 throw new ArgumentNullException(nameof(commandDispatcher));
             if (itemRepository is null)
                 throw new ArgumentNullException(nameof(itemRepository));
+            if (interactionSystem is null)
+                throw new ArgumentNullException(nameof(interactionSystem));
 
             var shopItems = GetComponentsInChildren<ShopItem>();
 
@@ -23,7 +29,8 @@ namespace Gast.Features.Economy
             {
                 var itemDefinition = itemRepository.Get(shopItem.ItemId);
 
-                shopItem.SetInteractionPrompt(
+                shopItem.Initialize(
+                    interactionSystem,
                     $"Buy {itemDefinition.Name} ({itemDefinition.Price}G)");
 
                 shopItem.Buy

@@ -33,7 +33,13 @@ namespace Gast.Features.Pickups
         public Vector3 Position => transform.position;
         public ISignal<IPickup> Destroyed => destroyedSignal;
 
-        public void Initialize(PickupId id, ItemId itemId, string itemName, int quantity, ICommandDispatcher commandDispatcher)
+        public void Initialize(
+            PickupId id,
+            ItemId itemId,
+            string itemName,
+            int quantity,
+            ICommandDispatcher commandDispatcher,
+            InteractionSystem interactionSystem)
         {
             this.id = id;
             this.itemId = itemId;
@@ -43,6 +49,7 @@ namespace Gast.Features.Pickups
             TryGetComponent(out rb);
             TryGetComponent(out interactable);
 
+            interactable.Initialize(interactionSystem);
             interactable.Config.Prompt = $"{itemName} x{quantity}";
 
             interactable.Interacted

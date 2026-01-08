@@ -5,6 +5,7 @@ using Gast.Domain.Characters;
 using Gast.Domain.Combat;
 using Gast.Domain.Economy;
 using Gast.Domain.Events;
+using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
 using UnityEngine;
 
@@ -35,6 +36,7 @@ namespace Gast.Features.Characters
         public Wallet Wallet { get; private set; }
         public Inventory Inventory { get; private set; }
         public IVisionSensor VisionSensor => context.VisionSensor;
+        public IInteractionSensor InteractionSensor => context.InteractionSensor;
         public INavigationProvider NavigationProvider => context.NavigationProvider;
         public ICharacterBody Body => context.Body;
         public bool IsAlive => status.IsAlive.Value;

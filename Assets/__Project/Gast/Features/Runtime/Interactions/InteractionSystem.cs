@@ -1,15 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
-using UnityEngine;
-using Cysharp.Threading.Tasks;
-using Gast.Core.Tasks;
-using Gast.Core.Observables;
-using Gast.Domain.Interactions;
 using System.Threading.Tasks;
-using Gast.Features.Characters;
+using Cysharp.Threading.Tasks;
+using Gast.Core.Observables;
+using Gast.Core.Tasks;
 using Gast.Domain.Characters;
+using Gast.Domain.Interactions;
+using Gast.Features.Characters;
 using Gast.Shared.Observables;
 using R3;
+using UnityEngine;
 
 namespace Gast.Features.Interactions
 {
@@ -20,7 +21,8 @@ namespace Gast.Features.Interactions
     {
         readonly Live<Interactable> currentInteractable = new(null);
         readonly Live<float> interactionProgress = new(0f);
-        readonly Signal<Interactable> interactionCompleted = new();
+        readonly Signal<IInteractable> interactionCompleted = new();
+        readonly Dictionary<InteractableId, Interactable> registeredInteractables = new();
 
         readonly InteractionSystemSettings settings;
         readonly ICharacterActorRepository characterActorRepository;
@@ -37,7 +39,7 @@ namespace Gast.Features.Interactions
         /// <summary>
         /// Signal fired when an interaction completes.
         /// </summary>
-        public ISignal<IInteractable> InteractionCompleted { get; }
+        public ISignal<IInteractable> InteractionCompleted => interactionCompleted;
 
         /// <summary>
         /// Observable property for hold interaction progress (0.0 to 1.0).
@@ -50,15 +52,24 @@ namespace Gast.Features.Interactions
             this.characterActorRepository = characterActorRepository;
 
             CurrentInteractable = currentInteractable.Cast<Interactable, IInteractable>();
-            InteractionCompleted = interactionCompleted.Cast<Interactable, IInteractable>();
 
             currentInteractable.ToObservable()
-                .Select(x => x ? x.Disabled.ToObservable() : Observable.Never<Unit>())
+                .Select(x => x != null ? x.Disabled.ToObservable() : Observable.Never<Unit>())
                 .Switch()
                 .Subscribe(_ =>
                 {
                     currentInteractable.Value = null;
                 });
+        }
+
+        public void Register(Interactable interactable)
+        {
+            registeredInteractables[interactable.Id] = interactable;
+        }
+
+        public void Unregister(Interactable interactable)
+        {
+            registeredInteractables.Remove(interactable.Id);
         }
 
         public void SetInteractor(CharacterId interactorId)
@@ -177,6 +188,56 @@ namespace Gast.Features.Interactions
 
             isProcessing = false;
             interactionProgress.Value = 0f;
+        }
+
+        public async ValueTask<bool> RequestInteractionAsync(CharacterId interactorId, InteractableId interactableId)
+        {
+            if (!registeredInteractables.TryGetValue(interactableId, out var interactable) || interactable == null)
+                return false;
+
+            var interactorCharacter = characterActorRepository.Get(interactorId);
+            if (interactorCharacter == null)
+                return false;
+
+            var distance = Vector3.Distance(interactorCharacter.Body.Position, interactable.Position);
+            if (distance > settings.DetectionRadius || !interactable.CanInteract)
+                return false;
+
+            if (interactable.Config.Type == InteractionType.Instant)
+            {
+                interactable.OnInteract(interactorCharacter);
+                interactionCompleted.Publish(interactable);
+                return true;
+            }
+            if (interactable.Config.Type == InteractionType.Hold)
+            {
+                using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(interactable.destroyCancellationToken);
+                try
+                {
+                    interactable.OnInteractionStart(interactorCharacter);
+                    var holdDuration = TimeSpan.FromSeconds(interactable.Config.HoldDuration);
+                    await UniTask.Delay(holdDuration, cancellationToken: linkedCts.Token);
+
+                    var finalDistance = Vector3.Distance(interactorCharacter.Body.Position, interactable.Position);
+                    if (finalDistance > settings.DetectionRadius || !interactable.CanInteract)
+                    {
+                        interactable.OnInteractionCancelled(interactorCharacter);
+                        return false;
+                    }
+
+                    interactable.OnInteract(interactorCharacter);
+                    interactionCompleted.Publish(interactable);
+                    return true;
+                }
+                catch (OperationCanceledException)
+                {
+                    if (interactable != null)
+                        interactable.OnInteractionCancelled(interactorCharacter);
+                    return false;
+                }
+            }
+
+            return false;
         }
 
         void StartHoldInteraction()
