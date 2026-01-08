@@ -10,6 +10,7 @@ namespace Gast.UI.Interactions
     public class InteractionPromptViewModel : IDisposable
     {
         readonly CompositeDisposable disposables = new();
+        readonly ReactiveProperty<float> holdProgress = new(0f);
 
         public ReadOnlyReactiveProperty<bool> IsVisible { get; }
         public ReadOnlyReactiveProperty<string> KeyText { get; }
@@ -18,8 +19,10 @@ namespace Gast.UI.Interactions
         public ReadOnlyReactiveProperty<float> HoldProgress { get; }
         public ReadOnlyReactiveProperty<Vector3> TargetWorldPosition { get; }
 
-        public InteractionPromptViewModel(IPlayerInteractionFocusService focusService)
+        public InteractionPromptViewModel(IPlayerInteractionFocusService focusService, IInteractionSystem interactionSystem)
         {
+            HoldProgress = holdProgress.ToReadOnlyReactiveProperty().AddTo(disposables);
+
             var currentInteractable = focusService.FocusedInteractable.ToObservable();
 
             IsVisible = currentInteractable
@@ -42,14 +45,24 @@ namespace Gast.UI.Interactions
                 .ToReadOnlyReactiveProperty()
                 .AddTo(disposables);
 
-            // Note: This ViewModel no longer knows about hold progress.
-            // This would require a more complex state propagation from InteractionSystem if needed.
-            // For now, we assume the prompt disappears during the hold or shows no progress.
-            HoldProgress = new ReactiveProperty<float>(0f).ToReadOnlyReactiveProperty();
-
             TargetWorldPosition = currentInteractable
                 .Select(x => x?.Position ?? Vector3.zero)
                 .ToReadOnlyReactiveProperty()
+                .AddTo(disposables);
+
+            currentInteractable
+                .Subscribe(_ => holdProgress.Value = 0f)
+                .AddTo(disposables);
+
+            interactionSystem.ProgressChanged.ToObservable()
+                .Subscribe(evt =>
+                {
+                    var focused = focusService.FocusedInteractable.Value;
+                    if (focused != null && evt.InteractableId == focused.Id)
+                    {
+                        holdProgress.Value = evt.Progress;
+                    }
+                })
                 .AddTo(disposables);
         }
 

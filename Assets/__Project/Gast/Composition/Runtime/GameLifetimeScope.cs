@@ -30,9 +30,6 @@ namespace Gast.Composition
         CharacterDatabaseSettings characterDatabaseSettings;
 
         [SerializeField]
-        InteractionSystemSettings interactionSettings;
-
-        [SerializeField]
         PickupSystemSettings pickupSystemSettings;
 
         [SerializeField]
@@ -88,7 +85,6 @@ namespace Gast.Composition
             RegisterSetting(builder, gameInitializationSettings, nameof(gameInitializationSettings));
             RegisterSetting(builder, inputSettings, nameof(inputSettings));
             RegisterSetting(builder, characterDatabaseSettings, nameof(characterDatabaseSettings));
-            RegisterSetting(builder, interactionSettings, nameof(interactionSettings));
             RegisterSetting(builder, pickupSystemSettings, nameof(pickupSystemSettings));
             RegisterSetting(builder, itemDatabase, nameof(itemDatabase));
             RegisterSetting(builder, characterBrainFactorySettings, nameof(characterBrainFactorySettings));

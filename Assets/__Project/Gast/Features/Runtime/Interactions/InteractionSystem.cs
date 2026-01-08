@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using Gast.Core.Observables;
 using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
 using Gast.Features.Characters;
@@ -13,12 +14,13 @@ namespace Gast.Features.Interactions
     public class InteractionSystem : IInteractionSystem
     {
         readonly Dictionary<InteractableId, Interactable> registeredInteractables = new();
-        readonly InteractionSystemSettings settings;
         readonly ICharacterActorRepository characterActorRepository;
+        readonly Signal<InteractionProgressEvent> progressChanged = new();
 
-        public InteractionSystem(InteractionSystemSettings settings, ICharacterActorRepository characterActorRepository)
+        public ISignal<InteractionProgressEvent> ProgressChanged => progressChanged;
+
+        public InteractionSystem(ICharacterActorRepository characterActorRepository)
         {
-            this.settings = settings;
             this.characterActorRepository = characterActorRepository;
         }
 
@@ -44,8 +46,8 @@ namespace Gast.Features.Interactions
             if (interactorCharacter == null)
                 return false;
 
-            var distance = Vector3.Distance(interactorCharacter.Body.Position, interactable.Position);
-            if (distance > settings.DetectionRadius || !interactable.CanInteract)
+            if (!interactorCharacter.InteractionSensor.IsDetectable(interactableId) ||
+                !interactable.CanInteract)
                 return false;
 
             if (interactable.Config.Type == InteractionType.Instant)
@@ -53,36 +55,62 @@ namespace Gast.Features.Interactions
                 interactable.OnInteract(interactorCharacter);
                 return true;
             }
+
             if (interactable.Config.Type == InteractionType.Hold)
             {
                 using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
-                    cancellationToken,
-                    interactable.destroyCancellationToken);
+                    interactable.destroyCancellationToken,
+                    cancellationToken);
+
                 try
                 {
                     interactable.OnInteractionStart(interactorCharacter);
-                    var holdDuration = TimeSpan.FromSeconds(interactable.Config.HoldDuration);
-                    await UniTask.Delay(holdDuration, cancellationToken: linkedCts.Token);
 
-                    var finalDistance = Vector3.Distance(interactorCharacter.Body.Position, interactable.Position);
-                    if (finalDistance > settings.DetectionRadius || !interactable.CanInteract)
+                    var elapsedTime = 0f;
+                    var holdDuration = interactable.Config.HoldDuration;
+
+                    while (elapsedTime < holdDuration)
                     {
-                        interactable.OnInteractionCancelled(interactorCharacter);
-                        return false;
+                        linkedCts.Token.ThrowIfCancellationRequested();
+
+                        elapsedTime += Time.deltaTime;
+                        var progress = Mathf.Clamp01(elapsedTime / holdDuration);
+                        NotifyProgress(interactorId, interactableId, progress);
+
+                        await UniTask.Yield(PlayerLoopTiming.Update, linkedCts.Token);
+
+                        var loopDistance = Vector3.Distance(interactorCharacter.Body.Position, interactable.Position);
+                        if (!interactorCharacter.InteractionSensor.IsDetectable(interactableId))
+                        {
+                            interactable.OnInteractionCancelled(interactorCharacter);
+                            NotifyProgress(interactorId, interactableId, 0);
+                            return false;
+                        }
                     }
 
+                    NotifyProgress(interactorId, interactableId, 1);
+
                     interactable.OnInteract(interactorCharacter);
+
+                    NotifyProgress(interactorId, interactableId, 0);
+
                     return true;
                 }
                 catch (OperationCanceledException)
                 {
                     if (interactable != null)
                         interactable.OnInteractionCancelled(interactorCharacter);
+                    progressChanged.Publish(new InteractionProgressEvent(interactorId, interactableId, 0f));
                     return false;
                 }
             }
 
             return false;
+        }
+
+        void NotifyProgress(CharacterId interactorId, InteractableId interactableId, float progress)
+        {
+            progressChanged.Publish(new InteractionProgressEvent(interactorId, interactableId, progress));
         }
     }
 }
