@@ -19,6 +19,7 @@ namespace Gast.Features.Interactions
         readonly Signal disabled = new();
 
         InteractionSystem interactionSystem;
+        bool activated = false;
 
         public InteractableId Id { get; private set; }
         public InteractionConfig Config => config;
@@ -40,6 +41,11 @@ namespace Gast.Features.Interactions
         public void Initialize(InteractionSystem interactionSystem)
         {
             this.interactionSystem = interactionSystem;
+
+            if (activated)
+            {
+                interactionSystem.Register(this);
+            }
         }
 
         void Awake()
@@ -49,13 +55,15 @@ namespace Gast.Features.Interactions
 
         void OnEnable()
         {
-            interactionSystem.Register(this);
+            activated = true;
+            interactionSystem?.Register(this);
         }
 
         void OnDisable()
         {
             interactionSystem?.Unregister(this);
             disabled.Publish();
+            activated = false;
         }
 
         public void OnInteract(Character interactor)

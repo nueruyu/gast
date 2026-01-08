@@ -4,45 +4,70 @@ using Cysharp.Threading.Tasks;
 using Gast.Core.Tasks;
 using Gast.Domain.Inputs;
 using Gast.Domain.Interactions;
+using Gast.Domain.Players;
 
 namespace Gast.Features.Interactions
 {
-    /// <summary>
-    /// Connects input system to InteractionDetector.
-    /// </summary>
     public class InteractionInputHandler : ILifecycleTask
     {
         readonly IInputProvider inputProvider;
         readonly IInteractionSystem interactionSystem;
-        bool wasInteractHeld;
+        readonly IPlayerInteractionFocusService focusService;
+        readonly IPlayerManager playerManager;
+        CancellationTokenSource holdInteractionCts;
 
-        public InteractionInputHandler(IInputProvider inputProvider, IInteractionSystem interactionSystem)
+        public InteractionInputHandler(
+            IInputProvider inputProvider,
+            IInteractionSystem interactionSystem,
+            IPlayerInteractionFocusService focusService,
+            IPlayerManager playerManager)
         {
             this.inputProvider = inputProvider;
             this.interactionSystem = interactionSystem;
+            this.focusService = focusService;
+            this.playerManager = playerManager;
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                await UniTask.NextFrame(cancellationToken);
-
-                if (inputProvider == null)
-                    continue;
-
                 if (inputProvider.InteractPressed)
                 {
-                    interactionSystem.TryInteract();
+                    TryStartInteraction();
                 }
 
-                if (wasInteractHeld && !inputProvider.InteractHeld)
+                if (!inputProvider.InteractHeld)
                 {
-                    interactionSystem.CancelInteraction();
+                    CancelHoldInteraction();
                 }
 
-                wasInteractHeld = inputProvider.InteractHeld;
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
+        }
+
+        void TryStartInteraction()
+        {
+            var player = playerManager.CurrentCharacter.Value;
+            var focused = focusService.FocusedInteractable.Value;
+            if (player == null || focused == null)
+                return;
+
+            if (focused.Config.Type == InteractionType.Hold)
+            {
+                holdInteractionCts = new CancellationTokenSource();
+                interactionSystem.RequestInteractionAsync(player.Id, focused.Id, holdInteractionCts.Token);
+            }
+            else
+            {
+                interactionSystem.RequestInteractionAsync(player.Id, focused.Id);
+            }
+        }
+
+        void CancelHoldInteraction()
+        {
+            holdInteractionCts?.Cancel();
+            holdInteractionCts = null;
         }
     }
 }

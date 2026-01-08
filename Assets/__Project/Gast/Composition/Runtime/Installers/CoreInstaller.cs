@@ -41,6 +41,7 @@ namespace Gast.Composition.Installers
             // Player
             builder.Register<PlayerBrain>(Lifetime.Singleton);
             builder.Register<PlayerManager>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<PlayerInteractionFocusService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 
             // Lifecycle tasks
             builder.Register<PlayerContextBinder>(Lifetime.Singleton).AsImplementedInterfaces();

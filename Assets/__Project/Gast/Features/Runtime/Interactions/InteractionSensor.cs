@@ -31,6 +31,8 @@ namespace Gast.Features.Interactions
                 timer = 0f;
                 Detect();
             }
+
+            detectableInteractables.RemoveAll(x => x as Component == null);
         }
 
         void Detect()
@@ -40,7 +42,8 @@ namespace Gast.Features.Interactions
 
             for (var i = 0; i < count; i++)
             {
-                if (overlapBuffer[i].TryGetComponent<IInteractable>(out var interactable))
+                var interactable = overlapBuffer[i].GetComponentInParent<IInteractable>();
+                if (interactable != null)
                 {
                     if (interactable.CanInteract)
                     {

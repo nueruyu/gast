@@ -1,5 +1,6 @@
 using System;
 using Gast.Domain.Interactions;
+using Gast.Domain.Players;
 using Gast.Shared.Observables;
 using R3;
 using UnityEngine;
@@ -17,9 +18,9 @@ namespace Gast.UI.Interactions
         public ReadOnlyReactiveProperty<float> HoldProgress { get; }
         public ReadOnlyReactiveProperty<Vector3> TargetWorldPosition { get; }
 
-        public InteractionPromptViewModel(IInteractionSystem interactionSystem)
+        public InteractionPromptViewModel(IPlayerInteractionFocusService focusService)
         {
-            var currentInteractable = interactionSystem.CurrentInteractable.ToObservable();
+            var currentInteractable = focusService.FocusedInteractable.ToObservable();
 
             IsVisible = currentInteractable
                 .Select(x => x != null)
@@ -41,11 +42,10 @@ namespace Gast.UI.Interactions
                 .ToReadOnlyReactiveProperty()
                 .AddTo(disposables);
 
-            HoldProgress = interactionSystem
-                .InteractionProgress
-                .ToObservable()
-                .ToReadOnlyReactiveProperty()
-                .AddTo(disposables);
+            // Note: This ViewModel no longer knows about hold progress.
+            // This would require a more complex state propagation from InteractionSystem if needed.
+            // For now, we assume the prompt disappears during the hold or shows no progress.
+            HoldProgress = new ReactiveProperty<float>(0f).ToReadOnlyReactiveProperty();
 
             TargetWorldPosition = currentInteractable
                 .Select(x => x?.Position ?? Vector3.zero)
