@@ -35,7 +35,7 @@ namespace Gast.Features.Interactions
         public async ValueTask<bool> RequestInteractionAsync(
             CharacterId interactorId,
             InteractableId interactableId,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
             if (!registeredInteractables.TryGetValue(interactableId, out var interactable) || interactable == null)
                 return false;

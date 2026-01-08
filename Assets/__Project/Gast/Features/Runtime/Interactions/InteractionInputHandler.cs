@@ -5,6 +5,7 @@ using Gast.Core.Tasks;
 using Gast.Domain.Inputs;
 using Gast.Domain.Interactions;
 using Gast.Domain.Players;
+using Gast.Shared.Tasks;
 
 namespace Gast.Features.Interactions
 {
@@ -55,19 +56,24 @@ namespace Gast.Features.Interactions
 
             if (focused.Config.Type == InteractionType.Hold)
             {
+                CancelHoldInteraction();
                 holdInteractionCts = new CancellationTokenSource();
-                interactionSystem.RequestInteractionAsync(player.Id, focused.Id, holdInteractionCts.Token);
+                interactionSystem.RequestInteractionAsync(player.Id, focused.Id, holdInteractionCts.Token).Forget();
             }
             else
             {
-                interactionSystem.RequestInteractionAsync(player.Id, focused.Id);
+                interactionSystem.RequestInteractionAsync(player.Id, focused.Id).Forget();
             }
         }
 
         void CancelHoldInteraction()
         {
-            holdInteractionCts?.Cancel();
-            holdInteractionCts = null;
+            if (holdInteractionCts != null)
+            {
+                holdInteractionCts.Cancel();
+                holdInteractionCts.Dispose();
+                holdInteractionCts = null;
+            }
         }
     }
 }
