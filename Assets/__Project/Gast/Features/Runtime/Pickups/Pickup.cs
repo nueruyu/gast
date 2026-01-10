@@ -29,6 +29,7 @@ namespace Gast.Features.Pickups
         readonly Signal<IPickup> destroyedSignal = new();
 
         public PickupId Id => id;
+        public ItemId ItemId => itemId;
         public int Quantity => quantity;
         public Vector3 Position => transform.position;
         public ISignal<IPickup> Destroyed => destroyedSignal;

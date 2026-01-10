@@ -70,6 +70,7 @@ namespace Gast.Features.Npcs
         {
             while (!token.IsCancellationRequested)
             {
+                UpdateStrategicWorldState();
                 UpdateCombatWorldState();
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
@@ -79,11 +80,10 @@ namespace Gast.Features.Npcs
         {
             while (!token.IsCancellationRequested)
             {
-                UpdateStrategicWorldState();
                 var context = new Context<StrategicWorldState>(strategicState, () => strategicState, character, token);
                 await strategicDomain.RootTask.RunAsync(context);
 
-                await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: token);
+                await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: token);
             }
         }
 
@@ -104,6 +104,16 @@ namespace Gast.Features.Npcs
             var currentGoal = goals.FirstOrDefault(g => !g.IsCompleted);
             strategicState.CurrentGoal = currentGoal;
             strategicState.HasGoal = currentGoal != null;
+
+            var interactableTarget = sharedState.InteractableTarget;
+            strategicState.HasInteractableTarget = interactableTarget != null;
+            if (interactableTarget != null)
+            {
+                strategicState.InteractableTargetId = interactableTarget.Id;
+                strategicState.InteractableTargetPosition = interactableTarget.Position;
+                var distance = Vector3.Distance(character.Body.Position, interactableTarget.Position);
+                strategicState.IsInRangeToInteract = distance <= 1.5f;
+            }
         }
 
         void UpdateCombatWorldState()

@@ -47,10 +47,19 @@ namespace Gast.Infrastructure.Factories
             var clearTargetAction = scope.Resolve<ClearTargetAction>();
             var sharedState = scope.Resolve<SharedAIState>();
 
+            var findItemPickupAction = scope.Resolve<FindItemPickupAction>();
+            var moveToInteractableAction = scope.Resolve<MoveToInteractableAction>();
+            var interactWithTargetAction = scope.Resolve<InteractWithTargetAction>();
+            var clearInteractableTargetAction = scope.Resolve<ClearInteractableTargetAction>();
+
             var strategicDomain = StrategicDomain.Create(
                 findTargetForGoalAction,
                 findThreatAction,
-                clearTargetAction
+                clearTargetAction,
+                findItemPickupAction,
+                moveToInteractableAction,
+                interactWithTargetAction,
+                clearInteractableTargetAction
             );
 
             return new SoldierBrain(settings.SoldierBrainSettings, goalManager, strategicDomain, sharedState);
