@@ -11,7 +11,7 @@ namespace Gast.Features.Npcs.Actions
 
         protected override bool CheckCondition(StrategicWorldState state)
         {
-            return state.HasInteractableTarget && !state.IsInRangeToInteract;
+            return state.HasInteractableTarget;
         }
 
         protected override void ApplyEffect(ref StrategicWorldState state, ISimulationContext context)

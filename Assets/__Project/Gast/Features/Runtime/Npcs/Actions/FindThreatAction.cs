@@ -32,7 +32,7 @@ namespace Gast.Features.Npcs.Actions
                 .OrderBy(e => Vector3.Distance(self.VisionSensor.EyePosition, e.Body.Position))
                 .FirstOrDefault();
 
-            sharedState.StrategicTarget = closestThreat;
+            sharedState.CombatTarget = closestThreat;
             return UniTask.CompletedTask;
         }
     }

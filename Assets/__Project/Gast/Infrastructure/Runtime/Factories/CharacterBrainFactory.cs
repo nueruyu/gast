@@ -35,12 +35,13 @@ namespace Gast.Infrastructure.Factories
 
         ICharacterBrain CreateSoldierBrain()
         {
-            using var scope = resolver.CreateScope(builder =>
+            var scope = resolver.CreateScope(builder =>
             {
                 builder.Register<SharedAIState>(Lifetime.Scoped);
+                builder.Register<GoalManager>(Lifetime.Scoped);
             });
 
-            var goalManager = resolver.Resolve<GoalManager>();
+            var goalManager = scope.Resolve<GoalManager>();
 
             var findTargetForGoalAction = scope.Resolve<FindTargetForGoalAction>();
             var findThreatAction = scope.Resolve<FindThreatAction>();
@@ -62,7 +63,12 @@ namespace Gast.Infrastructure.Factories
                 clearInteractableTargetAction
             );
 
-            return new SoldierBrain(settings.SoldierBrainSettings, goalManager, strategicDomain, sharedState);
+            return new SoldierBrain(
+                settings.SoldierBrainSettings,
+                goalManager,
+                strategicDomain,
+                sharedState,
+                scope);
         }
     }
 }

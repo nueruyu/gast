@@ -4,6 +4,7 @@ using System.Linq;
 using Gast.Api.AI;
 using Gast.Api.AI.Goals;
 using Gast.Core.Events;
+using Gast.Domain.Characters;
 using Gast.Domain.Events;
 using R3;
 
@@ -11,8 +12,9 @@ namespace Gast.Features.Npcs
 {
     public class GoalManager : IDisposable
     {
-        readonly List<IGoal> currentGoals = new();
         readonly CompositeDisposable subscriptions = new();
+        readonly List<IGoal> currentGoals = new();
+        CharacterId characterId;
 
         public IReadOnlyList<IGoal> CurrentGoals => currentGoals;
 
@@ -24,17 +26,20 @@ namespace Gast.Features.Npcs
                 .AddTo(subscriptions);
         }
 
-        public void SetGoals(List<IGoal> newGoals)
+        public void Update(CharacterId characterId, List<IGoal> goals)
         {
+            this.characterId = characterId;
+
             currentGoals.Clear();
-            currentGoals.AddRange(newGoals);
+            currentGoals.AddRange(goals);
         }
 
         void OnCharacterDefeated(CharacterDefeatedEvent e)
         {
             foreach (var goal in currentGoals.OfType<DefeatCharacterGoal>())
             {
-                if (goal.TargetTypeId == e.DefeatedCharacter.TypeId)
+                if (e.AttackerId == characterId &&
+                    goal.TargetTypeId == e.DefeatedCharacter.TypeId)
                 {
                     goal.IncrementCount();
                 }
@@ -45,7 +50,8 @@ namespace Gast.Features.Npcs
         {
             foreach (var goal in currentGoals.OfType<AcquireItemGoal>())
             {
-                if (goal.TargetItemId == e.AcquiredItemId)
+                if (e.AcquirerId == characterId &&
+                    goal.TargetItemId == e.AcquiredItemId)
                 {
                     goal.AddQuantity(e.AcquiredQuantity);
                 }

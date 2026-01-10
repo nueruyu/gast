@@ -9,10 +9,11 @@ namespace Gast.Features.Npcs
         {
             var builder = new DomainBuilder<CombatWorldState>();
 
-            builder.RegisterTask(settings.ChaseTargetAction)
-                   .RegisterTask(settings.MeleeAttackAction)
-                   .RegisterTask(settings.BackOffAction)
-                   .RegisterTask(settings.StrafeAction);
+            builder
+                .RegisterTask(settings.ChaseTargetAction)
+                .RegisterTask(settings.MeleeAttackAction)
+                .RegisterTask(settings.BackOffAction)
+                .RegisterTask(settings.StrafeAction);
 
             builder.DefineCompound("EngageTarget")
                 .AddMethod("Attack")

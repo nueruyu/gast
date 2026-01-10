@@ -1,10 +1,12 @@
+using System;
+
 namespace Gast.Domain.Characters
 {
     /// <summary>
     /// Interface for character decision-making systems.
     /// Brains control characters by accessing their controller.
     /// </summary>
-    public interface ICharacterBrain
+    public interface ICharacterBrain : IDisposable
     {
         /// <summary>
         /// Called when this brain is attached to a character.

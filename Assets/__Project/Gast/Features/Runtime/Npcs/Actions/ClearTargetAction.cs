@@ -20,7 +20,7 @@ namespace Gast.Features.Npcs.Actions
 
         protected override UniTask ExecuteAsync(Context<StrategicWorldState> ctx)
         {
-            sharedState.StrategicTarget = null;
+            sharedState.CombatTarget = null;
             return UniTask.CompletedTask;
         }
     }
