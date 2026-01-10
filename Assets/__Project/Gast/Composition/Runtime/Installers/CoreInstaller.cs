@@ -22,6 +22,7 @@ namespace Gast.Composition.Installers
             builder.Register<CharacterCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<EconomyCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<PickupCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<InteractionCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // Domain Event System
             builder.Register<DomainEventPublisher>(Lifetime.Singleton).AsImplementedInterfaces();
