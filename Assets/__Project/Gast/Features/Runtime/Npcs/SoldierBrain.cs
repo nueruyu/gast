@@ -47,10 +47,10 @@ namespace Gast.Features.Npcs
             strategicState = new StrategicWorldState();
             cts = new CancellationTokenSource();
 
-            //SetGoals(new List<IGoal>()
-            //{
-            //    new AcquireItemGoal(ItemId.FromGuid(Guid.Parse("58d36adf-70d7-4e47-91a4-10db1ee6727a")), 3)
-            //});
+            SetGoals(new List<IGoal>()
+            {
+                new AcquireItemGoal(ItemId.FromGuid(Guid.Parse("58d36adf-70d7-4e47-91a4-10db1ee6727a")), 3)
+            });
 
             RunAsync(cts.Token).Forget();
         }
@@ -131,6 +131,11 @@ namespace Gast.Features.Npcs
                 var distance = Vector3.Distance(character.Body.Position, interactableTarget.Position);
                 strategicState.IsInRangeToInteract = distance <= 1.5f;
             }
+
+            strategicState.IsThreatened = character.VisionSensor.VisibleCharacters
+                .Where(c => c.IsAlive)
+                .Where(c => c.Status.Faction != character.Status.Faction)
+                .Any();
         }
 
         void UpdateCombatWorldState()

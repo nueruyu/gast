@@ -9,7 +9,7 @@ namespace Gast.Features.Npcs
     {
         public static Domain<StrategicWorldState> Create(
             FindTargetForGoalAction findTargetForGoalAction,
-            FindThreatAction findThreatAction,
+            SelectThreatAction selectThreatAction,
             ClearTargetAction clearTargetAction,
             FindItemPickupAction findItemPickupAction,
             MoveToInteractableAction moveToInteractableAction,
@@ -18,7 +18,7 @@ namespace Gast.Features.Npcs
         {
             return new DomainBuilder<StrategicWorldState>()
                 .RegisterTask(findTargetForGoalAction)
-                .RegisterTask(findThreatAction)
+                .RegisterTask(selectThreatAction)
                 .RegisterTask(clearTargetAction)
                 .RegisterTask(findItemPickupAction)
                 .RegisterTask(moveToInteractableAction)
@@ -33,6 +33,10 @@ namespace Gast.Features.Npcs
                     .End()
                 .End()
                 .DefineRoot()
+                    .AddMethod("SelectClosestThreat")
+                        .Condition(s => s.IsThreatened)
+                        .Do(selectThreatAction)
+                    .End()
                     .AddMethod("AcquireItemGoal")
                         .Condition(s => s.HasGoal && s.CurrentGoal is AcquireItemGoal)
                         .Do("AcquireItem")
@@ -40,10 +44,6 @@ namespace Gast.Features.Npcs
                     .AddMethod("SelectTargetBasedOnGoal")
                         .Condition(s => s.HasGoal)
                         .Do(findTargetForGoalAction)
-                    .End()
-                    .AddMethod("SelectClosestThreat")
-                        .Condition(s => !s.HasGoal)
-                        .Do(findThreatAction)
                     .End()
                     .AddMethod("Idle")
                         .Do(clearTargetAction)

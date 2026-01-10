@@ -44,7 +44,7 @@ namespace Gast.Infrastructure.Factories
             var goalManager = scope.Resolve<GoalManager>();
 
             var findTargetForGoalAction = scope.Resolve<FindTargetForGoalAction>();
-            var findThreatAction = scope.Resolve<FindThreatAction>();
+            var selectThreatAction = scope.Resolve<SelectThreatAction>();
             var clearTargetAction = scope.Resolve<ClearTargetAction>();
             var sharedState = scope.Resolve<SharedAIState>();
 
@@ -55,7 +55,7 @@ namespace Gast.Infrastructure.Factories
 
             var strategicDomain = StrategicDomain.Create(
                 findTargetForGoalAction,
-                findThreatAction,
+                selectThreatAction,
                 clearTargetAction,
                 findItemPickupAction,
                 moveToInteractableAction,

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Gast.Domain.Characters;
 using Gast.Domain.Sensors;
+using Gast.Shared.UnityExtensions;
 using UnityEngine;
 
 namespace Gast.Features.Sensors
@@ -25,6 +26,8 @@ namespace Gast.Features.Sensors
         readonly List<ICharacter> visibleCharacters = new();
         readonly Collider[] overlapBuffer = new Collider[32];
 
+        ICharacter self;
+
         public IReadOnlyList<ICharacter> VisibleCharacters => visibleCharacters;
         public Vector3 EyePosition => transform.position + eyeOffset;
 
@@ -46,6 +49,11 @@ namespace Gast.Features.Sensors
             set => eyeOffset = value;
         }
 
+        void Start()
+        {
+            self = this.RequireComponentInParent<ICharacter>();
+        }
+
         void FixedUpdate()
         {
             visibleCharacters.Clear();
@@ -61,6 +69,9 @@ namespace Gast.Features.Sensors
                     continue;
 
                 if (!target.TryGetComponent<ICharacter>(out var character))
+                    continue;
+
+                if (character == self)
                     continue;
 
                 var dirToTarget = (target.position - eyePos).normalized;
