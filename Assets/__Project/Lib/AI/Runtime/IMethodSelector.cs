@@ -11,5 +11,12 @@ namespace Gast.Lib.AI
             TWorldState state,
             CheckOptions options,
             CancellationToken cancellationToken);
+
+        UniTask<Method<TWorldState>> SelectInterruptsAsync(
+            IReadOnlyList<Method<TWorldState>> methods,
+            Method<TWorldState> currentMethod,
+            TWorldState state,
+            CheckOptions options,
+            CancellationToken cancellationToken);
     }
 }

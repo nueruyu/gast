@@ -57,6 +57,56 @@ namespace Gast.Lib.AI.Selectors
             return (bestMethod, bestState);
         }
 
+        public async UniTask<Method<T>> SelectInterruptsAsync(
+            IReadOnlyList<Method<T>> methods,
+            Method<T> currentMethod,
+            T state,
+            CheckOptions options,
+            CancellationToken cancellationToken)
+        {
+            var (currentMethodValid, currentResultState) = await SimulateMethodAsync(
+                currentMethod,
+                state,
+                options,
+                cancellationToken);
+            var currentScore = worldEvaluator(currentResultState);
+
+            Method<T> bestMethod = null;
+            var bestOutcomeScore = currentScore;
+
+            foreach (var method in methods)
+            {
+                if (method == currentMethod)
+                    continue;
+
+                if (!method.CheckCondition(state))
+                    continue;
+
+                var (valid, resultState) = await SimulateMethodAsync(
+                    method,
+                    state,
+                    options,
+                    cancellationToken);
+
+                if (valid)
+                {
+                    var outcomeScore = worldEvaluator(resultState);
+                    if (outcomeScore > bestOutcomeScore)
+                    {
+                        bestOutcomeScore = outcomeScore;
+                        bestMethod = method;
+                    }
+                }
+            }
+
+            if (bestMethod == null)
+            {
+                return null;
+            }
+
+            return bestMethod;
+        }
+
         async UniTask<(bool, T)> SimulateMethodAsync(
             Method<T> method,
             T state,

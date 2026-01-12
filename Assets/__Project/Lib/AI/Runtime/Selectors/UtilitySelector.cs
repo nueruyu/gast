@@ -42,6 +42,26 @@ namespace Gast.Lib.AI.Selectors
             return (bestMethod, bestState);
         }
 
+        public async UniTask<Method<T>> SelectInterruptsAsync(
+            IReadOnlyList<Method<T>> methods,
+            Method<T> currentMethod,
+            T state,
+            CheckOptions options,
+            CancellationToken cancellationToken)
+        {
+            var (preferredMethod, resultState) = await SelectAsync(
+                methods,
+                state,
+                options,
+                cancellationToken);
+
+            if (preferredMethod != null &&
+                preferredMethod.GetScore(resultState) < currentMethod.GetScore(resultState))
+                return preferredMethod;
+
+            return null;
+        }
+
         async UniTask<(bool, T)> ValidateMethod(
             Method<T> method,
             T state,

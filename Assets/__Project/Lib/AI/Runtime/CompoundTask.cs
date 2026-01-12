@@ -82,20 +82,16 @@ namespace Gast.Lib.AI
             {
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
 
-                var (method, _) = await SelectCurrentMethodAsync(
+                var interruptsMethod = await Selector.SelectInterruptsAsync(
+                    Methods,
+                    currentMethod,
                     ctx.CurrentState,
-                    options,
+                    GetEffectiveOptions(options),
                     cancellationToken);
 
-                if (method == null)
+                if (interruptsMethod != null)
                 {
-                    DebugLogger.LogPlanFailed($"No valid method for {Name}");
-                    break;
-                }
-
-                if (currentMethod != method)
-                {
-                    DebugLogger.LogPlanFailed($"Interrupt: {Name} switching to {method.Name}");
+                    DebugLogger.LogPlanFailed($"Interrupt: {Name} switching to {interruptsMethod.Name}");
                     break;
                 }
             }
@@ -106,11 +102,14 @@ namespace Gast.Lib.AI
            CheckOptions? options,
            CancellationToken cancellationToken)
         {
-            var effectiveOptions = CheckOptions.Resolve(
+            return Selector.SelectAsync(Methods, state, GetEffectiveOptions(options), cancellationToken);
+        }
+
+        CheckOptions GetEffectiveOptions(CheckOptions? options)
+        {
+            return CheckOptions.Resolve(
                 options ?? CheckOptions.Deep,
                 LocalDepthLimit);
-
-            return Selector.SelectAsync(Methods, state, effectiveOptions, cancellationToken);
         }
     }
 }

@@ -50,7 +50,11 @@ namespace Gast.Lib.AI.Builders
 
         public CompoundTaskBuilder<TWorldState> End()
         {
-            var method = new Method<TWorldState>(methodName, condition, scorer);
+            var method = new Method<TWorldState>(
+                methodName,
+                compoundBuilder.CurrentMethodCount,
+                condition,
+                scorer);
             method.SubTasks.AddRange(subTasks);
             return compoundBuilder.CompleteMethod(method);
         }

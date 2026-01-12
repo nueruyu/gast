@@ -12,6 +12,8 @@ namespace Gast.Lib.AI.Builders
         int localDepthLimit = -1;
         IMethodSelector<TWorldState> selector;
 
+        internal int CurrentMethodCount => methods.Count;
+
         internal CompoundTaskBuilder(
             DomainBuilder<TWorldState> domainBuilder,
             string taskName,
