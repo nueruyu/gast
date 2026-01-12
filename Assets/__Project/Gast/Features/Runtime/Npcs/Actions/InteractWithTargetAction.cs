@@ -14,12 +14,12 @@ namespace Gast.Features.Npcs.Actions
             this.commandDispatcher = commandDispatcher;
         }
 
-        protected override bool CheckCondition(StrategicWorldState state)
+        protected override bool CanExecute(StrategicWorldState state)
         {
             return state.HasInteractableTarget && state.IsInRangeToInteract;
         }
 
-        protected override void ApplyEffect(ref StrategicWorldState state, ISimulationContext context)
+        protected override void Simulate(ref StrategicWorldState state)
         {
             state.HasInteractableTarget = false;
             state.IsInRangeToInteract = false;

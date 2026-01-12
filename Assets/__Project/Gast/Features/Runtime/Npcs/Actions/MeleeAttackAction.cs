@@ -12,12 +12,12 @@ namespace Gast.Features.Npcs.Actions
         {
         }
 
-        protected override bool CheckCondition(CombatWorldState state)
+        protected override bool CanExecute(CombatWorldState state)
         {
             return state.IsInAttackRange && state.IsReadyToAttack;
         }
 
-        protected override void ApplyEffect(ref CombatWorldState state, ISimulationContext context)
+        protected override void Simulate(ref CombatWorldState state)
         {
             state.IsReadyToAttack = false;
         }
@@ -31,7 +31,7 @@ namespace Gast.Features.Npcs.Actions
 
             var navigator = ctx.Character.NavigationProvider;
 
-            while (timer < alignmentTimeout && !ctx.Token.IsCancellationRequested)
+            while (timer < alignmentTimeout && !ctx.CancellationToken.IsCancellationRequested)
             {
                 var targetPos = ctx.CurrentState.TargetPosition;
                 var selfPos = ctx.Character.Body.Position;
@@ -52,7 +52,7 @@ namespace Gast.Features.Npcs.Actions
                 ctx.Character.Move(toTarget);
 
                 timer += Time.deltaTime;
-                await UniTask.Yield(PlayerLoopTiming.Update, ctx.Token);
+                await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
             }
 
             // 2. Attack phase: Stop movement and execute attack
@@ -61,7 +61,7 @@ namespace Gast.Features.Npcs.Actions
 
             ctx.Character.Attack();
 
-            await UniTask.Delay(500, cancellationToken: ctx.Token);
+            await UniTask.Delay(500, cancellationToken: ctx.CancellationToken);
         }
     }
 }

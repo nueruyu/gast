@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Gast.Lib.AI
 {
-    public struct CheckOptions
+    public readonly struct CheckOptions
     {
         /// <summary>
         /// Remaining search depth.
@@ -10,25 +10,39 @@ namespace Gast.Lib.AI
         ///  0: Shallow - Check current state only
         /// >0: Limited depth
         /// </summary>
-        public int MaxDepth;
+        public int MaxDepth { get; }
 
-        public static CheckOptions Deep => new CheckOptions { MaxDepth = -1 };
-        public static CheckOptions Shallow => new CheckOptions { MaxDepth = 0 };
+        public static CheckOptions Deep => new(-1);
+        public static CheckOptions Shallow => new(0);
 
-        public CheckOptions StepDown()
+        public CheckOptions(int maxDepth)
         {
-            if (MaxDepth == -1) return this;
-            return new CheckOptions { MaxDepth = Mathf.Max(0, MaxDepth - 1) };
+            MaxDepth = maxDepth;
+        }
+
+        public readonly CheckOptions StepDown()
+        {
+            if (MaxDepth < 0)
+                return this;
+
+            return new CheckOptions(Mathf.Max(0, MaxDepth - 1));
         }
 
         public static CheckOptions Resolve(CheckOptions parentOptions, int localLimit)
         {
-            if (parentOptions.MaxDepth == 0) return parentOptions;
-            if (localLimit != -1)
+            if (parentOptions.MaxDepth == 0)
+                return parentOptions;
+
+            if (localLimit >= 0)
             {
-                if (parentOptions.MaxDepth == -1) return new CheckOptions { MaxDepth = localLimit };
-                return new CheckOptions { MaxDepth = Mathf.Min(parentOptions.MaxDepth, localLimit) };
+                if (parentOptions.MaxDepth < 0)
+                {
+                    return new CheckOptions(localLimit);
+                }
+
+                return new CheckOptions(Mathf.Min(parentOptions.MaxDepth, localLimit));
             }
+
             return parentOptions;
         }
     }

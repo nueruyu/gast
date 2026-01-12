@@ -23,12 +23,12 @@ namespace Gast.Features.Npcs.Actions
             this.pickupRepository = pickupRepository;
         }
 
-        protected override bool CheckCondition(StrategicWorldState state)
+        protected override bool CanExecute(StrategicWorldState state)
         {
             return state.CurrentGoal is AcquireItemGoal && !state.HasInteractableTarget;
         }
 
-        protected override void ApplyEffect(ref StrategicWorldState state, ISimulationContext context)
+        protected override void Simulate(ref StrategicWorldState state)
         {
             state.HasInteractableTarget = true;
         }
@@ -51,7 +51,7 @@ namespace Gast.Features.Npcs.Actions
                 sharedState.InteractableTarget = (targetPickup as Component).GetComponentInChildren<IInteractable>();
             }
 
-            await UniTask.NextFrame(ctx.Token);
+            await UniTask.NextFrame(ctx.CancellationToken);
         }
     }
 }

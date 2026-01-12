@@ -10,28 +10,25 @@ namespace Gast.Lib.AI
 
         public TWorldState PlanState { get; }
         public ICharacter Character { get; }
-        public CancellationToken Token { get; }
+        public CancellationToken CancellationToken { get; }
 
-        public TWorldState CurrentState => stateProvider != null ? stateProvider() : PlanState;
+        public TWorldState CurrentState => stateProvider();
 
         public Context(
             TWorldState planState,
             Func<TWorldState> stateProvider,
             ICharacter character,
-            CancellationToken token)
+            CancellationToken cancellationToken)
         {
             PlanState = planState;
-            this.stateProvider = stateProvider;
+            this.stateProvider = stateProvider ?? throw new ArgumentNullException(nameof(stateProvider));
             Character = character;
-            Token = token;
+            CancellationToken = cancellationToken;
         }
 
-        public Context(TWorldState planState, ICharacter character, CancellationToken token)
-            : this(planState, null, character, token) { }
-
-        public Context<TWorldState> WithToken(CancellationToken newToken)
+        public Context<TWorldState> WithCancellationToken(CancellationToken cancellationToken)
         {
-            return new Context<TWorldState>(PlanState, stateProvider, Character, newToken);
+            return new Context<TWorldState>(PlanState, stateProvider, Character, cancellationToken);
         }
     }
 }

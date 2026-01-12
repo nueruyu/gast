@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 namespace Gast.Lib.AI
 {
@@ -9,34 +10,32 @@ namespace Gast.Lib.AI
 
         protected PrimitiveTask(string name) => Name = name;
 
-        public bool Validate(
-            ref TWorldState state,
+        public UniTask<(bool, TWorldState)> ValidateAsync(
+            TWorldState state,
             CheckOptions options,
-            ISimulationContext context,
-            IEnvironmentModel<TWorldState> environment = null)
+            CancellationToken cancellationToken)
         {
-            if (!CheckCondition(state)) return false;
+            if (!CanExecute(state))
+                return UniTask.FromResult((false, state));
 
             if (options.MaxDepth != 0)
             {
-                context.Clear();
-                ApplyEffect(ref state, context);
-                environment?.Simulate(ref state, context);
+                Simulate(ref state);
             }
 
-            return true;
+            return UniTask.FromResult((true, state));
         }
 
-        public async UniTask RunAsync(Context<TWorldState> ctx)
+        public UniTask RunAsync(Context<TWorldState> ctx, CheckOptions? options)
         {
-            ctx.Token.ThrowIfCancellationRequested();
+            ctx.CancellationToken.ThrowIfCancellationRequested();
             DebugLogger.LogExecutingAction(Name);
-            await ExecuteAsync(ctx);
+            return ExecuteAsync(ctx);
         }
 
-        protected abstract bool CheckCondition(TWorldState state);
+        protected abstract void Simulate(ref TWorldState state);
 
-        protected abstract void ApplyEffect(ref TWorldState state, ISimulationContext context);
+        protected abstract bool CanExecute(TWorldState state);
 
         protected abstract UniTask ExecuteAsync(Context<TWorldState> ctx);
     }

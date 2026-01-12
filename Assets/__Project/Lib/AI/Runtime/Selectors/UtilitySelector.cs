@@ -1,64 +1,74 @@
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Gast.Lib.AI.Selectors
 {
     public class UtilitySelector<T> : IMethodSelector<T> where T : struct
     {
-        public bool Select(IReadOnlyList<Method<T>> methods, ref T state, CheckOptions options, ISimulationContext context, out Method<T> selectedMethod)
+        public async UniTask<(Method<T>, T)> SelectAsync(
+            IReadOnlyList<Method<T>> methods,
+            T state,
+            CheckOptions options,
+            CancellationToken cancellationToken)
         {
-            selectedMethod = null;
             Method<T> bestMethod = null;
-            float bestScore = float.NegativeInfinity;
-            T bestState = state;
+            var bestScore = float.NegativeInfinity;
+            var bestState = state;
 
             foreach (var method in methods)
             {
-                if (!method.CheckCondition(state)) continue;
+                var (valid, resultState) = await ValidateMethod(method, state, options, cancellationToken);
 
-                if (options.MaxDepth != 0)
+                if (!valid)
                 {
-                    var tempState = state;
-                    var nextOptions = options.StepDown();
-                    bool valid = true;
-
-                    foreach (var task in method.SubTasks)
-                    {
-                        if (!task.Validate(ref tempState, nextOptions, context, null))
-                        {
-                            valid = false;
-                            break;
-                        }
-                    }
-
-                    if (!valid) continue;
-
-                    float score = method.GetScore(tempState);
-                    if (score > bestScore)
-                    {
-                        bestScore = score;
-                        bestMethod = method;
-                        bestState = tempState;
-                    }
+                    continue;
                 }
-                else
+
+                var score = method.GetScore(resultState);
+                if (score > bestScore)
                 {
-                    float score = method.GetScore(state);
-                    if (score > bestScore)
-                    {
-                        bestScore = score;
-                        bestMethod = method;
-                    }
+                    bestScore = score;
+                    bestMethod = method;
+                    bestState = resultState;
                 }
             }
 
-            if (bestMethod != null)
+            if (bestMethod == null)
             {
-                state = bestState;
-                selectedMethod = bestMethod;
-                return true;
+                return (null, state);
             }
 
-            return false;
+            return (bestMethod, bestState);
+        }
+
+        async UniTask<(bool, T)> ValidateMethod(
+            Method<T> method,
+            T state,
+            CheckOptions options,
+            CancellationToken cancellationToken)
+        {
+            if (!method.CheckCondition(state))
+                return (false, state);
+
+            if (options.MaxDepth != 0)
+            {
+                var nextOptions = options.StepDown();
+
+                foreach (var task in method.SubTasks)
+                {
+                    var (valid, resultState) = await task.ValidateAsync(state, nextOptions, cancellationToken);
+
+                    if (!valid)
+                    {
+                        return (false, state);
+                    }
+
+                    state = resultState;
+                }
+            }
+
+            return (true, state);
         }
     }
 }

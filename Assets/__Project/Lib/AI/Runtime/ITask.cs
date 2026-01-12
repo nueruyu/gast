@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 namespace Gast.Lib.AI
 {
@@ -6,13 +7,11 @@ namespace Gast.Lib.AI
     {
         string Name { get; }
 
-        bool Validate(
-            ref TWorldState state,
+        UniTask<(bool, TWorldState)> ValidateAsync(
+            TWorldState state,
             CheckOptions options,
-            ISimulationContext context,
-            IEnvironmentModel<TWorldState> environment = null
-        );
+            CancellationToken cancellationToken);
 
-        UniTask RunAsync(Context<TWorldState> ctx);
+        UniTask RunAsync(Context<TWorldState> ctx, CheckOptions? options = null);
     }
 }

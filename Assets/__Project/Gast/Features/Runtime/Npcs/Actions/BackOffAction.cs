@@ -12,12 +12,12 @@ namespace Gast.Features.Npcs.Actions
         {
         }
 
-        protected override bool CheckCondition(CombatWorldState state)
+        protected override bool CanExecute(CombatWorldState state)
         {
             return state.IsInAttackRange && !state.IsReadyToAttack;
         }
 
-        protected override void ApplyEffect(ref CombatWorldState state, ISimulationContext context)
+        protected override void Simulate(ref CombatWorldState state)
         {
             state.DistanceToTarget += 2.0f;
         }
@@ -40,7 +40,7 @@ namespace Gast.Features.Npcs.Actions
             try
             {
                 var timer = 0f;
-                while (timer < 1.5f && !ctx.Token.IsCancellationRequested)
+                while (timer < 1.5f && !ctx.CancellationToken.IsCancellationRequested)
                 {
                     timer += Time.deltaTime;
 
@@ -53,7 +53,7 @@ namespace Gast.Features.Npcs.Actions
                     if (navigator.HasArrived)
                         break;
 
-                    await UniTask.Yield(ctx.Token);
+                    await UniTask.Yield(ctx.CancellationToken);
                 }
             }
             finally

@@ -16,12 +16,12 @@ namespace Gast.Features.Npcs.Actions
         {
         }
 
-        protected override bool CheckCondition(CombatWorldState state)
+        protected override bool CanExecute(CombatWorldState state)
         {
             return state.HasTarget && state.IsInCombatRange;
         }
 
-        protected override void ApplyEffect(ref CombatWorldState state, ISimulationContext context)
+        protected override void Simulate(ref CombatWorldState state)
         {
         }
 
@@ -37,9 +37,9 @@ namespace Gast.Features.Npcs.Actions
 
             try
             {
-                await UniTask.Yield(PlayerLoopTiming.Update, ctx.Token);
+                await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
 
-                while (timer < duration && !ctx.Token.IsCancellationRequested)
+                while (timer < duration && !ctx.CancellationToken.IsCancellationRequested)
                 {
                     timer += Time.deltaTime;
 
@@ -93,7 +93,7 @@ namespace Gast.Features.Npcs.Actions
 
                     ctx.Character.Move(finalMoveDir);
 
-                    await UniTask.Yield(PlayerLoopTiming.Update, ctx.Token);
+                    await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
                 }
             }
             finally

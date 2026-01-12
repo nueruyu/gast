@@ -14,9 +14,11 @@ namespace Gast.Features.Npcs.Actions
             this.sharedState = sharedState;
         }
 
-        protected override bool CheckCondition(StrategicWorldState state) => true;
+        protected override bool CanExecute(StrategicWorldState state) => true;
 
-        protected override void ApplyEffect(ref StrategicWorldState state, ISimulationContext context) { }
+        protected override void Simulate(ref StrategicWorldState state)
+        {
+        }
 
         protected override UniTask ExecuteAsync(Context<StrategicWorldState> ctx)
         {

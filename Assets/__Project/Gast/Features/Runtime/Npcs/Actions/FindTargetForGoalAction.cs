@@ -22,9 +22,9 @@ namespace Gast.Features.Npcs.Actions
             this.sharedState = sharedState;
         }
 
-        protected override bool CheckCondition(StrategicWorldState state) => state.HasGoal;
+        protected override bool CanExecute(StrategicWorldState state) => state.HasGoal;
 
-        protected override void ApplyEffect(ref StrategicWorldState state, ISimulationContext context)
+        protected override void Simulate(ref StrategicWorldState state)
         {
         }
 

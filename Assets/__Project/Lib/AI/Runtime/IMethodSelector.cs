@@ -1,14 +1,15 @@
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Gast.Lib.AI
 {
     public interface IMethodSelector<TWorldState> where TWorldState : struct
     {
-        bool Select(
+        UniTask<(Method<TWorldState>, TWorldState)> SelectAsync(
             IReadOnlyList<Method<TWorldState>> methods,
-            ref TWorldState state,
+            TWorldState state,
             CheckOptions options,
-            ISimulationContext context,
-            out Method<TWorldState> selectedMethod);
+            CancellationToken cancellationToken);
     }
 }

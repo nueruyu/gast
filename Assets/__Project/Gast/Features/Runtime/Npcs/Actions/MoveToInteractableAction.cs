@@ -9,12 +9,12 @@ namespace Gast.Features.Npcs.Actions
         {
         }
 
-        protected override bool CheckCondition(StrategicWorldState state)
+        protected override bool CanExecute(StrategicWorldState state)
         {
             return state.HasInteractableTarget;
         }
 
-        protected override void ApplyEffect(ref StrategicWorldState state, ISimulationContext context)
+        protected override void Simulate(ref StrategicWorldState state)
         {
             state.IsInRangeToInteract = true;
         }
@@ -25,7 +25,7 @@ namespace Gast.Features.Npcs.Actions
 
             try
             {
-                while (!ctx.Token.IsCancellationRequested && ctx.CurrentState.HasInteractableTarget)
+                while (!ctx.CancellationToken.IsCancellationRequested && ctx.CurrentState.HasInteractableTarget)
                 {
                     var targetPosition = ctx.CurrentState.InteractableTargetPosition;
                     navigator.SetDestination(targetPosition);
@@ -41,7 +41,7 @@ namespace Gast.Features.Npcs.Actions
                         ctx.Character.Move(direction);
                     }
 
-                    await UniTask.Yield(ctx.Token);
+                    await UniTask.Yield(ctx.CancellationToken);
                 }
             }
             finally

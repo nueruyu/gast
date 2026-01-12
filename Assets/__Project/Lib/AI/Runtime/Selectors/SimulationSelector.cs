@@ -1,5 +1,7 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Gast.Lib.AI.Selectors
 {
@@ -14,52 +16,73 @@ namespace Gast.Lib.AI.Selectors
             this.envModel = envModel;
         }
 
-        public bool Select(IReadOnlyList<Method<T>> methods, ref T state, CheckOptions options, ISimulationContext context, out Method<T> selectedMethod)
+        public async UniTask<(Method<T>, T)> SelectAsync(
+            IReadOnlyList<Method<T>> methods,
+            T state,
+            CheckOptions options,
+            CancellationToken cancellationToken)
         {
-            selectedMethod = null;
             Method<T> bestMethod = null;
-            float bestOutcomeScore = float.NegativeInfinity;
-            T bestState = state;
-            var simOptions = CheckOptions.Deep;
+            var bestOutcomeScore = float.NegativeInfinity;
+            var bestState = state;
 
             foreach (var method in methods)
             {
-                if (!method.CheckCondition(state)) continue;
+                if (!method.CheckCondition(state))
+                    continue;
 
-                var futureState = state;
-                if (TrySimulateMethod(method, ref futureState, simOptions, context))
+                var (valid, resultState) = await SimulateMethodAsync(
+                    method,
+                    state,
+                    options,
+                    cancellationToken);
+
+                if (valid)
                 {
-                    float outcomeScore = worldEvaluator(futureState);
+                    var outcomeScore = worldEvaluator(resultState);
                     if (outcomeScore > bestOutcomeScore)
                     {
                         bestOutcomeScore = outcomeScore;
                         bestMethod = method;
-                        bestState = futureState;
+                        bestState = resultState;
                     }
                 }
             }
 
-            if (bestMethod != null)
+            if (bestMethod == null)
             {
-                state = bestState;
-                selectedMethod = bestMethod;
-                return true;
+                return (null, state);
             }
 
-            return false;
+            return (bestMethod, bestState);
         }
 
-        bool TrySimulateMethod(Method<T> method, ref T state, CheckOptions options, ISimulationContext context)
+        async UniTask<(bool, T)> SimulateMethodAsync(
+            Method<T> method,
+            T state,
+            CheckOptions options,
+            CancellationToken cancellationToken)
         {
             var nextOptions = options.StepDown();
             foreach (var subTask in method.SubTasks)
             {
-                if (!subTask.Validate(ref state, nextOptions, context, envModel))
+                var (valid, resultState) = await subTask.ValidateAsync(state, nextOptions, cancellationToken);
+
+                if (!valid)
                 {
-                    return false;
+                    return (false, resultState);
                 }
+
+                state = resultState;
+                envModel?.Simulate(ref state);
             }
-            return true;
+
+            return (true, state);
         }
+    }
+
+    public interface IEnvironmentModel<TWorldState> where TWorldState : struct
+    {
+        void Simulate(ref TWorldState state);
     }
 }

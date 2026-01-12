@@ -12,12 +12,12 @@ namespace Gast.Features.Npcs.Actions
         {
         }
 
-        protected override bool CheckCondition(CombatWorldState state)
+        protected override bool CanExecute(CombatWorldState state)
         {
             return state.HasTarget && !state.IsInAttackRange;
         }
 
-        protected override void ApplyEffect(ref CombatWorldState state, ISimulationContext context)
+        protected override void Simulate(ref CombatWorldState state)
         {
             state.DistanceToTarget = state.AttackRange;
         }
@@ -30,7 +30,7 @@ namespace Gast.Features.Npcs.Actions
 
             try
             {
-                while (!ctx.Token.IsCancellationRequested)
+                while (!ctx.CancellationToken.IsCancellationRequested)
                 {
                     var currentState = ctx.CurrentState;
                     navigator.SetDestination(currentState.TargetPosition);
@@ -52,7 +52,7 @@ namespace Gast.Features.Npcs.Actions
                         ctx.Character.Move(direction);
                     }
 
-                    await UniTask.Yield(ctx.Token);
+                    await UniTask.Yield(ctx.CancellationToken);
                 }
             }
             finally

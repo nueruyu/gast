@@ -10,7 +10,6 @@ namespace Gast.Lib.AI.Builders
         readonly List<Method<TWorldState>> methods = new();
 
         int localDepthLimit = -1;
-        bool runOnBackground = false;
         IMethodSelector<TWorldState> selector;
 
         internal CompoundTaskBuilder(
@@ -26,12 +25,6 @@ namespace Gast.Lib.AI.Builders
         public CompoundTaskBuilder<TWorldState> CheckDepth(int depth)
         {
             localDepthLimit = depth;
-            return this;
-        }
-
-        public CompoundTaskBuilder<TWorldState> RunOnBackground(bool enable = true)
-        {
-            runOnBackground = enable;
             return this;
         }
 
@@ -57,7 +50,6 @@ namespace Gast.Lib.AI.Builders
             var compoundTask = new CompoundTask<TWorldState>(taskName)
             {
                 LocalDepthLimit = localDepthLimit,
-                RunPlanningOnBackground = runOnBackground
             };
 
             if (selector != null)
