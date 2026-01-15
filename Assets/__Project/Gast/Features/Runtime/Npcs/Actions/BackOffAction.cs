@@ -6,29 +6,30 @@ using UnityEngine;
 namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
-    public class BackOffAction : PrimitiveTask<CombatWorldState>
+    public class BackOffAction : PrimitiveTask<CombatWorldState, AIContext<CombatWorldState>>
     {
         public BackOffAction() : base("BackOff")
         {
         }
 
-        protected override bool CanExecute(CombatWorldState state)
+        protected override bool CanExecute(CombatWorldState worldState)
         {
-            return state.IsInAttackRange && !state.IsReadyToAttack;
+            return worldState.IsInAttackRange && !worldState.IsReadyToAttack;
         }
 
-        protected override void Simulate(ref CombatWorldState state)
+        protected override void Simulate(CombatWorldState worldState)
         {
-            state.DistanceToTarget += 2.0f;
+            worldState.DistanceToTarget += 2.0f;
         }
 
-        protected override async UniTask ExecuteAsync(Context<CombatWorldState> ctx)
+        protected override async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
         {
-            var currentState = ctx.CurrentState;
-            var navigator = ctx.Character.NavigationProvider;
+            var actor = ctx.Actor;
+            var worldState = ctx.WorldState;
+            var navigator = actor.NavigationProvider;
 
-            var selfPos = ctx.Character.Body.Position;
-            var targetPos = currentState.TargetPosition;
+            var selfPos = actor.Body.Position;
+            var targetPos = worldState.TargetPosition;
 
             var targetToSelf = selfPos - targetPos;
             targetToSelf.y = 0;
@@ -47,7 +48,7 @@ namespace Gast.Features.Npcs.Actions
                     var moveDir = navigator.NextSteeringDirection;
                     if (moveDir != Vector3.zero)
                     {
-                        ctx.Character.Move(moveDir);
+                        actor.Move(moveDir);
                     }
 
                     if (navigator.HasArrived)

@@ -1,8 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gast.Api.AI;
-using Gast.Api.AI.Goals;
 using Gast.Domain.Characters;
-using Gast.Domain.Economy;
 using Gast.Lib.AI;
 using System;
 using System.Collections.Generic;
@@ -14,28 +12,31 @@ namespace Gast.Features.Npcs
 {
     public class SoldierBrain : ICharacterBrain, IGoalAssignable
     {
+        readonly Domain<StrategicWorldState, AIContext<StrategicWorldState>> strategicDomain;
+        readonly Domain<CombatWorldState, AIContext<CombatWorldState>> combatDomain;
         readonly GoalManager goalManager;
-        readonly Domain<StrategicWorldState> strategicDomain;
-        readonly Domain<CombatWorldState> combatDomain;
         readonly SharedAIState sharedState;
         readonly IDisposable scope;
 
         ICharacter character;
         CancellationTokenSource cts;
 
-        StrategicWorldState strategicState;
-        CombatWorldState combatState;
+        IAgentRunner<StrategicWorldState, AIContext<StrategicWorldState>> strategicAgentRunner;
+        IAgentRunner<CombatWorldState, AIContext<CombatWorldState>> combatAgentRunner;
+
+        readonly StrategicWorldState strategicState = new();
+        readonly CombatWorldState combatState = new();
 
         public SoldierBrain(
-            SoldierBrainSettings settings,
+            Domain<StrategicWorldState, AIContext<StrategicWorldState>> strategicDomain,
+            Domain<CombatWorldState, AIContext<CombatWorldState>> combatDomain,
             GoalManager goalManager,
-            Domain<StrategicWorldState> strategicDomain,
             SharedAIState sharedState,
             IDisposable scope)
         {
-            this.goalManager = goalManager;
             this.strategicDomain = strategicDomain;
-            this.combatDomain = CombatDomain.Create(settings);
+            this.combatDomain = combatDomain;
+            this.goalManager = goalManager;
             this.sharedState = sharedState;
             this.scope = scope;
         }
@@ -43,15 +44,14 @@ namespace Gast.Features.Npcs
         public void OnAttached(ICharacter character)
         {
             this.character = character;
-            combatState = new CombatWorldState { AttackRange = 1.5f, CombatRange = 4.5f };
-            strategicState = new StrategicWorldState();
+
+            strategicAgentRunner = strategicDomain.CreateAgentRunner();
+            combatAgentRunner = combatDomain.CreateAgentRunner();
+
+            combatState.AttackRange = 1.5f;
+            combatState.CombatRange = 4.5f;
+
             cts = new CancellationTokenSource();
-
-            SetGoals(new List<IGoal>()
-            {
-                new AcquireItemGoal(ItemId.FromGuid(Guid.Parse("58d36adf-70d7-4e47-91a4-10db1ee6727a")), 3)
-            });
-
             RunAsync(cts.Token).Forget();
         }
 
@@ -90,9 +90,7 @@ namespace Gast.Features.Npcs
         {
             while (!token.IsCancellationRequested)
             {
-                var context = new Context<StrategicWorldState>(strategicState, () => strategicState, character, token);
-                await strategicDomain.RootTask.RunAsync(context);
-
+                await strategicAgentRunner.RunAsync(new(character, strategicState, token));
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
@@ -101,9 +99,7 @@ namespace Gast.Features.Npcs
         {
             while (!token.IsCancellationRequested)
             {
-                var context = new Context<CombatWorldState>(combatState, () => combatState, character, token);
-                await combatDomain.RootTask.RunAsync(context);
-
+                await combatAgentRunner.RunAsync(new(character, combatState, token));
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
@@ -115,8 +111,8 @@ namespace Gast.Features.Npcs
             strategicState.CurrentGoal = currentGoal;
             strategicState.HasGoal = currentGoal != null;
 
-            if (sharedState.InteractableTarget is Component interactableTargetComonent &&
-                !interactableTargetComonent)
+            if (sharedState.InteractableTarget is Component interactableTargetComponent &&
+                !interactableTargetComponent)
             {
                 sharedState.InteractableTarget = null;
             }
@@ -133,9 +129,7 @@ namespace Gast.Features.Npcs
             }
 
             strategicState.IsThreatened = character.VisionSensor.VisibleCharacters
-                .Where(c => c.IsAlive)
-                .Where(c => c.Status.Faction != character.Status.Faction)
-                .Any();
+                .Any(c => c.IsAlive && c.Status.Faction != character.Status.Faction);
         }
 
         void UpdateCombatWorldState()

@@ -1,44 +1,60 @@
+using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Gast.Lib.AI.Builders
 {
-    public class DomainBuilder<TWorldState> where TWorldState : struct
+    public class DomainBuilder<TWorldState, TContext>
+        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TContext : struct, IContext<TWorldState>
     {
-        readonly Domain<TWorldState> domain = new();
-        readonly Dictionary<string, ITask<TWorldState>> taskRegistry = new();
+        readonly Dictionary<string, ITask<TWorldState, TContext>> taskRegistry = new();
+        ITask<TWorldState, TContext> rootTask;
 
-        public DomainBuilder<TWorldState> RegisterTask(ITask<TWorldState> task)
+        public DomainBuilder<TWorldState, TContext> RegisterTask(ITask<TWorldState, TContext> task)
         {
             taskRegistry[task.Name] = task;
-            domain.RegisterTask(task);
             return this;
         }
 
-        public CompoundTaskBuilder<TWorldState> DefineCompound(string name)
+        public CompoundTaskBuilder<TWorldState, TContext> DefineCompound(string name)
         {
-            return new CompoundTaskBuilder<TWorldState>(this, name);
+            return new CompoundTaskBuilder<TWorldState, TContext>(this, name);
         }
 
-        public CompoundTaskBuilder<TWorldState> DefineRoot()
+        public CompoundTaskBuilder<TWorldState, TContext> DefineRoot()
         {
-            return new CompoundTaskBuilder<TWorldState>(this, "Root", isRoot: true);
+            return new CompoundTaskBuilder<TWorldState, TContext>(this, taskName: "Root", isRoot: true);
         }
 
-        internal DomainBuilder<TWorldState> CompleteCompound(
+        internal DomainBuilder<TWorldState, TContext> CompleteCompound(
             string name,
-            CompoundTask<TWorldState> task,
+            CompoundTask<TWorldState, TContext> task,
             bool isRoot)
         {
             RegisterTask(task);
-            if (isRoot) domain.SetRootTask(task);
+            if (isRoot)
+                rootTask = task;
             return this;
         }
 
-        internal ITask<TWorldState> GetTask(string name)
+        internal ITask<TWorldState, TContext> GetTask(string name)
         {
             return taskRegistry.TryGetValue(name, out var task) ? task : null;
         }
 
-        public Domain<TWorldState> Build() => domain;
+        public Domain<TWorldState, TContext> Build()
+        {
+            var domain = new Domain<TWorldState, TContext>();
+            foreach (var task in taskRegistry.Values)
+            {
+                domain.RegisterTask(task);
+            }
+            if (rootTask != null)
+            {
+                domain.SetRootTask(rootTask);
+            }
+            return domain;
+        }
     }
 }

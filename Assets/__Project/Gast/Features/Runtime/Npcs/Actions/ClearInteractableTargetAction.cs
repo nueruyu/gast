@@ -3,7 +3,7 @@ using Gast.Lib.AI;
 
 namespace Gast.Features.Npcs.Actions
 {
-    public class ClearInteractableTargetAction : PrimitiveTask<StrategicWorldState>
+    public class ClearInteractableTargetAction : PrimitiveTask<StrategicWorldState, AIContext<StrategicWorldState>>
     {
         readonly SharedAIState sharedState;
 
@@ -12,18 +12,18 @@ namespace Gast.Features.Npcs.Actions
             this.sharedState = sharedState;
         }
 
-        protected override bool CanExecute(StrategicWorldState state)
+        protected override bool CanExecute(StrategicWorldState worldState)
         {
-            return state.HasInteractableTarget;
+            return worldState.HasInteractableTarget;
         }
 
-        protected override void Simulate(ref StrategicWorldState state)
+        protected override void Simulate(StrategicWorldState worldState)
         {
-            state.HasInteractableTarget = false;
-            state.IsInRangeToInteract = false;
+            worldState.HasInteractableTarget = false;
+            worldState.IsInRangeToInteract = false;
         }
 
-        protected override UniTask ExecuteAsync(Context<StrategicWorldState> ctx)
+        protected override UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
             sharedState.InteractableTarget = null;
             return UniTask.CompletedTask;

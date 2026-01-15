@@ -3,13 +3,15 @@ using System.Collections.Generic;
 
 namespace Gast.Lib.AI
 {
-    public class Method<TWorldState> where TWorldState : struct
+    public class Method<TWorldState, TContext>
+        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TContext : struct, IContext<TWorldState>
     {
         public string Name { get; }
         public int Index { get; }
         public Func<TWorldState, bool> Condition { get; }
         public Func<TWorldState, float> Scorer { get; }
-        public List<ITask<TWorldState>> SubTasks { get; } = new List<ITask<TWorldState>>();
+        public List<ITask<TWorldState, TContext>> SubTasks { get; } = new List<ITask<TWorldState, TContext>>();
 
         public Method(
             string name,

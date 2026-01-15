@@ -1,8 +1,6 @@
 using System.Linq;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Gast.Api.AI.Goals;
-using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
 using Gast.Domain.Pickups;
 using Gast.Lib.AI;
@@ -10,7 +8,7 @@ using UnityEngine;
 
 namespace Gast.Features.Npcs.Actions
 {
-    public class FindItemPickupAction : PrimitiveTask<StrategicWorldState>
+    public class FindItemPickupAction : PrimitiveTask<StrategicWorldState, AIContext<StrategicWorldState>>
     {
         readonly SharedAIState sharedState;
         readonly IPickupRepository pickupRepository;
@@ -23,19 +21,19 @@ namespace Gast.Features.Npcs.Actions
             this.pickupRepository = pickupRepository;
         }
 
-        protected override bool CanExecute(StrategicWorldState state)
+        protected override bool CanExecute(StrategicWorldState worldState)
         {
-            return state.CurrentGoal is AcquireItemGoal && !state.HasInteractableTarget;
+            return worldState.CurrentGoal is AcquireItemGoal && !worldState.HasInteractableTarget;
         }
 
-        protected override void Simulate(ref StrategicWorldState state)
+        protected override void Simulate(StrategicWorldState worldState)
         {
-            state.HasInteractableTarget = true;
+            worldState.HasInteractableTarget = true;
         }
 
-        protected override async UniTask ExecuteAsync(Context<StrategicWorldState> ctx)
+        protected override async UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
-            var goal = (AcquireItemGoal)ctx.CurrentState.CurrentGoal;
+            var goal = (AcquireItemGoal)ctx.WorldState.CurrentGoal;
 
             var targetPickup = pickupRepository
                 .GetAll()
@@ -43,7 +41,7 @@ namespace Gast.Features.Npcs.Actions
                 {
                     return x.ItemId == goal.TargetItemId;
                 })
-                .OrderBy(x => Vector3.Distance(ctx.Character.Body.Position, x.Position))
+                .OrderBy(x => Vector3.Distance(ctx.Actor.Body.Position, x.Position))
                 .FirstOrDefault();
 
             if (targetPickup != null)

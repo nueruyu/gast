@@ -6,35 +6,37 @@ using UnityEngine;
 namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
-    public class MeleeAttackAction : PrimitiveTask<CombatWorldState>
+    public class MeleeAttackAction : PrimitiveTask<CombatWorldState, AIContext<CombatWorldState>>
     {
         public MeleeAttackAction() : base("MeleeAttack")
         {
         }
 
-        protected override bool CanExecute(CombatWorldState state)
+        protected override bool CanExecute(CombatWorldState worldState)
         {
-            return state.IsInAttackRange && state.IsReadyToAttack;
+            return worldState.IsInAttackRange && worldState.IsReadyToAttack;
         }
 
-        protected override void Simulate(ref CombatWorldState state)
+        protected override void Simulate(CombatWorldState worldState)
         {
-            state.IsReadyToAttack = false;
+            worldState.IsReadyToAttack = false;
         }
 
-        protected override async UniTask ExecuteAsync(Context<CombatWorldState> ctx)
+        protected override async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
         {
+            var actor = ctx.Actor;
+
             // 1. Step-in phase: Align facing direction naturally by moving toward target
             const float alignmentTimeout = 1.0f;
             const float alignmentThreshold = 20f; // degrees
             var timer = 0f;
 
-            var navigator = ctx.Character.NavigationProvider;
+            var navigator = actor.NavigationProvider;
 
             while (timer < alignmentTimeout && !ctx.CancellationToken.IsCancellationRequested)
             {
-                var targetPos = ctx.CurrentState.TargetPosition;
-                var selfPos = ctx.Character.Body.Position;
+                var targetPos = ctx.WorldState.TargetPosition;
+                var selfPos = actor.Body.Position;
 
                 // Calculate direction to target
                 var toTarget = targetPos - selfPos;
@@ -42,14 +44,14 @@ namespace Gast.Features.Npcs.Actions
                 if (toTarget.sqrMagnitude < 0.01f) break; // Already on top of target
                 toTarget.Normalize();
 
-                var forward = ctx.Character.Body.Forward;
+                var forward = actor.Body.Forward;
 
                 // Check angle difference
                 var angle = Vector3.Angle(forward, toTarget);
                 if (angle <= alignmentThreshold) break; // Aligned successfully
 
                 // Move toward target to naturally rotate facing direction
-                ctx.Character.Move(toTarget);
+                actor.Move(toTarget);
 
                 timer += Time.deltaTime;
                 await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
@@ -57,9 +59,9 @@ namespace Gast.Features.Npcs.Actions
 
             // 2. Attack phase: Stop movement and execute attack
             navigator.Stop();
-            ctx.Character.Move(Vector3.zero); // Stop movement input
+            actor.Move(Vector3.zero); // Stop movement input
 
-            ctx.Character.Attack();
+            actor.Attack();
 
             await UniTask.Delay(500, cancellationToken: ctx.CancellationToken);
         }

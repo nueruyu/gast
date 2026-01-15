@@ -3,35 +3,37 @@ using System.Collections.Generic;
 
 namespace Gast.Lib.AI.Builders
 {
-    public class MethodBuilder<TWorldState> where TWorldState : struct
+    public class MethodBuilder<TWorldState, TContext>
+        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TContext : struct, IContext<TWorldState>
     {
-        readonly CompoundTaskBuilder<TWorldState> compoundBuilder;
+        readonly CompoundTaskBuilder<TWorldState, TContext> compoundBuilder;
         readonly string methodName;
         Func<TWorldState, bool> condition = _ => true;
         Func<TWorldState, float> scorer = null;
-        readonly List<ITask<TWorldState>> subTasks = new();
+        readonly List<ITask<TWorldState, TContext>> subTasks = new();
 
         internal MethodBuilder(
-            CompoundTaskBuilder<TWorldState> compoundBuilder,
+            CompoundTaskBuilder<TWorldState, TContext> compoundBuilder,
             string methodName)
         {
             this.compoundBuilder = compoundBuilder;
             this.methodName = methodName;
         }
 
-        public MethodBuilder<TWorldState> Condition(Func<TWorldState, bool> predicate)
+        public MethodBuilder<TWorldState, TContext> Condition(Func<TWorldState, bool> predicate)
         {
             condition = predicate;
             return this;
         }
 
-        public MethodBuilder<TWorldState> Score(Func<TWorldState, float> scoreFunc)
+        public MethodBuilder<TWorldState, TContext> Score(Func<TWorldState, float> scoreFunc)
         {
             scorer = scoreFunc;
             return this;
         }
 
-        public MethodBuilder<TWorldState> Do(params string[] taskNames)
+        public MethodBuilder<TWorldState, TContext> Do(params string[] taskNames)
         {
             foreach (var name in taskNames)
             {
@@ -42,15 +44,15 @@ namespace Gast.Lib.AI.Builders
             return this;
         }
 
-        public MethodBuilder<TWorldState> Do(params ITask<TWorldState>[] tasks)
+        public MethodBuilder<TWorldState, TContext> Do(params ITask<TWorldState, TContext>[] tasks)
         {
             subTasks.AddRange(tasks);
             return this;
         }
 
-        public CompoundTaskBuilder<TWorldState> End()
+        public CompoundTaskBuilder<TWorldState, TContext> End()
         {
-            var method = new Method<TWorldState>(
+            var method = new Method<TWorldState, TContext>(
                 methodName,
                 compoundBuilder.CurrentMethodCount,
                 condition,

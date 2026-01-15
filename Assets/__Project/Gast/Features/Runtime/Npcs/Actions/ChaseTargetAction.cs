@@ -6,50 +6,51 @@ using System;
 namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
-    public class ChaseTargetAction : PrimitiveTask<CombatWorldState>
+    public class ChaseTargetAction : PrimitiveTask<CombatWorldState, AIContext<CombatWorldState>>
     {
         public ChaseTargetAction() : base("ChaseTarget")
         {
         }
 
-        protected override bool CanExecute(CombatWorldState state)
+        protected override bool CanExecute(CombatWorldState worldState)
         {
-            return state.HasTarget && !state.IsInAttackRange;
+            return worldState.HasTarget && !worldState.IsInAttackRange;
         }
 
-        protected override void Simulate(ref CombatWorldState state)
+        protected override void Simulate(CombatWorldState worldState)
         {
-            state.DistanceToTarget = state.AttackRange;
+            worldState.DistanceToTarget = worldState.AttackRange;
         }
 
-        protected override async UniTask ExecuteAsync(Context<CombatWorldState> ctx)
+        protected override async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
         {
-            ctx.Character.SetSprint(true);
+            var actor = ctx.Actor;
+            actor.SetSprint(true);
 
-            var navigator = ctx.Character.NavigationProvider;
+            var navigator = actor.NavigationProvider;
 
             try
             {
                 while (!ctx.CancellationToken.IsCancellationRequested)
                 {
-                    var currentState = ctx.CurrentState;
-                    navigator.SetDestination(currentState.TargetPosition);
+                    var worldState = ctx.WorldState;
+                    navigator.SetDestination(worldState.TargetPosition);
 
-                    var selfToTarget = currentState.TargetPosition - ctx.Character.Body.Position;
+                    var selfToTarget = worldState.TargetPosition - actor.Body.Position;
                     selfToTarget.y = 0;
 
                     var currentDist = selfToTarget.magnitude;
-                    if (currentDist <= currentState.AttackRange)
+                    if (currentDist <= worldState.AttackRange)
                     {
                         navigator.Stop();
-                        ctx.Character.SetSprint(false);
+                        actor.SetSprint(false);
                         return;
                     }
 
                     var direction = navigator.NextSteeringDirection;
                     if (direction != Vector3.zero)
                     {
-                        ctx.Character.Move(direction);
+                        actor.Move(direction);
                     }
 
                     await UniTask.Yield(ctx.CancellationToken);
@@ -57,7 +58,7 @@ namespace Gast.Features.Npcs.Actions
             }
             finally
             {
-                ctx.Character.SetSprint(false);
+                actor.SetSprint(false);
                 navigator.Stop();
             }
         }

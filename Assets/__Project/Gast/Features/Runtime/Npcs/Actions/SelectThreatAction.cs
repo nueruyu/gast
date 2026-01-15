@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
-    public class SelectThreatAction : PrimitiveTask<StrategicWorldState>
+    public class SelectThreatAction : PrimitiveTask<StrategicWorldState, AIContext<StrategicWorldState>>
     {
         readonly SharedAIState sharedState;
 
@@ -17,15 +17,15 @@ namespace Gast.Features.Npcs.Actions
             this.sharedState = sharedState;
         }
 
-        protected override bool CanExecute(StrategicWorldState state) => state.IsThreatened;
+        protected override bool CanExecute(StrategicWorldState worldState) => worldState.IsThreatened;
 
-        protected override void Simulate(ref StrategicWorldState state)
+        protected override void Simulate(StrategicWorldState worldState)
         {
         }
 
-        protected override UniTask ExecuteAsync(Context<StrategicWorldState> ctx)
+        protected override UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
-            var self = ctx.Character;
+            var self = ctx.Actor;
             var closestThreat = self.VisionSensor.VisibleCharacters
                 .Where(c => c.IsAlive)
                 .Where(c => c.Status.Faction != self.Status.Faction)

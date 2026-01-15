@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
-    public class StrafeAction : PrimitiveTask<CombatWorldState>
+    public class StrafeAction : PrimitiveTask<CombatWorldState, AIContext<CombatWorldState>>
     {
         const float MinDuration = 1.0f;
         const float MaxDuration = 3.0f;
@@ -16,24 +16,25 @@ namespace Gast.Features.Npcs.Actions
         {
         }
 
-        protected override bool CanExecute(CombatWorldState state)
+        protected override bool CanExecute(CombatWorldState worldState)
         {
-            return state.HasTarget && state.IsInCombatRange;
+            return worldState.HasTarget && worldState.IsInCombatRange;
         }
 
-        protected override void Simulate(ref CombatWorldState state)
+        protected override void Simulate(CombatWorldState worldState)
         {
         }
 
-        protected override async UniTask ExecuteAsync(Context<CombatWorldState> ctx)
+        protected override async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
         {
-            var navigator = ctx.Character.NavigationProvider;
+            var actor = ctx.Actor;
+            var navigator = actor.NavigationProvider;
             var duration = Random.Range(MinDuration, MaxDuration);
             var timer = 0f;
 
             var directionSign = Random.value > 0.5f ? 1f : -1f;
 
-            var idealDist = Mathf.Max(0.5f, ctx.CurrentState.AttackRange - 0.3f);
+            var idealDist = Mathf.Max(0.5f, ctx.WorldState.AttackRange - 0.3f);
 
             try
             {
@@ -43,10 +44,10 @@ namespace Gast.Features.Npcs.Actions
                 {
                     timer += Time.deltaTime;
 
-                    var currentState = ctx.CurrentState;
-                    var targetPos = currentState.TargetPosition;
-                    var targetFwd = currentState.TargetForward;
-                    var selfPos = ctx.Character.Body.Position;
+                    var worldState = ctx.WorldState;
+                    var targetPos = worldState.TargetPosition;
+                    var targetFwd = worldState.TargetForward;
+                    var selfPos = actor.Body.Position;
 
                     var selfToTarget = targetPos - selfPos;
                     selfToTarget.y = 0;
@@ -56,7 +57,7 @@ namespace Gast.Features.Npcs.Actions
 
                     if (toTargetDir.sqrMagnitude < 0.01f)
                     {
-                        toTargetDir = ctx.Character.Body.Forward;
+                        toTargetDir = actor.Body.Forward;
                     }
 
                     var dot = Vector3.Dot(targetFwd, -toTargetDir);
@@ -91,7 +92,7 @@ namespace Gast.Features.Npcs.Actions
 
                     var finalMoveDir = (strafeDir + approachDir).normalized;
 
-                    ctx.Character.Move(finalMoveDir);
+                    actor.Move(finalMoveDir);
 
                     await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
                 }

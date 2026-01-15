@@ -5,7 +5,7 @@ using System;
 namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
-    public class ClearTargetAction : PrimitiveTask<StrategicWorldState>
+    public class ClearTargetAction : PrimitiveTask<StrategicWorldState, AIContext<StrategicWorldState>>
     {
         readonly SharedAIState sharedState;
 
@@ -14,13 +14,13 @@ namespace Gast.Features.Npcs.Actions
             this.sharedState = sharedState;
         }
 
-        protected override bool CanExecute(StrategicWorldState state) => true;
+        protected override bool CanExecute(StrategicWorldState worldState) => true;
 
-        protected override void Simulate(ref StrategicWorldState state)
+        protected override void Simulate(StrategicWorldState worldState)
         {
         }
 
-        protected override UniTask ExecuteAsync(Context<StrategicWorldState> ctx)
+        protected override UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
             sharedState.CombatTarget = null;
             return UniTask.CompletedTask;

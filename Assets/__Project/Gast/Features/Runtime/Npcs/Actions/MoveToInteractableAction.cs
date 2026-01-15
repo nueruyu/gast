@@ -1,44 +1,46 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
+using UnityEngine;
 
 namespace Gast.Features.Npcs.Actions
 {
-    public class MoveToInteractableAction : PrimitiveTask<StrategicWorldState>
+    public class MoveToInteractableAction : PrimitiveTask<StrategicWorldState, AIContext<StrategicWorldState>>
     {
         public MoveToInteractableAction() : base("MoveToInteractableAction")
         {
         }
 
-        protected override bool CanExecute(StrategicWorldState state)
+        protected override bool CanExecute(StrategicWorldState worldState)
         {
-            return state.HasInteractableTarget;
+            return worldState.HasInteractableTarget;
         }
 
-        protected override void Simulate(ref StrategicWorldState state)
+        protected override void Simulate(StrategicWorldState worldState)
         {
-            state.IsInRangeToInteract = true;
+            worldState.IsInRangeToInteract = true;
         }
 
-        protected override async UniTask ExecuteAsync(Context<StrategicWorldState> ctx)
+        protected override async UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
-            var navigator = ctx.Character.NavigationProvider;
+            var actor = ctx.Actor;
+            var navigator = actor.NavigationProvider;
 
             try
             {
-                while (!ctx.CancellationToken.IsCancellationRequested && ctx.CurrentState.HasInteractableTarget)
+                while (!ctx.CancellationToken.IsCancellationRequested && ctx.WorldState.HasInteractableTarget)
                 {
-                    var targetPosition = ctx.CurrentState.InteractableTargetPosition;
+                    var targetPosition = ctx.WorldState.InteractableTargetPosition;
                     navigator.SetDestination(targetPosition);
 
-                    if (navigator.HasArrived || ctx.CurrentState.IsInRangeToInteract)
+                    if (navigator.HasArrived || ctx.WorldState.IsInRangeToInteract)
                     {
                         break;
                     }
 
                     var direction = navigator.NextSteeringDirection;
-                    if (direction != UnityEngine.Vector3.zero)
+                    if (direction != Vector3.zero)
                     {
-                        ctx.Character.Move(direction);
+                        actor.Move(direction);
                     }
 
                     await UniTask.Yield(ctx.CancellationToken);
@@ -47,7 +49,7 @@ namespace Gast.Features.Npcs.Actions
             finally
             {
                 navigator.Stop();
-                ctx.Character.Move(UnityEngine.Vector3.zero);
+                actor.Move(Vector3.zero);
             }
         }
     }

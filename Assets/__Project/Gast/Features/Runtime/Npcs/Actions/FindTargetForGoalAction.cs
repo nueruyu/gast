@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
-    public class FindTargetForGoalAction : PrimitiveTask<StrategicWorldState>
+    public class FindTargetForGoalAction : PrimitiveTask<StrategicWorldState, AIContext<StrategicWorldState>>
     {
         readonly ICharacterRepository characterRepository;
         readonly SharedAIState sharedState;
@@ -22,20 +22,20 @@ namespace Gast.Features.Npcs.Actions
             this.sharedState = sharedState;
         }
 
-        protected override bool CanExecute(StrategicWorldState state) => state.HasGoal;
+        protected override bool CanExecute(StrategicWorldState worldState) => worldState.HasGoal;
 
-        protected override void Simulate(ref StrategicWorldState state)
+        protected override void Simulate(StrategicWorldState worldState)
         {
         }
 
-        protected override UniTask ExecuteAsync(Context<StrategicWorldState> ctx)
+        protected override UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
-            var goal = ctx.CurrentState.CurrentGoal;
+            var goal = ctx.WorldState.CurrentGoal;
             ICharacter foundTarget = null;
 
             if (goal is DefeatCharacterGoal defeatGoal)
             {
-                foundTarget = FindClosestCharacterOfType(ctx.Character, defeatGoal.TargetTypeId);
+                foundTarget = FindClosestCharacterOfType(ctx.Actor, defeatGoal.TargetTypeId);
             }
 
             sharedState.CombatTarget = foundTarget;

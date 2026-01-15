@@ -62,11 +62,12 @@ namespace Gast.Infrastructure.Factories
                 interactWithTargetAction,
                 clearInteractableTargetAction
             );
+            var combatDomain = CombatDomain.Create(settings.SoldierBrainSettings);
 
             return new SoldierBrain(
-                settings.SoldierBrainSettings,
-                goalManager,
                 strategicDomain,
+                combatDomain,
+                goalManager,
                 sharedState,
                 scope);
         }

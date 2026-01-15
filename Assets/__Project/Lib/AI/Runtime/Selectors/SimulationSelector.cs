@@ -5,73 +5,75 @@ using System.Threading;
 
 namespace Gast.Lib.AI.Selectors
 {
-    public class SimulationSelector<T> : IMethodSelector<T> where T : struct
+    public class SimulationSelector<TWorldState, TContext> : IMethodSelector<TWorldState, TContext>
+        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TContext : struct, IContext<TWorldState>
     {
-        readonly Func<T, float> worldEvaluator;
-        readonly IEnvironmentModel<T> envModel;
+        readonly Func<TWorldState, float> worldEvaluator;
+        readonly IEnvironmentModel<TWorldState> envModel;
+        readonly TWorldState simulationState = new();
 
-        public SimulationSelector(Func<T, float> worldEvaluator, IEnvironmentModel<T> envModel = null)
+        public SimulationSelector(Func<TWorldState, float> worldEvaluator, IEnvironmentModel<TWorldState> envModel = null)
         {
             this.worldEvaluator = worldEvaluator;
             this.envModel = envModel;
         }
 
-        public async UniTask<(Method<T>, T)> SelectAsync(
-            IReadOnlyList<Method<T>> methods,
-            T state,
+        public async UniTask<Method<TWorldState, TContext>> SelectAsync(
+            IReadOnlyList<Method<TWorldState, TContext>> methods,
+            TWorldState worldState,
             CheckOptions options,
             CancellationToken cancellationToken)
         {
-            Method<T> bestMethod = null;
+            Method<TWorldState, TContext> bestMethod = null;
             var bestOutcomeScore = float.NegativeInfinity;
-            var bestState = state;
 
             foreach (var method in methods)
             {
-                if (!method.CheckCondition(state))
+                if (!method.CheckCondition(worldState))
                     continue;
 
-                var (valid, resultState) = await SimulateMethodAsync(
+                simulationState.CopyFrom(worldState);
+
+                var valid = await SimulateMethodAsync(
                     method,
-                    state,
+                    simulationState,
                     options,
                     cancellationToken);
 
                 if (valid)
                 {
-                    var outcomeScore = worldEvaluator(resultState);
+                    var outcomeScore = worldEvaluator(simulationState);
                     if (outcomeScore > bestOutcomeScore)
                     {
                         bestOutcomeScore = outcomeScore;
                         bestMethod = method;
-                        bestState = resultState;
+                        worldState.CopyFrom(simulationState);
                     }
                 }
             }
 
-            if (bestMethod == null)
-            {
-                return (null, state);
-            }
-
-            return (bestMethod, bestState);
+            return bestMethod;
         }
 
-        public async UniTask<Method<T>> SelectInterruptsAsync(
-            IReadOnlyList<Method<T>> methods,
-            Method<T> currentMethod,
-            T state,
+        public async UniTask<Method<TWorldState, TContext>> SelectInterruptsAsync(
+            IReadOnlyList<Method<TWorldState, TContext>> methods,
+            Method<TWorldState, TContext> currentMethod,
+            TWorldState worldState,
             CheckOptions options,
             CancellationToken cancellationToken)
         {
-            var (currentMethodValid, currentResultState) = await SimulateMethodAsync(
+            simulationState.CopyFrom(worldState);
+
+            await SimulateMethodAsync(
                 currentMethod,
-                state,
+                simulationState,
                 options,
                 cancellationToken);
-            var currentScore = worldEvaluator(currentResultState);
 
-            Method<T> bestMethod = null;
+            var currentScore = worldEvaluator(simulationState);
+
+            Method<TWorldState, TContext> bestMethod = null;
             var bestOutcomeScore = currentScore;
 
             foreach (var method in methods)
@@ -79,60 +81,56 @@ namespace Gast.Lib.AI.Selectors
                 if (method == currentMethod)
                     continue;
 
-                if (!method.CheckCondition(state))
+                if (!method.CheckCondition(worldState))
                     continue;
 
-                var (valid, resultState) = await SimulateMethodAsync(
+                simulationState.CopyFrom(worldState);
+
+                var valid = await SimulateMethodAsync(
                     method,
-                    state,
+                    simulationState,
                     options,
                     cancellationToken);
 
                 if (valid)
                 {
-                    var outcomeScore = worldEvaluator(resultState);
+                    var outcomeScore = worldEvaluator(simulationState);
                     if (outcomeScore > bestOutcomeScore)
                     {
                         bestOutcomeScore = outcomeScore;
                         bestMethod = method;
+                        worldState.CopyFrom(simulationState);
                     }
                 }
-            }
-
-            if (bestMethod == null)
-            {
-                return null;
             }
 
             return bestMethod;
         }
 
-        async UniTask<(bool, T)> SimulateMethodAsync(
-            Method<T> method,
-            T state,
-            CheckOptions options,
-            CancellationToken cancellationToken)
+        async UniTask<bool> SimulateMethodAsync(
+           Method<TWorldState, TContext> method,
+           TWorldState worldState,
+           CheckOptions options,
+           CancellationToken cancellationToken)
         {
             var nextOptions = options.StepDown();
             foreach (var subTask in method.SubTasks)
             {
-                var (valid, resultState) = await subTask.ValidateAsync(state, nextOptions, cancellationToken);
-
+                var valid = await subTask.ValidateAsync(worldState, nextOptions, cancellationToken);
                 if (!valid)
                 {
-                    return (false, resultState);
+                    return false;
                 }
 
-                state = resultState;
-                envModel?.Simulate(ref state);
+                envModel?.Simulate(worldState);
             }
 
-            return (true, state);
+            return true;
         }
     }
 
-    public interface IEnvironmentModel<TWorldState> where TWorldState : struct
+    public interface IEnvironmentModel<TWorldState> where TWorldState : class
     {
-        void Simulate(ref TWorldState state);
+        void Simulate(TWorldState state);
     }
 }

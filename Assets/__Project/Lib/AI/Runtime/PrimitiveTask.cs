@@ -3,40 +3,41 @@ using System.Threading;
 
 namespace Gast.Lib.AI
 {
-    public abstract class PrimitiveTask<TWorldState> : ITask<TWorldState>
-        where TWorldState : struct
+    public abstract class PrimitiveTask<TWorldState, TContext> : ITask<TWorldState, TContext>
+        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TContext : struct, IContext<TWorldState>
     {
         public string Name { get; }
 
         protected PrimitiveTask(string name) => Name = name;
 
-        public UniTask<(bool, TWorldState)> ValidateAsync(
-            TWorldState state,
+        public UniTask<bool> ValidateAsync(
+            TWorldState worldState,
             CheckOptions options,
             CancellationToken cancellationToken)
         {
-            if (!CanExecute(state))
-                return UniTask.FromResult((false, state));
+            if (!CanExecute(worldState))
+                return UniTask.FromResult(false);
 
             if (options.MaxDepth != 0)
             {
-                Simulate(ref state);
+                Simulate(worldState);
             }
 
-            return UniTask.FromResult((true, state));
+            return UniTask.FromResult(true);
         }
 
-        public UniTask RunAsync(Context<TWorldState> ctx, CheckOptions? options)
+        public UniTask RunAsync(TContext ctx, CheckOptions? options)
         {
             ctx.CancellationToken.ThrowIfCancellationRequested();
             DebugLogger.LogExecutingAction(Name);
             return ExecuteAsync(ctx);
         }
 
-        protected abstract void Simulate(ref TWorldState state);
+        protected abstract void Simulate(TWorldState worldState);
 
-        protected abstract bool CanExecute(TWorldState state);
+        protected abstract bool CanExecute(TWorldState worldState);
 
-        protected abstract UniTask ExecuteAsync(Context<TWorldState> ctx);
+        protected abstract UniTask ExecuteAsync(TContext ctx);
     }
 }

@@ -4,37 +4,42 @@ using System.Threading;
 
 namespace Gast.Lib.AI.Selectors
 {
-    public class PrioritySelector<T> : IMethodSelector<T> where T : struct
+    public class PrioritySelector<TWorldState, TContext> : IMethodSelector<TWorldState, TContext>
+        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TContext : struct, IContext<TWorldState>
     {
-        public async UniTask<(Method<T>, T)> SelectAsync(
-            IReadOnlyList<Method<T>> methods,
-            T state,
+        readonly TWorldState simulationState = new();
+
+        public async UniTask<Method<TWorldState, TContext>> SelectAsync(
+            IReadOnlyList<Method<TWorldState, TContext>> methods,
+            TWorldState worldState,
             CheckOptions options,
             CancellationToken cancellationToken)
         {
             foreach (var method in methods)
             {
-                var (valid, resultState) = await ValidateMethod(method, state, options, cancellationToken);
+                simulationState.CopyFrom(worldState);
 
-                if (valid)
+                if (await ValidateMethod(method, simulationState, options, cancellationToken))
                 {
-                    return (method, resultState);
+                    worldState.CopyFrom(simulationState);
+                    return method;
                 }
             }
 
-            return (null, state);
+            return null;
         }
 
-        public async UniTask<Method<T>> SelectInterruptsAsync(
-            IReadOnlyList<Method<T>> methods,
-            Method<T> currentMethod,
-            T state,
+        public async UniTask<Method<TWorldState, TContext>> SelectInterruptsAsync(
+            IReadOnlyList<Method<TWorldState, TContext>> methods,
+            Method<TWorldState, TContext> currentMethod,
+            TWorldState worldState,
             CheckOptions options,
             CancellationToken cancellationToken)
         {
-            var (preferredMethod, _) = await SelectAsync(
+            var preferredMethod = await SelectAsync(
                 methods,
-                state,
+                worldState,
                 options,
                 cancellationToken);
 
@@ -45,33 +50,28 @@ namespace Gast.Lib.AI.Selectors
             return null;
         }
 
-        async UniTask<(bool, T)> ValidateMethod(
-            Method<T> method,
-            T state,
-            CheckOptions options,
-            CancellationToken cancellationToken)
+        async UniTask<bool> ValidateMethod(
+           Method<TWorldState, TContext> method,
+           TWorldState worldState,
+           CheckOptions options,
+           CancellationToken cancellationToken)
         {
-            if (!method.CheckCondition(state))
-                return (false, state);
+            if (!method.CheckCondition(worldState))
+                return false;
 
             if (options.MaxDepth != 0)
             {
                 var nextOptions = options.StepDown();
-
                 foreach (var task in method.SubTasks)
                 {
-                    var (valid, resultState) = await task.ValidateAsync(state, nextOptions, cancellationToken);
-
-                    if (!valid)
+                    if (!await task.ValidateAsync(worldState, nextOptions, cancellationToken))
                     {
-                        return (false, state);
+                        return false;
                     }
-
-                    state = resultState;
                 }
             }
 
-            return (true, state);
+            return true;
         }
     }
 }

@@ -4,91 +4,84 @@ using System.Threading;
 
 namespace Gast.Lib.AI.Selectors
 {
-    public class UtilitySelector<T> : IMethodSelector<T> where T : struct
+    public class UtilitySelector<TWorldState, TContext> : IMethodSelector<TWorldState, TContext>
+        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TContext : struct, IContext<TWorldState>
     {
-        public async UniTask<(Method<T>, T)> SelectAsync(
-            IReadOnlyList<Method<T>> methods,
-            T state,
+        readonly TWorldState simulationState = new();
+
+        public async UniTask<Method<TWorldState, TContext>> SelectAsync(
+            IReadOnlyList<Method<TWorldState, TContext>> methods,
+            TWorldState worldState,
             CheckOptions options,
             CancellationToken cancellationToken)
         {
-            Method<T> bestMethod = null;
+            Method<TWorldState, TContext> bestMethod = null;
             var bestScore = float.NegativeInfinity;
-            var bestState = state;
 
             foreach (var method in methods)
             {
-                var (valid, resultState) = await ValidateMethod(method, state, options, cancellationToken);
+                simulationState.CopyFrom(worldState);
 
-                if (!valid)
+                if (!await ValidateMethod(method, simulationState, options, cancellationToken))
                 {
                     continue;
                 }
 
-                var score = method.GetScore(resultState);
+                var score = method.GetScore(worldState);
                 if (score > bestScore)
                 {
                     bestScore = score;
                     bestMethod = method;
-                    bestState = resultState;
+                    worldState.CopyFrom(simulationState);
                 }
             }
 
-            if (bestMethod == null)
-            {
-                return (null, state);
-            }
-
-            return (bestMethod, bestState);
+            return bestMethod;
         }
 
-        public async UniTask<Method<T>> SelectInterruptsAsync(
-            IReadOnlyList<Method<T>> methods,
-            Method<T> currentMethod,
-            T state,
+        public async UniTask<Method<TWorldState, TContext>> SelectInterruptsAsync(
+            IReadOnlyList<Method<TWorldState, TContext>> methods,
+            Method<TWorldState, TContext> currentMethod,
+            TWorldState worldState,
             CheckOptions options,
             CancellationToken cancellationToken)
         {
-            var (preferredMethod, resultState) = await SelectAsync(
+            var preferredMethod = await SelectAsync(
                 methods,
-                state,
+                worldState,
                 options,
                 cancellationToken);
 
             if (preferredMethod != null &&
-                preferredMethod.GetScore(resultState) < currentMethod.GetScore(resultState))
+                preferredMethod.GetScore(worldState) < currentMethod.GetScore(worldState))
                 return preferredMethod;
 
             return null;
         }
 
-        async UniTask<(bool, T)> ValidateMethod(
-            Method<T> method,
-            T state,
-            CheckOptions options,
-            CancellationToken cancellationToken)
+        async UniTask<bool> ValidateMethod(
+           Method<TWorldState, TContext> method,
+           TWorldState worldState,
+           CheckOptions options,
+           CancellationToken cancellationToken)
         {
-            if (!method.CheckCondition(state))
-                return (false, state);
+            if (!method.CheckCondition(worldState))
+                return false;
 
             if (options.MaxDepth != 0)
             {
                 var nextOptions = options.StepDown();
-
                 foreach (var task in method.SubTasks)
                 {
-                    var (valid, resultState) = await task.ValidateAsync(state, nextOptions, cancellationToken);
-
-                    if (!valid)
+                    if (!await task.ValidateAsync(worldState, nextOptions, cancellationToken))
                     {
-                        return (false, state);
+                        return false;
                     }
-
-                    state = resultState;
                 }
             }
 
-            return (true, state);
+            return true;
         }
     }
 }

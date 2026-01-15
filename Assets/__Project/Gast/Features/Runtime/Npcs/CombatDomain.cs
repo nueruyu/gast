@@ -5,9 +5,9 @@ namespace Gast.Features.Npcs
 {
     public static class CombatDomain
     {
-        public static Domain<CombatWorldState> Create(SoldierBrainSettings settings)
+        public static Domain<CombatWorldState, AIContext<CombatWorldState>> Create(SoldierBrainSettings settings)
         {
-            var builder = new DomainBuilder<CombatWorldState>();
+            var builder = new DomainBuilder<CombatWorldState, AIContext<CombatWorldState>>();
 
             builder
                 .RegisterTask(settings.ChaseTargetAction)

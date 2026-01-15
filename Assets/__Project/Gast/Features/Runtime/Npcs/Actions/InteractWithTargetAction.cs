@@ -5,7 +5,7 @@ using Gast.Lib.AI;
 
 namespace Gast.Features.Npcs.Actions
 {
-    public class InteractWithTargetAction : PrimitiveTask<StrategicWorldState>
+    public class InteractWithTargetAction : PrimitiveTask<StrategicWorldState, AIContext<StrategicWorldState>>
     {
         readonly ICommandDispatcher commandDispatcher;
 
@@ -14,20 +14,20 @@ namespace Gast.Features.Npcs.Actions
             this.commandDispatcher = commandDispatcher;
         }
 
-        protected override bool CanExecute(StrategicWorldState state)
+        protected override bool CanExecute(StrategicWorldState worldState)
         {
-            return state.HasInteractableTarget && state.IsInRangeToInteract;
+            return worldState.HasInteractableTarget && worldState.IsInRangeToInteract;
         }
 
-        protected override void Simulate(ref StrategicWorldState state)
+        protected override void Simulate(StrategicWorldState worldState)
         {
-            state.HasInteractableTarget = false;
-            state.IsInRangeToInteract = false;
+            worldState.HasInteractableTarget = false;
+            worldState.IsInRangeToInteract = false;
         }
 
-        protected override async UniTask ExecuteAsync(Context<StrategicWorldState> ctx)
+        protected override async UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
-            var command = new InteractCommand(ctx.Character.Id, ctx.CurrentState.InteractableTargetId);
+            var command = new InteractCommand(ctx.Actor.Id, ctx.WorldState.InteractableTargetId);
             await commandDispatcher.DispatchAsync<InteractCommand, bool>(command);
         }
     }

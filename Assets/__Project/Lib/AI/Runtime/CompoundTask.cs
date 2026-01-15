@@ -1,40 +1,45 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
+using UnityEngine;
 
 namespace Gast.Lib.AI
 {
-    public class CompoundTask<TWorldState> : ITask<TWorldState>
-        where TWorldState : struct
+    public class CompoundTask<TWorldState, TContext> : ITask<TWorldState, TContext>
+        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TContext : struct, IContext<TWorldState>
     {
         public string Name { get; }
-        public List<Method<TWorldState>> Methods { get; } = new();
-        public IMethodSelector<TWorldState> Selector { get; set; } = new Selectors.PrioritySelector<TWorldState>();
+        public List<Method<TWorldState, TContext>> Methods { get; } = new();
+        public IMethodSelector<TWorldState, TContext> Selector { get; set; } = new Selectors.PrioritySelector<TWorldState, TContext>();
         public int LocalDepthLimit { get; set; } = -1;
+        readonly TWorldState simulationState = new();
 
         public CompoundTask(string name) => Name = name;
 
-        public async UniTask<(bool, TWorldState)> ValidateAsync(
-            TWorldState state,
+        public async UniTask<bool> ValidateAsync(
+            TWorldState worldState,
             CheckOptions options,
             CancellationToken cancellationToken)
         {
-            var (method, resultState) = await SelectCurrentMethodAsync(
-                state,
+            var method = await SelectCurrentMethodAsync(
+                worldState,
                 options,
                 cancellationToken);
 
-            var success = method != null;
-            return (success, resultState);
+            return method != null;
         }
 
-        public async UniTask RunAsync(Context<TWorldState> ctx, CheckOptions? options)
+        public async UniTask RunAsync(TContext ctx, CheckOptions? options)
         {
-            var (method, _) = await SelectCurrentMethodAsync(
-                ctx.PlanState,
-                options,
+            var effectiveOptions = GetEffectiveOptions(options);
+
+            simulationState.CopyFrom(ctx.WorldState);
+
+            var method = await SelectCurrentMethodAsync(
+                simulationState,
+                effectiveOptions,
                 ctx.CancellationToken);
 
             if (method == null)
@@ -43,15 +48,15 @@ namespace Gast.Lib.AI
                 return;
             }
 
-            DebugLogger.LogMethodSelected(Name, method.Name, ctx.PlanState);
+            DebugLogger.LogMethodSelected(Name, method.Name, ctx.WorldState);
 
             using var localCts = CancellationTokenSource.CreateLinkedTokenSource(ctx.CancellationToken);
 
             try
             {
                 await UniTask.WhenAny(
-                    RunMethodAsync(method, ctx, localCts.Token),
-                    MonitorInterruptsAsync(method, ctx, options, localCts.Token)
+                    RunMethodAsync(method, ctx, effectiveOptions, localCts.Token),
+                    MonitorInterruptsAsync(method, ctx, effectiveOptions, localCts.Token)
                 );
             }
             finally
@@ -61,32 +66,35 @@ namespace Gast.Lib.AI
         }
 
         async UniTask RunMethodAsync(
-            Method<TWorldState> method,
-            Context<TWorldState> ctx,
+            Method<TWorldState, TContext> method,
+            TContext ctx,
+            CheckOptions options,
             CancellationToken cancellationToken)
         {
+            var nextOptions = options.StepDown();
             foreach (var task in method.SubTasks)
             {
-                var subCtx = ctx.WithCancellationToken(cancellationToken);
-                await task.RunAsync(subCtx);
+                await task.RunAsync(ctx, nextOptions);
             }
         }
 
         async UniTask MonitorInterruptsAsync(
-            Method<TWorldState> currentMethod,
-            Context<TWorldState> ctx,
-            CheckOptions? options,
+            Method<TWorldState, TContext> currentMethod,
+            TContext ctx,
+            CheckOptions options,
             CancellationToken cancellationToken)
         {
             while (true)
             {
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
 
+                simulationState.CopyFrom(ctx.WorldState);
+
                 var interruptsMethod = await Selector.SelectInterruptsAsync(
                     Methods,
                     currentMethod,
-                    ctx.CurrentState,
-                    GetEffectiveOptions(options),
+                    simulationState,
+                    options,
                     cancellationToken);
 
                 if (interruptsMethod != null)
@@ -97,12 +105,13 @@ namespace Gast.Lib.AI
             }
         }
 
-        UniTask<(Method<TWorldState>, TWorldState)> SelectCurrentMethodAsync(
-           TWorldState state,
+        UniTask<Method<TWorldState, TContext>> SelectCurrentMethodAsync(
+           TWorldState worldState,
            CheckOptions? options,
            CancellationToken cancellationToken)
         {
-            return Selector.SelectAsync(Methods, state, GetEffectiveOptions(options), cancellationToken);
+            var effectiveOptions = GetEffectiveOptions(options);
+            return Selector.SelectAsync(Methods, worldState, effectiveOptions, cancellationToken);
         }
 
         CheckOptions GetEffectiveOptions(CheckOptions? options)
