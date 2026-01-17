@@ -2,7 +2,6 @@
     "name": "Gast.Lib.AI",
     "rootNamespace": "Gast.Lib.AI",
     "references": [
-        "Gast.Domain",
         "UniTask"
     ],
     "includePlatforms": [],
