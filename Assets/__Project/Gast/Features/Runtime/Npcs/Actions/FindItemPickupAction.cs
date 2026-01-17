@@ -3,35 +3,37 @@ using Cysharp.Threading.Tasks;
 using Gast.Api.AI.Goals;
 using Gast.Domain.Interactions;
 using Gast.Domain.Pickups;
-using Gast.Lib.AI.Tasks;
+using Gast.Lib.AI;
 using UnityEngine;
 
 namespace Gast.Features.Npcs.Actions
 {
-    public class FindItemPickupAction : PrimitiveTask<StrategicWorldState, AIContext<StrategicWorldState>>
+    public class FindItemPickupAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
     {
         readonly SharedAIState sharedState;
         readonly IPickupRepository pickupRepository;
 
         public FindItemPickupAction(
             SharedAIState sharedState,
-            IPickupRepository pickupRepository) : base("FindItemPickupAction")
+            IPickupRepository pickupRepository)
         {
             this.sharedState = sharedState;
             this.pickupRepository = pickupRepository;
         }
 
-        protected override bool CanExecute(StrategicWorldState worldState)
+        public string Name => "FindItemPickupAction";
+
+        public bool CanExecute(StrategicWorldState worldState)
         {
             return worldState.CurrentGoal is AcquireItemGoal && !worldState.HasInteractableTarget;
         }
 
-        protected override void Simulate(StrategicWorldState worldState)
+        public void Simulate(StrategicWorldState worldState)
         {
             worldState.HasInteractableTarget = true;
         }
 
-        protected override async UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
+        public async UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
             var goal = (AcquireItemGoal)ctx.WorldState.CurrentGoal;
 

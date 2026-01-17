@@ -4,25 +4,27 @@ using System.Threading;
 
 namespace Gast.Lib.AI.Tasks
 {
-    public abstract class PrimitiveTask<TWorldState, TContext> : ITask<TWorldState, TContext>
+    public class PrimitiveTask<TWorldState, TContext> : ITask<TWorldState, TContext>
         where TWorldState : class, IWorldState<TWorldState>, new()
         where TContext : struct, IContext<TContext, TWorldState>
     {
-        public string Name { get; }
+        readonly IAction<TWorldState, TContext> action;
 
-        protected PrimitiveTask(string name)
+        public string Name => action.Name;
+
+        public PrimitiveTask(IAction<TWorldState, TContext> action)
         {
-            Name = name;
+            this.action = action;
         }
 
         public UniTask<bool> ValidateAsync(
             TWorldState worldState,
             CancellationToken cancellationToken)
         {
-            if (!CanExecute(worldState))
+            if (!action.CanExecute(worldState))
                 return UniTask.FromResult(false);
 
-            Simulate(worldState);
+            action.Simulate(worldState);
 
             return UniTask.FromResult(true);
         }
@@ -31,13 +33,7 @@ namespace Gast.Lib.AI.Tasks
         {
             ctx.CancellationToken.ThrowIfCancellationRequested();
             DebugLogger.LogExecutingAction(Name);
-            return ExecuteAsync(ctx);
+            return action.ExecuteAsync(ctx);
         }
-
-        protected abstract void Simulate(TWorldState worldState);
-
-        protected abstract bool CanExecute(TWorldState worldState);
-
-        protected abstract UniTask ExecuteAsync(TContext ctx);
     }
 }

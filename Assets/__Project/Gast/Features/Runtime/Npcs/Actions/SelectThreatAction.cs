@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
-using Gast.Lib.AI.Tasks;
+using Gast.Lib.AI;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -8,22 +8,24 @@ using UnityEngine;
 namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
-    public class SelectThreatAction : PrimitiveTask<StrategicWorldState, AIContext<StrategicWorldState>>
+    public class SelectThreatAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
     {
         readonly SharedAIState sharedState;
 
-        public SelectThreatAction(SharedAIState sharedState) : base("SelectThreatAction")
+        public SelectThreatAction(SharedAIState sharedState)
         {
             this.sharedState = sharedState;
         }
 
-        protected override bool CanExecute(StrategicWorldState worldState) => worldState.IsThreatened;
+        public string Name => "SelectThreatAction";
 
-        protected override void Simulate(StrategicWorldState worldState)
+        public bool CanExecute(StrategicWorldState worldState) => worldState.IsThreatened;
+
+        public void Simulate(StrategicWorldState worldState)
         {
         }
 
-        protected override UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
+        public UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
             var self = ctx.Actor;
             var closestThreat = self.VisionSensor.VisibleCharacters

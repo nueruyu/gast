@@ -1,28 +1,26 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System;
-using Gast.Lib.AI.Tasks;
+using Gast.Lib.AI;
 
 namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
-    public class ChaseTargetAction : PrimitiveTask<CombatWorldState, AIContext<CombatWorldState>>
+    public class ChaseTargetAction : IAction<CombatWorldState, AIContext<CombatWorldState>>
     {
-        public ChaseTargetAction() : base("ChaseTarget")
-        {
-        }
+        public string Name => "ChaseTarget";
 
-        protected override bool CanExecute(CombatWorldState worldState)
+        public bool CanExecute(CombatWorldState worldState)
         {
             return worldState.HasTarget && !worldState.IsInAttackRange;
         }
 
-        protected override void Simulate(CombatWorldState worldState)
+        public void Simulate(CombatWorldState worldState)
         {
             worldState.DistanceToTarget = worldState.AttackRange;
         }
 
-        protected override async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
+        public async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
         {
             var actor = ctx.Actor;
             actor.SetSprint(true);

@@ -1,26 +1,24 @@
 using Cysharp.Threading.Tasks;
-using Gast.Lib.AI.Tasks;
+using Gast.Lib.AI;
 using UnityEngine;
 
 namespace Gast.Features.Npcs.Actions
 {
-    public class MoveToInteractableAction : PrimitiveTask<StrategicWorldState, AIContext<StrategicWorldState>>
+    public class MoveToInteractableAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
     {
-        public MoveToInteractableAction() : base("MoveToInteractableAction")
-        {
-        }
+        public string Name => "MoveToInteractableAction";
 
-        protected override bool CanExecute(StrategicWorldState worldState)
+        public bool CanExecute(StrategicWorldState worldState)
         {
             return worldState.HasInteractableTarget;
         }
 
-        protected override void Simulate(StrategicWorldState worldState)
+        public void Simulate(StrategicWorldState worldState)
         {
             worldState.IsInRangeToInteract = true;
         }
 
-        protected override async UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
+        public async UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
             var actor = ctx.Actor;
             var navigator = actor.NavigationProvider;

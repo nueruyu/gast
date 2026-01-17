@@ -1,26 +1,28 @@
 using Cysharp.Threading.Tasks;
-using Gast.Lib.AI.Tasks;
+using Gast.Lib.AI;
 using System;
 
 namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
-    public class ClearTargetAction : PrimitiveTask<StrategicWorldState, AIContext<StrategicWorldState>>
+    public class ClearTargetAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
     {
         readonly SharedAIState sharedState;
 
-        public ClearTargetAction(SharedAIState sharedState) : base("ClearTarget")
+        public ClearTargetAction(SharedAIState sharedState)
         {
             this.sharedState = sharedState;
         }
 
-        protected override bool CanExecute(StrategicWorldState worldState) => true;
+        public string Name => "ClearTarget";
 
-        protected override void Simulate(StrategicWorldState worldState)
+        public bool CanExecute(StrategicWorldState worldState) => true;
+
+        public void Simulate(StrategicWorldState worldState)
         {
         }
 
-        protected override UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
+        public UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
             sharedState.CombatTarget = null;
             return UniTask.CompletedTask;

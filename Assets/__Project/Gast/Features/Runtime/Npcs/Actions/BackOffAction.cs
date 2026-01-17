@@ -1,28 +1,26 @@
 using Cysharp.Threading.Tasks;
-using Gast.Lib.AI.Tasks;
+using Gast.Lib.AI;
 using System;
 using UnityEngine;
 
 namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
-    public class BackOffAction : PrimitiveTask<CombatWorldState, AIContext<CombatWorldState>>
+    public class BackOffAction : IAction<CombatWorldState, AIContext<CombatWorldState>>
     {
-        public BackOffAction() : base("BackOff")
-        {
-        }
+        public string Name => "BackOff";
 
-        protected override bool CanExecute(CombatWorldState worldState)
+        public bool CanExecute(CombatWorldState worldState)
         {
             return worldState.IsInAttackRange && !worldState.IsReadyToAttack;
         }
 
-        protected override void Simulate(CombatWorldState worldState)
+        public void Simulate(CombatWorldState worldState)
         {
             worldState.DistanceToTarget += 2.0f;
         }
 
-        protected override async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
+        public async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
         {
             var actor = ctx.Actor;
             var worldState = ctx.WorldState;

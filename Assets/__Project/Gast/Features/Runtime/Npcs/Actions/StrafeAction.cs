@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Gast.Lib.AI.Tasks;
+using Gast.Lib.AI;
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -7,25 +7,23 @@ using Random = UnityEngine.Random;
 namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
-    public class StrafeAction : PrimitiveTask<CombatWorldState, AIContext<CombatWorldState>>
+    public class StrafeAction : IAction<CombatWorldState, AIContext<CombatWorldState>>
     {
         const float MinDuration = 1.0f;
         const float MaxDuration = 3.0f;
 
-        public StrafeAction() : base("Strafe")
-        {
-        }
+        public string Name => "Strafe";
 
-        protected override bool CanExecute(CombatWorldState worldState)
+        public bool CanExecute(CombatWorldState worldState)
         {
             return worldState.HasTarget && worldState.IsInCombatRange;
         }
 
-        protected override void Simulate(CombatWorldState worldState)
+        public void Simulate(CombatWorldState worldState)
         {
         }
 
-        protected override async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
+        public async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
         {
             var actor = ctx.Actor;
             var navigator = actor.NavigationProvider;

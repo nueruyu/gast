@@ -1,3 +1,4 @@
+using Gast.Lib.AI.Tasks;
 using System;
 using System.Collections.Generic;
 
@@ -46,6 +47,15 @@ namespace Gast.Lib.AI.Builders
         public MethodBuilder<TWorldState, TContext> Do(params ITask<TWorldState, TContext>[] tasks)
         {
             subTasks.AddRange(tasks);
+            return this;
+        }
+
+        public MethodBuilder<TWorldState, TContext> Do(params IAction<TWorldState, TContext>[] actions)
+        {
+            foreach (var action in actions)
+            {
+                subTasks.Add(new PrimitiveTask<TWorldState, TContext>(action));
+            }
             return this;
         }
 

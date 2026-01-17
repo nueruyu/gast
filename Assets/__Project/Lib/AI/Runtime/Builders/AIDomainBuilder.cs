@@ -17,6 +17,13 @@ namespace Gast.Lib.AI.Builders
             return this;
         }
 
+        public AIDomainBuilder<TWorldState, TContext> RegisterAction(IAction<TWorldState, TContext> action)
+        {
+            var task = new PrimitiveTask<TWorldState, TContext>(action);
+            taskRegistry[task.Name] = task;
+            return this;
+        }
+
         public CompoundTaskBuilder<TWorldState, TContext> DefineCompound(string name)
         {
             return new CompoundTaskBuilder<TWorldState, TContext>(this, name);

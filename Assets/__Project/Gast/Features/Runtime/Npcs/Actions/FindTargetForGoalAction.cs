@@ -1,7 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Gast.Api.AI.Goals;
 using Gast.Domain.Characters;
-using Gast.Lib.AI.Tasks;
+using Gast.Lib.AI;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -9,26 +9,28 @@ using UnityEngine;
 namespace Gast.Features.Npcs.Actions
 {
     [Serializable]
-    public class FindTargetForGoalAction : PrimitiveTask<StrategicWorldState, AIContext<StrategicWorldState>>
+    public class FindTargetForGoalAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
     {
         readonly ICharacterRepository characterRepository;
         readonly SharedAIState sharedState;
 
         public FindTargetForGoalAction(
             ICharacterRepository characterRepository,
-            SharedAIState sharedState) : base("FindTargetForGoalAction")
+            SharedAIState sharedState)
         {
             this.characterRepository = characterRepository;
             this.sharedState = sharedState;
         }
 
-        protected override bool CanExecute(StrategicWorldState worldState) => worldState.HasGoal;
+        public string Name => "FindTargetForGoalAction";
 
-        protected override void Simulate(StrategicWorldState worldState)
+        public bool CanExecute(StrategicWorldState worldState) => worldState.HasGoal;
+
+        public void Simulate(StrategicWorldState worldState)
         {
         }
 
-        protected override UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
+        public UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
             var goal = ctx.WorldState.CurrentGoal;
             ICharacter foundTarget = null;
