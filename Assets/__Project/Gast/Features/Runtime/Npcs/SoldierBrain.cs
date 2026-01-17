@@ -12,8 +12,8 @@ namespace Gast.Features.Npcs
 {
     public class SoldierBrain : ICharacterBrain, IGoalAssignable
     {
-        readonly AIDomain<StrategicWorldState, AIContext<StrategicWorldState>> strategicDomain;
-        readonly AIDomain<CombatWorldState, AIContext<CombatWorldState>> combatDomain;
+        readonly StrategicDomain strategicDomain;
+        readonly CombatDomain combatDomain;
         readonly GoalManager goalManager;
 
         ICharacter character;
@@ -27,8 +27,8 @@ namespace Gast.Features.Npcs
         readonly CombatWorldState combatState = new();
 
         public SoldierBrain(
-            AIDomain<StrategicWorldState, AIContext<StrategicWorldState>> strategicDomain,
-            AIDomain<CombatWorldState, AIContext<CombatWorldState>> combatDomain,
+            StrategicDomain strategicDomain,
+            CombatDomain combatDomain,
             GoalManager goalManager)
         {
             this.strategicDomain = strategicDomain;

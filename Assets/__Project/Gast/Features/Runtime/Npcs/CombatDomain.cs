@@ -1,33 +1,40 @@
+using Gast.Features.Npcs.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 
 namespace Gast.Features.Npcs
 {
-    public static class CombatDomain
+    public class CombatDomain
     {
-        public static AIDomain<CombatWorldState, AIContext<CombatWorldState>> Create(SoldierBrainSettings settings)
+        readonly AIDomain<CombatWorldState, AIContext<CombatWorldState>> domain;
+
+        public CombatDomain(
+            ChaseTargetAction chaseTargetAction,
+            MeleeAttackAction meleeAttackAction,
+            BackOffAction backOffAction,
+            StrafeAction strafeAction)
         {
-            return new AIDomainBuilder<CombatWorldState, AIContext<CombatWorldState>>()
-                .RegisterAction(settings.ChaseTargetAction)
-                .RegisterAction(settings.MeleeAttackAction)
-                .RegisterAction(settings.BackOffAction)
-                .RegisterAction(settings.StrafeAction)
+            domain = new AIDomainBuilder<CombatWorldState, AIContext<CombatWorldState>>()
+                .RegisterAction(chaseTargetAction)
+                .RegisterAction(meleeAttackAction)
+                .RegisterAction(backOffAction)
+                .RegisterAction(strafeAction)
                 .DefineCompound("EngageTarget")
                     .AddMethod("Attack")
                         .Condition(s => s.IsInAttackRange && s.IsReadyToAttack)
-                        .Do(settings.MeleeAttackAction)
+                        .Do(meleeAttackAction)
                     .End()
                     .AddMethod("Withdraw")
                         .Condition(s => s.IsInAttackRange && !s.IsReadyToAttack)
-                        .Do(settings.BackOffAction)
+                        .Do(backOffAction)
                     .End()
                     .AddMethod("Approach_Tactical")
                         .Condition(s => !s.IsInAttackRange && s.IsInCombatRange)
-                        .Do(settings.StrafeAction)
+                        .Do(strafeAction)
                     .End()
                     .AddMethod("Chase")
                         .Condition(s => !s.IsInCombatRange)
-                        .Do(settings.ChaseTargetAction)
+                        .Do(chaseTargetAction)
                     .End()
                 .End()
                 .DefineCompound("Root")
@@ -37,6 +44,11 @@ namespace Gast.Features.Npcs
                     .End()
                 .End()
                 .Build("Root");
+        }
+
+        public AIRunner<CombatWorldState, AIContext<CombatWorldState>> CreateRunner()
+        {
+            return domain.CreateRunner();
         }
     }
 }

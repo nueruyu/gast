@@ -5,9 +5,11 @@ using Gast.Lib.AI.Builders;
 
 namespace Gast.Features.Npcs
 {
-    public static class StrategicDomain
+    public class StrategicDomain
     {
-        public static AIDomain<StrategicWorldState, AIContext<StrategicWorldState>> Create(
+        readonly AIDomain<StrategicWorldState, AIContext<StrategicWorldState>> domain;
+
+        public StrategicDomain(
             FindTargetForGoalAction findTargetForGoalAction,
             SelectThreatAction selectThreatAction,
             ClearTargetAction clearTargetAction,
@@ -16,7 +18,7 @@ namespace Gast.Features.Npcs
             InteractWithTargetAction interactWithTargetAction,
             ClearInteractableTargetAction clearInteractableTargetAction)
         {
-            return new AIDomainBuilder<StrategicWorldState, AIContext<StrategicWorldState>>()
+            domain = new AIDomainBuilder<StrategicWorldState, AIContext<StrategicWorldState>>()
                 .RegisterAction(findTargetForGoalAction)
                 .RegisterAction(selectThreatAction)
                 .RegisterAction(clearTargetAction)
@@ -50,6 +52,11 @@ namespace Gast.Features.Npcs
                     .End()
                 .End()
                 .Build("Root");
+        }
+
+        public AIRunner<StrategicWorldState, AIContext<StrategicWorldState>> CreateRunner()
+        {
+            return domain.CreateRunner();
         }
     }
 }

@@ -11,10 +11,6 @@ namespace Gast.Infrastructure.Settings
         [SerializeField]
         CharacterTypeReference[] soldierBrainTypes = { };
 
-        [SerializeField]
-        SoldierBrainSettings soldierBrainSettings = new();
-
         public CharacterTypeReference[] SoldierBrainTypes => soldierBrainTypes;
-        public SoldierBrainSettings SoldierBrainSettings => soldierBrainSettings;
     }
 }

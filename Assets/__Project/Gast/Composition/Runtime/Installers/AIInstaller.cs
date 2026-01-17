@@ -14,6 +14,11 @@ namespace Gast.Composition.Installers
 
             builder.Register<GoalManager>(Lifetime.Transient);
 
+            builder.Register<ChaseTargetAction>(Lifetime.Transient);
+            builder.Register<MeleeAttackAction>(Lifetime.Transient);
+            builder.Register<BackOffAction>(Lifetime.Transient);
+            builder.Register<StrafeAction>(Lifetime.Transient);
+
             builder.Register<ClearTargetAction>(Lifetime.Transient);
             builder.Register<FindTargetForGoalAction>(Lifetime.Transient);
             builder.Register<SelectThreatAction>(Lifetime.Transient);
@@ -22,6 +27,11 @@ namespace Gast.Composition.Installers
             builder.Register<MoveToInteractableAction>(Lifetime.Transient);
             builder.Register<InteractWithTargetAction>(Lifetime.Transient);
             builder.Register<ClearInteractableTargetAction>(Lifetime.Transient);
+
+            builder.Register<StrategicDomain>(Lifetime.Transient);
+            builder.Register<CombatDomain>(Lifetime.Transient);
+
+            builder.Register<SoldierBrain>(Lifetime.Transient);
         }
     }
 }
