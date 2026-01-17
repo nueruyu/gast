@@ -49,43 +49,35 @@ namespace Gast.Features.Combat.Methods
 
         async UniTaskVoid ExecuteAttackAsync(CharacterContext attacker, CancellationToken cancellationToken)
         {
-            try
-            {
-                var animator = attacker.Animator;
-                if (animator)
-                    animator.PlayAttack();
+            var animator = attacker.Animator;
+            if (animator)
+                animator.PlayAttack();
 
-                await UniTask.Delay(
-                    TimeSpan.FromSeconds(settings.AnimationTriggerDelay),
-                    cancellationToken: cancellationToken);
+            await UniTask.Delay(
+                TimeSpan.FromSeconds(settings.AnimationTriggerDelay),
+                cancellationToken: cancellationToken);
 
-                var attackerTransform = attacker.Body.transform;
+            var attackerTransform = attacker.Body.transform;
 
-                var forward = attackerTransform.forward;
-                var spawnPosition = attackerTransform.position + settings.Offset + forward * settings.Range;
-                var spawnRotation = attackerTransform.rotation;
+            var forward = attackerTransform.forward;
+            var spawnPosition = attackerTransform.position + settings.Offset + forward * settings.Range;
+            var spawnRotation = attackerTransform.rotation;
 
-                var damageArea = UnityEngine.Object.Instantiate(
-                    settings.DamageAreaPrefab,
-                    spawnPosition,
-                    spawnRotation);
+            var damageArea = UnityEngine.Object.Instantiate(
+                settings.DamageAreaPrefab,
+                spawnPosition,
+                spawnRotation);
 
-                damageArea.transform.localScale = settings.HitboxSize;
+            damageArea.transform.localScale = settings.HitboxSize;
 
-                damageArea.Initialize(
-                    attacker.Id,
-                    attacker.Faction,
-                    settings.Duration);
+            damageArea.Initialize(
+                attacker.Id,
+                attacker.Faction,
+                settings.Duration);
 
-                damageArea.Hit
-                    .Subscribe(OnAttackHit)
-                    .AddTo(damageArea.destroyCancellationToken);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"[MeleeAttackMethod] Error executing attack: {ex}");
-                Debug.LogException(ex);
-            }
+            damageArea.Hit
+                .Subscribe(OnAttackHit)
+                .AddTo(damageArea.destroyCancellationToken);
         }
 
         void OnAttackHit(DamageHitInfo hit)
