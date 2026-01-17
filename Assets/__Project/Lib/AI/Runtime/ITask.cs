@@ -5,7 +5,7 @@ namespace Gast.Lib.AI
 {
     public interface ITask<TWorldState, in TContext>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TWorldState>
+        where TContext : struct, IContext<TContext, TWorldState>
     {
         string Name { get; }
 

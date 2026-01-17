@@ -7,7 +7,7 @@ namespace Gast.Lib.AI.Selectors
 {
     public class SimulationSelector<TWorldState, TContext> : IMethodSelector<TWorldState, TContext>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TWorldState>
+        where TContext : struct, IContext<TContext, TWorldState>
     {
         readonly Func<TWorldState, float> worldEvaluator;
         readonly IEnvironmentModel<TWorldState> envModel;

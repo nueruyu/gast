@@ -8,7 +8,7 @@ namespace Gast.Lib.AI
 {
     public class CompoundTask<TWorldState, TContext> : ITask<TWorldState, TContext>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TWorldState>
+        where TContext : struct, IContext<TContext, TWorldState>
     {
         public string Name { get; }
         public List<Method<TWorldState, TContext>> Methods { get; } = new();
@@ -51,12 +51,13 @@ namespace Gast.Lib.AI
             DebugLogger.LogMethodSelected(Name, method.Name, ctx.WorldState);
 
             using var localCts = CancellationTokenSource.CreateLinkedTokenSource(ctx.CancellationToken);
+            var localCtx = ctx.WithCancellationToken(localCts.Token);
 
             try
             {
                 await UniTask.WhenAny(
-                    RunMethodAsync(method, ctx, effectiveOptions, localCts.Token),
-                    MonitorInterruptsAsync(method, ctx, effectiveOptions, localCts.Token)
+                    RunMethodAsync(method, localCtx, effectiveOptions),
+                    MonitorInterruptsAsync(method, localCtx, effectiveOptions)
                 );
             }
             finally
@@ -68,8 +69,7 @@ namespace Gast.Lib.AI
         async UniTask RunMethodAsync(
             Method<TWorldState, TContext> method,
             TContext ctx,
-            CheckOptions options,
-            CancellationToken cancellationToken)
+            CheckOptions options)
         {
             var nextOptions = options.StepDown();
             foreach (var task in method.SubTasks)
@@ -81,12 +81,11 @@ namespace Gast.Lib.AI
         async UniTask MonitorInterruptsAsync(
             Method<TWorldState, TContext> currentMethod,
             TContext ctx,
-            CheckOptions options,
-            CancellationToken cancellationToken)
+            CheckOptions options)
         {
             while (true)
             {
-                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+                await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
 
                 simulationState.CopyFrom(ctx.WorldState);
 
@@ -95,7 +94,7 @@ namespace Gast.Lib.AI
                     currentMethod,
                     simulationState,
                     options,
-                    cancellationToken);
+                    ctx.CancellationToken);
 
                 if (interruptsMethod != null)
                 {

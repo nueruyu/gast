@@ -5,7 +5,7 @@ namespace Gast.Lib.AI
 {
     public abstract class PrimitiveTask<TWorldState, TContext> : ITask<TWorldState, TContext>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TWorldState>
+        where TContext : struct, IContext<TContext, TWorldState>
     {
         public string Name { get; }
 

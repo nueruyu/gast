@@ -9,7 +9,7 @@ namespace Gast.Lib.AI
     /// <typeparam name="TWorldState">The type of the world state.</typeparam>
     public interface IAgentRunner<in TWorldState, TContext>
        where TWorldState : class, IWorldState<TWorldState>, new()
-       where TContext : struct, IContext<TWorldState>
+       where TContext : struct, IContext<TContext, TWorldState>
     {
         /// <summary>
         /// Runs a single thinking cycle of the agent.

@@ -6,7 +6,7 @@ namespace Gast.Lib.AI.Builders
 {
     public class DomainBuilder<TWorldState, TContext>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TWorldState>
+        where TContext : struct, IContext<TContext, TWorldState>
     {
         readonly Dictionary<string, ITask<TWorldState, TContext>> taskRegistry = new();
         ITask<TWorldState, TContext> rootTask;

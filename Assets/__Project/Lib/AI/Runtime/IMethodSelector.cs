@@ -6,7 +6,7 @@ namespace Gast.Lib.AI
 {
     public interface IMethodSelector<TWorldState, TContext>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TWorldState>
+        where TContext : struct, IContext<TContext, TWorldState>
     {
         UniTask<Method<TWorldState, TContext>> SelectAsync(
             IReadOnlyList<Method<TWorldState, TContext>> methods,

@@ -4,7 +4,7 @@ namespace Gast.Lib.AI.Builders
 {
     public class CompoundTaskBuilder<TWorldState, TContext>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TWorldState>
+        where TContext : struct, IContext<TContext, TWorldState>
     {
         readonly DomainBuilder<TWorldState, TContext> domainBuilder;
         readonly string taskName;

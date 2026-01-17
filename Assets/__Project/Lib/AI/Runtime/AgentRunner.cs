@@ -9,7 +9,7 @@ namespace Gast.Lib.AI
     /// </summary>
     class AgentRunner<TWorldState, TContext> : IAgentRunner<TWorldState, TContext>
        where TWorldState : class, IWorldState<TWorldState>, new()
-       where TContext : struct, IContext<TWorldState>
+       where TContext : struct, IContext<TContext, TWorldState>
     {
         readonly ITask<TWorldState, TContext> rootTask;
 

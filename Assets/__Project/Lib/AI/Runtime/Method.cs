@@ -5,7 +5,7 @@ namespace Gast.Lib.AI
 {
     public class Method<TWorldState, TContext>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TWorldState>
+        where TContext : struct, IContext<TContext, TWorldState>
     {
         public string Name { get; }
         public int Index { get; }

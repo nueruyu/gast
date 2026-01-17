@@ -4,7 +4,7 @@ using Gast.Lib.AI;
 
 namespace Gast.Features.Npcs
 {
-    public readonly struct AIContext<TWorldState> : IContext<TWorldState>
+    public readonly struct AIContext<TWorldState> : IContext<AIContext<TWorldState>, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
     {
         public ICharacter Actor { get; }
@@ -16,6 +16,11 @@ namespace Gast.Features.Npcs
             Actor = actor;
             WorldState = worldState;
             CancellationToken = cancellationToken;
+        }
+
+        public AIContext<TWorldState> WithCancellationToken(CancellationToken cancellationToken)
+        {
+            return new AIContext<TWorldState>(Actor, WorldState, cancellationToken);
         }
     }
 }
