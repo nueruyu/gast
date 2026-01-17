@@ -15,8 +15,6 @@ namespace Gast.Features.Npcs
         readonly AIDomain<StrategicWorldState, AIContext<StrategicWorldState>> strategicDomain;
         readonly AIDomain<CombatWorldState, AIContext<CombatWorldState>> combatDomain;
         readonly GoalManager goalManager;
-        readonly SharedAIState sharedState;
-        readonly IDisposable scope;
 
         ICharacter character;
         CancellationTokenSource cts;
@@ -24,21 +22,18 @@ namespace Gast.Features.Npcs
         AIRunner<StrategicWorldState, AIContext<StrategicWorldState>> strategicAgentRunner;
         AIRunner<CombatWorldState, AIContext<CombatWorldState>> combatAgentRunner;
 
+        readonly SharedAIState sharedState = new();
         readonly StrategicWorldState strategicState = new();
         readonly CombatWorldState combatState = new();
 
         public SoldierBrain(
             AIDomain<StrategicWorldState, AIContext<StrategicWorldState>> strategicDomain,
             AIDomain<CombatWorldState, AIContext<CombatWorldState>> combatDomain,
-            GoalManager goalManager,
-            SharedAIState sharedState,
-            IDisposable scope)
+            GoalManager goalManager)
         {
             this.strategicDomain = strategicDomain;
             this.combatDomain = combatDomain;
             this.goalManager = goalManager;
-            this.sharedState = sharedState;
-            this.scope = scope;
         }
 
         public void OnAttached(ICharacter character)
@@ -90,7 +85,7 @@ namespace Gast.Features.Npcs
         {
             while (!token.IsCancellationRequested)
             {
-                await strategicAgentRunner.RunAsync(new(character, strategicState, token));
+                await strategicAgentRunner.RunAsync(new(character, strategicState, sharedState, token));
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
@@ -99,7 +94,7 @@ namespace Gast.Features.Npcs
         {
             while (!token.IsCancellationRequested)
             {
-                await combatAgentRunner.RunAsync(new(character, combatState, token));
+                await combatAgentRunner.RunAsync(new(character, combatState, sharedState, token));
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
@@ -148,11 +143,6 @@ namespace Gast.Features.Npcs
                 combatState.DistanceToTarget = float.MaxValue;
             }
             combatState.IsReadyToAttack = character.CanAttack;
-        }
-
-        public void Dispose()
-        {
-            scope?.Dispose();
         }
     }
 }

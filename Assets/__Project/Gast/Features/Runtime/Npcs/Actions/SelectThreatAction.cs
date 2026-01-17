@@ -10,13 +10,6 @@ namespace Gast.Features.Npcs.Actions
     [Serializable]
     public class SelectThreatAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
     {
-        readonly SharedAIState sharedState;
-
-        public SelectThreatAction(SharedAIState sharedState)
-        {
-            this.sharedState = sharedState;
-        }
-
         public string Name => "SelectThreatAction";
 
         public bool CanExecute(StrategicWorldState worldState) => worldState.IsThreatened;
@@ -34,7 +27,7 @@ namespace Gast.Features.Npcs.Actions
                 .OrderBy(e => Vector3.Distance(self.VisionSensor.EyePosition, e.Body.Position))
                 .FirstOrDefault();
 
-            sharedState.CombatTarget = closestThreat;
+            ctx.SharedState.CombatTarget = closestThreat;
             return UniTask.CompletedTask;
         }
     }

@@ -12,6 +12,8 @@ namespace Gast.Composition.Installers
         {
             builder.Register<CommandAIUseCase>(Lifetime.Singleton);
 
+            builder.Register<GoalManager>(Lifetime.Transient);
+
             builder.Register<ClearTargetAction>(Lifetime.Transient);
             builder.Register<FindTargetForGoalAction>(Lifetime.Transient);
             builder.Register<SelectThreatAction>(Lifetime.Transient);

@@ -12,14 +12,10 @@ namespace Gast.Features.Npcs.Actions
     public class FindTargetForGoalAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
     {
         readonly ICharacterRepository characterRepository;
-        readonly SharedAIState sharedState;
 
-        public FindTargetForGoalAction(
-            ICharacterRepository characterRepository,
-            SharedAIState sharedState)
+        public FindTargetForGoalAction(ICharacterRepository characterRepository)
         {
             this.characterRepository = characterRepository;
-            this.sharedState = sharedState;
         }
 
         public string Name => "FindTargetForGoalAction";
@@ -40,7 +36,7 @@ namespace Gast.Features.Npcs.Actions
                 foundTarget = FindClosestCharacterOfType(ctx.Actor, defeatGoal.TargetTypeId);
             }
 
-            sharedState.CombatTarget = foundTarget;
+            ctx.SharedState.CombatTarget = foundTarget;
             return UniTask.CompletedTask;
         }
 

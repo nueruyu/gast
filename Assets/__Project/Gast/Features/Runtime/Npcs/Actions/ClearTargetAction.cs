@@ -7,13 +7,6 @@ namespace Gast.Features.Npcs.Actions
     [Serializable]
     public class ClearTargetAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
     {
-        readonly SharedAIState sharedState;
-
-        public ClearTargetAction(SharedAIState sharedState)
-        {
-            this.sharedState = sharedState;
-        }
-
         public string Name => "ClearTarget";
 
         public bool CanExecute(StrategicWorldState worldState) => true;
@@ -24,7 +17,7 @@ namespace Gast.Features.Npcs.Actions
 
         public UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
-            sharedState.CombatTarget = null;
+            ctx.SharedState.CombatTarget = null;
             return UniTask.CompletedTask;
         }
     }

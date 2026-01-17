@@ -35,23 +35,16 @@ namespace Gast.Infrastructure.Factories
 
         ICharacterBrain CreateSoldierBrain()
         {
-            var scope = resolver.CreateScope(builder =>
-            {
-                builder.Register<SharedAIState>(Lifetime.Scoped);
-                builder.Register<GoalManager>(Lifetime.Scoped);
-            });
+            var goalManager = resolver.Resolve<GoalManager>();
 
-            var goalManager = scope.Resolve<GoalManager>();
+            var findTargetForGoalAction = resolver.Resolve<FindTargetForGoalAction>();
+            var selectThreatAction = resolver.Resolve<SelectThreatAction>();
+            var clearTargetAction = resolver.Resolve<ClearTargetAction>();
 
-            var findTargetForGoalAction = scope.Resolve<FindTargetForGoalAction>();
-            var selectThreatAction = scope.Resolve<SelectThreatAction>();
-            var clearTargetAction = scope.Resolve<ClearTargetAction>();
-            var sharedState = scope.Resolve<SharedAIState>();
-
-            var findItemPickupAction = scope.Resolve<FindItemPickupAction>();
-            var moveToInteractableAction = scope.Resolve<MoveToInteractableAction>();
-            var interactWithTargetAction = scope.Resolve<InteractWithTargetAction>();
-            var clearInteractableTargetAction = scope.Resolve<ClearInteractableTargetAction>();
+            var findItemPickupAction = resolver.Resolve<FindItemPickupAction>();
+            var moveToInteractableAction = resolver.Resolve<MoveToInteractableAction>();
+            var interactWithTargetAction = resolver.Resolve<InteractWithTargetAction>();
+            var clearInteractableTargetAction = resolver.Resolve<ClearInteractableTargetAction>();
 
             var strategicDomain = StrategicDomain.Create(
                 findTargetForGoalAction,
@@ -67,9 +60,7 @@ namespace Gast.Infrastructure.Factories
             return new SoldierBrain(
                 strategicDomain,
                 combatDomain,
-                goalManager,
-                sharedState,
-                scope);
+                goalManager);
         }
     }
 }

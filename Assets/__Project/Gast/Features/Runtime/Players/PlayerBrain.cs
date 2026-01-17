@@ -106,9 +106,5 @@ namespace Gast.Features.Players
 
             return forward * input.y + right * input.x;
         }
-
-        public void Dispose()
-        {
-        }
     }
 }

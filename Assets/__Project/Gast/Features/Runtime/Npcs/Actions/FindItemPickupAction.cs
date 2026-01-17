@@ -10,14 +10,10 @@ namespace Gast.Features.Npcs.Actions
 {
     public class FindItemPickupAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
     {
-        readonly SharedAIState sharedState;
         readonly IPickupRepository pickupRepository;
 
-        public FindItemPickupAction(
-            SharedAIState sharedState,
-            IPickupRepository pickupRepository)
+        public FindItemPickupAction(IPickupRepository pickupRepository)
         {
-            this.sharedState = sharedState;
             this.pickupRepository = pickupRepository;
         }
 
@@ -48,7 +44,7 @@ namespace Gast.Features.Npcs.Actions
 
             if (targetPickup != null)
             {
-                sharedState.InteractableTarget = (targetPickup as Component).GetComponentInChildren<IInteractable>();
+                ctx.SharedState.InteractableTarget = (targetPickup as Component).GetComponentInChildren<IInteractable>();
             }
 
             await UniTask.NextFrame(ctx.CancellationToken);
