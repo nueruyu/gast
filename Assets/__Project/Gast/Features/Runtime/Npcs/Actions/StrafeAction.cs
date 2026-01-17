@@ -91,8 +91,9 @@ namespace Gast.Features.Npcs.Actions
                     }
 
                     var finalMoveDir = (strafeDir + approachDir).normalized;
+                    navigator.SetDestination(selfPos + finalMoveDir);
 
-                    actor.Move(finalMoveDir);
+                    actor.Move(navigator.NextSteeringDirection);
 
                     await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
                 }

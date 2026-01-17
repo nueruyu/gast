@@ -50,8 +50,9 @@ namespace Gast.Features.Npcs.Actions
                 var angle = Vector3.Angle(forward, toTarget);
                 if (angle <= alignmentThreshold) break; // Aligned successfully
 
+                navigator.SetDestination(selfPos + toTarget);
                 // Move toward target to naturally rotate facing direction
-                actor.Move(toTarget);
+                actor.Move(navigator.NextSteeringDirection);
 
                 timer += Time.deltaTime;
                 await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
