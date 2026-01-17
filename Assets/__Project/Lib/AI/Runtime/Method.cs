@@ -19,18 +19,24 @@ namespace Gast.Lib.AI
             string name,
             int index,
             IEnumerable<ITask<TWorldState, TContext>> subTasks,
-            Func<TWorldState, bool> condition = null,
+            Func<TWorldState, bool> condition,
             Func<TWorldState, float> scorer = null)
         {
             Name = name;
             Index = index;
             SubTasks = subTasks.ToArray();
-            this.condition = condition ?? (_ => true);
-            this.scorer = scorer ?? (_ => 1.0f);
+            this.condition = condition;
+            this.scorer = scorer ?? (_ => 0f);
         }
 
-        public bool CheckCondition(TWorldState state) => condition(state);
+        public bool CheckCondition(TWorldState state)
+        {
+            return condition(state);
+        }
 
-        public float GetScore(TWorldState state) => scorer(state);
+        public float GetScore(TWorldState state)
+        {
+            return scorer(state);
+        }
     }
 }

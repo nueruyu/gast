@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Gast.Lib.AI.Selectors
+namespace Gast.Lib.AI.MethodSelectors
 {
     public class PrioritySelector<TWorldState, TContext> : IMethodSelector<TWorldState, TContext>
         where TWorldState : class, IWorldState<TWorldState>, new()

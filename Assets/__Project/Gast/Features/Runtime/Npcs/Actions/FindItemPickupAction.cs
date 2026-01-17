@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Api.AI.Goals;
 using Gast.Domain.Interactions;
 using Gast.Domain.Pickups;
-using Gast.Lib.AI;
+using Gast.Lib.AI.Tasks;
 using UnityEngine;
 
 namespace Gast.Features.Npcs.Actions

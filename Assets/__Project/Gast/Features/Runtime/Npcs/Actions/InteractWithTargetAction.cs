@@ -1,7 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Gast.Api.Interactions;
 using Gast.Core.Commands;
-using Gast.Lib.AI;
+using Gast.Lib.AI.Tasks;
 
 namespace Gast.Features.Npcs.Actions
 {

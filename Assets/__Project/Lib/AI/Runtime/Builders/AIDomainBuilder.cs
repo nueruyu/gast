@@ -1,25 +1,19 @@
+using Gast.Lib.AI.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 
 namespace Gast.Lib.AI.Builders
 {
-    public class DomainBuilder<TWorldState, TContext>
+    public class AIDomainBuilder<TWorldState, TContext>
         where TWorldState : class, IWorldState<TWorldState>, new()
         where TContext : struct, IContext<TContext, TWorldState>
     {
         readonly Dictionary<string, ITask<TWorldState, TContext>> taskRegistry = new();
-        string rootTaskName;
 
-        public DomainBuilder<TWorldState, TContext> RegisterTask(ITask<TWorldState, TContext> task)
+        public AIDomainBuilder<TWorldState, TContext> RegisterTask(ITask<TWorldState, TContext> task)
         {
             taskRegistry[task.Name] = task;
-            return this;
-        }
-
-        public DomainBuilder<TWorldState, TContext> SetRoot(string taskName)
-        {
-            rootTaskName = taskName;
             return this;
         }
 
@@ -28,7 +22,7 @@ namespace Gast.Lib.AI.Builders
             return new CompoundTaskBuilder<TWorldState, TContext>(this, name);
         }
 
-        internal DomainBuilder<TWorldState, TContext> CompleteCompound(
+        internal AIDomainBuilder<TWorldState, TContext> CompleteCompound(
             CompoundTask<TWorldState, TContext> task)
         {
             RegisterTask(task);
@@ -40,9 +34,9 @@ namespace Gast.Lib.AI.Builders
             return taskRegistry[name];
         }
 
-        public Domain<TWorldState, TContext> Build()
+        public AIDomain<TWorldState, TContext> Build(string rootTaskName)
         {
-            return new Domain<TWorldState, TContext>(
+            return new AIDomain<TWorldState, TContext>(
                 taskRegistry.Values,
                 rootTaskName);
         }

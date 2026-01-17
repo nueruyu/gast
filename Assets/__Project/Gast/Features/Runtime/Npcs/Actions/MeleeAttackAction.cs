@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Gast.Lib.AI;
+using Gast.Lib.AI.Tasks;
 using System;
 using UnityEngine;
 
@@ -41,14 +41,16 @@ namespace Gast.Features.Npcs.Actions
                 // Calculate direction to target
                 var toTarget = targetPos - selfPos;
                 toTarget.y = 0;
-                if (toTarget.sqrMagnitude < 0.01f) break; // Already on top of target
+                if (toTarget.sqrMagnitude < 0.01f)
+                    break; // Already on top of target
                 toTarget.Normalize();
 
                 var forward = actor.Body.Forward;
 
                 // Check angle difference
                 var angle = Vector3.Angle(forward, toTarget);
-                if (angle <= alignmentThreshold) break; // Aligned successfully
+                if (angle <= alignmentThreshold)
+                    break; // Aligned successfully
 
                 navigator.SetDestination(selfPos + toTarget);
                 // Move toward target to naturally rotate facing direction

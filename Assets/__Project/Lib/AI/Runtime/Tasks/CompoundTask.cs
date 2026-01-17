@@ -1,11 +1,12 @@
 using Cysharp.Threading.Tasks;
+using Gast.Lib.AI.Debugging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
 
-namespace Gast.Lib.AI
+namespace Gast.Lib.AI.Tasks
 {
     public class CompoundTask<TWorldState, TContext> : ITask<TWorldState, TContext>
         where TWorldState : class, IWorldState<TWorldState>, new()

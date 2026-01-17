@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Gast.Lib.AI;
+using Gast.Lib.AI.Tasks;
 using UnityEngine;
 
 namespace Gast.Features.Npcs.Actions

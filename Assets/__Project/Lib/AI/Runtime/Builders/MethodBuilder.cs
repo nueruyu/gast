@@ -23,13 +23,13 @@ namespace Gast.Lib.AI.Builders
 
         public MethodBuilder<TWorldState, TContext> Condition(Func<TWorldState, bool> predicate)
         {
-            condition = predicate;
+            condition = predicate ?? throw new ArgumentNullException(nameof(predicate));
             return this;
         }
 
         public MethodBuilder<TWorldState, TContext> Score(Func<TWorldState, float> scoreFunc)
         {
-            scorer = scoreFunc;
+            scorer = scoreFunc ?? throw new ArgumentNullException(nameof(scoreFunc));
             return this;
         }
 

@@ -12,8 +12,8 @@ namespace Gast.Features.Npcs
 {
     public class SoldierBrain : ICharacterBrain, IGoalAssignable
     {
-        readonly Domain<StrategicWorldState, AIContext<StrategicWorldState>> strategicDomain;
-        readonly Domain<CombatWorldState, AIContext<CombatWorldState>> combatDomain;
+        readonly AIDomain<StrategicWorldState, AIContext<StrategicWorldState>> strategicDomain;
+        readonly AIDomain<CombatWorldState, AIContext<CombatWorldState>> combatDomain;
         readonly GoalManager goalManager;
         readonly SharedAIState sharedState;
         readonly IDisposable scope;
@@ -21,15 +21,15 @@ namespace Gast.Features.Npcs
         ICharacter character;
         CancellationTokenSource cts;
 
-        AgentRunner<StrategicWorldState, AIContext<StrategicWorldState>> strategicAgentRunner;
-        AgentRunner<CombatWorldState, AIContext<CombatWorldState>> combatAgentRunner;
+        AIRunner<StrategicWorldState, AIContext<StrategicWorldState>> strategicAgentRunner;
+        AIRunner<CombatWorldState, AIContext<CombatWorldState>> combatAgentRunner;
 
         readonly StrategicWorldState strategicState = new();
         readonly CombatWorldState combatState = new();
 
         public SoldierBrain(
-            Domain<StrategicWorldState, AIContext<StrategicWorldState>> strategicDomain,
-            Domain<CombatWorldState, AIContext<CombatWorldState>> combatDomain,
+            AIDomain<StrategicWorldState, AIContext<StrategicWorldState>> strategicDomain,
+            AIDomain<CombatWorldState, AIContext<CombatWorldState>> combatDomain,
             GoalManager goalManager,
             SharedAIState sharedState,
             IDisposable scope)
@@ -45,8 +45,8 @@ namespace Gast.Features.Npcs
         {
             this.character = character;
 
-            strategicAgentRunner = strategicDomain.CreateAgentRunner();
-            combatAgentRunner = combatDomain.CreateAgentRunner();
+            strategicAgentRunner = strategicDomain.CreateRunner();
+            combatAgentRunner = combatDomain.CreateRunner();
 
             combatState.AttackRange = 1.5f;
             combatState.CombatRange = 4.5f;

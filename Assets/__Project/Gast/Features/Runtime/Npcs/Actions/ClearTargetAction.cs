@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Gast.Lib.AI;
+using Gast.Lib.AI.Tasks;
 using System;
 
 namespace Gast.Features.Npcs.Actions

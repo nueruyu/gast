@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
-using Gast.Lib.AI;
+using Gast.Lib.AI.Tasks;
 using System;
 using System.Linq;
 using UnityEngine;

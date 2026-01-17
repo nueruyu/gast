@@ -1,7 +1,7 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-using Gast.Lib.AI;
 using System;
+using Gast.Lib.AI.Tasks;
 
 namespace Gast.Features.Npcs.Actions
 {

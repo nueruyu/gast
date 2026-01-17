@@ -3,13 +3,13 @@ using System;
 
 namespace Gast.Lib.AI
 {
-    public class AgentRunner<TWorldState, TContext>
+    public class AIRunner<TWorldState, TContext>
        where TWorldState : class, IWorldState<TWorldState>, new()
        where TContext : struct, IContext<TContext, TWorldState>
     {
         readonly ITask<TWorldState, TContext> rootTask;
 
-        public AgentRunner(ITask<TWorldState, TContext> rootTask)
+        public AIRunner(ITask<TWorldState, TContext> rootTask)
         {
             this.rootTask = rootTask ?? throw new ArgumentNullException(nameof(rootTask));
         }

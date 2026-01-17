@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gast.Lib.AI
+namespace Gast.Lib.AI.Debugging
 {
     /// <summary>
     /// Simple logging system for HTN planning and execution.

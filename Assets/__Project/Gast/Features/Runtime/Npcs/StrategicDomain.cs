@@ -7,7 +7,7 @@ namespace Gast.Features.Npcs
 {
     public static class StrategicDomain
     {
-        public static Domain<StrategicWorldState, AIContext<StrategicWorldState>> Create(
+        public static AIDomain<StrategicWorldState, AIContext<StrategicWorldState>> Create(
             FindTargetForGoalAction findTargetForGoalAction,
             SelectThreatAction selectThreatAction,
             ClearTargetAction clearTargetAction,
@@ -16,7 +16,7 @@ namespace Gast.Features.Npcs
             InteractWithTargetAction interactWithTargetAction,
             ClearInteractableTargetAction clearInteractableTargetAction)
         {
-            return new DomainBuilder<StrategicWorldState, AIContext<StrategicWorldState>>()
+            return new AIDomainBuilder<StrategicWorldState, AIContext<StrategicWorldState>>()
                 .RegisterTask(findTargetForGoalAction)
                 .RegisterTask(selectThreatAction)
                 .RegisterTask(clearTargetAction)
@@ -49,8 +49,7 @@ namespace Gast.Features.Npcs
                         .Do(clearTargetAction)
                     .End()
                 .End()
-                .SetRoot("Root")
-                .Build();
+                .Build("Root");
         }
     }
 }
