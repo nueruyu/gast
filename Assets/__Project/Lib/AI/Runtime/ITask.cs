@@ -11,9 +11,8 @@ namespace Gast.Lib.AI
 
         UniTask<bool> ValidateAsync(
             TWorldState worldState,
-            CheckOptions options,
             CancellationToken cancellationToken);
 
-        UniTask RunAsync(TContext ctx, CheckOptions? options);
+        UniTask RunAsync(TContext ctx);
     }
 }

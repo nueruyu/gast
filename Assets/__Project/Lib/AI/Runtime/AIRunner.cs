@@ -16,7 +16,7 @@ namespace Gast.Lib.AI
 
         public UniTask RunAsync(TContext context)
         {
-            return rootTask.RunAsync(context, CheckOptions.Deep);
+            return rootTask.RunAsync(context);
         }
     }
 }

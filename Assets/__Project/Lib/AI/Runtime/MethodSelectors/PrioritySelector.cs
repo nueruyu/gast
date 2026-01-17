@@ -13,14 +13,13 @@ namespace Gast.Lib.AI.MethodSelectors
         public async UniTask<Method<TWorldState, TContext>> SelectAsync(
             IReadOnlyList<Method<TWorldState, TContext>> methods,
             TWorldState worldState,
-            CheckOptions options,
             CancellationToken cancellationToken)
         {
             foreach (var method in methods)
             {
                 simulationState.CopyFrom(worldState);
 
-                if (await ValidateMethod(method, simulationState, options, cancellationToken))
+                if (await ValidateMethod(method, simulationState, cancellationToken))
                 {
                     worldState.CopyFrom(simulationState);
                     return method;
@@ -34,13 +33,11 @@ namespace Gast.Lib.AI.MethodSelectors
             IReadOnlyList<Method<TWorldState, TContext>> methods,
             Method<TWorldState, TContext> currentMethod,
             TWorldState worldState,
-            CheckOptions options,
             CancellationToken cancellationToken)
         {
             var preferredMethod = await SelectAsync(
                 methods,
                 worldState,
-                options,
                 cancellationToken);
 
             if (preferredMethod != null &&
@@ -53,21 +50,16 @@ namespace Gast.Lib.AI.MethodSelectors
         async UniTask<bool> ValidateMethod(
            Method<TWorldState, TContext> method,
            TWorldState worldState,
-           CheckOptions options,
            CancellationToken cancellationToken)
         {
             if (!method.CheckCondition(worldState))
                 return false;
 
-            if (options.MaxDepth != 0)
+            foreach (var task in method.SubTasks)
             {
-                var nextOptions = options.StepDown();
-                foreach (var task in method.SubTasks)
+                if (!await task.ValidateAsync(worldState, cancellationToken))
                 {
-                    if (!await task.ValidateAsync(worldState, nextOptions, cancellationToken))
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
 

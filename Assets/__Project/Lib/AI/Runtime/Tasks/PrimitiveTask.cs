@@ -17,21 +17,17 @@ namespace Gast.Lib.AI.Tasks
 
         public UniTask<bool> ValidateAsync(
             TWorldState worldState,
-            CheckOptions options,
             CancellationToken cancellationToken)
         {
             if (!CanExecute(worldState))
                 return UniTask.FromResult(false);
 
-            if (options.MaxDepth != 0)
-            {
-                Simulate(worldState);
-            }
+            Simulate(worldState);
 
             return UniTask.FromResult(true);
         }
 
-        public UniTask RunAsync(TContext ctx, CheckOptions? options)
+        public UniTask RunAsync(TContext ctx)
         {
             ctx.CancellationToken.ThrowIfCancellationRequested();
             DebugLogger.LogExecutingAction(Name);

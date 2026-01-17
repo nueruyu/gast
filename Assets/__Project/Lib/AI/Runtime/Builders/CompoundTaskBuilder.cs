@@ -12,7 +12,6 @@ namespace Gast.Lib.AI.Builders
         readonly string taskName;
         readonly List<Method<TWorldState, TContext>> methods = new();
 
-        int localDepthLimit = -1;
         IMethodSelector<TWorldState, TContext> selector;
 
         internal int CurrentMethodCount => methods.Count;
@@ -21,12 +20,6 @@ namespace Gast.Lib.AI.Builders
         {
             this.domainBuilder = domainBuilder;
             this.taskName = taskName;
-        }
-
-        public CompoundTaskBuilder<TWorldState, TContext> CheckDepth(int depth)
-        {
-            localDepthLimit = depth;
-            return this;
         }
 
         public CompoundTaskBuilder<TWorldState, TContext> UseSelector(IMethodSelector<TWorldState, TContext> selector)
@@ -51,8 +44,7 @@ namespace Gast.Lib.AI.Builders
             var compoundTask = new CompoundTask<TWorldState, TContext>(
                 taskName,
                 methods,
-                selector ?? new MethodSelectors.PrioritySelector<TWorldState, TContext>(),
-                localDepthLimit);
+                selector ?? new MethodSelectors.PrioritySelector<TWorldState, TContext>());
 
             return domainBuilder.CompleteCompound(compoundTask);
         }

@@ -16,43 +16,35 @@ namespace Gast.Lib.AI.Tasks
 
         readonly Method<TWorldState, TContext>[] methods;
         readonly IMethodSelector<TWorldState, TContext> methodSelector;
-        readonly int localDepthLimit;
         readonly TWorldState simulationState = new();
 
         internal CompoundTask(
             string name,
             IEnumerable<Method<TWorldState, TContext>> methods,
-            IMethodSelector<TWorldState, TContext> methodSelector,
-            int localDepthLimit)
+            IMethodSelector<TWorldState, TContext> methodSelector)
         {
             Name = name;
             this.methods = methods.ToArray();
             this.methodSelector = methodSelector;
-            this.localDepthLimit = localDepthLimit;
         }
 
         public async UniTask<bool> ValidateAsync(
             TWorldState worldState,
-            CheckOptions options,
             CancellationToken cancellationToken)
         {
             var method = await SelectCurrentMethodAsync(
                 worldState,
-                options,
                 cancellationToken);
 
             return method != null;
         }
 
-        public async UniTask RunAsync(TContext ctx, CheckOptions? options)
+        public async UniTask RunAsync(TContext ctx)
         {
-            var effectiveOptions = GetEffectiveOptions(options);
-
             simulationState.CopyFrom(ctx.WorldState);
 
             var method = await SelectCurrentMethodAsync(
                 simulationState,
-                effectiveOptions,
                 ctx.CancellationToken);
 
             if (method == null)
@@ -69,8 +61,8 @@ namespace Gast.Lib.AI.Tasks
             try
             {
                 await UniTask.WhenAny(
-                    RunMethodAsync(method, localCtx, effectiveOptions),
-                    MonitorInterruptsAsync(method, localCtx, effectiveOptions)
+                    RunMethodAsync(method, localCtx),
+                    MonitorInterruptsAsync(method, localCtx)
                 );
             }
             finally
@@ -81,20 +73,17 @@ namespace Gast.Lib.AI.Tasks
 
         async UniTask RunMethodAsync(
             Method<TWorldState, TContext> method,
-            TContext ctx,
-            CheckOptions options)
+            TContext ctx)
         {
-            var nextOptions = options.StepDown();
             foreach (var task in method.SubTasks)
             {
-                await task.RunAsync(ctx, nextOptions);
+                await task.RunAsync(ctx);
             }
         }
 
         async UniTask MonitorInterruptsAsync(
             Method<TWorldState, TContext> currentMethod,
-            TContext ctx,
-            CheckOptions options)
+            TContext ctx)
         {
             while (true)
             {
@@ -106,7 +95,6 @@ namespace Gast.Lib.AI.Tasks
                     methods,
                     currentMethod,
                     simulationState,
-                    options,
                     ctx.CancellationToken);
 
                 if (interruptsMethod != null)
@@ -119,18 +107,9 @@ namespace Gast.Lib.AI.Tasks
 
         UniTask<Method<TWorldState, TContext>> SelectCurrentMethodAsync(
            TWorldState worldState,
-           CheckOptions? options,
            CancellationToken cancellationToken)
         {
-            var effectiveOptions = GetEffectiveOptions(options);
-            return methodSelector.SelectAsync(methods, worldState, effectiveOptions, cancellationToken);
-        }
-
-        CheckOptions GetEffectiveOptions(CheckOptions? options)
-        {
-            return CheckOptions.Resolve(
-                options ?? CheckOptions.Deep,
-                localDepthLimit);
+            return methodSelector.SelectAsync(methods, worldState, cancellationToken);
         }
     }
 }

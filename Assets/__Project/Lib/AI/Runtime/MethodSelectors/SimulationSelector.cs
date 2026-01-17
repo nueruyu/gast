@@ -22,7 +22,6 @@ namespace Gast.Lib.AI.MethodSelectors
         public async UniTask<Method<TWorldState, TContext>> SelectAsync(
             IReadOnlyList<Method<TWorldState, TContext>> methods,
             TWorldState worldState,
-            CheckOptions options,
             CancellationToken cancellationToken)
         {
             Method<TWorldState, TContext> bestMethod = null;
@@ -38,7 +37,6 @@ namespace Gast.Lib.AI.MethodSelectors
                 var valid = await SimulateMethodAsync(
                     method,
                     simulationState,
-                    options,
                     cancellationToken);
 
                 if (valid)
@@ -60,7 +58,6 @@ namespace Gast.Lib.AI.MethodSelectors
             IReadOnlyList<Method<TWorldState, TContext>> methods,
             Method<TWorldState, TContext> currentMethod,
             TWorldState worldState,
-            CheckOptions options,
             CancellationToken cancellationToken)
         {
             simulationState.CopyFrom(worldState);
@@ -68,7 +65,6 @@ namespace Gast.Lib.AI.MethodSelectors
             await SimulateMethodAsync(
                 currentMethod,
                 simulationState,
-                options,
                 cancellationToken);
 
             var currentScore = worldEvaluator(simulationState);
@@ -89,7 +85,6 @@ namespace Gast.Lib.AI.MethodSelectors
                 var valid = await SimulateMethodAsync(
                     method,
                     simulationState,
-                    options,
                     cancellationToken);
 
                 if (valid)
@@ -110,13 +105,11 @@ namespace Gast.Lib.AI.MethodSelectors
         async UniTask<bool> SimulateMethodAsync(
            Method<TWorldState, TContext> method,
            TWorldState worldState,
-           CheckOptions options,
            CancellationToken cancellationToken)
         {
-            var nextOptions = options.StepDown();
             foreach (var subTask in method.SubTasks)
             {
-                var valid = await subTask.ValidateAsync(worldState, nextOptions, cancellationToken);
+                var valid = await subTask.ValidateAsync(worldState, cancellationToken);
                 if (!valid)
                 {
                     return false;
