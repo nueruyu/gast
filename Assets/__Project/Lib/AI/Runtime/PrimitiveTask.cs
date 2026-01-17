@@ -9,7 +9,10 @@ namespace Gast.Lib.AI
     {
         public string Name { get; }
 
-        protected PrimitiveTask(string name) => Name = name;
+        protected PrimitiveTask(string name)
+        {
+            Name = name;
+        }
 
         public UniTask<bool> ValidateAsync(
             TWorldState worldState,

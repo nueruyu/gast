@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Gast.Lib.AI.Builders
 {
@@ -8,7 +9,6 @@ namespace Gast.Lib.AI.Builders
     {
         readonly DomainBuilder<TWorldState, TContext> domainBuilder;
         readonly string taskName;
-        readonly bool isRoot;
         readonly List<Method<TWorldState, TContext>> methods = new();
 
         int localDepthLimit = -1;
@@ -16,11 +16,10 @@ namespace Gast.Lib.AI.Builders
 
         internal int CurrentMethodCount => methods.Count;
 
-        internal CompoundTaskBuilder(DomainBuilder<TWorldState, TContext> domainBuilder, string taskName, bool isRoot = false)
+        internal CompoundTaskBuilder(DomainBuilder<TWorldState, TContext> domainBuilder, string taskName)
         {
             this.domainBuilder = domainBuilder;
             this.taskName = taskName;
-            this.isRoot = isRoot;
         }
 
         public CompoundTaskBuilder<TWorldState, TContext> CheckDepth(int depth)
@@ -48,22 +47,13 @@ namespace Gast.Lib.AI.Builders
 
         public DomainBuilder<TWorldState, TContext> End()
         {
-            var compoundTask = new CompoundTask<TWorldState, TContext>(taskName)
-            {
-                LocalDepthLimit = localDepthLimit,
-            };
+            var compoundTask = new CompoundTask<TWorldState, TContext>(
+                taskName,
+                methods,
+                selector ?? new Selectors.PrioritySelector<TWorldState, TContext>(),
+                localDepthLimit);
 
-            if (selector != null)
-            {
-                compoundTask.Selector = selector;
-            }
-
-            foreach (var method in methods)
-            {
-                compoundTask.Methods.Add(method);
-            }
-
-            return domainBuilder.CompleteCompound(taskName, compoundTask, isRoot);
+            return domainBuilder.CompleteCompound(compoundTask);
         }
 
         internal DomainBuilder<TWorldState, TContext> DomainBuilder => domainBuilder;

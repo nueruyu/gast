@@ -32,7 +32,7 @@ namespace Gast.Features.Npcs
                         .Do(clearInteractableTargetAction)
                     .End()
                 .End()
-                .DefineRoot()
+                .DefineCompound("Root")
                     .AddMethod("SelectClosestThreat")
                         .Condition(s => s.IsThreatened)
                         .Do(selectThreatAction)
@@ -49,6 +49,7 @@ namespace Gast.Features.Npcs
                         .Do(clearTargetAction)
                     .End()
                 .End()
+                .SetRoot("Root")
                 .Build();
         }
     }

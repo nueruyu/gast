@@ -9,11 +9,17 @@ namespace Gast.Lib.AI.Builders
         where TContext : struct, IContext<TContext, TWorldState>
     {
         readonly Dictionary<string, ITask<TWorldState, TContext>> taskRegistry = new();
-        ITask<TWorldState, TContext> rootTask;
+        string rootTaskName;
 
         public DomainBuilder<TWorldState, TContext> RegisterTask(ITask<TWorldState, TContext> task)
         {
             taskRegistry[task.Name] = task;
+            return this;
+        }
+
+        public DomainBuilder<TWorldState, TContext> SetRoot(string taskName)
+        {
+            rootTaskName = taskName;
             return this;
         }
 
@@ -22,39 +28,23 @@ namespace Gast.Lib.AI.Builders
             return new CompoundTaskBuilder<TWorldState, TContext>(this, name);
         }
 
-        public CompoundTaskBuilder<TWorldState, TContext> DefineRoot()
-        {
-            return new CompoundTaskBuilder<TWorldState, TContext>(this, taskName: "Root", isRoot: true);
-        }
-
         internal DomainBuilder<TWorldState, TContext> CompleteCompound(
-            string name,
-            CompoundTask<TWorldState, TContext> task,
-            bool isRoot)
+            CompoundTask<TWorldState, TContext> task)
         {
             RegisterTask(task);
-            if (isRoot)
-                rootTask = task;
             return this;
         }
 
         internal ITask<TWorldState, TContext> GetTask(string name)
         {
-            return taskRegistry.TryGetValue(name, out var task) ? task : null;
+            return taskRegistry[name];
         }
 
         public Domain<TWorldState, TContext> Build()
         {
-            var domain = new Domain<TWorldState, TContext>();
-            foreach (var task in taskRegistry.Values)
-            {
-                domain.RegisterTask(task);
-            }
-            if (rootTask != null)
-            {
-                domain.SetRootTask(rootTask);
-            }
-            return domain;
+            return new Domain<TWorldState, TContext>(
+                taskRegistry.Values,
+                rootTaskName);
         }
     }
 }

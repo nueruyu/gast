@@ -38,8 +38,7 @@ namespace Gast.Lib.AI.Builders
             foreach (var name in taskNames)
             {
                 var task = compoundBuilder.DomainBuilder.GetTask(name);
-                if (task != null)
-                    subTasks.Add(task);
+                subTasks.Add(task);
             }
             return this;
         }
@@ -55,9 +54,10 @@ namespace Gast.Lib.AI.Builders
             var method = new Method<TWorldState, TContext>(
                 methodName,
                 compoundBuilder.CurrentMethodCount,
+                subTasks,
                 condition,
                 scorer);
-            method.SubTasks.AddRange(subTasks);
+
             return compoundBuilder.CompleteMethod(method);
         }
     }

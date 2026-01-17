@@ -32,14 +32,14 @@ namespace Gast.Features.Npcs
                     .Condition(s => !s.IsInCombatRange)
                     .Do(settings.ChaseTargetAction)
                 .End()
-            .End();
-
-            builder.DefineRoot()
+            .End()
+            .DefineCompound("Root")
                 .AddMethod("Combat")
                     .Condition(s => s.HasTarget)
                     .Do("EngageTarget")
                 .End()
-            .End();
+            .End()
+            .SetRoot("Root");
 
             return builder.Build();
         }

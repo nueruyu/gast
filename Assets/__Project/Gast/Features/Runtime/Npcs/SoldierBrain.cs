@@ -21,8 +21,8 @@ namespace Gast.Features.Npcs
         ICharacter character;
         CancellationTokenSource cts;
 
-        IAgentRunner<StrategicWorldState, AIContext<StrategicWorldState>> strategicAgentRunner;
-        IAgentRunner<CombatWorldState, AIContext<CombatWorldState>> combatAgentRunner;
+        AgentRunner<StrategicWorldState, AIContext<StrategicWorldState>> strategicAgentRunner;
+        AgentRunner<CombatWorldState, AIContext<CombatWorldState>> combatAgentRunner;
 
         readonly StrategicWorldState strategicState = new();
         readonly CombatWorldState combatState = new();

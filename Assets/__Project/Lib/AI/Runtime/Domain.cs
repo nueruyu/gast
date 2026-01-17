@@ -10,24 +10,21 @@ namespace Gast.Lib.AI
     {
         readonly Dictionary<string, ITask<TWorldState, TContext>> tasks = new();
 
-        public ITask<TWorldState, TContext> RootTask { get; private set; }
+        public ITask<TWorldState, TContext> RootTask { get; }
 
-        public void RegisterTask(ITask<TWorldState, TContext> task)
+        public Domain(
+            IEnumerable<ITask<TWorldState, TContext>> tasks,
+            string rootTaskName)
         {
-            tasks[task.Name] = task;
+            foreach (var task in tasks)
+            {
+                this.tasks[task.Name] = task;
+            }
+
+            RootTask = this.tasks[rootTaskName];
         }
 
-        public void SetRootTask(ITask<TWorldState, TContext> root)
-        {
-            RootTask = root;
-        }
-
-        public ITask<TWorldState, TContext> GetTask(string name)
-        {
-            return tasks.TryGetValue(name, out var task) ? task : null;
-        }
-
-        public IAgentRunner<TWorldState, TContext> CreateAgentRunner()
+        public AgentRunner<TWorldState, TContext> CreateAgentRunner()
         {
             return new AgentRunner<TWorldState, TContext>(RootTask);
         }

@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -11,12 +12,23 @@ namespace Gast.Lib.AI
         where TContext : struct, IContext<TContext, TWorldState>
     {
         public string Name { get; }
-        public List<Method<TWorldState, TContext>> Methods { get; } = new();
-        public IMethodSelector<TWorldState, TContext> Selector { get; set; } = new Selectors.PrioritySelector<TWorldState, TContext>();
-        public int LocalDepthLimit { get; set; } = -1;
+
+        readonly Method<TWorldState, TContext>[] methods;
+        readonly IMethodSelector<TWorldState, TContext> methodSelector;
+        readonly int localDepthLimit;
         readonly TWorldState simulationState = new();
 
-        public CompoundTask(string name) => Name = name;
+        internal CompoundTask(
+            string name,
+            IEnumerable<Method<TWorldState, TContext>> methods,
+            IMethodSelector<TWorldState, TContext> methodSelector,
+            int localDepthLimit)
+        {
+            Name = name;
+            this.methods = methods.ToArray();
+            this.methodSelector = methodSelector;
+            this.localDepthLimit = localDepthLimit;
+        }
 
         public async UniTask<bool> ValidateAsync(
             TWorldState worldState,
@@ -89,8 +101,8 @@ namespace Gast.Lib.AI
 
                 simulationState.CopyFrom(ctx.WorldState);
 
-                var interruptsMethod = await Selector.SelectInterruptsAsync(
-                    Methods,
+                var interruptsMethod = await methodSelector.SelectInterruptsAsync(
+                    methods,
                     currentMethod,
                     simulationState,
                     options,
@@ -110,14 +122,14 @@ namespace Gast.Lib.AI
            CancellationToken cancellationToken)
         {
             var effectiveOptions = GetEffectiveOptions(options);
-            return Selector.SelectAsync(Methods, worldState, effectiveOptions, cancellationToken);
+            return methodSelector.SelectAsync(methods, worldState, effectiveOptions, cancellationToken);
         }
 
         CheckOptions GetEffectiveOptions(CheckOptions? options)
         {
             return CheckOptions.Resolve(
                 options ?? CheckOptions.Deep,
-                LocalDepthLimit);
+                localDepthLimit);
         }
     }
 }

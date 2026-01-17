@@ -1,13 +1,9 @@
 using Cysharp.Threading.Tasks;
 using System;
-using System.Threading;
 
 namespace Gast.Lib.AI
 {
-    /// <summary>
-    /// Internal implementation of IAgentRunner. Manages the simulation state for a single thinking cycle.
-    /// </summary>
-    class AgentRunner<TWorldState, TContext> : IAgentRunner<TWorldState, TContext>
+    public class AgentRunner<TWorldState, TContext>
        where TWorldState : class, IWorldState<TWorldState>, new()
        where TContext : struct, IContext<TContext, TWorldState>
     {

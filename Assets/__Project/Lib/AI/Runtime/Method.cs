@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Gast.Lib.AI
 {
@@ -9,24 +10,27 @@ namespace Gast.Lib.AI
     {
         public string Name { get; }
         public int Index { get; }
-        public Func<TWorldState, bool> Condition { get; }
-        public Func<TWorldState, float> Scorer { get; }
-        public List<ITask<TWorldState, TContext>> SubTasks { get; } = new List<ITask<TWorldState, TContext>>();
+        public IReadOnlyList<ITask<TWorldState, TContext>> SubTasks { get; }
 
-        public Method(
+        readonly Func<TWorldState, bool> condition;
+        readonly Func<TWorldState, float> scorer;
+
+        internal Method(
             string name,
             int index,
-            Func<TWorldState, bool> condition,
+            IEnumerable<ITask<TWorldState, TContext>> subTasks,
+            Func<TWorldState, bool> condition = null,
             Func<TWorldState, float> scorer = null)
         {
             Name = name;
             Index = index;
-            Condition = condition ?? (_ => true);
-            Scorer = scorer ?? (_ => 1.0f);
+            SubTasks = subTasks.ToArray();
+            this.condition = condition ?? (_ => true);
+            this.scorer = scorer ?? (_ => 1.0f);
         }
 
-        public bool CheckCondition(TWorldState state) => Condition(state);
+        public bool CheckCondition(TWorldState state) => condition(state);
 
-        public float GetScore(TWorldState state) => Scorer(state);
+        public float GetScore(TWorldState state) => scorer(state);
     }
 }
