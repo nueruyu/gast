@@ -6,21 +6,19 @@ using UnityEngine;
 namespace Gast.Features.AI.Combat.Actions
 {
     [Serializable]
-    public class MeleeAttackAction : IAction<CombatWorldState, AIContext<CombatWorldState>>
+    public class MeleeAttackAction : IAction<CombatState, AIContext<CombatState>>
     {
-        public string Name => "MeleeAttack";
-
-        public bool CanExecute(CombatWorldState worldState)
+        public bool CanExecute(CombatState worldState)
         {
             return worldState.IsInAttackRange && worldState.IsReadyToAttack;
         }
 
-        public void Simulate(CombatWorldState worldState)
+        public void Simulate(CombatState worldState)
         {
             worldState.IsReadyToAttack = false;
         }
 
-        public async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
+        public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
         {
             var actor = ctx.Actor;
 

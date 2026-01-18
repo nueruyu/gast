@@ -7,7 +7,7 @@ namespace Gast.Features.AI.Strategic
 {
     public class StrategicDomain
     {
-        readonly AIDomain<StrategicWorldState, AIContext<StrategicWorldState>> domain;
+        readonly AIDomain<StrategicState, AIContext<StrategicState>> domain;
 
         public StrategicDomain(
             FindTargetForGoalAction findTargetForGoalAction,
@@ -18,26 +18,26 @@ namespace Gast.Features.AI.Strategic
             InteractWithTargetAction interactWithTargetAction,
             ClearInteractableTargetAction clearInteractableTargetAction)
         {
-            domain = new AIDomainBuilder<StrategicWorldState, AIContext<StrategicWorldState>>()
-                .RegisterAction(findTargetForGoalAction)
-                .RegisterAction(selectThreatAction)
-                .RegisterAction(clearTargetAction)
-                .RegisterAction(findItemPickupAction)
-                .RegisterAction(moveToInteractableAction)
-                .RegisterAction(interactWithTargetAction)
-                .RegisterAction(clearInteractableTargetAction)
+            domain = new AIDomainBuilder<StrategicState, AIContext<StrategicState>>()
+                .RegisterTask("FindTargetForGoal", findTargetForGoalAction)
+                .RegisterTask("SelectThreat", selectThreatAction)
+                .RegisterTask("ClearTarget", clearTargetAction)
+                .RegisterTask("FindItemPickup", findItemPickupAction)
+                .RegisterTask("MoveToInteractable", moveToInteractableAction)
+                .RegisterTask("InteractWithTarget", interactWithTargetAction)
+                .RegisterTask("ClearInteractableTarget", clearInteractableTargetAction)
                 .DefineCompound("AcquireItem")
                     .AddMethod("FindAndCollect")
-                        .Do(findItemPickupAction, moveToInteractableAction, interactWithTargetAction)
+                        .Do("FindItemPickup", "MoveToInteractable", "InteractWithTarget")
                     .End()
                     .AddMethod("ClearTargetIfNotFound")
-                        .Do(clearInteractableTargetAction)
+                        .Do("ClearInteractableTarget")
                     .End()
                 .End()
                 .DefineCompound("Root")
                     .AddMethod("SelectClosestThreat")
                         .Condition(s => s.IsThreatened)
-                        .Do(selectThreatAction)
+                        .Do("SelectThreat")
                     .End()
                     .AddMethod("AcquireItemGoal")
                         .Condition(s => s.HasGoal && s.CurrentGoal is AcquireItemGoal)
@@ -45,16 +45,16 @@ namespace Gast.Features.AI.Strategic
                     .End()
                     .AddMethod("SelectTargetBasedOnGoal")
                         .Condition(s => s.HasGoal)
-                        .Do(findTargetForGoalAction)
+                        .Do("FindTargetForGoal")
                     .End()
                     .AddMethod("Idle")
-                        .Do(clearTargetAction)
+                        .Do("ClearTarget")
                     .End()
                 .End()
                 .Build("Root");
         }
 
-        public AIRunner<StrategicWorldState, AIContext<StrategicWorldState>> CreateRunner()
+        public AIRunner<StrategicState, AIContext<StrategicState>> CreateRunner()
         {
             return domain.CreateRunner();
         }

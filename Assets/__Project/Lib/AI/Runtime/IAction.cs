@@ -6,12 +6,10 @@ namespace Gast.Lib.AI
         where TWorldState : class, IWorldState<TWorldState>, new()
         where TContext : struct, IContext<TContext, TWorldState>
     {
-        string Name { get; }
-
         bool CanExecute(TWorldState worldState);
 
         void Simulate(TWorldState worldState);
 
-        UniTask ExecuteAsync(TContext ctx);
+        UniTask ExecuteAsync(TContext context);
     }
 }

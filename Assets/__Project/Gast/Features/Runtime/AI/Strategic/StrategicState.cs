@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Gast.Features.AI.Strategic
 {
-    public class StrategicWorldState : IWorldState<StrategicWorldState>
+    public class StrategicState : IWorldState<StrategicState>
     {
         public IGoal CurrentGoal { get; set; }
         public bool HasGoal { get; set; }
@@ -15,7 +15,7 @@ namespace Gast.Features.AI.Strategic
         public bool IsInRangeToInteract { get; set; }
         public bool IsThreatened { get; set; }
 
-        public void CopyFrom(StrategicWorldState source)
+        public void CopyFrom(StrategicState source)
         {
             CurrentGoal = source.CurrentGoal;
             HasGoal = source.HasGoal;

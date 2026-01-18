@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Gast.Features.AI.Combat
 {
-    public class CombatWorldState : IWorldState<CombatWorldState>
+    public class CombatState : IWorldState<CombatState>
     {
         public bool HasTarget { get; set; }
         public Vector3 TargetPosition { get; set; }
@@ -15,7 +15,7 @@ namespace Gast.Features.AI.Combat
         public bool IsInAttackRange => HasTarget && DistanceToTarget <= AttackRange;
         public bool IsInCombatRange => HasTarget && DistanceToTarget < CombatRange;
 
-        public void CopyFrom(CombatWorldState source)
+        public void CopyFrom(CombatState source)
         {
             HasTarget = source.HasTarget;
             TargetPosition = source.TargetPosition;

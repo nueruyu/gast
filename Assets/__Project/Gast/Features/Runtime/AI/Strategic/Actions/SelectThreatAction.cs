@@ -7,17 +7,15 @@ using UnityEngine;
 namespace Gast.Features.AI.Strategic.Actions
 {
     [Serializable]
-    public class SelectThreatAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
+    public class SelectThreatAction : IAction<StrategicState, AIContext<StrategicState>>
     {
-        public string Name => "SelectThreatAction";
+        public bool CanExecute(StrategicState worldState) => worldState.IsThreatened;
 
-        public bool CanExecute(StrategicWorldState worldState) => worldState.IsThreatened;
-
-        public void Simulate(StrategicWorldState worldState)
+        public void Simulate(StrategicState worldState)
         {
         }
 
-        public UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
+        public UniTask ExecuteAsync(AIContext<StrategicState> ctx)
         {
             var self = ctx.Actor;
             var closestThreat = self.VisionSensor.VisibleCharacters

@@ -5,17 +5,15 @@ using System;
 namespace Gast.Features.AI.Strategic.Actions
 {
     [Serializable]
-    public class ClearTargetAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
+    public class ClearTargetAction : IAction<StrategicState, AIContext<StrategicState>>
     {
-        public string Name => "ClearTarget";
+        public bool CanExecute(StrategicState worldState) => true;
 
-        public bool CanExecute(StrategicWorldState worldState) => true;
-
-        public void Simulate(StrategicWorldState worldState)
+        public void Simulate(StrategicState worldState)
         {
         }
 
-        public UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
+        public UniTask ExecuteAsync(AIContext<StrategicState> ctx)
         {
             ctx.Memory.CombatTarget = null;
             return UniTask.CompletedTask;

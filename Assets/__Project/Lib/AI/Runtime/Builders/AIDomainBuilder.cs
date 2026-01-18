@@ -11,15 +11,9 @@ namespace Gast.Lib.AI.Builders
     {
         readonly Dictionary<string, ITask<TWorldState, TContext>> taskRegistry = new();
 
-        public AIDomainBuilder<TWorldState, TContext> RegisterTask(ITask<TWorldState, TContext> task)
+        public AIDomainBuilder<TWorldState, TContext> RegisterTask(string name, IAction<TWorldState, TContext> action)
         {
-            taskRegistry[task.Name] = task;
-            return this;
-        }
-
-        public AIDomainBuilder<TWorldState, TContext> RegisterAction(IAction<TWorldState, TContext> action)
-        {
-            var task = new PrimitiveTask<TWorldState, TContext>(action);
+            var task = new PrimitiveTask<TWorldState, TContext>(name, action);
             taskRegistry[task.Name] = task;
             return this;
         }
@@ -32,7 +26,7 @@ namespace Gast.Lib.AI.Builders
         internal AIDomainBuilder<TWorldState, TContext> CompleteCompound(
             CompoundTask<TWorldState, TContext> task)
         {
-            RegisterTask(task);
+            taskRegistry[task.Name] = task;
             return this;
         }
 

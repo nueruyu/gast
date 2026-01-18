@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Gast.Features.AI.Strategic.Actions
 {
     [Serializable]
-    public class FindTargetForGoalAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
+    public class FindTargetForGoalAction : IAction<StrategicState, AIContext<StrategicState>>
     {
         readonly ICharacterRepository characterRepository;
 
@@ -18,15 +18,13 @@ namespace Gast.Features.AI.Strategic.Actions
             this.characterRepository = characterRepository;
         }
 
-        public string Name => "FindTargetForGoalAction";
+        public bool CanExecute(StrategicState worldState) => worldState.HasGoal;
 
-        public bool CanExecute(StrategicWorldState worldState) => worldState.HasGoal;
-
-        public void Simulate(StrategicWorldState worldState)
+        public void Simulate(StrategicState worldState)
         {
         }
 
-        public UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
+        public UniTask ExecuteAsync(AIContext<StrategicState> ctx)
         {
             var goal = ctx.WorldState.CurrentGoal;
             ICharacter foundTarget = null;

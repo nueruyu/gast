@@ -6,7 +6,7 @@ namespace Gast.Features.AI.Combat
 {
     public class CombatDomain
     {
-        readonly AIDomain<CombatWorldState, AIContext<CombatWorldState>> domain;
+        readonly AIDomain<CombatState, AIContext<CombatState>> domain;
 
         public CombatDomain(
             ChaseTargetAction chaseTargetAction,
@@ -14,27 +14,27 @@ namespace Gast.Features.AI.Combat
             BackOffAction backOffAction,
             StrafeAction strafeAction)
         {
-            domain = new AIDomainBuilder<CombatWorldState, AIContext<CombatWorldState>>()
-                .RegisterAction(chaseTargetAction)
-                .RegisterAction(meleeAttackAction)
-                .RegisterAction(backOffAction)
-                .RegisterAction(strafeAction)
+            domain = new AIDomainBuilder<CombatState, AIContext<CombatState>>()
+                .RegisterTask("ChaseTarget", chaseTargetAction)
+                .RegisterTask("MeleeAttack", meleeAttackAction)
+                .RegisterTask("BackOff", backOffAction)
+                .RegisterTask("Strafe", strafeAction)
                 .DefineCompound("EngageTarget")
                     .AddMethod("Attack")
                         .Condition(s => s.IsInAttackRange && s.IsReadyToAttack)
-                        .Do(meleeAttackAction)
+                        .Do("MeleeAttack")
                     .End()
                     .AddMethod("Withdraw")
                         .Condition(s => s.IsInAttackRange && !s.IsReadyToAttack)
-                        .Do(backOffAction)
+                        .Do("BackOff")
                     .End()
                     .AddMethod("Approach_Tactical")
                         .Condition(s => !s.IsInAttackRange && s.IsInCombatRange)
-                        .Do(strafeAction)
+                        .Do("Strafe")
                     .End()
                     .AddMethod("Chase")
                         .Condition(s => !s.IsInCombatRange)
-                        .Do(chaseTargetAction)
+                        .Do("ChaseTarget")
                     .End()
                 .End()
                 .DefineCompound("Root")
@@ -46,7 +46,7 @@ namespace Gast.Features.AI.Combat
                 .Build("Root");
         }
 
-        public AIRunner<CombatWorldState, AIContext<CombatWorldState>> CreateRunner()
+        public AIRunner<CombatState, AIContext<CombatState>> CreateRunner()
         {
             return domain.CreateRunner();
         }

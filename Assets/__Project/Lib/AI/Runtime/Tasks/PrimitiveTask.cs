@@ -10,10 +10,11 @@ namespace Gast.Lib.AI.Tasks
     {
         readonly IAction<TWorldState, TContext> action;
 
-        public string Name => action.Name;
+        public string Name { get; }
 
-        public PrimitiveTask(IAction<TWorldState, TContext> action)
+        public PrimitiveTask(string name, IAction<TWorldState, TContext> action)
         {
+            Name = name;
             this.action = action;
         }
 

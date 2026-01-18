@@ -4,21 +4,19 @@ using UnityEngine;
 
 namespace Gast.Features.AI.Strategic.Actions
 {
-    public class MoveToInteractableAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
+    public class MoveToInteractableAction : IAction<StrategicState, AIContext<StrategicState>>
     {
-        public string Name => "MoveToInteractableAction";
-
-        public bool CanExecute(StrategicWorldState worldState)
+        public bool CanExecute(StrategicState worldState)
         {
             return worldState.HasInteractableTarget;
         }
 
-        public void Simulate(StrategicWorldState worldState)
+        public void Simulate(StrategicState worldState)
         {
             worldState.IsInRangeToInteract = true;
         }
 
-        public async UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
+        public async UniTask ExecuteAsync(AIContext<StrategicState> ctx)
         {
             var actor = ctx.Actor;
             var navigator = actor.NavigationProvider;

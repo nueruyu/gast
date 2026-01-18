@@ -21,12 +21,12 @@ namespace Gast.Features.AI
         ICharacter character;
         CancellationTokenSource cts;
 
-        AIRunner<StrategicWorldState, AIContext<StrategicWorldState>> strategicAgentRunner;
-        AIRunner<CombatWorldState, AIContext<CombatWorldState>> combatAgentRunner;
+        AIRunner<StrategicState, AIContext<StrategicState>> strategicAgentRunner;
+        AIRunner<CombatState, AIContext<CombatState>> combatAgentRunner;
 
         readonly AIMemory memory = new();
-        readonly StrategicWorldState strategicState = new();
-        readonly CombatWorldState combatState = new();
+        readonly StrategicState strategicState = new();
+        readonly CombatState combatState = new();
 
         public GenericBrain(
             StrategicDomain strategicDomain,

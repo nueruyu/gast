@@ -6,21 +6,19 @@ using UnityEngine;
 namespace Gast.Features.AI.Combat.Actions
 {
     [Serializable]
-    public class BackOffAction : IAction<CombatWorldState, AIContext<CombatWorldState>>
+    public class BackOffAction : IAction<CombatState, AIContext<CombatState>>
     {
-        public string Name => "BackOff";
-
-        public bool CanExecute(CombatWorldState worldState)
+        public bool CanExecute(CombatState worldState)
         {
             return worldState.IsInAttackRange && !worldState.IsReadyToAttack;
         }
 
-        public void Simulate(CombatWorldState worldState)
+        public void Simulate(CombatState worldState)
         {
             worldState.DistanceToTarget += 2.0f;
         }
 
-        public async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
+        public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
         {
             var actor = ctx.Actor;
             var worldState = ctx.WorldState;

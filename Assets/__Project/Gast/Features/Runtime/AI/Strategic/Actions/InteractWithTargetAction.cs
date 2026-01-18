@@ -5,7 +5,7 @@ using Gast.Lib.AI;
 
 namespace Gast.Features.AI.Strategic.Actions
 {
-    public class InteractWithTargetAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
+    public class InteractWithTargetAction : IAction<StrategicState, AIContext<StrategicState>>
     {
         readonly ICommandDispatcher commandDispatcher;
 
@@ -14,20 +14,18 @@ namespace Gast.Features.AI.Strategic.Actions
             this.commandDispatcher = commandDispatcher;
         }
 
-        public string Name => "InteractWithTargetAction";
-
-        public bool CanExecute(StrategicWorldState worldState)
+        public bool CanExecute(StrategicState worldState)
         {
             return worldState.HasInteractableTarget && worldState.IsInRangeToInteract;
         }
 
-        public void Simulate(StrategicWorldState worldState)
+        public void Simulate(StrategicState worldState)
         {
             worldState.HasInteractableTarget = false;
             worldState.IsInRangeToInteract = false;
         }
 
-        public async UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
+        public async UniTask ExecuteAsync(AIContext<StrategicState> ctx)
         {
             var command = new InteractCommand(ctx.Actor.Id, ctx.WorldState.InteractableTargetId);
             await commandDispatcher.DispatchAsync<InteractCommand, bool>(command);

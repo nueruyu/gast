@@ -7,23 +7,21 @@ using Random = UnityEngine.Random;
 namespace Gast.Features.AI.Combat.Actions
 {
     [Serializable]
-    public class StrafeAction : IAction<CombatWorldState, AIContext<CombatWorldState>>
+    public class StrafeAction : IAction<CombatState, AIContext<CombatState>>
     {
         const float MinDuration = 1.0f;
         const float MaxDuration = 3.0f;
 
-        public string Name => "Strafe";
-
-        public bool CanExecute(CombatWorldState worldState)
+        public bool CanExecute(CombatState worldState)
         {
             return worldState.HasTarget && worldState.IsInCombatRange;
         }
 
-        public void Simulate(CombatWorldState worldState)
+        public void Simulate(CombatState worldState)
         {
         }
 
-        public async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
+        public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
         {
             var actor = ctx.Actor;
             var navigator = actor.NavigationProvider;

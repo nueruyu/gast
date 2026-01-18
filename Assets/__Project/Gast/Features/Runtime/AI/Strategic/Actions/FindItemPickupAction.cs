@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Gast.Features.AI.Strategic.Actions
 {
-    public class FindItemPickupAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
+    public class FindItemPickupAction : IAction<StrategicState, AIContext<StrategicState>>
     {
         readonly IPickupRepository pickupRepository;
 
@@ -17,19 +17,17 @@ namespace Gast.Features.AI.Strategic.Actions
             this.pickupRepository = pickupRepository;
         }
 
-        public string Name => "FindItemPickupAction";
-
-        public bool CanExecute(StrategicWorldState worldState)
+        public bool CanExecute(StrategicState worldState)
         {
             return worldState.CurrentGoal is AcquireItemGoal && !worldState.HasInteractableTarget;
         }
 
-        public void Simulate(StrategicWorldState worldState)
+        public void Simulate(StrategicState worldState)
         {
             worldState.HasInteractableTarget = true;
         }
 
-        public async UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
+        public async UniTask ExecuteAsync(AIContext<StrategicState> ctx)
         {
             var goal = (AcquireItemGoal)ctx.WorldState.CurrentGoal;
 

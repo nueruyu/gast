@@ -6,21 +6,19 @@ using Gast.Lib.AI;
 namespace Gast.Features.AI.Combat.Actions
 {
     [Serializable]
-    public class ChaseTargetAction : IAction<CombatWorldState, AIContext<CombatWorldState>>
+    public class ChaseTargetAction : IAction<CombatState, AIContext<CombatState>>
     {
-        public string Name => "ChaseTarget";
-
-        public bool CanExecute(CombatWorldState worldState)
+        public bool CanExecute(CombatState worldState)
         {
             return worldState.HasTarget && !worldState.IsInAttackRange;
         }
 
-        public void Simulate(CombatWorldState worldState)
+        public void Simulate(CombatState worldState)
         {
             worldState.DistanceToTarget = worldState.AttackRange;
         }
 
-        public async UniTask ExecuteAsync(AIContext<CombatWorldState> ctx)
+        public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
         {
             var actor = ctx.Actor;
             actor.SetSprint(true);
