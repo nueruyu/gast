@@ -13,8 +13,6 @@ namespace Gast.Composition.Installers
     {
         public void Install(IContainerBuilder builder)
         {
-            builder.Register<CommandAIUseCase>(Lifetime.Singleton);
-
             builder.Register<GoalManager>(Lifetime.Transient);
 
             builder.Register<ChaseTargetAction>(Lifetime.Transient);

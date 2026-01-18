@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Application.AI;
+using Gast.Core.Commands;
 using R3;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace Gast.UI.Command
 {
     public class CommandViewModel : IDisposable
     {
-        readonly CommandAIUseCase commandAiUseCase;
+        readonly ICommandDispatcher commandDispatcher;
         readonly CompositeDisposable disposables = new();
         readonly CancellationTokenSource cts = new();
 
@@ -19,9 +20,9 @@ namespace Gast.UI.Command
         public ReactiveProperty<string> StatusMessage { get; } = new("");
         public ReactiveProperty<bool> HasError { get; } = new(false);
 
-        public CommandViewModel(CommandAIUseCase commandAiUseCase)
+        public CommandViewModel(ICommandDispatcher commandDispatcher)
         {
-            this.commandAiUseCase = commandAiUseCase;
+            this.commandDispatcher = commandDispatcher;
         }
 
         public void SendInstruction()
@@ -38,6 +39,8 @@ namespace Gast.UI.Command
         async UniTaskVoid SendInstructionAsync()
         {
             var instruction = InstructionText.Value;
+            var command = new CommandAICommand(instruction);
+
             InstructionText.Value = "";
             StatusMessage.Value = "";
             HasError.Value = false;
@@ -47,7 +50,7 @@ namespace Gast.UI.Command
 
             try
             {
-                var result = await commandAiUseCase.Execute(instruction, cts.Token);
+                var result = await commandDispatcher.DispatchAsync<CommandAICommand, CommandAIResult>(command, cts.Token);
 
                 if (result.IsSuccess)
                 {

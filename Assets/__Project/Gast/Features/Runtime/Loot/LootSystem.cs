@@ -1,9 +1,11 @@
 using Cysharp.Threading.Tasks;
-using Gast.Application.Loot;
+using Gast.Application.Items;
 using Gast.Core.Commands;
-using Gast.Core.Observables;
+using Gast.Core.Events;
 using Gast.Core.Tasks;
 using Gast.Domain.Characters;
+using Gast.Domain.Events;
+using Gast.Domain.Pickups;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -13,51 +15,52 @@ namespace Gast.Features.Loot
 {
     public class LootSystem : ILifecycleTask
     {
-        readonly ICharacterRepository characterRepository;
+        readonly IDomainEventSubscriber eventSubscriber;
         readonly ICommandDispatcher commandDispatcher;
+        readonly ICharacterTypeRepository characterTypeRepository;
 
         public LootSystem(
-            ICharacterRepository characterRepository,
-            ICommandDispatcher commandDispatcher)
+            IDomainEventSubscriber eventSubscriber,
+            ICommandDispatcher commandDispatcher,
+            ICharacterTypeRepository characterTypeRepository)
         {
-            this.characterRepository = characterRepository;
+            this.eventSubscriber = eventSubscriber;
             this.commandDispatcher = commandDispatcher;
+            this.characterTypeRepository = characterTypeRepository;
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            characterRepository.Registered
-                .Subscribe(character => MonitorCharacter(character, cancellationToken))
+            eventSubscriber
+                .Subscribe<CharacterDefeatedEvent>(OnCharacterDefeated)
                 .AddTo(cancellationToken);
-
-            foreach (var character in characterRepository.GetAll())
-            {
-                MonitorCharacter(character, cancellationToken);
-            }
 
             await UniTask.WaitUntilCanceled(cancellationToken);
         }
 
-        void MonitorCharacter(ICharacter character, CancellationToken cancellationToken)
+        void OnCharacterDefeated(CharacterDefeatedEvent e)
         {
-            character.Status.IsAlive.SubscribeWithCurrent(alive =>
+            var character = e.DefeatedCharacter;
+            var characterType = characterTypeRepository.Get(character.TypeId);
+
+            foreach (var entry in characterType.LootTable.Entries)
             {
-                if (!alive)
-                {
-                    SpawnLoot(character);
-                }
-            }).AddTo(cancellationToken);
-        }
+                if (Random.value > entry.DropRate)
+                    continue;
 
-        void SpawnLoot(ICharacter character)
-        {
-            const float RandomOffset = 0.3f;
+                const float RandomOffset = 0.3f;
 
-            var spawnPos = character.Body.Position +
-                Vector3.up * RandomOffset +
-                Random.insideUnitSphere * RandomOffset;
+                var spawnPos = character.Body.Position +
+                    Vector3.up * RandomOffset +
+                    Random.insideUnitSphere * RandomOffset;
 
-            commandDispatcher.Dispatch<SpawnLootCommand>(new(character.TypeId, spawnPos));
+                var quantity = Random.Range(entry.MinQuantity, entry.MaxQuantity + 1);
+
+                commandDispatcher.Dispatch<SpawnItemCommand, IPickup>(new(
+                    entry.ItemId,
+                    quantity,
+                    spawnPos));
+            }
         }
     }
 }

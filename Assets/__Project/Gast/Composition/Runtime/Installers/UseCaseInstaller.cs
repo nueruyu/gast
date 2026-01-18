@@ -1,8 +1,8 @@
+using Gast.Application.AI;
 using Gast.Application.Characters;
 using Gast.Application.Economy;
-using Gast.Application.Gathering;
 using Gast.Application.Interactions;
-using Gast.Application.Loot;
+using Gast.Application.Items;
 using VContainer;
 using VContainer.Unity;
 
@@ -25,14 +25,16 @@ namespace Gast.Composition.Installers
             builder.Register<PickUpItemUseCase>(Lifetime.Singleton)
                 .AsImplementedInterfaces();
 
-            // Loot & Gathering
-            builder.Register<SpawnLootUseCase>(Lifetime.Singleton)
-                .AsImplementedInterfaces();
-            builder.Register<SpawnGatheringItemUseCase>(Lifetime.Singleton)
+            // Items
+            builder.Register<SpawnItemUseCase>(Lifetime.Singleton)
                 .AsImplementedInterfaces();
 
             // Interactions
             builder.Register<InteractUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
+
+            // AI
+            builder.Register<CommandAIUseCase>(Lifetime.Singleton)
                 .AsImplementedInterfaces();
         }
     }

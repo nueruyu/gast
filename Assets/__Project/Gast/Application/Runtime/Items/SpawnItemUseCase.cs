@@ -2,18 +2,18 @@ using Gast.Core.Commands;
 using Gast.Domain.Pickups;
 using System;
 
-namespace Gast.Application.Gathering
+namespace Gast.Application.Items
 {
     /// <summary>
-    /// Use case for spawning a gathering item (pickup) in the world.
+    /// Use case for spawning a generic item pickup in the world.
     /// Handles creation, registration, and initial physics ejection.
     /// </summary>
-    public class SpawnGatheringItemUseCase : ICommandHandler<SpawnGatheringItemCommand, IPickup>
+    public class SpawnItemUseCase : ICommandHandler<SpawnItemCommand, IPickup>
     {
         readonly IPickupFactory factory;
         readonly IPickupRepository repository;
 
-        public SpawnGatheringItemUseCase(
+        public SpawnItemUseCase(
             IPickupFactory factory,
             IPickupRepository repository)
         {
@@ -21,7 +21,7 @@ namespace Gast.Application.Gathering
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public IPickup Execute(in SpawnGatheringItemCommand command)
+        public IPickup Execute(in SpawnItemCommand command)
         {
             var pickup = factory.Create(command.ItemId, command.Quantity, command.Position);
 

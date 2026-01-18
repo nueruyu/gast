@@ -1,12 +1,13 @@
 using System.Threading;
-using Cysharp.Threading.Tasks;
+using System.Threading.Tasks;
+using Gast.Core.Commands;
 using Gast.Domain.AI;
 using Gast.Domain.Players;
 using UnityEngine;
 
 namespace Gast.Application.AI
 {
-    public class CommandAIUseCase
+    public class CommandAIUseCase : IAsyncCommandHandler<CommandAICommand, CommandAIResult>
     {
         readonly IAIAgentService aiAgentService;
         readonly IPlayerManager playerManager;
@@ -22,9 +23,9 @@ namespace Gast.Application.AI
             this.aiBrainFactory = aiBrainFactory;
         }
 
-        public async UniTask<CommandAIResult> Execute(string instruction, CancellationToken cancellationToken)
+        public async ValueTask<CommandAIResult> ExecuteAsync(CommandAICommand command, CancellationToken cancellationToken)
         {
-            var result = await aiAgentService.GetGoalsAsync(instruction, cancellationToken);
+            var result = await aiAgentService.GetGoalsAsync(command.Instruction, cancellationToken);
 
             if (!result.IsSuccess)
             {

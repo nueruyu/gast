@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Gast.Application.Gathering;
+using Gast.Application.Items;
 using Gast.Core.Commands;
 using Gast.Core.Observables;
 using Gast.Domain.Pickups;
@@ -60,7 +60,7 @@ namespace Gast.Features.Gathering
         {
             try
             {
-                currentPickup = commandDispatcher.Dispatch<SpawnGatheringItemCommand, IPickup>(new(
+                currentPickup = commandDispatcher.Dispatch<SpawnItemCommand, IPickup>(new(
                     itemReference.Id,
                     quantity,
                     transform.position
