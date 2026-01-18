@@ -28,7 +28,7 @@ namespace Gast.Features.AI.Strategic.Actions
         public async UniTask ExecuteAsync(AIContext<StrategicState> ctx)
         {
             var command = new InteractCommand(ctx.Actor.Id, ctx.WorldState.InteractableTargetId);
-            await commandDispatcher.DispatchAsync<InteractCommand, bool>(command);
+            await commandDispatcher.DispatchAsync<InteractCommand, bool>(command, ctx.CancellationToken);
         }
     }
 }

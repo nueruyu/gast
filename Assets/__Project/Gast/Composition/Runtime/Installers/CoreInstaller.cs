@@ -1,4 +1,3 @@
-using Gast.Application.CommandHandlers;
 using Gast.Features.Cameras;
 using Gast.Features.Gameplay;
 using Gast.Features.Inputs;
@@ -18,11 +17,6 @@ namespace Gast.Composition.Installers
             // Command System
             builder.Register<CommandDispatcher>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<JsonCommandSerializer>(Lifetime.Singleton).AsImplementedInterfaces();
-
-            builder.Register<CharacterCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
-            builder.Register<EconomyCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
-            builder.Register<PickupCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
-            builder.Register<InteractionCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // Domain Event System
             builder.Register<DomainEventPublisher>(Lifetime.Singleton).AsImplementedInterfaces();

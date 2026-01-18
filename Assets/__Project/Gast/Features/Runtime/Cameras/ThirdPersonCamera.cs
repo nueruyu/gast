@@ -61,14 +61,14 @@ namespace Gast.Features.Cameras
 
         void LateUpdate()
         {
-            if (!Application.isPlaying)
+            if (!UnityEngine.Application.isPlaying)
                 return;
             UpdateCameraTransform();
         }
 
         void OnValidate()
         {
-            if (!Application.isPlaying)
+            if (!UnityEngine.Application.isPlaying)
                 return;
             if (!virtualCamera)
                 return;

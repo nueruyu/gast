@@ -5,7 +5,6 @@
         "Gast.Core",
         "Gast.Domain",
         "Gast.Application",
-        "Gast.Api",
         "Gast.Shared",
         "Gast.Features",
         "Gast.UI",

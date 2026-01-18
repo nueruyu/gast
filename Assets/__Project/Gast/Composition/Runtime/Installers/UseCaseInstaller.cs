@@ -14,19 +14,26 @@ namespace Gast.Composition.Installers
         {
             // Characters
             builder.Register<SpawnCharacterUseCase>(Lifetime.Singleton);
-            builder.Register<CreatePlayerUseCase>(Lifetime.Singleton);
-            builder.Register<CreateNpcUseCase>(Lifetime.Singleton);
+            builder.Register<CreatePlayerUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
+            builder.Register<CreateNpcUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
 
             // Economy
-            builder.Register<BuyItemUseCase>(Lifetime.Singleton);
-            builder.Register<PickUpItemUseCase>(Lifetime.Singleton);
+            builder.Register<BuyItemUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
+            builder.Register<PickUpItemUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
 
             // Loot & Gathering
-            builder.Register<SpawnLootUseCase>(Lifetime.Singleton);
-            builder.Register<SpawnGatheringItemUseCase>(Lifetime.Singleton);
+            builder.Register<SpawnLootUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
+            builder.Register<SpawnGatheringItemUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
 
             // Interactions
-            builder.Register<InteractUseCase>(Lifetime.Singleton);
+            builder.Register<InteractUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
         }
     }
 }

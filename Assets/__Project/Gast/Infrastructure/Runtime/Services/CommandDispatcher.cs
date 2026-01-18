@@ -1,8 +1,8 @@
-using Gast.Application;
 using Gast.Core.Commands;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using VContainer;
 
@@ -29,109 +29,16 @@ namespace Gast.Infrastructure.Services
             return handler.Execute(command);
         }
 
-        public object Dispatch(object command)
-        {
-            if (command == null)
-                throw new ArgumentNullException(nameof(command));
-
-            var commandType = command.GetType();
-            var commandInterfaces = commandType.GetInterfaces();
-
-            var resultCommandInterface = commandInterfaces.FirstOrDefault(i =>
-                i.IsGenericType &&
-                i.GetGenericTypeDefinition() == typeof(ICommand<>));
-
-            MethodInfo dispatchMethod;
-
-            if (resultCommandInterface != null)
-            {
-                var resultType = resultCommandInterface.GetGenericArguments()[0];
-                dispatchMethod = GetType()
-                    .GetMethods()
-                    .First(m => m.Name == nameof(Dispatch) &&
-                        m.IsGenericMethodDefinition &&
-                        m.GetGenericArguments().Length == 2)
-                    .MakeGenericMethod(commandType, resultType);
-            }
-            else if (commandInterfaces.Contains(typeof(ICommand)))
-            {
-                dispatchMethod = GetType()
-                    .GetMethods()
-                    .First(m => m.Name == nameof(Dispatch) &&
-                        m.IsGenericMethodDefinition &&
-                        m.GetGenericArguments().Length == 1)
-                    .MakeGenericMethod(commandType);
-            }
-            else
-            {
-                throw new InvalidOperationException($"The provided object is not a valid command: {commandType.Name}");
-            }
-
-            return dispatchMethod.Invoke(this, new[] { command });
-        }
-
-        public ValueTask DispatchAsync<TCommand>(TCommand command) where TCommand : struct, IAsyncCommand
+        public ValueTask DispatchAsync<TCommand>(TCommand command, CancellationToken cancellationToken) where TCommand : struct, IAsyncCommand
         {
             var handler = resolver.Resolve<IAsyncCommandHandler<TCommand>>();
-            return handler.ExecuteAsync(command);
+            return handler.ExecuteAsync(command, cancellationToken);
         }
 
-        public ValueTask<TResult> DispatchAsync<TCommand, TResult>(TCommand command) where TCommand : struct, IAsyncCommand<TResult>
+        public ValueTask<TResult> DispatchAsync<TCommand, TResult>(TCommand command, CancellationToken cancellationToken = default) where TCommand : struct, IAsyncCommand<TResult>
         {
             var handler = resolver.Resolve<IAsyncCommandHandler<TCommand, TResult>>();
-            return handler.ExecuteAsync(command);
-        }
-
-        public async ValueTask<object> DispatchAsync(object command)
-        {
-            if (command == null)
-                throw new ArgumentNullException(nameof(command));
-
-            var commandType = command.GetType();
-            var commandInterfaces = commandType.GetInterfaces();
-
-            var resultCommandInterface = commandInterfaces.FirstOrDefault(i =>
-                i.IsGenericType &&
-                i.GetGenericTypeDefinition() == typeof(IAsyncCommand<>));
-
-            MethodInfo dispatchMethod;
-
-            if (resultCommandInterface != null)
-            {
-                var resultType = resultCommandInterface.GetGenericArguments()[0];
-                dispatchMethod = GetType()
-                    .GetMethods()
-                    .First(m => m.Name == nameof(DispatchAsync) &&
-                        m.IsGenericMethodDefinition &&
-                        m.GetGenericArguments().Length == 2)
-                    .MakeGenericMethod(commandType, resultType);
-
-                var valueTask = dispatchMethod.Invoke(this, new[] { command });
-                var asTaskMethod = valueTask.GetType().GetMethod("AsTask");
-                var task = (Task)asTaskMethod.Invoke(valueTask, null);
-
-                await task;
-
-                var resultProperty = task.GetType().GetProperty("Result");
-                return resultProperty.GetValue(task);
-            }
-            else if (commandInterfaces.Contains(typeof(IAsyncCommand)))
-            {
-                dispatchMethod = GetType()
-                    .GetMethods()
-                    .First(m => m.Name == nameof(DispatchAsync) &&
-                        m.IsGenericMethodDefinition &&
-                        m.GetGenericArguments().Length == 1)
-                    .MakeGenericMethod(commandType);
-
-                var task = (ValueTask)dispatchMethod.Invoke(this, new[] { command });
-                await task;
-                return null;
-            }
-            else
-            {
-                throw new InvalidOperationException($"The provided object is not a valid async command: {commandType.Name}");
-            }
+            return handler.ExecuteAsync(command, cancellationToken);
         }
     }
 }
