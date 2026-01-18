@@ -1,13 +1,15 @@
 {
-    "name": "Gast.Features.Characters.Editor",
-    "rootNamespace": "Gast.Features.Characters.Editor",
+    "name": "Gast.Features.Editor",
+    "rootNamespace": "Gast.Features.Editor",
     "references": [
         "Gast.Core",
         "Gast.Domain",
         "Gast.Features",
         "Gast.Lib.AI.Editor"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
