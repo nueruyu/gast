@@ -23,7 +23,7 @@ namespace Gast.Infrastructure.Factories
 
         ICharacterBrain CreateBrain()
         {
-            return resolver.Resolve<GenericBrain>();
+            return resolver.Resolve<AIBrain>();
         }
     }
 }

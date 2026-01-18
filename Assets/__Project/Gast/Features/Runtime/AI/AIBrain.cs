@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace Gast.Features.AI
 {
-    public class GenericBrain : ICharacterBrain, IGoalAssignable
+    public class AIBrain : ICharacterBrain, IGoalAssignable
     {
         readonly StrategicDomain strategicDomain;
         readonly CombatDomain combatDomain;
@@ -28,7 +28,7 @@ namespace Gast.Features.AI
         readonly StrategicState strategicState = new();
         readonly CombatState combatState = new();
 
-        public GenericBrain(
+        public AIBrain(
             StrategicDomain strategicDomain,
             CombatDomain combatDomain,
             GoalManager goalManager)

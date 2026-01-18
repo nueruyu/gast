@@ -34,7 +34,7 @@ namespace Gast.Composition.Installers
             builder.Register<StrategicDomain>(Lifetime.Transient);
             builder.Register<CombatDomain>(Lifetime.Transient);
 
-            builder.Register<GenericBrain>(Lifetime.Transient);
+            builder.Register<AIBrain>(Lifetime.Transient);
         }
     }
 }
