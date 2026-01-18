@@ -2,7 +2,6 @@ using Gast.Core.Commands;
 using Gast.Core.Events;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
-using Gast.Domain.Events;
 
 namespace Gast.Application.Economy
 {

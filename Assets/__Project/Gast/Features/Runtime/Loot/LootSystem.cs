@@ -4,7 +4,6 @@ using Gast.Core.Commands;
 using Gast.Core.Events;
 using Gast.Core.Tasks;
 using Gast.Domain.Characters;
-using Gast.Domain.Events;
 using Gast.Domain.Pickups;
 using System.Threading;
 using System.Threading.Tasks;

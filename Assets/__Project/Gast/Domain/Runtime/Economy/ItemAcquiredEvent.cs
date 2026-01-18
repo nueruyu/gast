@@ -1,8 +1,7 @@
 using Gast.Core.Events;
 using Gast.Domain.Characters;
-using Gast.Domain.Economy;
 
-namespace Gast.Domain.Events
+namespace Gast.Domain.Economy
 {
     public readonly struct ItemAcquiredEvent : IDomainEvent
     {
