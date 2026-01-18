@@ -1,13 +1,15 @@
-using Gast.Composition.Installers;
+using Gast.Application;
 using Gast.Core.Exceptions;
+using Gast.Features;
 using Gast.Features.Cameras;
 using Gast.Features.Economy;
 using Gast.Features.Gameplay;
 using Gast.Features.Gathering;
 using Gast.Features.Inputs;
-using Gast.Features.Interactions;
 using Gast.Features.SpawnSites;
+using Gast.Infrastructure;
 using Gast.Infrastructure.Remoting.AI;
+using Gast.Infrastructure.Services;
 using Gast.Infrastructure.Settings;
 using Gast.UI;
 using UnityEngine;
@@ -38,18 +40,19 @@ namespace Gast.Composition
         [SerializeField]
         AIServerSettings aiServerSettings;
 
-        [Header("Camera")]
+        [SerializeField]
+        UIAssetSettings uiAssetSettings;
+
+        [Header("Scene Components")]
         [SerializeField]
         CameraRegistry cameraRegistry;
 
-        [Header("UI")]
         [SerializeField]
         UIDocument mainUIDocument;
 
         [SerializeField]
-        UIAssetSettings uiAssetSettings;
+        ShopRegistry shopRegistry;
 
-        [Header("Economy")]
         [SerializeField]
         GatheringSpotRegistry gatheringSpotRegistry;
 
@@ -57,35 +60,34 @@ namespace Gast.Composition
         SpawnSiteRegistry spawnSiteRegistry;
 
         [SerializeField]
-        ShopRegistry shopRegistry;
-
-        [Header("Gameplay")]
-        [SerializeField]
         PlayerSpawnPoint playerSpawnPoint;
 
         protected override void Configure(IContainerBuilder builder)
         {
+            var builderAdapter = new VContainerBuilder(builder);
+
             RegisterSettings(builder);
             RegisterSceneComponents(builder);
 
-            Install(builder, new CoreInstaller());
-            Install(builder, new UseCaseInstaller());
-            Install(builder, new CharacterInstaller());
-            Install(builder, new AIInstaller());
-            Install(builder, new EconomyInstaller());
-            Install(builder, new GameplaySystemInstaller());
-            Install(builder, new UIInstaller());
+            // Install registrations from each assembly
+            new ApplicationInstaller().Install(builderAdapter);
+            new FeaturesInstaller().Install(builderAdapter);
+            new InfrastructureInstaller().Install(builderAdapter);
+            new UIInstaller().Install(builderAdapter);
+
+            // Register EntryPoints (VContainer specific)
+            builder.RegisterEntryPoint<LifecycleTaskRunner>();
         }
 
         void RegisterSettings(IContainerBuilder builder)
         {
-            RegisterSetting(builder, gameInitializationSettings, nameof(gameInitializationSettings));
-            RegisterSetting(builder, inputSettings, nameof(inputSettings));
-            RegisterSetting(builder, characterDatabaseSettings, nameof(characterDatabaseSettings));
-            RegisterSetting(builder, pickupSystemSettings, nameof(pickupSystemSettings));
-            RegisterSetting(builder, itemDatabase, nameof(itemDatabase));
-            RegisterSetting(builder, aiServerSettings, nameof(aiServerSettings));
-            RegisterSetting(builder, uiAssetSettings, nameof(uiAssetSettings));
+            RegisterInstance(builder, gameInitializationSettings, nameof(gameInitializationSettings));
+            RegisterInstance(builder, inputSettings, nameof(inputSettings));
+            RegisterInstance(builder, characterDatabaseSettings, nameof(characterDatabaseSettings));
+            RegisterInstance(builder, pickupSystemSettings, nameof(pickupSystemSettings));
+            RegisterInstance(builder, itemDatabase, nameof(itemDatabase));
+            RegisterInstance(builder, aiServerSettings, nameof(aiServerSettings));
+            RegisterInstance(builder, uiAssetSettings, nameof(uiAssetSettings));
         }
 
         void RegisterSceneComponents(IContainerBuilder builder)
@@ -98,15 +100,10 @@ namespace Gast.Composition
             RegisterComponent(builder, playerSpawnPoint, nameof(playerSpawnPoint));
         }
 
-        void Install(IContainerBuilder builder, IInstaller installer)
+        void RegisterInstance<T>(IContainerBuilder builder, T instance, string fieldName) where T : class
         {
-            installer.Install(builder);
-        }
-
-        void RegisterSetting<T>(IContainerBuilder builder, T setting, string fieldName) where T : class
-        {
-            ThrowIfMissing(setting, fieldName);
-            builder.RegisterInstance(setting);
+            ThrowIfMissing(instance, fieldName);
+            builder.RegisterInstance(instance);
         }
 
         void RegisterComponent<T>(IContainerBuilder builder, T component, string fieldName) where T : Component
