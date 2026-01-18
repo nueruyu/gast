@@ -1,18 +1,18 @@
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 namespace Gast.Lib.AI
 {
-    public interface ITask<TWorldState> where TWorldState : struct
+    public interface ITask<TWorldState, in TContext>
+        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TContext : struct, IContext<TContext, TWorldState>
     {
         string Name { get; }
 
-        bool Validate(
-            ref TWorldState state,
-            CheckOptions options,
-            ISimulationContext context,
-            IEnvironmentModel<TWorldState> environment = null
-        );
+        UniTask<bool> ValidateAsync(
+            TWorldState worldState,
+            CancellationToken cancellationToken);
 
-        UniTask RunAsync(Context<TWorldState> ctx);
+        UniTask RunAsync(TContext ctx);
     }
 }

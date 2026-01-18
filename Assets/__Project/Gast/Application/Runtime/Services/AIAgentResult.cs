@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Gast.Api.AI;
+using Gast.Domain.AI;
 
 namespace Gast.Application.Services
 {

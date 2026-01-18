@@ -1,4 +1,5 @@
 ﻿using Gast.Core.Observables;
+using Gast.Domain.AI;
 using Gast.Domain.Characters;
 
 namespace Gast.Domain.Players
@@ -6,9 +7,24 @@ namespace Gast.Domain.Players
     public interface IPlayerManager
     {
         ILive<ICharacter> CurrentCharacter { get; }
+        ILive<ICharacterAIBrain> CurrentAIBrain { get; }
 
         void Possess(CharacterId characterId);
 
         void Unpossess();
+
+        /// <summary>
+        /// Temporarily attach an AI brain to the current player character.
+        /// The PlayerBrain is stored for later restoration.
+        /// </summary>
+        /// <param name="aiBrain">The AI brain to attach</param>
+        /// <returns>True if takeover successful, false if no character or already under AI control</returns>
+        bool TakeoverWithAI(ICharacterAIBrain aiBrain);
+
+        /// <summary>
+        /// Restore the original PlayerBrain to the current character.
+        /// </summary>
+        /// <returns>True if restoration successful, false if not under AI control</returns>
+        bool RestorePlayerControl();
     }
 }

@@ -1,78 +1,54 @@
+using Gast.Lib.AI.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Gast.Lib.AI.Builders
 {
-    public class CompoundTaskBuilder<TWorldState> where TWorldState : struct
+    public class CompoundTaskBuilder<TWorldState, TContext>
+        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TContext : struct, IContext<TContext, TWorldState>
     {
-        readonly DomainBuilder<TWorldState> domainBuilder;
+        readonly AIDomainBuilder<TWorldState, TContext> domainBuilder;
         readonly string taskName;
-        readonly bool isRoot;
-        readonly List<Method<TWorldState>> methods = new();
+        readonly List<Method<TWorldState, TContext>> methods = new();
 
-        int localDepthLimit = -1;
-        bool runOnBackground = false;
-        IMethodSelector<TWorldState> selector;
+        IMethodSelector<TWorldState, TContext> selector;
 
-        internal CompoundTaskBuilder(
-            DomainBuilder<TWorldState> domainBuilder,
-            string taskName,
-            bool isRoot = false)
+        internal int CurrentMethodCount => methods.Count;
+
+        internal CompoundTaskBuilder(AIDomainBuilder<TWorldState, TContext> domainBuilder, string taskName)
         {
             this.domainBuilder = domainBuilder;
             this.taskName = taskName;
-            this.isRoot = isRoot;
         }
 
-        public CompoundTaskBuilder<TWorldState> CheckDepth(int depth)
-        {
-            localDepthLimit = depth;
-            return this;
-        }
-
-        public CompoundTaskBuilder<TWorldState> RunOnBackground(bool enable = true)
-        {
-            runOnBackground = enable;
-            return this;
-        }
-
-        public CompoundTaskBuilder<TWorldState> UseSelector(IMethodSelector<TWorldState> selector)
+        public CompoundTaskBuilder<TWorldState, TContext> UseSelector(IMethodSelector<TWorldState, TContext> selector)
         {
             this.selector = selector;
             return this;
         }
 
-        public MethodBuilder<TWorldState> AddMethod(string methodName)
+        public MethodBuilder<TWorldState, TContext> AddMethod(string methodName)
         {
-            return new MethodBuilder<TWorldState>(this, methodName);
+            return new MethodBuilder<TWorldState, TContext>(this, methodName);
         }
 
-        internal CompoundTaskBuilder<TWorldState> CompleteMethod(Method<TWorldState> method)
+        internal CompoundTaskBuilder<TWorldState, TContext> CompleteMethod(Method<TWorldState, TContext> method)
         {
             methods.Add(method);
             return this;
         }
 
-        public DomainBuilder<TWorldState> End()
+        public AIDomainBuilder<TWorldState, TContext> End()
         {
-            var compoundTask = new CompoundTask<TWorldState>(taskName)
-            {
-                LocalDepthLimit = localDepthLimit,
-                RunPlanningOnBackground = runOnBackground
-            };
+            var compoundTask = new CompoundTask<TWorldState, TContext>(
+                taskName,
+                methods,
+                selector ?? new MethodSelectors.PrioritySelector<TWorldState, TContext>());
 
-            if (selector != null)
-            {
-                compoundTask.Selector = selector;
-            }
-
-            foreach (var method in methods)
-            {
-                compoundTask.Methods.Add(method);
-            }
-
-            return domainBuilder.CompleteCompound(taskName, compoundTask, isRoot);
+            return domainBuilder.CompleteCompound(compoundTask);
         }
 
-        internal DomainBuilder<TWorldState> DomainBuilder => domainBuilder;
+        internal AIDomainBuilder<TWorldState, TContext> DomainBuilder => domainBuilder;
     }
 }

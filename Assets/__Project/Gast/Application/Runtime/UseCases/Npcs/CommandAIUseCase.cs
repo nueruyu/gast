@@ -1,9 +1,8 @@
-using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Gast.Api.AI;
 using Gast.Application.Services;
-using Gast.Domain.Characters;
+using Gast.Domain.AI;
+using Gast.Domain.Players;
 using UnityEngine;
 
 namespace Gast.Application.UseCases.Npcs
@@ -11,12 +10,17 @@ namespace Gast.Application.UseCases.Npcs
     public class CommandAIUseCase
     {
         readonly IAIAgentService aiAgentService;
-        readonly ICharacterRepository characterRepository;
+        readonly IPlayerManager playerManager;
+        readonly ICharacterAIBrainFactory aiBrainFactory;
 
-        public CommandAIUseCase(IAIAgentService aiAgentService, ICharacterRepository characterRepository)
+        public CommandAIUseCase(
+            IAIAgentService aiAgentService,
+            IPlayerManager playerManager,
+            ICharacterAIBrainFactory aiBrainFactory)
         {
             this.aiAgentService = aiAgentService;
-            this.characterRepository = characterRepository;
+            this.playerManager = playerManager;
+            this.aiBrainFactory = aiBrainFactory;
         }
 
         public async UniTask<CommandAIResult> Execute(string instruction, CancellationToken cancellationToken)
@@ -33,19 +37,15 @@ namespace Gast.Application.UseCases.Npcs
                 return CommandAIResult.Failure("AI server returned no goals");
             }
 
-            // Assign goals to the first available NPC with a goal-assignable brain
-            var npc = characterRepository.GetAll()
-                .FirstOrDefault(c => c.GetBrain() is IGoalAssignable);
+            var brain = aiBrainFactory.Create();
+            brain.SetGoals(result.Goals);
 
-            if (npc == null)
+            if (!playerManager.TakeoverWithAI(brain))
             {
-                return CommandAIResult.Failure("No suitable NPC found to assign goals");
+                return CommandAIResult.Failure("Failed to takeover player character");
             }
 
-            var brain = npc.GetBrain() as IGoalAssignable;
-            brain?.SetGoals(result.Goals);
-
-            Debug.Log($"[CommandAIUseCase] Assigned {result.Goals.Count} goals to NPC {npc.Id}");
+            Debug.Log($"[CommandAIUseCase] AI took over player with {result.Goals.Count} goals");
             return CommandAIResult.Success(result.Goals.Count);
         }
     }

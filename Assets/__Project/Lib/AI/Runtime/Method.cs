@@ -1,27 +1,43 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Gast.Lib.AI
 {
-    public class Method<TWorldState> where TWorldState : struct
+    public class Method<TWorldState, TContext>
+        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TContext : struct, IContext<TContext, TWorldState>
     {
         public string Name { get; }
-        public Func<TWorldState, bool> Condition { get; }
-        public Func<TWorldState, float> Scorer { get; }
-        public List<ITask<TWorldState>> SubTasks { get; } = new List<ITask<TWorldState>>();
+        public int Index { get; }
+        public IReadOnlyList<ITask<TWorldState, TContext>> SubTasks { get; }
 
-        public Method(
+        readonly Func<TWorldState, bool> condition;
+        readonly Func<TWorldState, float> scorer;
+
+        internal Method(
             string name,
+            int index,
+            IEnumerable<ITask<TWorldState, TContext>> subTasks,
             Func<TWorldState, bool> condition,
             Func<TWorldState, float> scorer = null)
         {
             Name = name;
-            Condition = condition ?? (_ => true);
-            Scorer = scorer ?? (_ => 1.0f);
+            Index = index;
+            SubTasks = subTasks.ToArray();
+            this.condition = condition;
+            this.scorer = scorer ?? (_ => 0f);
         }
 
-        public bool CheckCondition(TWorldState state) => Condition(state);
+        public bool CheckCondition(TWorldState state)
+        {
+            return condition(state);
+        }
 
-        public float GetScore(TWorldState state) => Scorer(state);
+        public float GetScore(TWorldState state)
+        {
+            return scorer(state);
+        }
     }
 }
