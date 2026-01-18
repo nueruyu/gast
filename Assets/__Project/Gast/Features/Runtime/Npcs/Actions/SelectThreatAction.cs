@@ -27,7 +27,7 @@ namespace Gast.Features.Npcs.Actions
                 .OrderBy(e => Vector3.Distance(self.VisionSensor.EyePosition, e.Body.Position))
                 .FirstOrDefault();
 
-            ctx.SharedState.CombatTarget = closestThreat;
+            ctx.Memory.CombatTarget = closestThreat;
             return UniTask.CompletedTask;
         }
     }

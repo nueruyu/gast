@@ -36,7 +36,7 @@ namespace Gast.Features.Npcs.Actions
                 foundTarget = FindClosestCharacterOfType(ctx.Actor, defeatGoal.TargetTypeId);
             }
 
-            ctx.SharedState.CombatTarget = foundTarget;
+            ctx.Memory.CombatTarget = foundTarget;
             return UniTask.CompletedTask;
         }
 

@@ -44,7 +44,7 @@ namespace Gast.Features.Npcs.Actions
 
             if (targetPickup != null)
             {
-                ctx.SharedState.InteractableTarget = (targetPickup as Component).GetComponentInChildren<IInteractable>();
+                ctx.Memory.InteractableTarget = (targetPickup as Component).GetComponentInChildren<IInteractable>();
             }
 
             await UniTask.NextFrame(ctx.CancellationToken);

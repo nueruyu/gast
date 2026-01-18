@@ -10,57 +10,57 @@ using R3;
 
 namespace Gast.Features.Npcs
 {
-    public class GoalManager : IDisposable
+    public class GoalManager
     {
-        readonly CompositeDisposable subscriptions = new();
+        readonly IDomainEventSubscriber eventSubscriber;
         readonly List<IGoal> currentGoals = new();
-        CharacterId characterId;
 
         public IReadOnlyList<IGoal> CurrentGoals => currentGoals;
 
         public GoalManager(IDomainEventSubscriber eventSubscriber)
         {
-            eventSubscriber.Subscribe<CharacterDefeatedEvent>(OnCharacterDefeated)
-                .AddTo(subscriptions);
-            eventSubscriber.Subscribe<ItemAcquiredEvent>(OnItemAcquired)
-                .AddTo(subscriptions);
+            this.eventSubscriber = eventSubscriber;
         }
 
-        public void Update(CharacterId characterId, List<IGoal> goals)
+        public void UpdateGoals(IEnumerable<IGoal> goals)
         {
-            this.characterId = characterId;
-
             currentGoals.Clear();
             currentGoals.AddRange(goals);
         }
 
-        void OnCharacterDefeated(CharacterDefeatedEvent e)
+        public IDisposable BindCharacter(CharacterId characterId)
         {
-            foreach (var goal in currentGoals.OfType<DefeatCharacterGoal>())
+            var subscriptions = new CompositeDisposable();
+            eventSubscriber.Subscribe<CharacterDefeatedEvent>(OnCharacterDefeated)
+                .AddTo(subscriptions);
+            eventSubscriber.Subscribe<ItemAcquiredEvent>(OnItemAcquired)
+                .AddTo(subscriptions);
+
+            return subscriptions;
+
+            void OnCharacterDefeated(CharacterDefeatedEvent e)
             {
-                if (e.AttackerId == characterId &&
-                    goal.TargetTypeId == e.DefeatedCharacter.TypeId)
+                foreach (var goal in currentGoals.OfType<DefeatCharacterGoal>())
                 {
-                    goal.IncrementCount();
+                    if (e.AttackerId == characterId &&
+                        goal.TargetTypeId == e.DefeatedCharacter.TypeId)
+                    {
+                        goal.IncrementCount();
+                    }
                 }
             }
-        }
 
-        void OnItemAcquired(ItemAcquiredEvent e)
-        {
-            foreach (var goal in currentGoals.OfType<AcquireItemGoal>())
+            void OnItemAcquired(ItemAcquiredEvent e)
             {
-                if (e.AcquirerId == characterId &&
-                    goal.TargetItemId == e.AcquiredItemId)
+                foreach (var goal in currentGoals.OfType<AcquireItemGoal>())
                 {
-                    goal.AddQuantity(e.AcquiredQuantity);
+                    if (e.AcquirerId == characterId &&
+                        goal.TargetItemId == e.AcquiredItemId)
+                    {
+                        goal.AddQuantity(e.AcquiredQuantity);
+                    }
                 }
             }
-        }
-
-        public void Dispose()
-        {
-            subscriptions.Dispose();
         }
     }
 }

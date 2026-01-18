@@ -9,20 +9,20 @@ namespace Gast.Features.Npcs
     {
         public ICharacter Actor { get; }
         public TWorldState WorldState { get; }
-        public SharedAIState SharedState { get; }
+        public AIMemory Memory { get; }
         public CancellationToken CancellationToken { get; }
 
-        public AIContext(ICharacter actor, TWorldState worldState, SharedAIState sharedState, CancellationToken cancellationToken)
+        public AIContext(ICharacter actor, TWorldState worldState, AIMemory memory, CancellationToken cancellationToken)
         {
             Actor = actor;
             WorldState = worldState;
-            SharedState = sharedState;
+            Memory = memory;
             CancellationToken = cancellationToken;
         }
 
         public AIContext<TWorldState> WithCancellationToken(CancellationToken cancellationToken)
         {
-            return new AIContext<TWorldState>(Actor, WorldState, SharedState, cancellationToken);
+            return new AIContext<TWorldState>(Actor, WorldState, Memory, cancellationToken);
         }
     }
 }

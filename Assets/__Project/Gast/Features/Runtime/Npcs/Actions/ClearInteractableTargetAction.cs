@@ -20,7 +20,7 @@ namespace Gast.Features.Npcs.Actions
 
         public UniTask ExecuteAsync(AIContext<StrategicWorldState> ctx)
         {
-            ctx.SharedState.InteractableTarget = null;
+            ctx.Memory.InteractableTarget = null;
             return UniTask.CompletedTask;
         }
     }

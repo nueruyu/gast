@@ -7,6 +7,6 @@ namespace Gast.Api.AI
     /// </summary>
     public interface IGoalAssignable
     {
-        void SetGoals(List<IGoal> goals);
+        void SetGoals(IEnumerable<IGoal> goals);
     }
 }

@@ -22,7 +22,7 @@ namespace Gast.Features.Npcs
         AIRunner<StrategicWorldState, AIContext<StrategicWorldState>> strategicAgentRunner;
         AIRunner<CombatWorldState, AIContext<CombatWorldState>> combatAgentRunner;
 
-        readonly SharedAIState sharedState = new();
+        readonly AIMemory memory = new();
         readonly StrategicWorldState strategicState = new();
         readonly CombatWorldState combatState = new();
 
@@ -48,6 +48,10 @@ namespace Gast.Features.Npcs
 
             cts = new CancellationTokenSource();
             RunAsync(cts.Token).Forget();
+
+            goalManager
+                .BindCharacter(character.Id)
+                .AddTo(cts.Token);
         }
 
         public void OnDetached()
@@ -57,9 +61,9 @@ namespace Gast.Features.Npcs
             cts = null;
         }
 
-        public void SetGoals(List<IGoal> goals)
+        public void SetGoals(IEnumerable<IGoal> goals)
         {
-            goalManager.Update(character.Id, goals);
+            goalManager.UpdateGoals(goals);
         }
 
         async UniTaskVoid RunAsync(CancellationToken token)
@@ -85,7 +89,7 @@ namespace Gast.Features.Npcs
         {
             while (!token.IsCancellationRequested)
             {
-                await strategicAgentRunner.RunAsync(new(character, strategicState, sharedState, token));
+                await strategicAgentRunner.RunAsync(new(character, strategicState, memory, token));
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
@@ -94,7 +98,7 @@ namespace Gast.Features.Npcs
         {
             while (!token.IsCancellationRequested)
             {
-                await combatAgentRunner.RunAsync(new(character, combatState, sharedState, token));
+                await combatAgentRunner.RunAsync(new(character, combatState, memory, token));
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
@@ -106,13 +110,13 @@ namespace Gast.Features.Npcs
             strategicState.CurrentGoal = currentGoal;
             strategicState.HasGoal = currentGoal != null;
 
-            if (sharedState.InteractableTarget is Component interactableTargetComponent &&
+            if (memory.InteractableTarget is Component interactableTargetComponent &&
                 !interactableTargetComponent)
             {
-                sharedState.InteractableTarget = null;
+                memory.InteractableTarget = null;
             }
 
-            var interactableTarget = sharedState.InteractableTarget;
+            var interactableTarget = memory.InteractableTarget;
 
             strategicState.HasInteractableTarget = interactableTarget != null;
             if (interactableTarget != null)
@@ -129,7 +133,7 @@ namespace Gast.Features.Npcs
 
         void UpdateCombatWorldState()
         {
-            var target = sharedState.CombatTarget;
+            var target = memory.CombatTarget;
             if (target != null && target.IsAlive)
             {
                 combatState.HasTarget = true;
