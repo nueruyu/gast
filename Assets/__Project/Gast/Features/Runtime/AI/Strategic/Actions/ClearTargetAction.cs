@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using System;
 
-namespace Gast.Features.Npcs.Actions
+namespace Gast.Features.AI.Strategic.Actions
 {
     [Serializable]
     public class ClearTargetAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>

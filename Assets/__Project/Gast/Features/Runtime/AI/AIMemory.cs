@@ -1,7 +1,7 @@
 using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
 
-namespace Gast.Features.Npcs
+namespace Gast.Features.AI
 {
     public class AIMemory
     {

@@ -36,9 +36,6 @@ namespace Gast.Composition
         ItemDatabaseSettings itemDatabase;
 
         [SerializeField]
-        CharacterBrainFactorySettings characterBrainFactorySettings;
-
-        [SerializeField]
         AIServerSettings aiServerSettings;
 
         [Header("Camera")]
@@ -87,7 +84,6 @@ namespace Gast.Composition
             RegisterSetting(builder, characterDatabaseSettings, nameof(characterDatabaseSettings));
             RegisterSetting(builder, pickupSystemSettings, nameof(pickupSystemSettings));
             RegisterSetting(builder, itemDatabase, nameof(itemDatabase));
-            RegisterSetting(builder, characterBrainFactorySettings, nameof(characterBrainFactorySettings));
             RegisterSetting(builder, aiServerSettings, nameof(aiServerSettings));
             RegisterSetting(builder, uiAssetSettings, nameof(uiAssetSettings));
         }

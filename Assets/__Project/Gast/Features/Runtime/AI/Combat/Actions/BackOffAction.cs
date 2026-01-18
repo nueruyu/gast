@@ -3,7 +3,7 @@ using Gast.Lib.AI;
 using System;
 using UnityEngine;
 
-namespace Gast.Features.Npcs.Actions
+namespace Gast.Features.AI.Combat.Actions
 {
     [Serializable]
     public class BackOffAction : IAction<CombatWorldState, AIContext<CombatWorldState>>

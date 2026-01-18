@@ -3,7 +3,7 @@ using Gast.Api.Interactions;
 using Gast.Core.Commands;
 using Gast.Lib.AI;
 
-namespace Gast.Features.Npcs.Actions
+namespace Gast.Features.AI.Strategic.Actions
 {
     public class InteractWithTargetAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
     {

@@ -3,7 +3,7 @@ using Gast.Domain.Interactions;
 using Gast.Lib.AI;
 using UnityEngine;
 
-namespace Gast.Features.Npcs
+namespace Gast.Features.AI.Strategic
 {
     public class StrategicWorldState : IWorldState<StrategicWorldState>
     {

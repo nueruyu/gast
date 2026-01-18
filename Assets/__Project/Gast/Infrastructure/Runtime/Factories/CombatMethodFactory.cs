@@ -1,7 +1,7 @@
 using Gast.Domain.Characters;
 using Gast.Features.Characters;
 using Gast.Features.Combat;
-using Gast.Features.Npcs;
+using Gast.Features.AI;
 using Gast.Infrastructure.Settings;
 using System;
 using System.Collections.Generic;

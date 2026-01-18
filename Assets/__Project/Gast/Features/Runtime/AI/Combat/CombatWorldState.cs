@@ -1,7 +1,7 @@
 using Gast.Lib.AI;
 using UnityEngine;
 
-namespace Gast.Features.Npcs
+namespace Gast.Features.AI.Combat
 {
     public class CombatWorldState : IWorldState<CombatWorldState>
     {

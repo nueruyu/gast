@@ -1,7 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 
-namespace Gast.Features.Npcs.Actions
+namespace Gast.Features.AI.Strategic.Actions
 {
     public class ClearInteractableTargetAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
     {

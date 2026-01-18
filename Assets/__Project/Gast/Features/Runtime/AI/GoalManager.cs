@@ -8,7 +8,7 @@ using Gast.Domain.Characters;
 using Gast.Domain.Events;
 using R3;
 
-namespace Gast.Features.Npcs
+namespace Gast.Features.AI
 {
     public class GoalManager
     {

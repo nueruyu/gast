@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using Gast.Lib.AI;
 
-namespace Gast.Features.Npcs.Actions
+namespace Gast.Features.AI.Combat.Actions
 {
     [Serializable]
     public class ChaseTargetAction : IAction<CombatWorldState, AIContext<CombatWorldState>>

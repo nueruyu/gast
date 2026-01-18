@@ -1,6 +1,8 @@
 using Cysharp.Threading.Tasks;
 using Gast.Api.AI;
 using Gast.Domain.Characters;
+using Gast.Features.AI.Combat;
+using Gast.Features.AI.Strategic;
 using Gast.Lib.AI;
 using System;
 using System.Collections.Generic;
@@ -8,9 +10,9 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 
-namespace Gast.Features.Npcs
+namespace Gast.Features.AI
 {
-    public class SoldierBrain : ICharacterBrain, IGoalAssignable
+    public class GenericBrain : ICharacterBrain, IGoalAssignable
     {
         readonly StrategicDomain strategicDomain;
         readonly CombatDomain combatDomain;
@@ -26,7 +28,7 @@ namespace Gast.Features.Npcs
         readonly StrategicWorldState strategicState = new();
         readonly CombatWorldState combatState = new();
 
-        public SoldierBrain(
+        public GenericBrain(
             StrategicDomain strategicDomain,
             CombatDomain combatDomain,
             GoalManager goalManager)

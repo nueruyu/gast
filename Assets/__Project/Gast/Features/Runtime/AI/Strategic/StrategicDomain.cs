@@ -1,9 +1,9 @@
 using Gast.Api.AI.Goals;
-using Gast.Features.Npcs.Actions;
+using Gast.Features.AI.Strategic.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 
-namespace Gast.Features.Npcs
+namespace Gast.Features.AI.Strategic
 {
     public class StrategicDomain
     {

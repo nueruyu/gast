@@ -2,7 +2,7 @@ using System.Threading;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
 
-namespace Gast.Features.Npcs
+namespace Gast.Features.AI
 {
     public readonly struct AIContext<TWorldState> : IContext<AIContext<TWorldState>, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()

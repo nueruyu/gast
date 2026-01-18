@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace Gast.Features.Npcs.Actions
+namespace Gast.Features.AI.Strategic.Actions
 {
     [Serializable]
     public class FindTargetForGoalAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>

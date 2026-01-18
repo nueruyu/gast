@@ -1,8 +1,8 @@
-using Gast.Features.Npcs.Actions;
+using Gast.Features.AI.Combat.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 
-namespace Gast.Features.Npcs
+namespace Gast.Features.AI.Combat
 {
     public class CombatDomain
     {

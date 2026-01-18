@@ -1,6 +1,5 @@
 using Gast.Domain.Characters;
-using Gast.Features.Npcs;
-using Gast.Features.Npcs.Actions;
+using Gast.Features.AI;
 using Gast.Infrastructure.Settings;
 using System;
 using System.Collections.Generic;
@@ -11,29 +10,20 @@ namespace Gast.Infrastructure.Factories
     public class CharacterBrainFactory : ICharacterBrainFactory
     {
         readonly IObjectResolver resolver;
-        readonly Dictionary<CharacterTypeId, Func<ICharacterBrain>> factoryMap = new();
 
-        public CharacterBrainFactory(CharacterBrainFactorySettings settings, IObjectResolver resolver)
+        public CharacterBrainFactory(IObjectResolver resolver)
         {
             this.resolver = resolver;
-
-            foreach (var typeRef in settings.SoldierBrainTypes)
-            {
-                factoryMap.Add(typeRef.Id, CreateSoldierBrain);
-            }
         }
 
         public ICharacterBrain Create(CharacterTypeId typeId)
         {
-            if (!factoryMap.TryGetValue(typeId, out var factory))
-                throw new KeyNotFoundException($"Key '{typeId}' not found");
-
-            return factory();
+            return CreateBrain();
         }
 
-        ICharacterBrain CreateSoldierBrain()
+        ICharacterBrain CreateBrain()
         {
-            return resolver.Resolve<SoldierBrain>();
+            return resolver.Resolve<GenericBrain>();
         }
     }
 }

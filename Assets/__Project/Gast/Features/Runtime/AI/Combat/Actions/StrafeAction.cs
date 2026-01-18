@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Gast.Features.Npcs.Actions
+namespace Gast.Features.AI.Combat.Actions
 {
     [Serializable]
     public class StrafeAction : IAction<CombatWorldState, AIContext<CombatWorldState>>

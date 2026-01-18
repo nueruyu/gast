@@ -1,6 +1,9 @@
 using Gast.Application.UseCases.Npcs;
-using Gast.Features.Npcs;
-using Gast.Features.Npcs.Actions;
+using Gast.Features.AI;
+using Gast.Features.AI.Combat;
+using Gast.Features.AI.Combat.Actions;
+using Gast.Features.AI.Strategic;
+using Gast.Features.AI.Strategic.Actions;
 using VContainer;
 using VContainer.Unity;
 
@@ -31,7 +34,7 @@ namespace Gast.Composition.Installers
             builder.Register<StrategicDomain>(Lifetime.Transient);
             builder.Register<CombatDomain>(Lifetime.Transient);
 
-            builder.Register<SoldierBrain>(Lifetime.Transient);
+            builder.Register<GenericBrain>(Lifetime.Transient);
         }
     }
 }

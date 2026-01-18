@@ -1,11 +1,10 @@
 using Cysharp.Threading.Tasks;
-using Gast.Domain.Characters;
 using Gast.Lib.AI;
 using System;
 using System.Linq;
 using UnityEngine;
 
-namespace Gast.Features.Npcs.Actions
+namespace Gast.Features.AI.Strategic.Actions
 {
     [Serializable]
     public class SelectThreatAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>

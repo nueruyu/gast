@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using UnityEngine;
 
-namespace Gast.Features.Npcs.Actions
+namespace Gast.Features.AI.Strategic.Actions
 {
     public class MoveToInteractableAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
     {

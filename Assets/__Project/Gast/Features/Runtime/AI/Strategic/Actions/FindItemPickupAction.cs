@@ -6,7 +6,7 @@ using Gast.Domain.Pickups;
 using Gast.Lib.AI;
 using UnityEngine;
 
-namespace Gast.Features.Npcs.Actions
+namespace Gast.Features.AI.Strategic.Actions
 {
     public class FindItemPickupAction : IAction<StrategicWorldState, AIContext<StrategicWorldState>>
     {
