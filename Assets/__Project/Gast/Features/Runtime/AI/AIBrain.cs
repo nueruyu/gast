@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace Gast.Features.AI
 {
-    public class AIBrain : ICharacterBrain, IAIGoalController
+    public class AIBrain : ICharacterAIBrain
     {
         readonly StrategicDomain strategicDomain;
         readonly CombatDomain combatDomain;

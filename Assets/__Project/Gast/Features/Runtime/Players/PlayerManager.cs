@@ -4,10 +4,6 @@ using Gast.Features.Characters;
 using Gast.Domain.Characters;
 using Gast.Domain.Players;
 using Gast.Domain.AI;
-using Gast.Core.Tasks;
-using System.Threading.Tasks;
-using System.Threading;
-using Cysharp.Threading.Tasks;
 
 namespace Gast.Features.Players
 {
@@ -15,24 +11,19 @@ namespace Gast.Features.Players
     /// Manages player possession of different characters.
     /// Provides observable access to the currently controlled character.
     /// </summary>
-    public class PlayerManager : IPlayerManager, ILifecycleTask
+    public class PlayerManager : IPlayerManager
     {
         readonly PlayerBrain playerBrain;
         readonly ICharacterActorRepository characterActorRepository;
-        readonly AIControlMonitor aiControlMonitor;
         readonly Live<Character> currentCharacter = new(null);
-
-        ICharacterBrain temporaryBrain;
-        bool isUnderAIControl;
+        readonly Live<ICharacterAIBrain> currentAIBrain = new(null);
 
         public PlayerManager(
             PlayerBrain playerBrain,
-            ICharacterActorRepository characterActorRepository,
-            AIControlMonitor aiControlMonitor)
+            ICharacterActorRepository characterActorRepository)
         {
             this.playerBrain = playerBrain;
             this.characterActorRepository = characterActorRepository;
-            this.aiControlMonitor = aiControlMonitor;
             CurrentCharacter = currentCharacter.Cast<Character, ICharacter>();
         }
 
@@ -40,6 +31,8 @@ namespace Gast.Features.Players
         /// Observable property for the character currently possessed by the player.
         /// </summary>
         public ILive<ICharacter> CurrentCharacter { get; }
+
+        public ILive<ICharacterAIBrain> CurrentAIBrain => currentAIBrain;
 
         /// <summary>
         /// Switch player control to a different character.
@@ -67,19 +60,14 @@ namespace Gast.Features.Players
                 currentCharacter.Value = null;
             }
 
-            if (isUnderAIControl)
-            {
-                aiControlMonitor.SetTarget(null);
-                isUnderAIControl = false;
-                temporaryBrain = null;
-            }
+            currentAIBrain.Value = null;
         }
 
         /// <summary>
         /// Temporarily attach an AI brain to the current player character.
         /// The PlayerBrain is stored for later restoration.
         /// </summary>
-        public bool TakeoverWithAI(ICharacterBrain aiBrain)
+        public bool TakeoverWithAI(ICharacterAIBrain aiBrain)
         {
             if (currentCharacter.Value == null)
             {
@@ -87,16 +75,8 @@ namespace Gast.Features.Players
                 return false;
             }
 
-            if (isUnderAIControl)
-            {
-                Debug.LogWarning("PlayerManager: Cannot takeover - already under AI control");
-                return false;
-            }
-
-            temporaryBrain = aiBrain;
-            isUnderAIControl = true;
-
             currentCharacter.Value.AttachBrain(aiBrain);
+            currentAIBrain.Value = aiBrain;
 
             Debug.Log($"PlayerManager: AI took over control of {currentCharacter.Value}");
             return true;
@@ -113,43 +93,11 @@ namespace Gast.Features.Players
                 return false;
             }
 
-            if (!isUnderAIControl)
-            {
-                Debug.LogWarning("PlayerManager: Cannot restore - not under AI control");
-                return false;
-            }
-
-            aiControlMonitor.SetTarget(null);
-
             currentCharacter.Value.AttachBrain(playerBrain);
-
-            isUnderAIControl = false;
-            temporaryBrain = null;
+            currentAIBrain.Value = null;
 
             Debug.Log($"PlayerManager: Restored player control of {currentCharacter.Value}");
             return true;
-        }
-
-        /// <summary>
-        /// Set the AI goal controller to monitor for automatic restoration.
-        /// Pass null to stop monitoring.
-        /// </summary>
-        public void SetAIMonitorTarget(IAIGoalController goalController)
-        {
-            aiControlMonitor.SetTarget(goalController);
-        }
-
-        public async Task RunAsync(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                if (isUnderAIControl && aiControlMonitor.ShouldRestore())
-                {
-                    RestorePlayerControl();
-                }
-
-                await UniTask.NextFrame(cancellationToken);
-            }
         }
     }
 }

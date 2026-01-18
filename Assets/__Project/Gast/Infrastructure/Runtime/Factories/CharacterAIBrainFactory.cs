@@ -1,3 +1,4 @@
+using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Features.AI;
 using Gast.Infrastructure.Settings;
@@ -7,21 +8,16 @@ using VContainer;
 
 namespace Gast.Infrastructure.Factories
 {
-    public class CharacterBrainFactory : ICharacterBrainFactory
+    public class CharacterAIBrainFactory : ICharacterAIBrainFactory
     {
         readonly IObjectResolver resolver;
 
-        public CharacterBrainFactory(IObjectResolver resolver)
+        public CharacterAIBrainFactory(IObjectResolver resolver)
         {
             this.resolver = resolver;
         }
 
-        public ICharacterBrain Create(CharacterTypeId typeId)
-        {
-            return CreateBrain();
-        }
-
-        ICharacterBrain CreateBrain()
+        public ICharacterAIBrain Create()
         {
             return resolver.Resolve<AIBrain>();
         }

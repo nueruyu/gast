@@ -7,6 +7,7 @@ namespace Gast.Domain.Players
     public interface IPlayerManager
     {
         ILive<ICharacter> CurrentCharacter { get; }
+        ILive<ICharacterAIBrain> CurrentAIBrain { get; }
 
         void Possess(CharacterId characterId);
 
@@ -18,19 +19,12 @@ namespace Gast.Domain.Players
         /// </summary>
         /// <param name="aiBrain">The AI brain to attach</param>
         /// <returns>True if takeover successful, false if no character or already under AI control</returns>
-        bool TakeoverWithAI(ICharacterBrain aiBrain);
+        bool TakeoverWithAI(ICharacterAIBrain aiBrain);
 
         /// <summary>
         /// Restore the original PlayerBrain to the current character.
         /// </summary>
         /// <returns>True if restoration successful, false if not under AI control</returns>
         bool RestorePlayerControl();
-
-        /// <summary>
-        /// Set the AI goal controller to monitor for automatic restoration.
-        /// Pass null to stop monitoring.
-        /// </summary>
-        /// <param name="goalController">The goal controller to monitor, or null to stop</param>
-        void SetAIMonitorTarget(IAIGoalController goalController);
     }
 }

@@ -40,7 +40,7 @@ namespace Gast.Composition.Installers
             builder.Register<CameraInputController>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // Player
-            builder.Register<AIControlMonitor>(Lifetime.Singleton);
+            builder.Register<PlayerAIControlMonitorService>(Lifetime.Singleton);
             builder.Register<PlayerBrain>(Lifetime.Singleton);
             builder.Register<PlayerManager>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerInteractionFocusService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

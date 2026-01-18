@@ -2,7 +2,6 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Application.Services;
 using Gast.Domain.AI;
-using Gast.Domain.Characters;
 using Gast.Domain.Players;
 using UnityEngine;
 
@@ -12,16 +11,16 @@ namespace Gast.Application.UseCases.Npcs
     {
         readonly IAIAgentService aiAgentService;
         readonly IPlayerManager playerManager;
-        readonly ICharacterBrainFactory characterBrainFactory;
+        readonly ICharacterAIBrainFactory aiBrainFactory;
 
         public CommandAIUseCase(
             IAIAgentService aiAgentService,
             IPlayerManager playerManager,
-            ICharacterBrainFactory characterBrainFactory)
+            ICharacterAIBrainFactory aiBrainFactory)
         {
             this.aiAgentService = aiAgentService;
             this.playerManager = playerManager;
-            this.characterBrainFactory = characterBrainFactory;
+            this.aiBrainFactory = aiBrainFactory;
         }
 
         public async UniTask<CommandAIResult> Execute(string instruction, CancellationToken cancellationToken)
@@ -38,21 +37,13 @@ namespace Gast.Application.UseCases.Npcs
                 return CommandAIResult.Failure("AI server returned no goals");
             }
 
-            var brain = characterBrainFactory.Create(default(CharacterTypeId));
-
-            if (brain is not IAIGoalController goalController)
-            {
-                return CommandAIResult.Failure("Created brain does not support goal control");
-            }
-
-            goalController.SetGoals(result.Goals);
+            var brain = aiBrainFactory.Create();
+            brain.SetGoals(result.Goals);
 
             if (!playerManager.TakeoverWithAI(brain))
             {
                 return CommandAIResult.Failure("Failed to takeover player character");
             }
-
-            playerManager.SetAIMonitorTarget(goalController);
 
             Debug.Log($"[CommandAIUseCase] AI took over player with {result.Goals.Count} goals");
             return CommandAIResult.Success(result.Goals.Count);

@@ -16,7 +16,7 @@ namespace Gast.Composition.Installers
             builder.Register<CharacterActorRepository>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<CharacterTypeRepository>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CharacterFactory>(Lifetime.Singleton).AsImplementedInterfaces();
-            builder.Register<CharacterBrainFactory>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<CharacterAIBrainFactory>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // Combat
             builder.Register<CombatFeedbackService>(Lifetime.Singleton);

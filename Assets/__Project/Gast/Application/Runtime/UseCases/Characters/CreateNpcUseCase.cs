@@ -1,3 +1,4 @@
+using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using UnityEngine;
 
@@ -10,12 +11,12 @@ namespace Gast.Application.UseCases.Characters
     public class CreateNpcUseCase
     {
         readonly SpawnCharacterUseCase spawnCharacterUseCase;
-        readonly ICharacterBrainFactory characterBrainFactory;
+        readonly ICharacterAIBrainFactory brainFactory;
 
-        public CreateNpcUseCase(SpawnCharacterUseCase spawnCharacterUseCase, ICharacterBrainFactory characterBrainFactory)
+        public CreateNpcUseCase(SpawnCharacterUseCase spawnCharacterUseCase, ICharacterAIBrainFactory brainFactory)
         {
             this.spawnCharacterUseCase = spawnCharacterUseCase;
-            this.characterBrainFactory = characterBrainFactory;
+            this.brainFactory = brainFactory;
         }
 
         /// <summary>
@@ -29,7 +30,7 @@ namespace Gast.Application.UseCases.Characters
         public ICharacter Execute(CharacterTypeId typeId, Vector3 position, Quaternion rotation, Faction faction)
         {
             var character = spawnCharacterUseCase.Execute(typeId, position, rotation, faction);
-            var brain = characterBrainFactory.Create(typeId);
+            var brain = brainFactory.Create();
             character.AttachBrain(brain);
             return character;
         }
