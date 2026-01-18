@@ -4,7 +4,6 @@ using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Combat;
 using Gast.Domain.Economy;
-using Gast.Domain.Events;
 using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
 using UnityEngine;

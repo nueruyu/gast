@@ -1,8 +1,8 @@
-using Gast.Application.UseCases.Characters;
-using Gast.Application.UseCases.Economy;
-using Gast.Application.UseCases.Gathering;
-using Gast.Application.UseCases.Interactions;
-using Gast.Application.UseCases.Loot;
+using Gast.Application.AI;
+using Gast.Application.Characters;
+using Gast.Application.Economy;
+using Gast.Application.Interactions;
+using Gast.Application.Items;
 using VContainer;
 using VContainer.Unity;
 
@@ -14,19 +14,28 @@ namespace Gast.Composition.Installers
         {
             // Characters
             builder.Register<SpawnCharacterUseCase>(Lifetime.Singleton);
-            builder.Register<CreatePlayerUseCase>(Lifetime.Singleton);
-            builder.Register<CreateNpcUseCase>(Lifetime.Singleton);
+            builder.Register<CreatePlayerUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
+            builder.Register<CreateNpcUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
 
             // Economy
-            builder.Register<BuyItemUseCase>(Lifetime.Singleton);
-            builder.Register<PickUpItemUseCase>(Lifetime.Singleton);
+            builder.Register<BuyItemUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
+            builder.Register<PickUpItemUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
 
-            // Loot & Gathering
-            builder.Register<SpawnLootUseCase>(Lifetime.Singleton);
-            builder.Register<SpawnGatheringItemUseCase>(Lifetime.Singleton);
+            // Items
+            builder.Register<SpawnItemUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
 
             // Interactions
-            builder.Register<InteractUseCase>(Lifetime.Singleton);
+            builder.Register<InteractUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
+
+            // AI
+            builder.Register<CommandAIUseCase>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
         }
     }
 }

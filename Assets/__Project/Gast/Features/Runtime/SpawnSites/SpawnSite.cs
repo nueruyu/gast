@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Gast.Api.Characters;
+using Gast.Application.Characters;
 using Gast.Core.Commands;
 using Gast.Core.Observables;
 using Gast.Domain.Characters;

@@ -1,4 +1,4 @@
-using Gast.Application.UseCases.Npcs;
+using Gast.Application.AI;
 using Gast.Features.AI;
 using Gast.Features.AI.Combat;
 using Gast.Features.AI.Combat.Actions;
@@ -13,8 +13,6 @@ namespace Gast.Composition.Installers
     {
         public void Install(IContainerBuilder builder)
         {
-            builder.Register<CommandAIUseCase>(Lifetime.Singleton);
-
             builder.Register<GoalManager>(Lifetime.Transient);
 
             builder.Register<ChaseTargetAction>(Lifetime.Transient);

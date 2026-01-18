@@ -5,8 +5,8 @@ using Gast.Domain.AI;
 using Gast.Domain.AI.Goals;
 using Gast.Core.Events;
 using Gast.Domain.Characters;
-using Gast.Domain.Events;
 using R3;
+using Gast.Domain.Economy;
 
 namespace Gast.Features.AI
 {

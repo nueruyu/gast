@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Gast.Api.Interactions;
+using Gast.Application.Interactions;
 using Gast.Core.Commands;
 using Gast.Lib.AI;
 
@@ -28,7 +28,7 @@ namespace Gast.Features.AI.Strategic.Actions
         public async UniTask ExecuteAsync(AIContext<StrategicState> ctx)
         {
             var command = new InteractCommand(ctx.Actor.Id, ctx.WorldState.InteractableTargetId);
-            await commandDispatcher.DispatchAsync<InteractCommand, bool>(command);
+            await commandDispatcher.DispatchAsync<InteractCommand, bool>(command, ctx.CancellationToken);
         }
     }
 }
