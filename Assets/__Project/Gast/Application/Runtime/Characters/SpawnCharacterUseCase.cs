@@ -3,7 +3,7 @@ using Gast.Core.Observables;
 using Gast.Domain.Characters;
 using UnityEngine;
 
-namespace Gast.Application.UseCases.Characters
+namespace Gast.Application.Characters
 {
     /// <summary>
     /// Use case for spawning a character in the game world.

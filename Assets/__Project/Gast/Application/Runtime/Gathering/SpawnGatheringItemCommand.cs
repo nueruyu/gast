@@ -4,7 +4,7 @@ using Gast.Domain.Pickups;
 using System;
 using UnityEngine;
 
-namespace Gast.Api.Pickups
+namespace Gast.Application.Gathering
 {
     [Serializable]
     public readonly struct SpawnGatheringItemCommand : ICommand<IPickup>

@@ -1,12 +1,10 @@
-using Gast.Api.Economy;
 using Gast.Core.Commands;
 using Gast.Core.Events;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Domain.Events;
-using UnityEngine.TextCore.Text;
 
-namespace Gast.Application.UseCases.Economy
+namespace Gast.Application.Economy
 {
     /// <summary>
     /// Use case for picking up items and adding them to inventory.

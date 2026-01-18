@@ -1,10 +1,9 @@
-using Gast.Api.Pickups;
 using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using Gast.Domain.Pickups;
 using Random = UnityEngine.Random;
 
-namespace Gast.Application.UseCases.Loot
+namespace Gast.Application.Loot
 {
     public class SpawnLootUseCase : ICommandHandler<SpawnLootCommand>
     {

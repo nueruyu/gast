@@ -3,7 +3,7 @@ using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 
-namespace Gast.Api.Economy
+namespace Gast.Application.Economy
 {
     [Serializable]
     public readonly struct BuyItemCommand : ICommand<bool>

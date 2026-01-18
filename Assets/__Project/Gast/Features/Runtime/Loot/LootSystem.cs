@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Gast.Api.Pickups;
+using Gast.Application.Loot;
 using Gast.Core.Commands;
 using Gast.Core.Observables;
 using Gast.Core.Tasks;

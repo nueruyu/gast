@@ -1,10 +1,8 @@
-using Gast.Api.Economy;
 using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
-using UnityEngine.LightTransport;
 
-namespace Gast.Application.UseCases.Economy
+namespace Gast.Application.Economy
 {
     /// <summary>
     /// Use case for purchasing items by spending currency.

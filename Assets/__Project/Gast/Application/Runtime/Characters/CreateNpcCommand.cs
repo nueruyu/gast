@@ -3,7 +3,7 @@ using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using UnityEngine;
 
-namespace Gast.Api.Characters
+namespace Gast.Application.Characters
 {
     [Serializable]
     public readonly struct CreateNpcCommand : ICommand<ICharacter>

@@ -1,9 +1,8 @@
-using Gast.Api.Characters;
 using Gast.Core.Commands;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 
-namespace Gast.Application.UseCases.Characters
+namespace Gast.Application.Characters
 {
     /// <summary>
     /// Use case for creating an AI-controlled (NPC) character.

@@ -1,9 +1,8 @@
-using Gast.Api.Characters;
 using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using Gast.Domain.Players;
 
-namespace Gast.Application.UseCases.Characters
+namespace Gast.Application.Characters
 {
     /// <summary>
     /// Use case for creating a player-controlled character.

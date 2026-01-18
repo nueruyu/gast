@@ -1,11 +1,10 @@
-using Gast.Api.Interactions;
 using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Gast.Application.UseCases.Interactions
+namespace Gast.Application.Interactions
 {
     public class InteractUseCase : IAsyncCommandHandler<InteractCommand, bool>
     {

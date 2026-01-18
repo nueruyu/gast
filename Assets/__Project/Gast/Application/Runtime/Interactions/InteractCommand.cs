@@ -3,7 +3,7 @@ using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
 using System;
 
-namespace Gast.Api.Interactions
+namespace Gast.Application.Interactions
 {
     [Serializable]
     public readonly struct InteractCommand : IAsyncCommand<bool>

@@ -1,4 +1,4 @@
-using Gast.Application.Services;
+using Gast.Application.AI;
 using Gast.Domain.AI;
 using Gast.Domain.AI.Goals;
 using Gast.Domain.Characters;

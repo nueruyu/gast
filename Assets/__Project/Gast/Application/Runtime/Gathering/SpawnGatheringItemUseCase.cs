@@ -1,9 +1,8 @@
-using Gast.Api.Pickups;
 using Gast.Core.Commands;
 using Gast.Domain.Pickups;
 using System;
 
-namespace Gast.Application.UseCases.Gathering
+namespace Gast.Application.Gathering
 {
     /// <summary>
     /// Use case for spawning a gathering item (pickup) in the world.

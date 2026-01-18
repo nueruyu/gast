@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Gast.Domain.AI;
 
-namespace Gast.Application.Services
+namespace Gast.Application.AI
 {
     public readonly struct AIAgentResult
     {

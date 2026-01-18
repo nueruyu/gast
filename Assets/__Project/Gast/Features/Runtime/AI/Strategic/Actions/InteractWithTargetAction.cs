@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Gast.Api.Interactions;
+using Gast.Application.Interactions;
 using Gast.Core.Commands;
 using Gast.Lib.AI;
 

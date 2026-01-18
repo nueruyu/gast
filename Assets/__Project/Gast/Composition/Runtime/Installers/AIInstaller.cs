@@ -1,4 +1,4 @@
-using Gast.Application.UseCases.Npcs;
+using Gast.Application.AI;
 using Gast.Features.AI;
 using Gast.Features.AI.Combat;
 using Gast.Features.AI.Combat.Actions;

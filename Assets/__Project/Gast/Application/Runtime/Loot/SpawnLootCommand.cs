@@ -3,7 +3,7 @@ using Gast.Domain.Characters;
 using System;
 using UnityEngine;
 
-namespace Gast.Api.Pickups
+namespace Gast.Application.Loot
 {
     [Serializable]
     public readonly struct SpawnLootCommand : ICommand
