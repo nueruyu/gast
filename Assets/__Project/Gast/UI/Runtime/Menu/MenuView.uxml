@@ -1,10 +1,11 @@
-<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xmlns:ui="UnityEngine.UIElements" 
-    noNamespaceSchemaLocation="UIElementsSchema/UIElements.xsd" 
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    noNamespaceSchemaLocation="UIElementsSchema/UIElements.xsd"
     editor-extension-mode="False"
     class="menu"
 >
     <Style src="MenuView.uss"/>
-    <ui:VisualElement>
+    <ui:VisualElement class="menu__content">
+        <ui:Button name="CommandButton" text="Command AI" class="menu__command-button"/>
     </ui:VisualElement>
 </ui:UXML>

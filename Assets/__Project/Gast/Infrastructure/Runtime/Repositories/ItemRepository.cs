@@ -32,5 +32,10 @@ namespace Gast.Infrastructure.Repositories
         {
             return Get(id);
         }
+
+        public IEnumerable<ItemDefinition> GetAllDefinitions()
+        {
+            return definitionMap.Values;
+        }
     }
 }

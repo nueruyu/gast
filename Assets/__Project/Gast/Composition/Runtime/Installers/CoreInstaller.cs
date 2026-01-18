@@ -1,11 +1,9 @@
-using Gast.Api.CommandHandlers;
-using Gast.Core.Commands;
-using Gast.Core.Tasks;
-using Gast.Domain.Inputs;
+using Gast.Application.CommandHandlers;
 using Gast.Features.Cameras;
 using Gast.Features.Gameplay;
 using Gast.Features.Inputs;
 using Gast.Features.Players;
+using Gast.Infrastructure.Remoting.AI;
 using Gast.Infrastructure.Services;
 using Gast.UI.System;
 using VContainer;
@@ -24,6 +22,13 @@ namespace Gast.Composition.Installers
             builder.Register<CharacterCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<EconomyCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<PickupCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<InteractionCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
+
+            // Domain Event System
+            builder.Register<DomainEventPublisher>(Lifetime.Singleton).AsImplementedInterfaces();
+
+            // AI Server Client
+            builder.Register<AIAgentService>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // Input system
             builder.Register<InputReader>(Lifetime.Singleton).AsImplementedInterfaces();
@@ -37,6 +42,7 @@ namespace Gast.Composition.Installers
             // Player
             builder.Register<PlayerBrain>(Lifetime.Singleton);
             builder.Register<PlayerManager>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<PlayerInteractionFocusService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 
             // Lifecycle tasks
             builder.Register<PlayerContextBinder>(Lifetime.Singleton).AsImplementedInterfaces();

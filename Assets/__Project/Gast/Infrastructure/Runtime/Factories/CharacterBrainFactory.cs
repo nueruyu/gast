@@ -1,19 +1,23 @@
 using Gast.Domain.Characters;
 using Gast.Features.Npcs;
+using Gast.Features.Npcs.Actions;
 using Gast.Infrastructure.Settings;
 using System;
 using System.Collections.Generic;
+using VContainer;
 
 namespace Gast.Infrastructure.Factories
 {
     public class CharacterBrainFactory : ICharacterBrainFactory
     {
         readonly CharacterBrainFactorySettings settings;
+        readonly IObjectResolver resolver;
         readonly Dictionary<CharacterTypeId, Func<ICharacterBrain>> factoryMap = new();
 
-        public CharacterBrainFactory(CharacterBrainFactorySettings settings)
+        public CharacterBrainFactory(CharacterBrainFactorySettings settings, IObjectResolver resolver)
         {
             this.settings = settings;
+            this.resolver = resolver;
 
             foreach (var typeRef in settings.SoldierBrainTypes)
             {
@@ -31,7 +35,40 @@ namespace Gast.Infrastructure.Factories
 
         ICharacterBrain CreateSoldierBrain()
         {
-            return new SoldierBrain(settings.SoldierBrainSettings);
+            var scope = resolver.CreateScope(builder =>
+            {
+                builder.Register<SharedAIState>(Lifetime.Scoped);
+                builder.Register<GoalManager>(Lifetime.Scoped);
+            });
+
+            var goalManager = scope.Resolve<GoalManager>();
+
+            var findTargetForGoalAction = scope.Resolve<FindTargetForGoalAction>();
+            var selectThreatAction = scope.Resolve<SelectThreatAction>();
+            var clearTargetAction = scope.Resolve<ClearTargetAction>();
+            var sharedState = scope.Resolve<SharedAIState>();
+
+            var findItemPickupAction = scope.Resolve<FindItemPickupAction>();
+            var moveToInteractableAction = scope.Resolve<MoveToInteractableAction>();
+            var interactWithTargetAction = scope.Resolve<InteractWithTargetAction>();
+            var clearInteractableTargetAction = scope.Resolve<ClearInteractableTargetAction>();
+
+            var strategicDomain = StrategicDomain.Create(
+                findTargetForGoalAction,
+                selectThreatAction,
+                clearTargetAction,
+                findItemPickupAction,
+                moveToInteractableAction,
+                interactWithTargetAction,
+                clearInteractableTargetAction
+            );
+
+            return new SoldierBrain(
+                settings.SoldierBrainSettings,
+                goalManager,
+                strategicDomain,
+                sharedState,
+                scope);
         }
     }
 }

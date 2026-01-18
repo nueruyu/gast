@@ -6,3 +6,26 @@
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.3);
 }
+
+.menu__content {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 12px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+}
+
+.menu__command-button {
+    height: 30px;
+    min-width: 120px;
+    background-color: rgb(68, 68, 68);
+    color: white;
+    border-color: rgb(102, 102, 102);
+    border-width: 1px;
+    border-radius: 4px;
+}
+
+.menu__command-button:hover {
+    background-color: rgb(85, 85, 85);
+}

@@ -1,236 +1,116 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
-using UnityEngine;
-using Cysharp.Threading.Tasks;
-using Gast.Core.Tasks;
-using Gast.Core.Observables;
-using Gast.Domain.Interactions;
 using System.Threading.Tasks;
-using Gast.Features.Characters;
+using Cysharp.Threading.Tasks;
+using Gast.Core.Observables;
 using Gast.Domain.Characters;
-using Gast.Shared.Observables;
-using R3;
+using Gast.Domain.Interactions;
+using Gast.Features.Characters;
+using UnityEngine;
 
 namespace Gast.Features.Interactions
 {
-    /// <summary>
-    /// Detects nearby interactable objects and manages interaction state.
-    /// </summary>
-    public class InteractionSystem : ILifecycleTask, IInteractionSystem
+    public class InteractionSystem : IInteractionSystem
     {
-        readonly Live<Interactable> currentInteractable = new(null);
-        readonly Live<float> interactionProgress = new(0f);
-        readonly Signal<Interactable> interactionCompleted = new();
-
-        readonly InteractionSystemSettings settings;
+        readonly Dictionary<InteractableId, Interactable> registeredInteractables = new();
         readonly ICharacterActorRepository characterActorRepository;
-        readonly Collider[] detectionColliderBuffer = new Collider[32];
+        readonly Signal<InteractionProgressEvent> progressChanged = new();
 
-        bool isProcessing;
-        Character interactor;
+        public ISignal<InteractionProgressEvent> ProgressChanged => progressChanged;
 
-        /// <summary>
-        /// Observable property for the currently focused interactable.
-        /// </summary>
-        public ILive<IInteractable> CurrentInteractable { get; }
-
-        /// <summary>
-        /// Signal fired when an interaction completes.
-        /// </summary>
-        public ISignal<IInteractable> InteractionCompleted { get; }
-
-        /// <summary>
-        /// Observable property for hold interaction progress (0.0 to 1.0).
-        /// </summary>
-        public ILive<float> InteractionProgress => interactionProgress;
-
-        public InteractionSystem(InteractionSystemSettings settings, ICharacterActorRepository characterActorRepository)
+        public InteractionSystem(ICharacterActorRepository characterActorRepository)
         {
-            this.settings = settings;
             this.characterActorRepository = characterActorRepository;
-
-            CurrentInteractable = currentInteractable.Cast<Interactable, IInteractable>();
-            InteractionCompleted = interactionCompleted.Cast<Interactable, IInteractable>();
-
-            currentInteractable.ToObservable()
-                .Select(x => x ? x.Disabled.ToObservable() : Observable.Never<Unit>())
-                .Switch()
-                .Subscribe(_ =>
-                {
-                    currentInteractable.Value = null;
-                });
         }
 
-        public void SetInteractor(CharacterId interactorId)
+        public void Register(Interactable interactable)
         {
-            var interactor = characterActorRepository.Get(interactorId);
-            SetInteractor(interactor);
+            registeredInteractables[interactable.Id] = interactable;
         }
 
-        public void UnsetInteractor()
+        public void Unregister(Interactable interactable)
         {
-            SetInteractor(null);
+            registeredInteractables.Remove(interactable.Id);
         }
 
-        void SetInteractor(Character newInteractor)
+        public async ValueTask<bool> RequestInteractionAsync(
+            CharacterId interactorId,
+            InteractableId interactableId,
+            CancellationToken cancellationToken = default)
         {
-            if (currentInteractable.Value != null)
-            {
-                CancelInteraction();
-                currentInteractable.Value = null;
-            }
-
-            interactor = newInteractor;
-        }
-
-        public async Task RunAsync(CancellationToken cancellationToken)
-        {
-            using (cancellationToken.Register(CancelInteraction))
-            {
-                await UniTask.WhenAll(
-                    ProcessDetection(cancellationToken),
-                    ProcessHoldInteraction(cancellationToken));
-            }
-        }
-
-        async UniTask ProcessDetection(CancellationToken cancellationToken)
-        {
-            while (true)
-            {
-                await UniTask.Delay(
-                    TimeSpan.FromSeconds(settings.DetectionInterval),
-                    ignoreTimeScale: true,
-                    delayTiming: PlayerLoopTiming.FixedUpdate,
-                    cancellationToken: cancellationToken);
-
-                if (interactor == null)
-                    continue;
-
-                var closest = FindClosestInteractable();
-
-                if (closest != currentInteractable.Value)
-                {
-                    CancelInteraction();
-                    currentInteractable.Value = closest;
-                }
-            }
-        }
-
-        async UniTask ProcessHoldInteraction(CancellationToken cancellationToken)
-        {
-            while (true)
-            {
-                await UniTask.NextFrame(cancellationToken);
-
-                if (isProcessing && currentInteractable.Value != null)
-                {
-                    var progress = interactionProgress.Value + Time.deltaTime / currentInteractable.Value.Config.HoldDuration;
-                    interactionProgress.Value = Mathf.Clamp01(progress);
-
-                    if (progress >= 1f)
-                    {
-                        ExecuteInteraction();
-                        isProcessing = false;
-                        interactionProgress.Value = 0f;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Try to start an interaction with the current interactable.
-        /// </summary>
-        public bool TryInteract()
-        {
-            if (currentInteractable.Value == null ||
-                !currentInteractable.Value.CanInteract)
+            if (!registeredInteractables.TryGetValue(interactableId, out var interactable) || interactable == null)
                 return false;
 
-            switch (currentInteractable.Value.Config.Type)
+            var interactorCharacter = characterActorRepository.Get(interactorId);
+            if (interactorCharacter == null)
+                return false;
+
+            if (!interactorCharacter.InteractionSensor.IsDetectable(interactableId) ||
+                !interactable.CanInteract)
+                return false;
+
+            if (interactable.Config.Type == InteractionType.Instant)
             {
-                case InteractionType.Instant:
-                    ExecuteInteraction();
-                    break;
-
-                case InteractionType.Hold:
-                    if (isProcessing)
-                        return false;
-                    StartHoldInteraction();
-                    break;
-
-                default:
-                    throw new InvalidOperationException();
+                interactable.OnInteract(interactorCharacter);
+                return true;
             }
 
-            return true;
-        }
-
-        /// <summary>
-        /// Cancel the current interaction (for hold interactions).
-        /// </summary>
-        public void CancelInteraction()
-        {
-            if (isProcessing && currentInteractable.Value)
+            if (interactable.Config.Type == InteractionType.Hold)
             {
-                currentInteractable.Value.OnInteractionCancelled(interactor);
-            }
+                using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
+                    interactable.destroyCancellationToken,
+                    cancellationToken);
 
-            isProcessing = false;
-            interactionProgress.Value = 0f;
-        }
-
-        void StartHoldInteraction()
-        {
-            if (isProcessing)
-                throw new InvalidOperationException();
-            if (currentInteractable.Value == null)
-                throw new InvalidOperationException();
-
-            isProcessing = true;
-            interactionProgress.Value = 0f;
-
-            currentInteractable.Value.OnInteractionStart(interactor);
-        }
-
-        void ExecuteInteraction()
-        {
-            if (currentInteractable.Value == null)
-                throw new InvalidOperationException();
-
-            currentInteractable.Value.OnInteract(interactor);
-
-            interactionProgress.Value = 0f;
-            interactionCompleted.Publish(currentInteractable.Value);
-        }
-
-        Interactable FindClosestInteractable()
-        {
-            var origin = interactor.transform;
-            var hitCount = Physics.OverlapSphereNonAlloc(
-                origin.position,
-                settings.DetectionRadius,
-                detectionColliderBuffer,
-                settings.InteractableLayer);
-
-            Interactable closest = null;
-            var closestDistanceSqr = float.MaxValue;
-            for (int i = 0; i < hitCount; i++)
-            {
-                var col = detectionColliderBuffer[i];
-
-                var interactable = col.GetComponentInParent<Interactable>();
-                if (interactable == null || !interactable.CanInteract)
-                    continue;
-
-                var distanceSqr = (origin.position - col.ClosestPoint(origin.position)).sqrMagnitude;
-                if (distanceSqr < closestDistanceSqr)
+                try
                 {
-                    closestDistanceSqr = distanceSqr;
-                    closest = interactable;
+                    interactable.OnInteractionStart(interactorCharacter);
+
+                    var elapsedTime = 0f;
+                    var holdDuration = interactable.Config.HoldDuration;
+
+                    while (elapsedTime < holdDuration)
+                    {
+                        linkedCts.Token.ThrowIfCancellationRequested();
+
+                        elapsedTime += Time.deltaTime;
+                        var progress = Mathf.Clamp01(elapsedTime / holdDuration);
+                        NotifyProgress(interactorId, interactableId, progress);
+
+                        await UniTask.Yield(PlayerLoopTiming.Update, linkedCts.Token);
+
+                        var loopDistance = Vector3.Distance(interactorCharacter.Body.Position, interactable.Position);
+                        if (!interactorCharacter.InteractionSensor.IsDetectable(interactableId))
+                        {
+                            interactable.OnInteractionCancelled(interactorCharacter);
+                            NotifyProgress(interactorId, interactableId, 0);
+                            return false;
+                        }
+                    }
+
+                    NotifyProgress(interactorId, interactableId, 1);
+
+                    interactable.OnInteract(interactorCharacter);
+
+                    NotifyProgress(interactorId, interactableId, 0);
+
+                    return true;
+                }
+                catch (OperationCanceledException)
+                {
+                    if (interactable != null)
+                        interactable.OnInteractionCancelled(interactorCharacter);
+                    progressChanged.Publish(new InteractionProgressEvent(interactorId, interactableId, 0f));
+                    return false;
                 }
             }
 
-            return closest;
+            return false;
+        }
+
+        void NotifyProgress(CharacterId interactorId, InteractableId interactableId, float progress)
+        {
+            progressChanged.Publish(new InteractionProgressEvent(interactorId, interactableId, progress));
         }
     }
 }

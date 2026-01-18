@@ -4,7 +4,7 @@
     "references": [
         "Gast.Core",
         "Gast.Domain",
-        "Gast.Commands",
+        "Gast.Api",
         "Gast.Lib.AI",
         "Gast.Shared",
         "Unity.TextMeshPro",

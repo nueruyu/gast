@@ -4,7 +4,8 @@
     "references": [
         "Gast.Core",
         "Gast.Domain",
-        "Gast.Commands",
+        "Gast.Api",
+        "Gast.Application",
         "Gast.Shared",
         "Unity.TextMeshPro",
         "Unity.InputSystem",

@@ -1,0 +1,20 @@
+{
+    "name": "Gast.Application",
+    "rootNamespace": "Gast.Application",
+    "references": [
+        "Gast.Core",
+        "Gast.Domain",
+        "Gast.Api",
+        "Gast.Shared",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

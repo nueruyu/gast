@@ -9,6 +9,11 @@ namespace Gast.Domain.Interactions
     public interface IInteractable
     {
         /// <summary>
+        /// Unique identifier for this interactable instance.
+        /// </summary>
+        InteractableId Id { get; }
+
+        /// <summary>
         /// Configuration for this interaction (prompt, key, type, duration).
         /// </summary>
         IInteractionConfig Config { get; }

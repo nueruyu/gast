@@ -3,9 +3,7 @@
     "rootNamespace": "Gast.Api",
     "references": [
         "Gast.Core",
-        "Gast.Commands",
-        "Gast.Domain",
-        "Gast.UseCases"
+        "Gast.Domain"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

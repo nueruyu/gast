@@ -1,4 +1,5 @@
 using Gast.Core.Tasks;
+using Gast.UI.Command;
 using Gast.UI.Hud;
 using Gast.UI.Interactions;
 using Gast.UI.Menu;
@@ -16,19 +17,22 @@ namespace Gast.UI
         readonly GameHudViewFactory gameHudViewFactory;
         readonly MenuViewFactory menuViewFactory;
         readonly InteractionPromptViewFactory interactionPromptViewFactory;
+        readonly CommandViewFactory commandViewFactory;
 
         public UIBootstrap(
             UIDocument uiDocument,
             UIAssetSettings assetSettings,
             GameHudViewFactory gameHudViewFactory,
             MenuViewFactory menuViewFactory,
-            InteractionPromptViewFactory interactionPromptViewFactory)
+            InteractionPromptViewFactory interactionPromptViewFactory,
+            CommandViewFactory commandViewFactory)
         {
             this.uiDocument = uiDocument;
             this.assetSettings = assetSettings;
             this.gameHudViewFactory = gameHudViewFactory;
             this.menuViewFactory = menuViewFactory;
             this.interactionPromptViewFactory = interactionPromptViewFactory;
+            this.commandViewFactory = commandViewFactory;
         }
 
         public Task RunAsync(CancellationToken cancellationToken)
@@ -41,6 +45,9 @@ namespace Gast.UI
 
             var menuView = menuViewFactory.Create(cancellationToken);
             rootView.MenuLayer.Add(menuView);
+
+            var commandView = commandViewFactory.Create(cancellationToken);
+            rootView.DialogLayer.Add(commandView);
 
             var interactionPromptView = interactionPromptViewFactory.Create(cancellationToken);
             rootView.HudLayer.Add(interactionPromptView);

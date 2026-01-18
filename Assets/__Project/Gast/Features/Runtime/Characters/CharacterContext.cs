@@ -1,5 +1,6 @@
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
+using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
 
 namespace Gast.Features.Characters
@@ -13,5 +14,6 @@ namespace Gast.Features.Characters
         CharacterAnimationReceiver AnimationReceiver,
         CharacterAudio Audio,
         IVisionSensor VisionSensor,
+        IInteractionSensor InteractionSensor,
         INavigationProvider NavigationProvider);
 }

@@ -1,7 +1,6 @@
 using Gast.Core.Observables;
 using Gast.Domain.Interactions;
 using Gast.Features.Characters;
-using System;
 using UnityEngine;
 
 namespace Gast.Features.Interactions
@@ -19,6 +18,10 @@ namespace Gast.Features.Interactions
         readonly Signal<Character> interactionCancelled = new();
         readonly Signal disabled = new();
 
+        InteractionSystem interactionSystem;
+        bool activated = false;
+
+        public InteractableId Id { get; private set; }
         public InteractionConfig Config => config;
         public Vector3 Position => transform.position;
 
@@ -29,13 +32,39 @@ namespace Gast.Features.Interactions
         }
 
         public ISignal<Character> Interacted => interacted;
-
         public ISignal<Character> InteractionStarted => interactionStarted;
-
         public ISignal<Character> InteractionCancelled => interactionCancelled;
         public ISignal Disabled => disabled;
 
         IInteractionConfig IInteractable.Config => Config;
+
+        public void Initialize(InteractionSystem interactionSystem)
+        {
+            this.interactionSystem = interactionSystem;
+
+            if (activated)
+            {
+                interactionSystem.Register(this);
+            }
+        }
+
+        void Awake()
+        {
+            Id = InteractableId.FromInstanceId(gameObject.GetInstanceID());
+        }
+
+        void OnEnable()
+        {
+            activated = true;
+            interactionSystem?.Register(this);
+        }
+
+        void OnDisable()
+        {
+            interactionSystem?.Unregister(this);
+            disabled.Publish();
+            activated = false;
+        }
 
         public void OnInteract(Character interactor)
         {
@@ -50,11 +79,6 @@ namespace Gast.Features.Interactions
         public void OnInteractionCancelled(Character interactor)
         {
             interactionCancelled.Publish(interactor);
-        }
-
-        void OnDisable()
-        {
-            disabled.Publish();
         }
     }
 }

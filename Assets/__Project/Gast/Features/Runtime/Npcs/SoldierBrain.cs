@@ -1,88 +1,58 @@
 using Cysharp.Threading.Tasks;
+using Gast.Api.AI;
+using Gast.Api.AI.Goals;
 using Gast.Domain.Characters;
+using Gast.Domain.Economy;
 using Gast.Lib.AI;
-using Gast.Lib.AI.Builders;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
 
 namespace Gast.Features.Npcs
 {
-    public class SoldierBrain : ICharacterBrain
+    public class SoldierBrain : ICharacterBrain, IGoalAssignable
     {
-        readonly Domain<CombatWorldState> domain;
+        readonly GoalManager goalManager;
+        readonly Domain<StrategicWorldState> strategicDomain;
+        readonly Domain<CombatWorldState> combatDomain;
+        readonly SharedAIState sharedState;
+        readonly IDisposable scope;
 
-        CombatWorldState worldState;
         ICharacter character;
         CancellationTokenSource cts;
 
-        public SoldierBrain(SoldierBrainSettings settings)
+        StrategicWorldState strategicState;
+        CombatWorldState combatState;
+
+        public SoldierBrain(
+            SoldierBrainSettings settings,
+            GoalManager goalManager,
+            Domain<StrategicWorldState> strategicDomain,
+            SharedAIState sharedState,
+            IDisposable scope)
         {
-            var idleAction = settings.IdleAction;
-            var chaseAction = settings.ChaseTargetAction;
-            var attackAction = settings.MeleeAttackAction;
-            var backOffAction = settings.BackOffAction;
-            var strafeAction = settings.StrafeAction;
-
-            domain = new DomainBuilder<CombatWorldState>()
-                .RegisterTask(chaseAction)
-                .RegisterTask(attackAction)
-                .RegisterTask(backOffAction)
-                .RegisterTask(strafeAction)
-                .RegisterTask(idleAction)
-                .DefineCompound("EngageTarget")
-                    .AddMethod("Attack")
-                        .Condition(s => s.IsInAttackRange && s.IsReadyToAttack)
-                        .Do(attackAction)
-                    .End()
-                    .AddMethod("Withdraw")
-                        .Condition(s => s.IsInAttackRange && !s.IsReadyToAttack)
-                        .Do(backOffAction)
-                    .End()
-                    .AddMethod("Approach_Tactical")
-                        .Condition(s => !s.IsInAttackRange && s.IsInCombatRange)
-                        .Do(strafeAction)
-                    .End()
-                    .AddMethod("Chase")
-                        .Condition(s => !s.IsInCombatRange)
-                        .Do(chaseAction)
-                    .End()
-                .End()
-
-                .DefineRoot()
-                    .AddMethod("Combat")
-                        .Condition(s => s.HasTarget)
-                        .Do("EngageTarget")
-                    .End()
-                    .AddMethod("Idle")
-                        .Condition(s => !s.HasTarget)
-                        .Do(idleAction)
-                    .End()
-                .End()
-
-                .Build();
+            this.goalManager = goalManager;
+            this.strategicDomain = strategicDomain;
+            this.combatDomain = CombatDomain.Create(settings);
+            this.sharedState = sharedState;
+            this.scope = scope;
         }
 
         public void OnAttached(ICharacter character)
         {
             this.character = character;
-
-            // Initialize world state for melee combat
-            worldState = new CombatWorldState
-            {
-                HasTarget = false,
-                TargetPosition = Vector3.zero,
-                DistanceToTarget = float.MaxValue,
-                IsReadyToAttack = true,
-                AttackRange = 1.5f, // 1.5 meters melee attack range
-                CombatRange = 4.5f  // 4.5 meters tactical positioning range
-            };
-
+            combatState = new CombatWorldState { AttackRange = 1.5f, CombatRange = 4.5f };
+            strategicState = new StrategicWorldState();
             cts = new CancellationTokenSource();
 
-            RunStateUpdateLoop(cts.Token).Forget();
-            RunHTN(cts.Token).Forget();
+            SetGoals(new List<IGoal>()
+            {
+                new AcquireItemGoal(ItemId.FromGuid(Guid.Parse("58d36adf-70d7-4e47-91a4-10db1ee6727a")), 3)
+            });
+
+            RunAsync(cts.Token).Forget();
         }
 
         public void OnDetached()
@@ -92,64 +62,103 @@ namespace Gast.Features.Npcs
             cts = null;
         }
 
-        async UniTaskVoid RunStateUpdateLoop(CancellationToken token)
+        public void SetGoals(List<IGoal> goals)
+        {
+            goalManager.Update(character.Id, goals);
+        }
+
+        async UniTaskVoid RunAsync(CancellationToken token)
+        {
+            await UniTask.WhenAll(
+                StateUpdateLoop(token),
+                StrategicLoop(token),
+                TacticalLoop(token)
+            );
+        }
+
+        async UniTask StateUpdateLoop(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
-                UpdateWorldState();
+                UpdateStrategicWorldState();
+                UpdateCombatWorldState();
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
 
-        async UniTaskVoid RunHTN(CancellationToken token)
+        async UniTask StrategicLoop(CancellationToken token)
         {
-            try
+            while (!token.IsCancellationRequested)
             {
-                while (!token.IsCancellationRequested)
-                {
-                    var ctx = new Context<CombatWorldState>(
-                        worldState,
-                        () => worldState,
-                        character,
-                        token);
+                var context = new Context<StrategicWorldState>(strategicState, () => strategicState, character, token);
+                await strategicDomain.RootTask.RunAsync(context);
 
-                    await domain.RootTask.RunAsync(ctx);
-
-                    await UniTask.Yield(token);
-                }
-            }
-            catch (OperationCanceledException)
-            {
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
 
-        void UpdateWorldState()
+        async UniTask TacticalLoop(CancellationToken token)
         {
-            var visibleEnemies = character.VisionSensor.VisibleCharacters
-                .Where(c => c != character && c.IsAlive) // Exclude self and dead characters
-                .ToArray();
-
-            if (visibleEnemies.Length > 0)
+            while (!token.IsCancellationRequested)
             {
-                // Pick closest enemy as target
-                var closestEnemy = visibleEnemies
-                    .OrderBy(e => Vector3.Distance(character.VisionSensor.EyePosition, e.Body.Position))
-                    .First();
+                var context = new Context<CombatWorldState>(combatState, () => combatState, character, token);
+                await combatDomain.RootTask.RunAsync(context);
 
-                worldState.HasTarget = true;
-                worldState.TargetPosition = closestEnemy.Body.Position;
-                worldState.TargetForward = closestEnemy.Body.Forward;
-                worldState.DistanceToTarget = Vector3.Distance(character.Body.Position, closestEnemy.Body.Position);
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
+            }
+        }
+
+        void UpdateStrategicWorldState()
+        {
+            var goals = goalManager.CurrentGoals;
+            var currentGoal = goals.FirstOrDefault(g => !g.IsCompleted);
+            strategicState.CurrentGoal = currentGoal;
+            strategicState.HasGoal = currentGoal != null;
+
+            if (sharedState.InteractableTarget is Component interactableTargetComonent &&
+                !interactableTargetComonent)
+            {
+                sharedState.InteractableTarget = null;
+            }
+
+            var interactableTarget = sharedState.InteractableTarget;
+
+            strategicState.HasInteractableTarget = interactableTarget != null;
+            if (interactableTarget != null)
+            {
+                strategicState.InteractableTargetId = interactableTarget.Id;
+                strategicState.InteractableTargetPosition = interactableTarget.Position;
+                var distance = Vector3.Distance(character.Body.Position, interactableTarget.Position);
+                strategicState.IsInRangeToInteract = distance <= 1.5f;
+            }
+
+            strategicState.IsThreatened = character.VisionSensor.VisibleCharacters
+                .Where(c => c.IsAlive)
+                .Where(c => c.Status.Faction != character.Status.Faction)
+                .Any();
+        }
+
+        void UpdateCombatWorldState()
+        {
+            var target = sharedState.CombatTarget;
+            if (target != null && target.IsAlive)
+            {
+                combatState.HasTarget = true;
+                combatState.TargetPosition = target.Body.Position;
+                combatState.TargetForward = target.Body.Forward;
+                combatState.DistanceToTarget = Vector3.Distance(character.Body.Position, target.Body.Position);
             }
             else
             {
-                worldState.HasTarget = false;
-                worldState.TargetPosition = Vector3.zero;
-                worldState.DistanceToTarget = float.MaxValue;
+                combatState.HasTarget = false;
+                combatState.DistanceToTarget = float.MaxValue;
             }
+            combatState.IsReadyToAttack = character.CanAttack;
+        }
 
-            // Update attack readiness from character
-            worldState.IsReadyToAttack = character.CanAttack;
+        public void Dispose()
+        {
+            scope?.Dispose();
         }
     }
 }

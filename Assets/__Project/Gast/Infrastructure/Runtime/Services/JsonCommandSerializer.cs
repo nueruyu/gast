@@ -84,16 +84,23 @@ namespace Gast.Infrastructure.Services
 
         static bool IsCommandsAssembly(Assembly assembly)
         {
-            return assembly.FullName.Contains($"{nameof(Gast)}.{nameof(Commands)}");
+            return assembly.FullName.Contains($"{nameof(Gast)}.{nameof(Api)}");
         }
 
         static bool IsCommandType(Type type)
         {
-            if (typeof(ICommand).IsAssignableFrom(type))
+            if (!type.IsValueType || type.IsAbstract)
+                return false;
+
+            var interfaces = type.GetInterfaces();
+            if (interfaces.Contains(typeof(ICommand)) || interfaces.Contains(typeof(IAsyncCommand)))
                 return true;
 
-            return type.GetInterfaces()
-                .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICommand<>));
+            return interfaces.Any(i =>
+                i.IsGenericType &&
+                (i.GetGenericTypeDefinition() == typeof(ICommand<>) ||
+                 i.GetGenericTypeDefinition() == typeof(IAsyncCommand<>))
+            );
         }
     }
 }

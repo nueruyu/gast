@@ -1,16 +1,19 @@
+using System;
+using Gast.Core.Events;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
-using Gast.Features.Navigations;
+using Gast.Domain.Interactions;
 using Gast.Features.Characters;
 using Gast.Features.Characters.Actions;
+using Gast.Features.Combat;
+using Gast.Features.Navigations;
 using Gast.Features.Sensors;
 using Gast.Infrastructure.Repositories;
+using Gast.Infrastructure.Services;
 using Gast.Infrastructure.Settings;
-using System;
-using UnityEngine;
-using Gast.Features.Combat;
-using Gast.Features.Characters.Audios;
 using Gast.Shared.UnityExtensions;
+using UnityEngine;
+using VContainer;
 
 namespace Gast.Infrastructure.Factories
 {
@@ -23,17 +26,20 @@ namespace Gast.Infrastructure.Factories
         readonly ICharacterActorRepository characterActorRepository;
         readonly CharacterFootstepService footstepService;
         readonly ICombatMethodFactory combatMethodFactory;
+        readonly IDomainEventPublisher eventPublisher;
 
         public CharacterFactory(
             CharacterTypeRepository typeRepository,
             ICharacterActorRepository characterActorRepository,
             CharacterFootstepService footstepService,
-            ICombatMethodFactory combatMethodFactory)
+            ICombatMethodFactory combatMethodFactory,
+            IDomainEventPublisher eventPublisher)
         {
             this.typeRepository = typeRepository ?? throw new ArgumentNullException(nameof(typeRepository));
             this.characterActorRepository = characterActorRepository ?? throw new ArgumentNullException(nameof(characterActorRepository));
             this.footstepService = footstepService ?? throw new ArgumentNullException(nameof(footstepService));
             this.combatMethodFactory = combatMethodFactory ?? throw new ArgumentNullException(nameof(combatMethodFactory));
+            this.eventPublisher = eventPublisher ?? throw new ArgumentNullException(nameof(eventPublisher));
         }
 
         public ICharacter Create(CharacterTypeId typeId, Vector3 position, Quaternion rotation, Faction faction)
@@ -64,7 +70,8 @@ namespace Gast.Infrastructure.Factories
                 actionController,
                 status,
                 wallet,
-                inventory);
+                inventory,
+                eventPublisher);
 
             characterActorRepository.Register(character);
             footstepService.Register(context, definition.FootstepSettings);
@@ -88,6 +95,7 @@ namespace Gast.Infrastructure.Factories
             visionSensor.ViewRadius = definition.SensorViewRadius;
             visionSensor.EyeOffset = definition.SensorEyeOffset;
 
+            var interactionSensor = characterGo.RequireComponentInChildren<IInteractionSensor>();
             var navigationProvider = characterGo.RequireComponentInChildren<NavMeshNavigator>();
             navigationProvider.StoppingDistance = definition.NavigationStoppingDistance;
 
@@ -100,6 +108,7 @@ namespace Gast.Infrastructure.Factories
                 animationReceiver,
                 audio,
                 visionSensor,
+                interactionSensor,
                 navigationProvider);
         }
 

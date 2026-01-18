@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
@@ -6,19 +5,19 @@ namespace Gast.UI.Hud
 {
     public class GameHudViewFactory
     {
-        readonly GameHudViewModel viewModel;
+        readonly GameHudViewModel hudViewModel;
         readonly UIAssetSettings assetSettings;
 
-        public GameHudViewFactory(GameHudViewModel viewModel, UIAssetSettings assetSettings)
+        public GameHudViewFactory(GameHudViewModel hudViewModel, UIAssetSettings assetSettings)
         {
-            this.viewModel = viewModel;
+            this.hudViewModel = hudViewModel;
             this.assetSettings = assetSettings;
         }
 
         public GameHudView Create(CancellationToken cancellationToken)
         {
             var view = new GameHudView(assetSettings.GameHudView);
-            view.Bind(viewModel).AddTo(cancellationToken);
+            view.Bind(hudViewModel).AddTo(cancellationToken);
             return view;
         }
     }

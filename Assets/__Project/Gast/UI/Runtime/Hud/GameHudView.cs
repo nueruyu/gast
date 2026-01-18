@@ -85,10 +85,10 @@ namespace Gast.UI.Hud
             {
                 viewModel.SetFocus(true);
             }).AddTo(disposables);
-            
+
             this.SubscribeEvent<FocusOutEvent>(evt =>
             {
-                if (evt.relatedTarget is VisualElement target && 
+                if (evt.relatedTarget is VisualElement target &&
                     !Contains(target))
                 {
                     viewModel.SetFocus(false);

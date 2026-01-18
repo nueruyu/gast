@@ -2,6 +2,7 @@ using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Combat;
 using Gast.Domain.Economy;
+using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
 using UnityEngine;
 
@@ -70,6 +71,8 @@ namespace Gast.Domain.Characters
 
         IVisionSensor VisionSensor { get; }
 
+        IInteractionSensor InteractionSensor { get; }
+
         INavigationProvider NavigationProvider { get; }
 
         // === Operation Methods ===
@@ -118,5 +121,10 @@ namespace Gast.Domain.Characters
         /// Apply damage and hit reaction to the character.
         /// </summary>
         void TakeDamage(DamageInfo info);
+
+        /// <summary>
+        /// Get the currently attached brain.
+        /// </summary>
+        ICharacterBrain GetBrain();
     }
 }

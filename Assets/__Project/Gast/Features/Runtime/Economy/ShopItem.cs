@@ -31,9 +31,10 @@ namespace Gast.Features.Economy
                 .AddTo(destroyCancellationToken);
         }
 
-        public void SetInteractionPrompt(string prompt)
+        public void Initialize(InteractionSystem interactionSystem, string interactionPrompt)
         {
-            interactable.Config.Prompt = prompt;
+            interactable.Initialize(interactionSystem);
+            interactable.Config.Prompt = interactionPrompt;
         }
 
         void OnInteract(Character interactor)

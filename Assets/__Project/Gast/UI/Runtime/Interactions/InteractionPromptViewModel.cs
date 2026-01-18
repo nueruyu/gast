@@ -1,5 +1,6 @@
 using System;
 using Gast.Domain.Interactions;
+using Gast.Domain.Players;
 using Gast.Shared.Observables;
 using R3;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace Gast.UI.Interactions
     public class InteractionPromptViewModel : IDisposable
     {
         readonly CompositeDisposable disposables = new();
+        readonly ReactiveProperty<float> holdProgress = new(0f);
 
         public ReadOnlyReactiveProperty<bool> IsVisible { get; }
         public ReadOnlyReactiveProperty<string> KeyText { get; }
@@ -17,9 +19,11 @@ namespace Gast.UI.Interactions
         public ReadOnlyReactiveProperty<float> HoldProgress { get; }
         public ReadOnlyReactiveProperty<Vector3> TargetWorldPosition { get; }
 
-        public InteractionPromptViewModel(IInteractionSystem interactionSystem)
+        public InteractionPromptViewModel(IPlayerInteractionFocusService focusService, IInteractionSystem interactionSystem)
         {
-            var currentInteractable = interactionSystem.CurrentInteractable.ToObservable();
+            HoldProgress = holdProgress.ToReadOnlyReactiveProperty().AddTo(disposables);
+
+            var currentInteractable = focusService.FocusedInteractable.ToObservable();
 
             IsVisible = currentInteractable
                 .Select(x => x != null)
@@ -41,15 +45,24 @@ namespace Gast.UI.Interactions
                 .ToReadOnlyReactiveProperty()
                 .AddTo(disposables);
 
-            HoldProgress = interactionSystem
-                .InteractionProgress
-                .ToObservable()
-                .ToReadOnlyReactiveProperty()
-                .AddTo(disposables);
-
             TargetWorldPosition = currentInteractable
                 .Select(x => x?.Position ?? Vector3.zero)
                 .ToReadOnlyReactiveProperty()
+                .AddTo(disposables);
+
+            currentInteractable
+                .Subscribe(_ => holdProgress.Value = 0f)
+                .AddTo(disposables);
+
+            interactionSystem.ProgressChanged.ToObservable()
+                .Subscribe(evt =>
+                {
+                    var focused = focusService.FocusedInteractable.Value;
+                    if (focused != null && evt.InteractableId == focused.Id)
+                    {
+                        holdProgress.Value = evt.Progress;
+                    }
+                })
                 .AddTo(disposables);
         }
 
