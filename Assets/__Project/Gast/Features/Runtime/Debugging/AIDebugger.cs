@@ -57,16 +57,11 @@ namespace Gast.Features.Debugging
         {
             if (debugInfoMap.TryGetValue(actorId, out var info))
             {
-                // To avoid performance issue, this should be run on main thread.
-                // But for debugger, it's acceptable.
-                UnityEngine.Device.Application.InvokeOnMainThread(() =>
+                info.Logs.Add(log);
+                if (info.Logs.Count > 100)
                 {
-                    info.Logs.Add(log);
-                    if (info.Logs.Count > 100)
-                    {
-                        info.Logs.RemoveAt(0);
-                    }
-                });
+                    info.Logs.RemoveAt(0);
+                }
             }
         }
     }

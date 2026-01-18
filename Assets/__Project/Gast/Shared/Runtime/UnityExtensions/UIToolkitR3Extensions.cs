@@ -1,7 +1,7 @@
 using R3;
 using System;
 using System.Collections.Generic;
-using UnityEngine.InputSystem;
+using System.Threading;
 using UnityEngine.UIElements;
 
 namespace Gast.Shared.UnityExtensions
@@ -10,14 +10,18 @@ namespace Gast.Shared.UnityExtensions
     {
         public static IDisposable BindText(this Label label, ReadOnlyReactiveProperty<string> property, CancellationToken cancellationToken)
         {
-            return property.Subscribe(x => label.text = x, cancellationToken);
+            var disposables = new CompositeDisposable();
+            property.Subscribe(x => label.text = x).AddTo(disposables);
+            cancellationToken.Register(() => disposables.Dispose());
+            return disposables;
         }
 
         public static IDisposable BindVisibility(this VisualElement element, ReadOnlyReactiveProperty<bool> property, CancellationToken cancellationToken)
         {
-            return property.Subscribe(
-                isVisible => element.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None,
-                cancellationToken);
+            var disposables = new CompositeDisposable();
+            property.Subscribe(isVisible => element.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None).AddTo(disposables);
+            cancellationToken.Register(() => disposables.Dispose());
+            return disposables;
         }
 
         public static IDisposable Bind(
@@ -39,7 +43,7 @@ namespace Gast.Shared.UnityExtensions
                 {
                     selectedIndex.Value = -1;
                 }
-            }, cancellationToken).AddTo(disposables);
+            }).AddTo(disposables);
 
             selectedIndex.Subscribe(index =>
             {
@@ -47,14 +51,14 @@ namespace Gast.Shared.UnityExtensions
                 {
                     dropdown.index = index;
                 }
-            }, cancellationToken).AddTo(disposables);
+            }).AddTo(disposables);
 
             dropdown.RegisterValueChangedCallback(evt =>
             {
                 selectedIndex.Value = dropdown.index;
             });
 
-            cancellationToken.Register(() => dropdown.UnregisterValueChangedCallback(evt => { }));
+            cancellationToken.Register(() => disposables.Dispose());
 
             return disposables;
         }
@@ -65,6 +69,8 @@ namespace Gast.Shared.UnityExtensions
             Action<VisualElement, T> bindItem,
             CancellationToken cancellationToken)
         {
+            var disposables = new CompositeDisposable();
+
             listView.bindItem = (element, index) =>
             {
                 if (source.CurrentValue != null && index >= 0 && index < source.CurrentValue.Count)
@@ -73,50 +79,15 @@ namespace Gast.Shared.UnityExtensions
                 }
             };
 
-            return source.Subscribe(items =>
+            source.Subscribe(items =>
             {
                 listView.itemsSource = items as System.Collections.IList ?? new List<T>(items);
                 listView.Rebuild();
-            }, cancellationToken);
-        }
+            }).AddTo(disposables);
 
-        public static void SetEnabled(
-            this InputActionMap inputActionMap,
-            bool enabled)
-        {
-            if (enabled)
-                inputActionMap.Enable();
-            else
-                inputActionMap.Disable();
-        }
+            cancellationToken.Register(() => disposables.Dispose());
 
-        public static IDisposable SubscribePerformed(
-            this InputAction inputAction,
-            Action<InputAction.CallbackContext> callback)
-        {
-            inputAction.performed += callback;
-
-            return Disposable.Create(() => inputAction.performed -= callback);
-        }
-
-        public static IDisposable SubscribeCanceled(
-            this InputAction inputAction,
-            Action<InputAction.CallbackContext> callback)
-        {
-            inputAction.canceled += callback;
-
-            return Disposable.Create(() => inputAction.canceled -= callback);
-        }
-
-        public static IDisposable SubscribeEvent<TEventType>(
-            this VisualElement visualElement,
-            EventCallback<TEventType> callback,
-            TrickleDown useTrickleDown = TrickleDown.NoTrickleDown)
-            where TEventType : EventBase<TEventType>, new()
-        {
-            visualElement.RegisterCallback(callback, useTrickleDown);
-
-            return Disposable.Create(() => visualElement.UnregisterCallback(callback, useTrickleDown));
+            return disposables;
         }
     }
 }

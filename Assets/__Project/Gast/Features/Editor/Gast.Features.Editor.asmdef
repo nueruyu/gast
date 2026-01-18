@@ -4,7 +4,8 @@
     "references": [
         "Gast.Core",
         "Gast.Domain",
-        "Gast.Features"
+        "Gast.Features",
+        "Gast.Lib.AI.Editor"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
