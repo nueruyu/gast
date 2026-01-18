@@ -12,6 +12,8 @@ namespace Gast.Features.AI
         public AIMemory Memory { get; }
         public CancellationToken CancellationToken { get; }
 
+        public object ActorId => Actor.Id;
+
         public AIContext(ICharacter actor, TWorldState worldState, AIMemory memory, CancellationToken cancellationToken)
         {
             Actor = actor;

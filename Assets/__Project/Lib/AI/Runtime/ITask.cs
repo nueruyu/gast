@@ -3,12 +3,15 @@ using System.Threading;
 
 namespace Gast.Lib.AI
 {
-    public interface ITask<TWorldState, in TContext>
+    public interface ITask
+    {
+        string Name { get; }
+    }
+
+    public interface ITask<TWorldState, in TContext> : ITask
         where TWorldState : class, IWorldState<TWorldState>, new()
         where TContext : struct, IContext<TContext, TWorldState>
     {
-        string Name { get; }
-
         UniTask<bool> ValidateAsync(
             TWorldState worldState,
             CancellationToken cancellationToken);

@@ -4,6 +4,7 @@ using Gast.Domain.Characters;
 using Gast.Features.AI.Combat;
 using Gast.Features.AI.Strategic;
 using Gast.Lib.AI;
+using Gast.Lib.AI.Debugging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace Gast.Features.AI
         readonly StrategicDomain strategicDomain;
         readonly CombatDomain combatDomain;
         readonly GoalManager goalManager;
+        readonly IAIDebugger debugger;
 
         ICharacter character;
         CancellationTokenSource cts;
@@ -33,16 +35,19 @@ namespace Gast.Features.AI
         public AIBrain(
             StrategicDomain strategicDomain,
             CombatDomain combatDomain,
-            GoalManager goalManager)
+            GoalManager goalManager,
+            IAIDebugger debugger)
         {
             this.strategicDomain = strategicDomain;
             this.combatDomain = combatDomain;
             this.goalManager = goalManager;
+            this.debugger = debugger;
         }
 
         public void OnAttached(ICharacter character)
         {
             this.character = character;
+            debugger?.Register(character.Id);
 
             strategicAgentRunner = strategicDomain.CreateRunner();
             combatAgentRunner = combatDomain.CreateRunner();
@@ -60,6 +65,7 @@ namespace Gast.Features.AI
 
         public void OnDetached()
         {
+            debugger?.Unregister(character.Id);
             cts?.Cancel();
             cts?.Dispose();
             cts = null;
@@ -85,6 +91,7 @@ namespace Gast.Features.AI
             {
                 UpdateStrategicWorldState();
                 UpdateCombatWorldState();
+                debugger?.UpdateWorldState(character.Id, $"{strategicState}\n{combatState}");
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
