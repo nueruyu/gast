@@ -47,6 +47,7 @@ namespace Gast.Features.AI
         public void OnAttached(ICharacter character)
         {
             this.character = character;
+            Debug.Log($"[AIBrain] OnAttached: {character.Id}, debugger is null: {debugger == null}");
             debugger?.Register(character.Id);
 
             strategicAgentRunner = strategicDomain.CreateRunner();

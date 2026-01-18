@@ -1,6 +1,7 @@
 using Gast.Lib.AI.Debugging;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Gast.Features.Debugging
 {
@@ -10,7 +11,8 @@ namespace Gast.Features.Debugging
 
         public void Register(object actorId)
         {
-            debugInfoMap.TryAdd(actorId, new AIDebugInfo(actorId));
+            var added = debugInfoMap.TryAdd(actorId, new AIDebugInfo(actorId));
+            Debug.Log($"[AIDebugger] Register: {actorId}, Added: {added}, Total: {debugInfoMap.Count}");
         }
 
         public void Unregister(object actorId)

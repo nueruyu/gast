@@ -72,22 +72,35 @@ namespace Gast.Lib.AI.Editor.Debugging
                 .Select(_ => selectedDebugInfo.CurrentValue?.Logs.ToList() ?? (IReadOnlyList<string>)Array.Empty<string>())
                 .ToReadOnlyReactiveProperty(Array.Empty<string>());
 
-            Observable.EveryUpdate(cancellationTokenSource.Token)
-                .Subscribe(_ =>
+            EditorApplication.update += OnEditorUpdate;
+        }
+
+        private int lastActorCount;
+
+        private void OnEditorUpdate()
+        {
+            if (EditorApplication.isPlaying && AIDebuggerBridge.IsInitialized)
+            {
+                var newInfo = AIDebuggerBridge.Instance.GetAllDebugInfo();
+                var countChanged = newInfo.Count != lastActorCount;
+                lastActorCount = newInfo.Count;
+
+                if (countChanged || !ReferenceEquals(newInfo, allDebugInfo.Value))
                 {
-                    if (EditorApplication.isPlaying && AIDebuggerBridge.IsInitialized)
-                    {
-                        allDebugInfo.Value = AIDebuggerBridge.Instance.GetAllDebugInfo();
-                    }
-                    else if (allDebugInfo.Value.Count > 0)
-                    {
-                        allDebugInfo.Value = new Dictionary<object, AIDebugInfo>();
-                    }
-                }).AddTo(disposables);
+                    allDebugInfo.Value = newInfo;
+                    allDebugInfo.ForceNotify();
+                }
+            }
+            else if (allDebugInfo.Value.Count > 0)
+            {
+                lastActorCount = 0;
+                allDebugInfo.Value = new Dictionary<object, AIDebugInfo>();
+            }
         }
 
         protected virtual void OnDisable()
         {
+            EditorApplication.update -= OnEditorUpdate;
             disposables?.Dispose();
             cancellationTokenSource?.Cancel();
             cancellationTokenSource?.Dispose();
@@ -235,7 +248,11 @@ namespace Gast.Lib.AI.Editor.Debugging
             choices.Subscribe(c =>
             {
                 dropdown.choices = c is List<string> list ? list : new List<string>(c);
-                if (selectedIndex.Value >= c.Count && c.Count > 0)
+                if (c.Count > 0 && selectedIndex.Value < 0)
+                {
+                    selectedIndex.Value = 0;
+                }
+                else if (selectedIndex.Value >= c.Count && c.Count > 0)
                 {
                     selectedIndex.Value = c.Count - 1;
                 }
