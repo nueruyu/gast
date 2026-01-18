@@ -1,4 +1,4 @@
-using Gast.Api.AI.Goals;
+using Gast.Domain.AI.Goals;
 using Gast.Features.AI.Strategic.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;

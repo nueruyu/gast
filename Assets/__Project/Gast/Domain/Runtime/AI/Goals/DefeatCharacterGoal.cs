@@ -1,26 +1,26 @@
-using Gast.Domain.Economy;
+using Gast.Domain.Characters;
 
-namespace Gast.Api.AI.Goals
+namespace Gast.Domain.AI.Goals
 {
-    public class AcquireItemGoal : IGoal
+    public class DefeatCharacterGoal : IGoal
     {
-        public ItemId TargetItemId { get; }
+        public CharacterTypeId TargetTypeId { get; }
         public int TargetQuantity { get; }
         public int CurrentQuantity { get; private set; }
         public bool IsCompleted => CurrentQuantity >= TargetQuantity;
 
-        public AcquireItemGoal(ItemId targetItemId, int targetQuantity)
+        public DefeatCharacterGoal(CharacterTypeId targetTypeId, int targetQuantity)
         {
-            TargetItemId = targetItemId;
+            TargetTypeId = targetTypeId;
             TargetQuantity = targetQuantity;
             CurrentQuantity = 0;
         }
 
-        public void AddQuantity(int amount)
+        public void IncrementCount()
         {
             if (!IsCompleted)
             {
-                CurrentQuantity += amount;
+                CurrentQuantity++;
             }
         }
     }

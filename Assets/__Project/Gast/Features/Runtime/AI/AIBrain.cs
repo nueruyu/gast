@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Gast.Api.AI;
+using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Features.AI.Combat;
 using Gast.Features.AI.Strategic;
@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace Gast.Features.AI
 {
-    public class AIBrain : ICharacterBrain, IGoalAssignable
+    public class AIBrain : ICharacterBrain, IAIGoalController
     {
         readonly StrategicDomain strategicDomain;
         readonly CombatDomain combatDomain;
@@ -20,6 +20,8 @@ namespace Gast.Features.AI
 
         ICharacter character;
         CancellationTokenSource cts;
+
+        public IReadOnlyList<IGoal> CurrentGoals => goalManager.CurrentGoals;
 
         AIRunner<StrategicState, AIContext<StrategicState>> strategicAgentRunner;
         AIRunner<CombatState, AIContext<CombatState>> combatAgentRunner;

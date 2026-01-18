@@ -1,4 +1,4 @@
-using Gast.Api.AI;
+using Gast.Domain.AI;
 using Gast.Domain.Interactions;
 using Gast.Lib.AI;
 using UnityEngine;

@@ -1,6 +1,6 @@
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Gast.Api.AI.Goals;
+using Gast.Domain.AI.Goals;
 using Gast.Domain.Interactions;
 using Gast.Domain.Pickups;
 using Gast.Lib.AI;

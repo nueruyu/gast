@@ -1,4 +1,4 @@
-namespace Gast.Api.AI
+namespace Gast.Domain.AI
 {
     public interface IGoal
     {

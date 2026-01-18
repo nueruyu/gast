@@ -1,6 +1,6 @@
-using Gast.Api.AI;
-using Gast.Api.AI.Goals;
 using Gast.Application.Services;
+using Gast.Domain.AI;
+using Gast.Domain.AI.Goals;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Infrastructure.Repositories;

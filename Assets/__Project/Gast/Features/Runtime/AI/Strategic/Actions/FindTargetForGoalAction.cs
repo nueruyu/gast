@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Gast.Api.AI.Goals;
+using Gast.Domain.AI.Goals;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
 using System;
