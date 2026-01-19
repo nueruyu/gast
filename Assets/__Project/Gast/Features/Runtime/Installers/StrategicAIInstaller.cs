@@ -16,7 +16,6 @@ namespace Gast.Features.Installers
             builder.Register<MoveToInteractableAction>(Lifetime.Transient);
             builder.Register<InteractWithTargetAction>(Lifetime.Transient);
             builder.Register<ClearInteractableTargetAction>(Lifetime.Transient);
-            builder.Register<IdleAction>(Lifetime.Transient);
         }
     }
 }

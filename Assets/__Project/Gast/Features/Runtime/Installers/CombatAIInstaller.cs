@@ -13,7 +13,6 @@ namespace Gast.Features.Installers
             builder.Register<MeleeAttackAction>(Lifetime.Transient);
             builder.Register<BackOffAction>(Lifetime.Transient);
             builder.Register<StrafeAction>(Lifetime.Transient);
-            builder.Register<IdleAction>(Lifetime.Transient);
         }
     }
 }

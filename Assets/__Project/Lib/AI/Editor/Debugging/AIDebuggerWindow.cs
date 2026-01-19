@@ -5,6 +5,7 @@ using R3;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -221,12 +222,22 @@ namespace Gast.Lib.AI.Editor.Debugging
             logList.itemsSource = logListSource;
             logList.Rebuild();
 
-            logs.ObserveAdd()
+            logs.ObserveChanged()
                 .Subscribe(e =>
                 {
-                    logListSource.Add(e.Value);
-                    logList.RefreshItems();
-                    logList.ScrollToItem(e.Index);
+                    switch (e.Action)
+                    {
+                        case NotifyCollectionChangedAction.Add:
+                            logListSource.Add(e.NewItem);
+                            logList.RefreshItems();
+                            logList.ScrollToItem(e.NewStartingIndex);
+                            break;
+
+                        case NotifyCollectionChangedAction.Remove:
+                            logListSource.RemoveAt(e.OldStartingIndex);
+                            logList.RefreshItems();
+                            break;
+                    }
                 })
                 .AddTo(bindings);
 
