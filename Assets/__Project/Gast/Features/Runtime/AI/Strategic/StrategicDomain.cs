@@ -16,7 +16,8 @@ namespace Gast.Features.AI.Strategic
             FindItemPickupAction findItemPickupAction,
             MoveToInteractableAction moveToInteractableAction,
             InteractWithTargetAction interactWithTargetAction,
-            ClearInteractableTargetAction clearInteractableTargetAction)
+            ClearInteractableTargetAction clearInteractableTargetAction,
+            IdleAction idleAction)
         {
             domain = new AIDomainBuilder<StrategicState, AIContext<StrategicState>>()
                 .RegisterTask("FindTargetForGoal", findTargetForGoalAction)
@@ -26,6 +27,7 @@ namespace Gast.Features.AI.Strategic
                 .RegisterTask("MoveToInteractable", moveToInteractableAction)
                 .RegisterTask("InteractWithTarget", interactWithTargetAction)
                 .RegisterTask("ClearInteractableTarget", clearInteractableTargetAction)
+                .RegisterTask("Idle", idleAction)
                 .DefineCompound("AcquireItem")
                     .AddMethod("FindAndCollect")
                         .Do("FindItemPickup", "MoveToInteractable", "InteractWithTarget")
@@ -48,7 +50,7 @@ namespace Gast.Features.AI.Strategic
                         .Do("FindTargetForGoal")
                     .End()
                     .AddMethod("Idle")
-                        .Do("ClearTarget")
+                        .Do("ClearTarget", "Idle")
                     .End()
                 .End()
                 .Build("Root");

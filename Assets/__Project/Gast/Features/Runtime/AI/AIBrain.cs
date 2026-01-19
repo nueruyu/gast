@@ -156,7 +156,7 @@ namespace Gast.Features.AI
             else
             {
                 combatState.HasTarget = false;
-                combatState.DistanceToTarget = float.MaxValue;
+                combatState.DistanceToTarget = float.PositiveInfinity;
             }
             combatState.IsReadyToAttack = character.CanAttack;
         }

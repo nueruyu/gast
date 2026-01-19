@@ -12,13 +12,15 @@ namespace Gast.Features.AI.Combat
             ChaseTargetAction chaseTargetAction,
             MeleeAttackAction meleeAttackAction,
             BackOffAction backOffAction,
-            StrafeAction strafeAction)
+            StrafeAction strafeAction,
+            IdleAction idleAction)
         {
             domain = new AIDomainBuilder<CombatState, AIContext<CombatState>>()
                 .RegisterTask("ChaseTarget", chaseTargetAction)
                 .RegisterTask("MeleeAttack", meleeAttackAction)
                 .RegisterTask("BackOff", backOffAction)
                 .RegisterTask("Strafe", strafeAction)
+                .RegisterTask("Idle", idleAction)
                 .DefineCompound("EngageTarget")
                     .AddMethod("Attack")
                         .Condition(s => s.IsInAttackRange && s.IsReadyToAttack)
@@ -41,6 +43,9 @@ namespace Gast.Features.AI.Combat
                     .AddMethod("Combat")
                         .Condition(s => s.HasTarget)
                         .Do("EngageTarget")
+                    .End()
+                    .AddMethod("Idle")
+                        .Do("Idle")
                     .End()
                 .End()
                 .Build("Root");

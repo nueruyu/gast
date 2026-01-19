@@ -1,14 +1,11 @@
 using Gast.Core.DI;
 using Gast.Features.AI;
-using Gast.Features.AI.Combat;
-using Gast.Features.AI.Combat.Actions;
-using Gast.Features.AI.Strategic;
-using Gast.Features.AI.Strategic.Actions;
 using Gast.Features.Cameras;
 using Gast.Features.Debugging;
 using Gast.Features.Gameplay;
 using Gast.Features.Gathering;
 using Gast.Features.Inputs;
+using Gast.Features.Installers;
 using Gast.Features.Interactions;
 using Gast.Features.Loot;
 using Gast.Features.Players;
@@ -19,24 +16,17 @@ namespace Gast.Features
 {
     public class FeaturesInstaller : IInstaller
     {
+        readonly CombatAIInstaller combatAIInstaller = new();
+        readonly StrategicAIInstaller strategicAIInstaller = new();
+
         public void Install(IContainerBuilder builder)
         {
             // AI
             builder.Register<GoalManager>(Lifetime.Transient);
-            builder.Register<ChaseTargetAction>(Lifetime.Transient);
-            builder.Register<MeleeAttackAction>(Lifetime.Transient);
-            builder.Register<BackOffAction>(Lifetime.Transient);
-            builder.Register<StrafeAction>(Lifetime.Transient);
-            builder.Register<ClearTargetAction>(Lifetime.Transient);
-            builder.Register<FindTargetForGoalAction>(Lifetime.Transient);
-            builder.Register<SelectThreatAction>(Lifetime.Transient);
-            builder.Register<FindItemPickupAction>(Lifetime.Transient);
-            builder.Register<MoveToInteractableAction>(Lifetime.Transient);
-            builder.Register<InteractWithTargetAction>(Lifetime.Transient);
-            builder.Register<ClearInteractableTargetAction>(Lifetime.Transient);
-            builder.Register<StrategicDomain>(Lifetime.Transient);
-            builder.Register<CombatDomain>(Lifetime.Transient);
             builder.Register<AIBrain>(Lifetime.Transient);
+
+            combatAIInstaller.Install(builder);
+            strategicAIInstaller.Install(builder);
 
             // Camera
             builder.Register<CameraInputController>().AsImplementedInterfaces();
