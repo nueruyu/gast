@@ -1,0 +1,77 @@
+/* Header */
+.header {
+    flex-direction: row;
+    padding: 5px;
+    align-items: center;
+}
+
+.header__label {
+    margin-right: 5px;
+}
+
+.header__dropdown {
+    flex-grow: 1;
+}
+
+/* Main Container - Two Column Layout */
+.main-container {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+.left-pane {
+    width: 50%;
+    min-width: 200px;
+    border-right-width: 1px;
+    border-right-color: rgb(40, 40, 40);
+}
+
+.right-pane {
+    flex-grow: 1;
+    min-width: 200px;
+}
+
+/* Section Headers */
+.section-header {
+    -unity-font-style: bold;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+.section-header--plan {
+    margin-top: 10px;
+}
+
+/* World State */
+.world-state-content {
+    white-space: normal;
+    padding: 5px;
+    margin: 5px;
+    background-color: rgb(51, 51, 51);
+    border-radius: 3px;
+}
+
+/* List Views */
+.plan-list {
+    flex-grow: 1;
+    min-height: 200px;
+    margin: 5px;
+}
+
+.log-list {
+    flex-grow: 1;
+    margin: 5px;
+}
+
+/* List Items */
+.list-item {
+    padding: 2px;
+}
+
+.list-item--log {
+    white-space: normal;
+}
+
+.list-item--active {
+    background-color: rgb(77, 102, 153);
+}

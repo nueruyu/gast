@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="AIDebuggerWindow.uss" />
+
+    <ui:VisualElement class="header">
+        <ui:Label text="Target AI:" class="header__label" />
+        <ui:DropdownField name="actor-dropdown" class="header__dropdown" />
+    </ui:VisualElement>
+
+    <ui:VisualElement class="main-container">
+        <ui:ScrollView name="left-pane" class="left-pane" mode="Vertical">
+            <ui:Label text="World State" class="section-header" />
+            <ui:Label name="world-state-label" class="world-state-content" />
+
+            <ui:Label text="Current Plan" class="section-header section-header--plan" />
+            <ui:ListView name="plan-list" class="plan-list" />
+        </ui:ScrollView>
+
+        <ui:VisualElement name="right-pane" class="right-pane">
+            <ui:Label text="Logs" class="section-header" />
+            <ui:ListView name="log-list" class="log-list" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
