@@ -8,27 +8,23 @@ namespace Gast.Shared.UnityExtensions
 {
     public static class UIToolkitR3Extensions
     {
-        public static IDisposable BindText(this Label label, ReadOnlyReactiveProperty<string> property, CancellationToken cancellationToken)
+        public static IDisposable BindText(this Label label, ReadOnlyReactiveProperty<string> property)
         {
-            var disposables = new CompositeDisposable();
-            property.Subscribe(x => label.text = x).AddTo(disposables);
-            cancellationToken.Register(() => disposables.Dispose());
-            return disposables;
+            return property
+                .Subscribe(x => label.text = x);
         }
 
-        public static IDisposable BindVisibility(this VisualElement element, ReadOnlyReactiveProperty<bool> property, CancellationToken cancellationToken)
+        public static IDisposable BindVisibility(this VisualElement element, ReadOnlyReactiveProperty<bool> property)
         {
-            var disposables = new CompositeDisposable();
-            property.Subscribe(isVisible => element.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None).AddTo(disposables);
-            cancellationToken.Register(() => disposables.Dispose());
-            return disposables;
+            return property.Subscribe(isVisible => element.style.display = isVisible ?
+                DisplayStyle.Flex :
+                DisplayStyle.None);
         }
 
         public static IDisposable Bind(
             this DropdownField dropdown,
             ReactiveProperty<int> selectedIndex,
-            ReadOnlyReactiveProperty<IReadOnlyList<string>> choices,
-            CancellationToken cancellationToken)
+            ReadOnlyReactiveProperty<IReadOnlyList<string>> choices)
         {
             var disposables = new CompositeDisposable();
 
@@ -58,19 +54,14 @@ namespace Gast.Shared.UnityExtensions
                 selectedIndex.Value = dropdown.index;
             });
 
-            cancellationToken.Register(() => disposables.Dispose());
-
             return disposables;
         }
 
         public static IDisposable BindTo<T>(
             this ListView listView,
             ReadOnlyReactiveProperty<IReadOnlyList<T>> source,
-            Action<VisualElement, T> bindItem,
-            CancellationToken cancellationToken)
+            Action<VisualElement, T> bindItem)
         {
-            var disposables = new CompositeDisposable();
-
             listView.bindItem = (element, index) =>
             {
                 if (source.CurrentValue != null && index >= 0 && index < source.CurrentValue.Count)
@@ -79,15 +70,11 @@ namespace Gast.Shared.UnityExtensions
                 }
             };
 
-            source.Subscribe(items =>
+            return source.Subscribe(items =>
             {
                 listView.itemsSource = items as System.Collections.IList ?? new List<T>(items);
                 listView.Rebuild();
-            }).AddTo(disposables);
-
-            cancellationToken.Register(() => disposables.Dispose());
-
-            return disposables;
+            });
         }
     }
 }

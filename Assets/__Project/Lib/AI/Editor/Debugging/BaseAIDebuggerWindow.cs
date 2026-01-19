@@ -6,21 +6,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Gast.Shared.UnityExtensions;
 
 namespace Gast.Lib.AI.Editor.Debugging
 {
     public abstract class BaseAIDebuggerWindow : EditorWindow
     {
-        private CancellationTokenSource cancellationTokenSource;
-        private CompositeDisposable disposables;
+        CancellationTokenSource cancellationTokenSource;
+        CompositeDisposable disposables;
 
-        private ReactiveProperty<IReadOnlyDictionary<object, AIDebugInfo>> allDebugInfo;
-        private ReadOnlyReactiveProperty<IReadOnlyList<string>> actorChoices;
-        private ReactiveProperty<int> selectedActorIndex;
-        private ReadOnlyReactiveProperty<object> selectedActorId;
-        private ReadOnlyReactiveProperty<AIDebugInfo> selectedDebugInfo;
+        ReactiveProperty<IReadOnlyDictionary<object, AIDebugInfo>> allDebugInfo;
+        ReadOnlyReactiveProperty<IReadOnlyList<string>> actorChoices;
+        ReactiveProperty<int> selectedActorIndex;
+        ReadOnlyReactiveProperty<object> selectedActorId;
+        ReadOnlyReactiveProperty<AIDebugInfo> selectedDebugInfo;
 
         protected ReadOnlyReactiveProperty<string> WorldStateText { get; private set; }
         protected ReadOnlyReactiveProperty<string> ActiveTaskPathText { get; private set; }
@@ -32,7 +34,7 @@ namespace Gast.Lib.AI.Editor.Debugging
             cancellationTokenSource = new CancellationTokenSource();
             disposables = new CompositeDisposable();
 
-            allDebugInfo = new ReactiveProperty<IReadOnlyDictionary<object, AIDebugInfo>>(new Dictionary<object, AIDebugInfo>());
+            allDebugInfo = new(new Dictionary<object, AIDebugInfo>());
 
             actorChoices = allDebugInfo
                 .Select(dict => (IReadOnlyList<string>)dict.Keys.Select(id => id.ToString()).ToList())
@@ -42,7 +44,8 @@ namespace Gast.Lib.AI.Editor.Debugging
 
             selectedActorId = allDebugInfo.CombineLatest(selectedActorIndex, (dict, index) =>
             {
-                if (index < 0 || index >= dict.Count) return null;
+                if (index < 0 || index >= dict.Count)
+                    return null;
                 return dict.Keys.ElementAt(index);
             }).ToReadOnlyReactiveProperty();
 
@@ -75,9 +78,9 @@ namespace Gast.Lib.AI.Editor.Debugging
             EditorApplication.update += OnEditorUpdate;
         }
 
-        private int lastActorCount;
+        int lastActorCount;
 
-        private void OnEditorUpdate()
+        void OnEditorUpdate()
         {
             if (EditorApplication.isPlaying && AIDebuggerBridge.IsInitialized)
             {
@@ -125,7 +128,7 @@ namespace Gast.Lib.AI.Editor.Debugging
 
             var actorDropdown = new DropdownField();
             actorDropdown.style.flexGrow = 1;
-            BindDropdown(actorDropdown, selectedActorIndex, actorChoices);
+            actorDropdown.Bind(selectedActorIndex, actorChoices);
             header.Add(actorDropdown);
             root.Add(header);
 
@@ -225,6 +228,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                 label.style.whiteSpace = WhiteSpace.Normal;
                 return label;
             };
+
             logView.bindItem = (element, index) =>
             {
                 if (LogItems.CurrentValue != null && index >= 0 && index < LogItems.CurrentValue.Count)
@@ -237,43 +241,8 @@ namespace Gast.Lib.AI.Editor.Debugging
                 logView.itemsSource = items as System.Collections.IList ?? new List<string>(items);
                 logView.Rebuild();
             }).AddTo(disposables);
+
             container.Add(logView);
-        }
-
-        private void BindDropdown(
-            DropdownField dropdown,
-            ReactiveProperty<int> selectedIndex,
-            ReadOnlyReactiveProperty<IReadOnlyList<string>> choices)
-        {
-            choices.Subscribe(c =>
-            {
-                dropdown.choices = c is List<string> list ? list : new List<string>(c);
-                if (c.Count > 0 && selectedIndex.Value < 0)
-                {
-                    selectedIndex.Value = 0;
-                }
-                else if (selectedIndex.Value >= c.Count && c.Count > 0)
-                {
-                    selectedIndex.Value = c.Count - 1;
-                }
-                else if (c.Count == 0)
-                {
-                    selectedIndex.Value = -1;
-                }
-            }).AddTo(disposables);
-
-            selectedIndex.Subscribe(index =>
-            {
-                if (dropdown.index != index)
-                {
-                    dropdown.index = index;
-                }
-            }).AddTo(disposables);
-
-            dropdown.RegisterValueChangedCallback(evt =>
-            {
-                selectedIndex.Value = dropdown.index;
-            });
         }
     }
 }
