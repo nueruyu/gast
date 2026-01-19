@@ -65,7 +65,7 @@ namespace Gast.Lib.AI.Tasks
                 }
 
                 DebugLogger.LogMethodSelected(actorId, Name, method.Name, ctx.WorldState);
-                DebugLogger.LogPlan(actorId, method.SubTasks.Cast<ITask>().ToList());
+                DebugLogger.LogPlan(actorId, method.SubTasks.Cast<ITask>());
 
                 using var localCts = CancellationTokenSource.CreateLinkedTokenSource(ctx.CancellationToken);
                 var localCtx = ctx.WithCancellationToken(localCts.Token);

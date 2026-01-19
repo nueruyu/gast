@@ -3,6 +3,7 @@ using Gast.Shared.UnityExtensions;
 using ObservableCollections;
 using R3;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -31,11 +32,6 @@ namespace Gast.Lib.AI.Editor.Debugging
         ReadOnlyReactiveProperty<object> selectedActorId;
         ReadOnlyReactiveProperty<AIDebugInfo> selectedDebugInfo;
 
-        protected ReadOnlyReactiveProperty<string> WorldStateText { get; private set; }
-        protected ReadOnlyReactiveProperty<string> ActiveTaskPathText { get; private set; }
-        protected ReadOnlyReactiveProperty<IReadOnlyList<string>> PlanItems { get; private set; }
-        protected ReadOnlyReactiveProperty<IReadOnlyList<string>> LogItems { get; private set; }
-
         protected virtual void OnEnable()
         {
             disposables = new CompositeDisposable();
@@ -58,28 +54,6 @@ namespace Gast.Lib.AI.Editor.Debugging
             selectedDebugInfo = selectedActorId
                 .Select(id => id != null && allDebugInfo.CurrentValue.TryGetValue(id, out var info) ? info : null)
                 .ToReadOnlyReactiveProperty();
-
-            WorldStateText = selectedDebugInfo
-                .Select(info => info != null ? info.WorldStateText.AsObservable() : Observable.Return(""))
-                .Switch()
-                .ToReadOnlyReactiveProperty("");
-
-            ActiveTaskPathText = selectedDebugInfo
-                .Select(info => info != null ? info.ActiveTaskPath.AsObservable() : Observable.Return(""))
-                .Switch()
-                .ToReadOnlyReactiveProperty("");
-
-            PlanItems = selectedDebugInfo
-                .Select(info => info != null ? info.CurrentPlan.AsObservable() : Observable.Return((IReadOnlyList<string>)Array.Empty<string>()))
-                .Switch()
-                .ToReadOnlyReactiveProperty(Array.Empty<string>());
-
-            var logs = selectedDebugInfo
-                .Select(info => info != null ? info.Logs.ObserveAdd() : Observable.Empty<CollectionAddEvent<string>>())
-                .Switch();
-            LogItems = logs
-                .Select(_ => selectedDebugInfo.CurrentValue?.Logs.ToList() ?? (IReadOnlyList<string>)Array.Empty<string>())
-                .ToReadOnlyReactiveProperty(Array.Empty<string>());
 
             EditorApplication.update += OnEditorUpdate;
         }
@@ -118,80 +92,37 @@ namespace Gast.Lib.AI.Editor.Debugging
             var root = rootVisualElement;
             root.Clear();
 
-            var uxml = visualTreeAsset;
-
-            if (uxml == null)
+            if (visualTreeAsset == null)
             {
-                root.Add(new Label($"VisualTreeAsset is not assigned"));
+                root.Add(new Label("VisualTreeAsset is not assigned"));
                 return;
             }
 
-            uxml.CloneTree(root);
+            visualTreeAsset.CloneTree(root);
 
-            SetupDropdown(root);
-            SetupWorldState(root);
-            SetupPlanList(root);
-            SetupLogList(root);
+            var dropdown = root.Q<DropdownField>("actor-dropdown");
+            var worldStateLabel = root.Q<Label>("world-state-label");
+            var planList = root.Q<ListView>("plan-list");
+            var logList = root.Q<ListView>("log-list");
+
+            SetupDropdown(dropdown);
+            SetupListViews(planList, logList);
+            BindToSelectedActor(worldStateLabel, planList, logList);
         }
 
-        void SetupDropdown(VisualElement root)
+        void SetupDropdown(DropdownField dropdown)
         {
-            var dropdown = root.Q<DropdownField>("actor-dropdown");
-            if (dropdown == null)
-                return;
-
             dropdown.Bind(selectedActorIndex, actorChoices);
         }
 
-        void SetupWorldState(VisualElement root)
+        void SetupListViews(ListView planList, ListView logList)
         {
-            var worldStateLabel = root.Q<Label>("world-state-label");
-            if (worldStateLabel == null)
-                return;
-
-            WorldStateText.Subscribe(x => worldStateLabel.text = x).AddTo(disposables);
-        }
-
-        void SetupPlanList(VisualElement root)
-        {
-            var planList = root.Q<ListView>("plan-list");
-            if (planList == null)
-                return;
-
             planList.makeItem = () =>
             {
                 var label = new Label();
                 label.AddToClassList("list-item");
                 return label;
             };
-
-            planList.bindItem = (element, index) =>
-            {
-                if (PlanItems.CurrentValue == null || index < 0 || index >= PlanItems.CurrentValue.Count)
-                    return;
-
-                var item = PlanItems.CurrentValue[index];
-                var label = (Label)element;
-                label.text = item;
-
-                var isActive = ActiveTaskPathText.CurrentValue?.EndsWith(item, StringComparison.Ordinal) ?? false;
-                label.EnableInClassList(ActiveItemClass, isActive);
-            };
-
-            PlanItems.Subscribe(items =>
-            {
-                planList.itemsSource = items as System.Collections.IList ?? new List<string>(items);
-                planList.Rebuild();
-            }).AddTo(disposables);
-
-            ActiveTaskPathText.Subscribe(_ => planList.Rebuild()).AddTo(disposables);
-        }
-
-        void SetupLogList(VisualElement root)
-        {
-            var logList = root.Q<ListView>("log-list");
-            if (logList == null)
-                return;
 
             logList.makeItem = () =>
             {
@@ -200,20 +131,106 @@ namespace Gast.Lib.AI.Editor.Debugging
                 label.AddToClassList("list-item--log");
                 return label;
             };
+        }
+
+        void BindToSelectedActor(Label worldStateLabel, ListView planList, ListView logList)
+        {
+            IDisposable actorBindings = null;
+
+            selectedDebugInfo.Subscribe(info =>
+            {
+                actorBindings?.Dispose();
+
+                if (info == null)
+                {
+                    ClearUI(worldStateLabel, planList, logList);
+                    return;
+                }
+
+                actorBindings = BindActorInfo(info, worldStateLabel, planList, logList);
+            }).AddTo(disposables);
+
+            Disposable.Create(() => actorBindings?.Dispose()).AddTo(disposables);
+        }
+
+        void ClearUI(Label worldStateLabel, ListView planList, ListView logList)
+        {
+            worldStateLabel.text = "";
+
+            planList.itemsSource = null;
+            planList.Rebuild();
+
+            logList.itemsSource = null;
+            logList.Rebuild();
+        }
+
+        IDisposable BindActorInfo(AIDebugInfo info, Label worldStateLabel, ListView planList, ListView logList)
+        {
+            var bindings = new CompositeDisposable();
+
+            // World State
+            info.WorldStateText
+                .Subscribe(x => worldStateLabel.text = x)
+                .AddTo(bindings);
+
+            // Plan List
+            IReadOnlyList<string> currentPlan = null;
+            string currentTaskPath = null;
+
+            planList.bindItem = (element, index) =>
+            {
+                if (currentPlan == null || index < 0 || index >= currentPlan.Count)
+                    return;
+
+                var item = currentPlan[index];
+                var label = (Label)element;
+                label.text = item;
+
+                var isActive = currentTaskPath?.EndsWith(item, StringComparison.Ordinal) ?? false;
+                label.EnableInClassList(ActiveItemClass, isActive);
+            };
+
+            info.CurrentPlan
+                .Subscribe(items =>
+                {
+                    currentPlan = items;
+                    planList.itemsSource = items as IList ?? new List<string>(items);
+                    planList.Rebuild();
+                })
+                .AddTo(bindings);
+
+            info.ActiveTaskPath
+                .Subscribe(path =>
+                {
+                    currentTaskPath = path;
+                    planList.RefreshItems();
+                })
+                .AddTo(bindings);
+
+            // Log List
+            var logs = info.Logs;
+            var logListSource = new List<string>(logs);
 
             logList.bindItem = (element, index) =>
             {
-                if (LogItems.CurrentValue == null || index < 0 || index >= LogItems.CurrentValue.Count)
+                if (index < 0 || index >= logListSource.Count)
                     return;
-
-                ((Label)element).text = LogItems.CurrentValue[index];
+                ((Label)element).text = logListSource[index];
             };
 
-            LogItems.Subscribe(items =>
-            {
-                logList.itemsSource = items as System.Collections.IList ?? new List<string>(items);
-                logList.Rebuild();
-            }).AddTo(disposables);
+            logList.itemsSource = logListSource;
+            logList.Rebuild();
+
+            logs.ObserveAdd()
+                .Subscribe(e =>
+                {
+                    logListSource.Add(e.Value);
+                    logList.RefreshItems();
+                    logList.ScrollToItem(e.Index);
+                })
+                .AddTo(bindings);
+
+            return bindings;
         }
     }
 }

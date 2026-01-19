@@ -12,27 +12,31 @@ namespace Gast.Lib.AI.Debugging
 
         public static void LogMethodSelected<TWorldState>(object actorId, string compoundTaskName, string methodName, TWorldState state)
         {
-            if (!EnableLogging || !AIDebuggerBridge.IsInitialized) return;
+            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
+                return;
             AIDebuggerBridge.Instance.AddLog(actorId, $"{compoundTaskName} -> Selected method '{methodName}'");
         }
 
-        public static void LogPlan(object actorId, IReadOnlyList<ITask> plan)
+        public static void LogPlan(object actorId, IEnumerable<ITask> plan)
         {
-            if (!EnableLogging || !AIDebuggerBridge.IsInitialized) return;
-            var planNames = plan.Select(p => p.Name).ToList();
+            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
+                return;
+            var planNames = plan.Select(p => p.Name).ToArray();
             AIDebuggerBridge.Instance.UpdatePlan(actorId, planNames);
-            AIDebuggerBridge.Instance.AddLog(actorId, $"Planning complete. Plan has {plan.Count} actions.");
+            AIDebuggerBridge.Instance.AddLog(actorId, $"Planning complete. Plan has {planNames.Length} actions.");
         }
 
         public static void LogPlanFailed(object actorId, string reason)
         {
-            if (!EnableLogging || !AIDebuggerBridge.IsInitialized) return;
+            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
+                return;
             AIDebuggerBridge.Instance.AddLog(actorId, $"Planning failed: {reason}");
         }
 
         public static void EnterTask(object actorId, string taskName)
         {
-            if (!EnableLogging || !AIDebuggerBridge.IsInitialized) return;
+            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
+                return;
 
             if (!taskStacks.TryGetValue(actorId, out var stack))
             {
@@ -45,7 +49,8 @@ namespace Gast.Lib.AI.Debugging
 
         public static void ExitTask(object actorId)
         {
-            if (!EnableLogging || !AIDebuggerBridge.IsInitialized) return;
+            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
+                return;
 
             if (taskStacks.TryGetValue(actorId, out var stack) && stack.Count > 0)
             {
