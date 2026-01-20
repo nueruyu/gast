@@ -5,7 +5,6 @@ using Gast.Features.AI.Combat;
 using Gast.Features.AI.Strategic;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Debugging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -22,7 +21,6 @@ namespace Gast.Features.AI
         readonly CombatDomain combatDomain;
         readonly GoalManager goalManager;
         readonly IContextRegistry contextRegistry;
-        readonly IAIDebugger debugger;
 
         ICharacter character;
         ContextKey strategicContextKey;
@@ -42,14 +40,12 @@ namespace Gast.Features.AI
             StrategicDomain strategicDomain,
             CombatDomain combatDomain,
             GoalManager goalManager,
-            IContextRegistry contextRegistry,
-            IAIDebugger debugger)
+            IContextRegistry contextRegistry)
         {
             this.strategicDomain = strategicDomain;
             this.combatDomain = combatDomain;
             this.goalManager = goalManager;
             this.contextRegistry = contextRegistry;
-            this.debugger = debugger;
         }
 
         public void OnAttached(ICharacter character)
@@ -61,8 +57,8 @@ namespace Gast.Features.AI
             strategicContextKey = new(character.Id, StrategicDomainName);
             combatContextKey = new(character.Id, CombatDomainName);
 
-            contextRegistry.Register(strategicContextKey);
-            contextRegistry.Register(combatContextKey);
+            contextRegistry.Register(strategicContextKey, strategicState);
+            contextRegistry.Register(combatContextKey, combatState);
 
             strategicAgentRunner = strategicDomain.CreateRunner();
             combatAgentRunner = combatDomain.CreateRunner();
@@ -112,9 +108,6 @@ namespace Gast.Features.AI
             {
                 UpdateStrategicWorldState();
                 UpdateCombatWorldState();
-
-                debugger.UpdateWorldState(strategicContextKey, strategicState);
-                debugger.UpdateWorldState(combatContextKey, combatState);
 
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }

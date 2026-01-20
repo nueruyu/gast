@@ -8,9 +8,9 @@ namespace Gast.Lib.AI.Debugging
     {
         readonly ConcurrentDictionary<ContextKey, AIDebugInfo> debugInfoMap = new();
 
-        public void Register(ContextKey contextKey)
+        public void Register(ContextKey contextKey, object worldState)
         {
-            var added = debugInfoMap.TryAdd(contextKey, new AIDebugInfo(contextKey));
+            var added = debugInfoMap.TryAdd(contextKey, new AIDebugInfo(contextKey, worldState));
             Debug.Log($"[AIDebugger] Register: {contextKey}, Added: {added}, Total: {debugInfoMap.Count}");
         }
 
@@ -22,14 +22,6 @@ namespace Gast.Lib.AI.Debugging
         public IReadOnlyDictionary<ContextKey, AIDebugInfo> GetAllDebugInfo()
         {
             return debugInfoMap;
-        }
-
-        public void UpdateWorldState(ContextKey contextKey, object worldState)
-        {
-            if (debugInfoMap.TryGetValue(contextKey, out var info))
-            {
-                info.WorldState.Value = worldState;
-            }
         }
 
         public void UpdatePlan(ContextKey contextKey, IReadOnlyList<string> plan)

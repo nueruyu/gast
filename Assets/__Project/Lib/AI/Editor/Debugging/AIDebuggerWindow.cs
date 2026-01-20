@@ -141,7 +141,7 @@ namespace Gast.Lib.AI.Editor.Debugging
 
             if (worldStateContainer != null && selectedDebugInfo?.CurrentValue != null)
             {
-                RenderWorldState(worldStateContainer, selectedDebugInfo.CurrentValue.WorldState.CurrentValue);
+                RenderWorldState(worldStateContainer, selectedDebugInfo.CurrentValue.WorldState);
             }
         }
 

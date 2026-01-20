@@ -7,14 +7,15 @@ namespace Gast.Lib.AI.Debugging
     public class AIDebugInfo
     {
         public ContextKey ContextKey { get; }
-        public ReactiveProperty<object> WorldState { get; } = new(null);
+        public object WorldState { get; }
         public ReactiveProperty<string> ActiveTaskPath { get; } = new("");
         public ReactiveProperty<IReadOnlyList<string>> CurrentPlan { get; } = new(System.Array.Empty<string>());
         public ObservableList<string> Logs { get; } = new();
 
-        public AIDebugInfo(ContextKey contextKey)
+        public AIDebugInfo(ContextKey contextKey, object worldState)
         {
             ContextKey = contextKey;
+            WorldState = worldState;
         }
     }
 }

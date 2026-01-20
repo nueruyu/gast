@@ -6,8 +6,6 @@ namespace Gast.Lib.AI.Debugging
     {
         IReadOnlyDictionary<ContextKey, AIDebugInfo> GetAllDebugInfo();
 
-        void UpdateWorldState(ContextKey contextKey, object worldState);
-
         void UpdatePlan(ContextKey contextKey, IReadOnlyList<string> plan);
 
         void UpdateActiveTaskPath(ContextKey contextKey, string taskPath);
