@@ -41,6 +41,8 @@ namespace Gast.Lib.AI.Editor.Debugging
         ReadOnlyReactiveProperty<ContextKey?> selectedContextKey;
         ReadOnlyReactiveProperty<AIDebugInfo> selectedDebugInfo;
 
+        VisualElement worldStateContainer;
+
         protected virtual void OnEnable()
         {
             allDebugInfo.Value = new Dictionary<ContextKey, AIDebugInfo>();
@@ -136,6 +138,11 @@ namespace Gast.Lib.AI.Editor.Debugging
             {
                 allDebugInfo.Value = latestAllDebugInfo.ToDictionary(x => x.Key, x => x.Value);
             }
+
+            if (worldStateContainer != null && selectedDebugInfo?.CurrentValue != null)
+            {
+                RenderWorldState(worldStateContainer, selectedDebugInfo.CurrentValue.WorldState.CurrentValue);
+            }
         }
 
         public virtual void CreateGUI()
@@ -153,14 +160,14 @@ namespace Gast.Lib.AI.Editor.Debugging
 
             var actorList = root.Q<ListView>("actor-list");
             var domainToolbar = root.Q<VisualElement>("domain-toolbar");
-            var worldStateContainer = root.Q<VisualElement>("world-state-container");
+            worldStateContainer = root.Q<VisualElement>("world-state-container");
             var planList = root.Q<ListView>("plan-list");
             var logList = root.Q<ListView>("log-list");
 
             SetupActorList(actorList);
             SetupDomainToolbar(domainToolbar);
             SetupDetailListViews(planList, logList);
-            BindToSelectedInfo(worldStateContainer, planList, logList);
+            BindToSelectedInfo(planList, logList);
         }
 
         void SetupActorList(ListView actorList)
@@ -244,7 +251,7 @@ namespace Gast.Lib.AI.Editor.Debugging
             };
         }
 
-        void BindToSelectedInfo(VisualElement worldStateContainer, ListView planList, ListView logList)
+        void BindToSelectedInfo(ListView planList, ListView logList)
         {
             IDisposable actorBindings = null;
 
@@ -255,11 +262,11 @@ namespace Gast.Lib.AI.Editor.Debugging
 
                 if (info == null)
                 {
-                    ClearUI(worldStateContainer, planList, logList);
+                    ClearUI(planList, logList);
                     return;
                 }
 
-                actorBindings = BindDebugInfo(info, worldStateContainer, planList, logList);
+                actorBindings = BindDebugInfo(info, planList, logList);
             }).AddTo(disposables);
 
             Disposable.Create(() =>
@@ -268,23 +275,18 @@ namespace Gast.Lib.AI.Editor.Debugging
             }).AddTo(disposables);
         }
 
-        void ClearUI(VisualElement worldStateContainer, ListView planList, ListView logList)
+        void ClearUI(ListView planList, ListView logList)
         {
-            worldStateContainer.Clear();
+            worldStateContainer?.Clear();
             planList.itemsSource = null;
             planList.Rebuild();
             logList.itemsSource = null;
             logList.Rebuild();
         }
 
-        IDisposable BindDebugInfo(AIDebugInfo info, VisualElement worldStateContainer, ListView planList, ListView logList)
+        IDisposable BindDebugInfo(AIDebugInfo info, ListView planList, ListView logList)
         {
             var bindings = new CompositeDisposable();
-
-            info.WorldState.Subscribe(state =>
-            {
-                RenderWorldState(worldStateContainer, state);
-            }).AddTo(bindings);
 
             IReadOnlyList<string> currentPlan = null;
             string currentTaskPath = null;
