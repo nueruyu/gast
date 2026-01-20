@@ -14,7 +14,7 @@
                 <ui:VisualElement name="right-top-pane" class="pane">
                     <ui:ScrollView mode="Vertical">
                         <ui:Label text="World State" class="section-header" />
-                        <ui:Label name="world-state-label" class="world-state-content" />
+                        <ui:VisualElement name="world-state-container" class="world-state-container" />
 
                         <ui:Label text="Current Plan" class="section-header section-header--plan" />
                         <ui:ListView name="plan-list" class="plan-list" />

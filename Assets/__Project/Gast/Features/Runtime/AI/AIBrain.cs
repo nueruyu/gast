@@ -113,8 +113,8 @@ namespace Gast.Features.AI
                 UpdateStrategicWorldState();
                 UpdateCombatWorldState();
 
-                debugger.UpdateWorldState(strategicContextKey, strategicState.ToString());
-                debugger.UpdateWorldState(combatContextKey, combatState.ToString());
+                debugger.UpdateWorldState(strategicContextKey, strategicState);
+                debugger.UpdateWorldState(combatContextKey, combatState);
 
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }

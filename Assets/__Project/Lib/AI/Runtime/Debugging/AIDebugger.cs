@@ -24,11 +24,11 @@ namespace Gast.Lib.AI.Debugging
             return debugInfoMap;
         }
 
-        public void UpdateWorldState(ContextKey contextKey, string worldState)
+        public void UpdateWorldState(ContextKey contextKey, object worldState)
         {
             if (debugInfoMap.TryGetValue(contextKey, out var info))
             {
-                info.WorldStateText.Value = worldState;
+                info.WorldState.Value = worldState;
             }
         }
 

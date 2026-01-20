@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -152,14 +153,14 @@ namespace Gast.Lib.AI.Editor.Debugging
 
             var actorList = root.Q<ListView>("actor-list");
             var domainToolbar = root.Q<VisualElement>("domain-toolbar");
-            var worldStateLabel = root.Q<Label>("world-state-label");
+            var worldStateContainer = root.Q<VisualElement>("world-state-container");
             var planList = root.Q<ListView>("plan-list");
             var logList = root.Q<ListView>("log-list");
 
             SetupActorList(actorList);
             SetupDomainToolbar(domainToolbar);
             SetupDetailListViews(planList, logList);
-            BindToSelectedInfo(worldStateLabel, planList, logList);
+            BindToSelectedInfo(worldStateContainer, planList, logList);
         }
 
         void SetupActorList(ListView actorList)
@@ -243,7 +244,7 @@ namespace Gast.Lib.AI.Editor.Debugging
             };
         }
 
-        void BindToSelectedInfo(Label worldStateLabel, ListView planList, ListView logList)
+        void BindToSelectedInfo(VisualElement worldStateContainer, ListView planList, ListView logList)
         {
             IDisposable actorBindings = null;
 
@@ -254,11 +255,11 @@ namespace Gast.Lib.AI.Editor.Debugging
 
                 if (info == null)
                 {
-                    ClearUI(worldStateLabel, planList, logList);
+                    ClearUI(worldStateContainer, planList, logList);
                     return;
                 }
 
-                actorBindings = BindDebugInfo(info, worldStateLabel, planList, logList);
+                actorBindings = BindDebugInfo(info, worldStateContainer, planList, logList);
             }).AddTo(disposables);
 
             Disposable.Create(() =>
@@ -267,22 +268,22 @@ namespace Gast.Lib.AI.Editor.Debugging
             }).AddTo(disposables);
         }
 
-        void ClearUI(Label worldStateLabel, ListView planList, ListView logList)
+        void ClearUI(VisualElement worldStateContainer, ListView planList, ListView logList)
         {
-            worldStateLabel.text = "";
+            worldStateContainer.Clear();
             planList.itemsSource = null;
             planList.Rebuild();
             logList.itemsSource = null;
             logList.Rebuild();
         }
 
-        IDisposable BindDebugInfo(AIDebugInfo info, Label worldStateLabel, ListView planList, ListView logList)
+        IDisposable BindDebugInfo(AIDebugInfo info, VisualElement worldStateContainer, ListView planList, ListView logList)
         {
             var bindings = new CompositeDisposable();
 
-            info.WorldStateText.Subscribe(x =>
+            info.WorldState.Subscribe(state =>
             {
-                worldStateLabel.text = x;
+                RenderWorldState(worldStateContainer, state);
             }).AddTo(bindings);
 
             IReadOnlyList<string> currentPlan = null;
@@ -342,6 +343,64 @@ namespace Gast.Lib.AI.Editor.Debugging
             }).AddTo(bindings);
 
             return bindings;
+        }
+
+        void RenderWorldState(VisualElement container, object state)
+        {
+            container.Clear();
+
+            if (state == null)
+                return;
+
+            var type = state.GetType();
+            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.CanRead)
+                .OrderBy(p => p.Name);
+
+            foreach (var property in properties)
+            {
+                var row = new VisualElement();
+                row.AddToClassList("world-state-row");
+
+                var nameLabel = new Label(property.Name);
+                nameLabel.AddToClassList("world-state-name");
+
+                var value = property.GetValue(state);
+                var valueLabel = new Label(FormatValue(value));
+                valueLabel.AddToClassList("world-state-value");
+
+                if (value is bool boolValue)
+                {
+                    valueLabel.AddToClassList(boolValue ? "world-state-value--true" : "world-state-value--false");
+                }
+
+                row.Add(nameLabel);
+                row.Add(valueLabel);
+                container.Add(row);
+            }
+        }
+
+        string FormatValue(object value)
+        {
+            if (value == null)
+                return "null";
+
+            if (value is bool boolValue)
+                return boolValue ? "True" : "False";
+
+            if (value is float floatValue)
+                return floatValue.ToString("F2");
+
+            if (value is double doubleValue)
+                return doubleValue.ToString("F2");
+
+            if (value is Vector3 vec3)
+                return $"({vec3.x:F2}, {vec3.y:F2}, {vec3.z:F2})";
+
+            if (value is Vector2 vec2)
+                return $"({vec2.x:F2}, {vec2.y:F2})";
+
+            return value.ToString();
         }
     }
 }

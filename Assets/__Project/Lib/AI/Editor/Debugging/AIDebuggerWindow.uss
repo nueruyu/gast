@@ -46,12 +46,34 @@
     margin-top: 10px;
 }
 
-.world-state-content {
-    white-space: normal;
-    padding: 5px;
+.world-state-container {
     margin: 5px;
+    padding: 5px;
     background-color: rgb(51, 51, 51);
     border-radius: 3px;
+}
+
+.world-state-row {
+    flex-direction: row;
+    padding: 2px 0;
+}
+
+.world-state-name {
+    min-width: 150px;
+    color: rgb(150, 150, 150);
+}
+
+.world-state-value {
+    flex-grow: 1;
+    white-space: normal;
+}
+
+.world-state-value--true {
+    color: rgb(100, 200, 100);
+}
+
+.world-state-value--false {
+    color: rgb(200, 100, 100);
 }
 
 .plan-list {
