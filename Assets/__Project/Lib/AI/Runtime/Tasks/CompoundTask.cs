@@ -41,14 +41,9 @@ namespace Gast.Lib.AI.Tasks
 
         public async UniTask RunAsync(TContext ctx)
         {
-            var actorId = ctx.ActorId;
-            if (actorId == null)
-            {
-                await UniTask.CompletedTask;
-                return;
-            }
+            var contextKey = ctx.ContextKey;
 
-            DebugLogger.EnterTask(actorId, Name);
+            DebugLogger.EnterTask(contextKey, Name);
 
             try
             {
@@ -60,12 +55,12 @@ namespace Gast.Lib.AI.Tasks
 
                 if (method == null)
                 {
-                    DebugLogger.LogPlanFailed(actorId, $"No valid method for {Name}");
+                    DebugLogger.LogPlanFailed(contextKey, $"No valid method for {Name}");
                     return;
                 }
 
-                DebugLogger.LogMethodSelected(actorId, Name, method.Name, ctx.WorldState);
-                DebugLogger.LogPlan(actorId, method.SubTasks.Cast<ITask>());
+                DebugLogger.LogMethodSelected(contextKey, Name, method.Name, ctx.WorldState);
+                DebugLogger.LogPlan(contextKey, method.SubTasks.Cast<ITask>());
 
                 using var localCts = CancellationTokenSource.CreateLinkedTokenSource(ctx.CancellationToken);
                 var localCtx = ctx.WithCancellationToken(localCts.Token);
@@ -84,7 +79,7 @@ namespace Gast.Lib.AI.Tasks
             }
             finally
             {
-                DebugLogger.ExitTask(actorId);
+                DebugLogger.ExitTask(contextKey);
             }
         }
 
@@ -102,7 +97,7 @@ namespace Gast.Lib.AI.Tasks
             Method<TWorldState, TContext> currentMethod,
             TContext ctx)
         {
-            var actorId = ctx.ActorId;
+            var contextKey = ctx.ContextKey;
 
             while (true)
             {
@@ -118,7 +113,7 @@ namespace Gast.Lib.AI.Tasks
 
                 if (interruptsMethod != null)
                 {
-                    DebugLogger.LogPlanFailed(actorId, $"Interrupt: {Name} switching to {interruptsMethod.Name}");
+                    DebugLogger.LogPlanFailed(contextKey, $"Interrupt: {Name} switching to {interruptsMethod.Name}");
                     break;
                 }
             }

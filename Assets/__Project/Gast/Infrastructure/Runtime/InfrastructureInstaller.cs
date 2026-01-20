@@ -4,6 +4,7 @@ using Gast.Infrastructure.Factories;
 using Gast.Infrastructure.Remoting.AI;
 using Gast.Infrastructure.Repositories;
 using Gast.Infrastructure.Services;
+using Gast.Lib.AI.Debugging;
 
 namespace Gast.Infrastructure
 {
@@ -38,6 +39,10 @@ namespace Gast.Infrastructure
             // Pickups
             builder.Register<PickupFactory>().AsImplementedInterfaces();
             builder.Register<PickupRepository>().AsImplementedInterfaces();
+
+            // AI
+            builder.Register<AIDebugger>().As<IAIDebugger>();
+            builder.Register<AIDebugInitializer>().AsImplementedInterfaces();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Gast.Lib.AI
         where TContext : struct, IContext<TContext, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
     {
-        object ActorId { get; }
+        ContextKey ContextKey { get; }
         TWorldState WorldState { get; }
         CancellationToken CancellationToken { get; }
 

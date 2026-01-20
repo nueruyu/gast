@@ -1,4 +1,3 @@
-using Gast.Lib.AI.Debugging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,67 +7,67 @@ namespace Gast.Lib.AI.Debugging
     {
         public static bool EnableLogging { get; set; } = true;
 
-        static readonly Dictionary<object, Stack<string>> taskStacks = new();
+        static readonly Dictionary<ContextKey, Stack<string>> taskStacks = new();
 
-        public static void LogMethodSelected<TWorldState>(object actorId, string compoundTaskName, string methodName, TWorldState state)
+        public static void LogMethodSelected<TWorldState>(ContextKey contextKey, string compoundTaskName, string methodName, TWorldState state)
         {
             if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
-            AIDebuggerBridge.Instance.AddLog(actorId, $"{compoundTaskName} -> Selected method '{methodName}'");
+            AIDebuggerBridge.Instance.AddLog(contextKey, $"{compoundTaskName} -> Selected method '{methodName}'");
         }
 
-        public static void LogPlan(object actorId, IEnumerable<ITask> plan)
+        public static void LogPlan(ContextKey contextKey, IEnumerable<ITask> plan)
         {
             if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
             var planNames = plan.Select(p => p.Name).ToArray();
-            AIDebuggerBridge.Instance.UpdatePlan(actorId, planNames);
-            AIDebuggerBridge.Instance.AddLog(actorId, $"Planning complete. Plan has {planNames.Length} actions.");
+            AIDebuggerBridge.Instance.UpdatePlan(contextKey, planNames);
+            AIDebuggerBridge.Instance.AddLog(contextKey, $"Planning complete. Plan has {planNames.Length} actions.");
         }
 
-        public static void LogPlanFailed(object actorId, string reason)
+        public static void LogPlanFailed(ContextKey contextKey, string reason)
         {
             if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
-            AIDebuggerBridge.Instance.AddLog(actorId, $"Planning failed: {reason}");
+            AIDebuggerBridge.Instance.AddLog(contextKey, $"Planning failed: {reason}");
         }
 
-        public static void EnterTask(object actorId, string taskName)
+        public static void EnterTask(ContextKey contextKey, string taskName)
         {
             if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
 
-            if (!taskStacks.TryGetValue(actorId, out var stack))
+            if (!taskStacks.TryGetValue(contextKey, out var stack))
             {
                 stack = new Stack<string>();
-                taskStacks[actorId] = stack;
+                taskStacks[contextKey] = stack;
             }
             stack.Push(taskName);
-            UpdateActiveTaskPath(actorId);
+            UpdateActiveTaskPath(contextKey);
         }
 
-        public static void ExitTask(object actorId)
+        public static void ExitTask(ContextKey contextKey)
         {
             if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
 
-            if (taskStacks.TryGetValue(actorId, out var stack) && stack.Count > 0)
+            if (taskStacks.TryGetValue(contextKey, out var stack) && stack.Count > 0)
             {
                 stack.Pop();
-                UpdateActiveTaskPath(actorId);
+                UpdateActiveTaskPath(contextKey);
             }
         }
 
-        private static void UpdateActiveTaskPath(object actorId)
+        private static void UpdateActiveTaskPath(ContextKey contextKey)
         {
-            if (taskStacks.TryGetValue(actorId, out var stack) && stack.Count > 0)
+            if (taskStacks.TryGetValue(contextKey, out var stack) && stack.Count > 0)
             {
                 var path = string.Join(" / ", stack.Reverse());
-                AIDebuggerBridge.Instance.UpdateActiveTaskPath(actorId, path);
+                AIDebuggerBridge.Instance.UpdateActiveTaskPath(contextKey, path);
             }
             else
             {
-                AIDebuggerBridge.Instance.UpdateActiveTaskPath(actorId, "");
+                AIDebuggerBridge.Instance.UpdateActiveTaskPath(contextKey, "");
             }
         }
     }

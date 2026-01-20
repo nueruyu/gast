@@ -15,12 +15,17 @@ namespace Gast.Features.AI
 {
     public class AIBrain : ICharacterAIBrain
     {
+        const string StrategicDomainName = "Strategic";
+        const string CombatDomainName = "Combat";
+
         readonly StrategicDomain strategicDomain;
         readonly CombatDomain combatDomain;
         readonly GoalManager goalManager;
         readonly IAIDebugger debugger;
 
         ICharacter character;
+        ContextKey strategicContextKey;
+        ContextKey combatContextKey;
         CancellationTokenSource cts;
 
         public IReadOnlyList<IGoal> CurrentGoals => goalManager.CurrentGoals;
@@ -46,9 +51,15 @@ namespace Gast.Features.AI
 
         public void OnAttached(ICharacter character)
         {
+            Debug.Log($"[AIBrain] OnAttached: {character.Id}");
+
             this.character = character;
-            Debug.Log($"[AIBrain] OnAttached: {character.Id}, debugger is null: {debugger == null}");
-            debugger?.Register(character.Id);
+
+            strategicContextKey = new(character.Id, StrategicDomainName);
+            combatContextKey = new(character.Id, CombatDomainName);
+
+            debugger.Register(strategicContextKey);
+            debugger.Register(combatContextKey);
 
             strategicAgentRunner = strategicDomain.CreateRunner();
             combatAgentRunner = combatDomain.CreateRunner();
@@ -66,10 +77,16 @@ namespace Gast.Features.AI
 
         public void OnDetached()
         {
-            debugger?.Unregister(character.Id);
+            debugger.Unregister(strategicContextKey);
+            debugger.Unregister(combatContextKey);
+
             cts?.Cancel();
             cts?.Dispose();
             cts = null;
+
+            character = null;
+            strategicContextKey = default;
+            combatContextKey = default;
         }
 
         public void SetGoals(IEnumerable<IGoal> goals)
@@ -92,7 +109,10 @@ namespace Gast.Features.AI
             {
                 UpdateStrategicWorldState();
                 UpdateCombatWorldState();
-                debugger?.UpdateWorldState(character.Id, $"{strategicState}\n{combatState}");
+
+                debugger.UpdateWorldState(strategicContextKey, strategicState.ToString());
+                debugger.UpdateWorldState(combatContextKey, combatState.ToString());
+
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
@@ -101,7 +121,13 @@ namespace Gast.Features.AI
         {
             while (!token.IsCancellationRequested)
             {
-                await strategicAgentRunner.RunAsync(new(character, strategicState, memory, token));
+                await strategicAgentRunner.RunAsync(new(
+                    character,
+                    strategicState,
+                    memory,
+                    StrategicDomainName,
+                    token));
+
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
@@ -110,7 +136,13 @@ namespace Gast.Features.AI
         {
             while (!token.IsCancellationRequested)
             {
-                await combatAgentRunner.RunAsync(new(character, combatState, memory, token));
+                await combatAgentRunner.RunAsync(new(
+                    character,
+                    combatState,
+                    memory,
+                    CombatDomainName,
+                    token));
+
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }

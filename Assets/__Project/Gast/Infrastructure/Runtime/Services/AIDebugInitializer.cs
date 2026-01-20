@@ -3,7 +3,7 @@ using VContainer.Unity;
 using System;
 using UnityEngine;
 
-namespace Gast.Features.Debugging
+namespace Gast.Infrastructure.Services
 {
     public class AIDebugInitializer : IStartable, IDisposable
     {

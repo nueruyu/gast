@@ -34,21 +34,16 @@ namespace Gast.Lib.AI.Tasks
         {
             ctx.CancellationToken.ThrowIfCancellationRequested();
 
-            var actorId = ctx.ActorId;
-            if (actorId == null)
-            {
-                await action.ExecuteAsync(ctx);
-                return;
-            }
+            var contextKey = ctx.ContextKey;
 
-            DebugLogger.EnterTask(actorId, Name);
+            DebugLogger.EnterTask(contextKey, Name);
             try
             {
                 await action.ExecuteAsync(ctx);
             }
             finally
             {
-                DebugLogger.ExitTask(actorId);
+                DebugLogger.ExitTask(contextKey);
             }
         }
     }

@@ -1,23 +1,31 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <Style src="AIDebuggerWindow.uss" />
 
-    <ui:VisualElement class="header">
-        <ui:Label text="Target AI:" class="header__label" />
-        <ui:DropdownField name="actor-dropdown" class="header__dropdown" />
-    </ui:VisualElement>
-
-    <ui:VisualElement class="main-container">
-        <ui:ScrollView name="left-pane" class="left-pane" mode="Vertical">
-            <ui:Label text="World State" class="section-header" />
-            <ui:Label name="world-state-label" class="world-state-content" />
-
-            <ui:Label text="Current Plan" class="section-header section-header--plan" />
-            <ui:ListView name="plan-list" class="plan-list" />
-        </ui:ScrollView>
-
-        <ui:VisualElement name="right-pane" class="right-pane">
-            <ui:Label text="Logs" class="section-header" />
-            <ui:ListView name="log-list" class="log-list" />
+    <ui:TwoPaneSplitView fixed-pane-index="0" fixed-pane-initial-dimension="200">
+        <ui:VisualElement name="left-pane" class="pane">
+            <ui:Label text="Actors" class="section-header" />
+            <ui:ListView name="actor-list" class="actor-list" />
         </ui:VisualElement>
-    </ui:VisualElement>
+
+        <ui:VisualElement name="right-pane-container" class="pane">
+            <ui:VisualElement name="domain-toolbar" class="domain-toolbar" />
+
+            <ui:TwoPaneSplitView fixed-pane-index="0" orientation="Vertical" fixed-pane-initial-dimension="250">
+                <ui:VisualElement name="right-top-pane" class="pane">
+                    <ui:ScrollView mode="Vertical">
+                        <ui:Label text="World State" class="section-header" />
+                        <ui:Label name="world-state-label" class="world-state-content" />
+
+                        <ui:Label text="Current Plan" class="section-header section-header--plan" />
+                        <ui:ListView name="plan-list" class="plan-list" />
+                    </ui:ScrollView>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="right-bottom-pane" class="pane">
+                    <ui:Label text="Logs" class="section-header" />
+                    <ui:ListView name="log-list" class="log-list" />
+                </ui:VisualElement>
+            </ui:TwoPaneSplitView>
+        </ui:VisualElement>
+    </ui:TwoPaneSplitView>
 </ui:UXML>

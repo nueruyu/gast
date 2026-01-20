@@ -1,7 +1,6 @@
 using Gast.Core.DI;
 using Gast.Features.AI;
 using Gast.Features.Cameras;
-using Gast.Features.Debugging;
 using Gast.Features.Gameplay;
 using Gast.Features.Gathering;
 using Gast.Features.Inputs;
@@ -10,7 +9,6 @@ using Gast.Features.Interactions;
 using Gast.Features.Loot;
 using Gast.Features.Players;
 using Gast.Features.SpawnSites;
-using Gast.Lib.AI.Debugging;
 
 namespace Gast.Features
 {
@@ -56,10 +54,6 @@ namespace Gast.Features
 
             // Spawn Sites
             builder.Register<SpawnSiteSystem>().AsImplementedInterfaces();
-
-            // Debugging
-            builder.Register<AIDebugger>().As<IAIDebugger>();
-            builder.Register<AIDebugInitializer>().AsImplementedInterfaces();
         }
     }
 }
