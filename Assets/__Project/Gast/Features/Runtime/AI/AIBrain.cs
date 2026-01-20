@@ -21,6 +21,7 @@ namespace Gast.Features.AI
         readonly StrategicDomain strategicDomain;
         readonly CombatDomain combatDomain;
         readonly GoalManager goalManager;
+        readonly IContextRegistry contextRegistry;
         readonly IAIDebugger debugger;
 
         ICharacter character;
@@ -41,11 +42,13 @@ namespace Gast.Features.AI
             StrategicDomain strategicDomain,
             CombatDomain combatDomain,
             GoalManager goalManager,
+            IContextRegistry contextRegistry,
             IAIDebugger debugger)
         {
             this.strategicDomain = strategicDomain;
             this.combatDomain = combatDomain;
             this.goalManager = goalManager;
+            this.contextRegistry = contextRegistry;
             this.debugger = debugger;
         }
 
@@ -58,8 +61,8 @@ namespace Gast.Features.AI
             strategicContextKey = new(character.Id, StrategicDomainName);
             combatContextKey = new(character.Id, CombatDomainName);
 
-            debugger.Register(strategicContextKey);
-            debugger.Register(combatContextKey);
+            contextRegistry.Register(strategicContextKey);
+            contextRegistry.Register(combatContextKey);
 
             strategicAgentRunner = strategicDomain.CreateRunner();
             combatAgentRunner = combatDomain.CreateRunner();
@@ -77,8 +80,8 @@ namespace Gast.Features.AI
 
         public void OnDetached()
         {
-            debugger.Unregister(strategicContextKey);
-            debugger.Unregister(combatContextKey);
+            contextRegistry.Unregister(strategicContextKey);
+            contextRegistry.Unregister(combatContextKey);
 
             cts?.Cancel();
             cts?.Dispose();

@@ -1,11 +1,10 @@
-using Gast.Lib.AI;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Gast.Lib.AI.Debugging
 {
-    public class AIDebugger : IAIDebugger
+    public class AIDebugger : IContextRegistry, IAIDebugger
     {
         readonly ConcurrentDictionary<ContextKey, AIDebugInfo> debugInfoMap = new();
 
@@ -18,12 +17,6 @@ namespace Gast.Lib.AI.Debugging
         public void Unregister(ContextKey contextKey)
         {
             debugInfoMap.TryRemove(contextKey, out _);
-        }
-
-        public AIDebugInfo GetDebugInfo(ContextKey contextKey)
-        {
-            debugInfoMap.TryGetValue(contextKey, out var info);
-            return info;
         }
 
         public IReadOnlyDictionary<ContextKey, AIDebugInfo> GetAllDebugInfo()

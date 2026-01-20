@@ -4,12 +4,6 @@ namespace Gast.Lib.AI.Debugging
 {
     public interface IAIDebugger
     {
-        void Register(ContextKey contextKey);
-
-        void Unregister(ContextKey contextKey);
-
-        AIDebugInfo GetDebugInfo(ContextKey contextKey);
-
         IReadOnlyDictionary<ContextKey, AIDebugInfo> GetAllDebugInfo();
 
         void UpdateWorldState(ContextKey contextKey, string worldState);

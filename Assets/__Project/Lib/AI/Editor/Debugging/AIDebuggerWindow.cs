@@ -52,6 +52,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                     return dict.Keys
                         .Select(key => key.ActorId)
                         .Distinct()
+                        .OrderBy(x => x.ToString())
                         .ToArray();
                 })
                 .ToReadOnlyReactiveProperty();
@@ -76,6 +77,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                     return dict.Keys
                         .Where(key => Equals(key.ActorId, actorId))
                         .Select(key => key.DomainName)
+                        .OrderBy(x => x)
                         .ToArray();
                 })
                 .ToReadOnlyReactiveProperty();
@@ -128,7 +130,7 @@ namespace Gast.Lib.AI.Editor.Debugging
             if (!AIDebuggerBridge.IsInitialized)
                 return;
 
-            var latestAllDebugInfo = AIDebuggerBridge.Instance.GetAllDebugInfo();
+            var latestAllDebugInfo = AIDebuggerBridge.GetAllDebugInfo();
             if (!allDebugInfo.Value.SequenceEqual(latestAllDebugInfo))
             {
                 allDebugInfo.Value = latestAllDebugInfo.ToDictionary(x => x.Key, x => x.Value);

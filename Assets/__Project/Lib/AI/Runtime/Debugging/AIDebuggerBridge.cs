@@ -1,18 +1,30 @@
+using System.Collections.Generic;
+
 namespace Gast.Lib.AI.Debugging
 {
     public static class AIDebuggerBridge
     {
-        public static IAIDebugger Instance { get; private set; }
-        public static bool IsInitialized => Instance != null;
+        static IAIDebugger instance;
 
-        public static void SetInstance(IAIDebugger instance)
+        public static bool IsInitialized => instance != null;
+        public static IAIDebugger Debugger => instance;
+
+        public static void SetInstance(IAIDebugger debugger)
         {
-            Instance = instance;
+            instance = debugger;
         }
 
         public static void ClearInstance()
         {
-            Instance = null;
+            instance = null;
+        }
+
+        public static IReadOnlyDictionary<ContextKey, AIDebugInfo> GetAllDebugInfo()
+        {
+            if (instance == null)
+                throw new System.InvalidOperationException("AIDebuggerBridge instance is not initialized.");
+
+            return instance.GetAllDebugInfo();
         }
     }
 }

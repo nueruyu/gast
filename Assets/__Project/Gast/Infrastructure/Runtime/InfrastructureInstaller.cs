@@ -41,7 +41,7 @@ namespace Gast.Infrastructure
             builder.Register<PickupRepository>().AsImplementedInterfaces();
 
             // AI
-            builder.Register<AIDebugger>().As<IAIDebugger>();
+            builder.Register<AIDebugger>().AsSelf().As<IContextRegistry>().As<IAIDebugger>();
             builder.Register<AIDebugInitializer>().AsImplementedInterfaces();
         }
     }

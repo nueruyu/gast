@@ -13,7 +13,7 @@ namespace Gast.Lib.AI.Debugging
         {
             if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
-            AIDebuggerBridge.Instance.AddLog(contextKey, $"{compoundTaskName} -> Selected method '{methodName}'");
+            AIDebuggerBridge.Debugger.AddLog(contextKey, $"{compoundTaskName} -> Selected method '{methodName}'");
         }
 
         public static void LogPlan(ContextKey contextKey, IEnumerable<ITask> plan)
@@ -21,15 +21,15 @@ namespace Gast.Lib.AI.Debugging
             if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
             var planNames = plan.Select(p => p.Name).ToArray();
-            AIDebuggerBridge.Instance.UpdatePlan(contextKey, planNames);
-            AIDebuggerBridge.Instance.AddLog(contextKey, $"Planning complete. Plan has {planNames.Length} actions.");
+            AIDebuggerBridge.Debugger.UpdatePlan(contextKey, planNames);
+            AIDebuggerBridge.Debugger.AddLog(contextKey, $"Planning complete. Plan has {planNames.Length} actions.");
         }
 
         public static void LogPlanFailed(ContextKey contextKey, string reason)
         {
             if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
-            AIDebuggerBridge.Instance.AddLog(contextKey, $"Planning failed: {reason}");
+            AIDebuggerBridge.Debugger.AddLog(contextKey, $"Planning failed: {reason}");
         }
 
         public static void EnterTask(ContextKey contextKey, string taskName)
@@ -63,11 +63,11 @@ namespace Gast.Lib.AI.Debugging
             if (taskStacks.TryGetValue(contextKey, out var stack) && stack.Count > 0)
             {
                 var path = string.Join(" / ", stack.Reverse());
-                AIDebuggerBridge.Instance.UpdateActiveTaskPath(contextKey, path);
+                AIDebuggerBridge.Debugger.UpdateActiveTaskPath(contextKey, path);
             }
             else
             {
-                AIDebuggerBridge.Instance.UpdateActiveTaskPath(contextKey, "");
+                AIDebuggerBridge.Debugger.UpdateActiveTaskPath(contextKey, "");
             }
         }
     }
