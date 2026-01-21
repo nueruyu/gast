@@ -16,6 +16,7 @@ namespace Gast.Features
     {
         readonly CombatAIInstaller combatAIInstaller = new();
         readonly StrategicAIInstaller strategicAIInstaller = new();
+        readonly GatheringAIInstaller gatheringAIInstaller = new();
 
         public void Install(IContainerBuilder builder)
         {
@@ -25,6 +26,7 @@ namespace Gast.Features
 
             combatAIInstaller.Install(builder);
             strategicAIInstaller.Install(builder);
+            gatheringAIInstaller.Install(builder);
 
             // Camera
             builder.Register<CameraInputController>().AsImplementedInterfaces();

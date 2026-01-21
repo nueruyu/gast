@@ -6,9 +6,9 @@ using Gast.Domain.Pickups;
 using Gast.Lib.AI;
 using UnityEngine;
 
-namespace Gast.Features.AI.Strategic.Actions
+namespace Gast.Features.AI.Gathering.Actions
 {
-    public class FindItemPickupAction : IAction<StrategicState, AIContext<StrategicState>>
+    public class FindItemPickupAction : IAction<GatheringState, AIContext<GatheringState>>
     {
         readonly IPickupRepository pickupRepository;
 
@@ -17,17 +17,17 @@ namespace Gast.Features.AI.Strategic.Actions
             this.pickupRepository = pickupRepository;
         }
 
-        public bool CanExecute(StrategicState worldState)
+        public bool CanExecute(GatheringState worldState)
         {
             return worldState.CurrentGoal is AcquireItemGoal && !worldState.HasInteractableTarget;
         }
 
-        public void Simulate(StrategicState worldState)
+        public void Simulate(GatheringState worldState)
         {
             worldState.HasInteractableTarget = true;
         }
 
-        public async UniTask ExecuteAsync(AIContext<StrategicState> ctx)
+        public async UniTask ExecuteAsync(AIContext<GatheringState> ctx)
         {
             var goal = (AcquireItemGoal)ctx.WorldState.CurrentGoal;
 

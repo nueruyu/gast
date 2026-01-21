@@ -3,9 +3,9 @@ using Gast.Application.Interactions;
 using Gast.Core.Commands;
 using Gast.Lib.AI;
 
-namespace Gast.Features.AI.Strategic.Actions
+namespace Gast.Features.AI.Gathering.Actions
 {
-    public class InteractWithTargetAction : IAction<StrategicState, AIContext<StrategicState>>
+    public class InteractWithTargetAction : IAction<GatheringState, AIContext<GatheringState>>
     {
         readonly ICommandDispatcher commandDispatcher;
 
@@ -14,18 +14,18 @@ namespace Gast.Features.AI.Strategic.Actions
             this.commandDispatcher = commandDispatcher;
         }
 
-        public bool CanExecute(StrategicState worldState)
+        public bool CanExecute(GatheringState worldState)
         {
             return worldState.HasInteractableTarget && worldState.IsInRangeToInteract;
         }
 
-        public void Simulate(StrategicState worldState)
+        public void Simulate(GatheringState worldState)
         {
             worldState.HasInteractableTarget = false;
             worldState.IsInRangeToInteract = false;
         }
 
-        public async UniTask ExecuteAsync(AIContext<StrategicState> ctx)
+        public async UniTask ExecuteAsync(AIContext<GatheringState> ctx)
         {
             var command = new InteractCommand(ctx.Actor.Id, ctx.WorldState.InteractableTargetId);
             await commandDispatcher.DispatchAsync<InteractCommand, bool>(command, ctx.CancellationToken);
