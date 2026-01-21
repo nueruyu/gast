@@ -1,22 +1,22 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 
-namespace Gast.Features.AI.Strategic.Actions
+namespace Gast.Features.AI.Gathering.Actions
 {
-    public class ClearInteractableTargetAction : IAction<StrategicState, AIContext<StrategicState>>
+    public class ClearInteractableTargetAction : IAction<GatheringState, AIContext<GatheringState>>
     {
-        public bool CanExecute(StrategicState worldState)
+        public bool CanExecute(GatheringState worldState)
         {
             return worldState.HasInteractableTarget;
         }
 
-        public void Simulate(StrategicState worldState)
+        public void Simulate(GatheringState worldState)
         {
             worldState.HasInteractableTarget = false;
             worldState.IsInRangeToInteract = false;
         }
 
-        public UniTask ExecuteAsync(AIContext<StrategicState> ctx)
+        public UniTask ExecuteAsync(AIContext<GatheringState> ctx)
         {
             ctx.Memory.InteractableTarget = null;
             return UniTask.CompletedTask;

@@ -2,21 +2,21 @@ using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using UnityEngine;
 
-namespace Gast.Features.AI.Strategic.Actions
+namespace Gast.Features.AI.Gathering.Actions
 {
-    public class MoveToInteractableAction : IAction<StrategicState, AIContext<StrategicState>>
+    public class MoveToInteractableAction : IAction<GatheringState, AIContext<GatheringState>>
     {
-        public bool CanExecute(StrategicState worldState)
+        public bool CanExecute(GatheringState worldState)
         {
             return worldState.HasInteractableTarget;
         }
 
-        public void Simulate(StrategicState worldState)
+        public void Simulate(GatheringState worldState)
         {
             worldState.IsInRangeToInteract = true;
         }
 
-        public async UniTask ExecuteAsync(AIContext<StrategicState> ctx)
+        public async UniTask ExecuteAsync(AIContext<GatheringState> ctx)
         {
             var actor = ctx.Actor;
             var navigator = actor.NavigationProvider;
