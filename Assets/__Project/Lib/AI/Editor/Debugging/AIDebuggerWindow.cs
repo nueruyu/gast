@@ -134,7 +134,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                 return;
 
             var latestAllDebugInfo = AIDebuggerBridge.GetAllDebugInfo();
-            if (!allDebugInfo.Value.SequenceEqual(latestAllDebugInfo))
+            if (!DictionaryEquals(allDebugInfo.Value, latestAllDebugInfo))
             {
                 allDebugInfo.Value = latestAllDebugInfo.ToDictionary(x => x.Key, x => x.Value);
             }
@@ -188,10 +188,12 @@ namespace Gast.Lib.AI.Editor.Debugging
                 actorList.Rebuild();
             }).AddTo(disposables);
 
-            actorList.selectionChanged += (selection) =>
+            Action<IEnumerable<object>> onSelectionChanged = (selection) =>
             {
                 selectedActorIndex.Value = actorList.selectedIndex;
             };
+            actorList.selectionChanged += onSelectionChanged;
+            disposables.Add(Disposable.Create(() => actorList.selectionChanged -= onSelectionChanged));
 
             selectedActorIndex.Subscribe(index =>
             {
@@ -201,8 +203,13 @@ namespace Gast.Lib.AI.Editor.Debugging
 
         void SetupDomainToolbar(VisualElement domainToolbar)
         {
+            CompositeDisposable toggleDisposables = null;
+
             domainNameChoices.Subscribe(domains =>
             {
+                toggleDisposables?.Dispose();
+                toggleDisposables = new CompositeDisposable();
+
                 domainToolbar.Clear();
                 if (domains.Length == 0)
                     selectedDomainIndex.Value = -1;
@@ -214,14 +221,18 @@ namespace Gast.Lib.AI.Editor.Debugging
                     {
                         text = domains[i]
                     };
-                    toggle.RegisterValueChangedCallback(evt =>
+                    var callback = new EventCallback<ChangeEvent<bool>>(evt =>
                     {
                         if (evt.newValue)
                             selectedDomainIndex.Value = index;
                     });
+                    toggle.RegisterValueChangedCallback(callback);
+                    toggleDisposables.Add(Disposable.Create(() => toggle.UnregisterValueChangedCallback(callback)));
                     domainToolbar.Add(toggle);
                 }
             }).AddTo(disposables);
+
+            Disposable.Create(() => toggleDisposables?.Dispose()).AddTo(disposables);
 
             selectedDomainIndex.Subscribe(index =>
             {
@@ -403,6 +414,24 @@ namespace Gast.Lib.AI.Editor.Debugging
                 return $"({vec2.x:F2}, {vec2.y:F2})";
 
             return value.ToString();
+        }
+
+        static bool DictionaryEquals(
+            IReadOnlyDictionary<ContextKey, AIDebugInfo> a,
+            IReadOnlyDictionary<ContextKey, AIDebugInfo> b)
+        {
+            if (a.Count != b.Count)
+                return false;
+
+            foreach (var kvp in a)
+            {
+                if (!b.TryGetValue(kvp.Key, out var bValue))
+                    return false;
+                if (!ReferenceEquals(kvp.Value, bValue))
+                    return false;
+            }
+
+            return true;
         }
     }
 }

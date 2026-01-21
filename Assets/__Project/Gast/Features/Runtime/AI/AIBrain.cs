@@ -76,6 +76,12 @@ namespace Gast.Features.AI
 
         public void OnDetached()
         {
+            if (character == null)
+                return;
+
+            DebugLogger.ClearContext(strategicContextKey);
+            DebugLogger.ClearContext(combatContextKey);
+
             contextRegistry.Unregister(strategicContextKey);
             contextRegistry.Unregister(combatContextKey);
 

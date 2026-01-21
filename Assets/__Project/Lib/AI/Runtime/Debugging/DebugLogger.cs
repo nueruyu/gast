@@ -70,5 +70,10 @@ namespace Gast.Lib.AI.Debugging
                 AIDebuggerBridge.Debugger.UpdateActiveTaskPath(contextKey, "");
             }
         }
+
+        public static void ClearContext(ContextKey contextKey)
+        {
+            taskStacks.Remove(contextKey);
+        }
     }
 }

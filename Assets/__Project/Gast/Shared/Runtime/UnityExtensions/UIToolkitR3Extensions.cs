@@ -49,10 +49,12 @@ namespace Gast.Shared.UnityExtensions
                 }
             }).AddTo(disposables);
 
-            dropdown.RegisterValueChangedCallback(evt =>
+            var callback = new EventCallback<ChangeEvent<string>>(evt =>
             {
                 selectedIndex.Value = dropdown.index;
             });
+            dropdown.RegisterValueChangedCallback(callback);
+            disposables.Add(Disposable.Create(() => dropdown.UnregisterValueChangedCallback(callback)));
 
             return disposables;
         }

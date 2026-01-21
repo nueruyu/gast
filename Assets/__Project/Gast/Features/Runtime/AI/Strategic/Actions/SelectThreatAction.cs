@@ -25,7 +25,6 @@ namespace Gast.Features.AI.Strategic.Actions
                 .FirstOrDefault();
 
             ctx.Memory.CombatTarget = closestThreat;
-            //return UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: ctx.CancellationToken);
             return UniTask.CompletedTask;
         }
     }
