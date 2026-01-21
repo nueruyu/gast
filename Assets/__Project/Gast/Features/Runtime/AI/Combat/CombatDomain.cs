@@ -19,6 +19,7 @@ namespace Gast.Features.AI.Combat
                 .RegisterTask("MeleeAttack", meleeAttackAction)
                 .RegisterTask("BackOff", backOffAction)
                 .RegisterTask("Strafe", strafeAction)
+                .RegisterTask("Idle", new IdleAction())
                 .DefineCompound("EngageTarget")
                     .AddMethod("Attack")
                         .Condition(s => s.IsInAttackRange && s.IsReadyToAttack)
@@ -41,6 +42,9 @@ namespace Gast.Features.AI.Combat
                     .AddMethod("Combat")
                         .Condition(s => s.HasTarget)
                         .Do("EngageTarget")
+                    .End()
+                    .AddMethod("Idle")
+                        .Do("Idle")
                     .End()
                 .End()
                 .Build("Root");

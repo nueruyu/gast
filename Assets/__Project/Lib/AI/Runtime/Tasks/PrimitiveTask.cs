@@ -30,11 +30,21 @@ namespace Gast.Lib.AI.Tasks
             return UniTask.FromResult(true);
         }
 
-        public UniTask RunAsync(TContext ctx)
+        public async UniTask RunAsync(TContext ctx)
         {
             ctx.CancellationToken.ThrowIfCancellationRequested();
-            DebugLogger.LogExecutingAction(Name);
-            return action.ExecuteAsync(ctx);
+
+            var contextKey = ctx.ContextKey;
+
+            DebugLogger.EnterTask(contextKey, Name);
+            try
+            {
+                await action.ExecuteAsync(ctx);
+            }
+            finally
+            {
+                DebugLogger.ExitTask(contextKey);
+            }
         }
     }
 }

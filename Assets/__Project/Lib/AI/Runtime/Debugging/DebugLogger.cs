@@ -1,61 +1,79 @@
-using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Gast.Lib.AI.Debugging
 {
-    /// <summary>
-    /// Simple logging system for HTN planning and execution.
-    /// Can be toggled on/off for debugging vs production.
-    /// </summary>
     public static class DebugLogger
     {
-        /// <summary>
-        /// Enable or disable HTN logging.
-        /// </summary>
-        public static bool EnableLogging { get; set; } = false;
+        public static bool EnableLogging { get; set; } = true;
 
-        public static void LogPlanning<TWorldState>(TWorldState state)
+        static readonly Dictionary<ContextKey, Stack<string>> taskStacks = new();
+
+        public static void LogMethodSelected<TWorldState>(ContextKey contextKey, string compoundTaskName, string methodName, TWorldState state)
         {
-            if (!EnableLogging)
+            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
-            Debug.Log($"[HTN] Starting planning with state: {state}");
+            AIDebuggerBridge.Debugger.AddLog(contextKey, $"{compoundTaskName} -> Selected method '{methodName}'");
         }
 
-        public static void LogMethodSelected<TWorldState>(
-            string compoundTaskName,
-            string methodName,
-            TWorldState state)
+        public static void LogPlan(ContextKey contextKey, IEnumerable<ITask> plan)
         {
-            if (!EnableLogging)
+            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
-            Debug.Log($"[HTN] {compoundTaskName} -> Selected method '{methodName}' (state: {state})");
+            var planNames = plan.Select(p => p.Name).ToArray();
+            AIDebuggerBridge.Debugger.UpdatePlan(contextKey, planNames);
+            AIDebuggerBridge.Debugger.AddLog(contextKey, $"Planning complete. Plan has {planNames.Length} actions.");
         }
 
-        public static void LogPrimitiveAdded(string primitiveName)
+        public static void LogPlanFailed(ContextKey contextKey, string reason)
         {
-            if (!EnableLogging)
+            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
-            Debug.Log($"[HTN] Added primitive to plan: {primitiveName}");
+            AIDebuggerBridge.Debugger.AddLog(contextKey, $"Planning failed: {reason}");
         }
 
-        public static void LogPlanComplete(int actionCount)
+        public static void EnterTask(ContextKey contextKey, string taskName)
         {
-            if (!EnableLogging)
+            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
-            Debug.Log($"[HTN] Planning complete. Plan has {actionCount} actions.");
+
+            if (!taskStacks.TryGetValue(contextKey, out var stack))
+            {
+                stack = new Stack<string>();
+                taskStacks[contextKey] = stack;
+            }
+            stack.Push(taskName);
+            UpdateActiveTaskPath(contextKey);
         }
 
-        public static void LogPlanFailed(string reason)
+        public static void ExitTask(ContextKey contextKey)
         {
-            if (!EnableLogging)
+            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
-            Debug.LogWarning($"[HTN] Planning failed: {reason}");
+
+            if (taskStacks.TryGetValue(contextKey, out var stack) && stack.Count > 0)
+            {
+                stack.Pop();
+                UpdateActiveTaskPath(contextKey);
+            }
         }
 
-        public static void LogExecutingAction(string actionName)
+        private static void UpdateActiveTaskPath(ContextKey contextKey)
         {
-            if (!EnableLogging)
-                return;
-            Debug.Log($"[HTN] Executing: {actionName}");
+            if (taskStacks.TryGetValue(contextKey, out var stack) && stack.Count > 0)
+            {
+                var path = string.Join(" / ", stack.Reverse());
+                AIDebuggerBridge.Debugger.UpdateActiveTaskPath(contextKey, path);
+            }
+            else
+            {
+                AIDebuggerBridge.Debugger.UpdateActiveTaskPath(contextKey, "");
+            }
+        }
+
+        public static void ClearContext(ContextKey contextKey)
+        {
+            taskStacks.Remove(contextKey);
         }
     }
 }

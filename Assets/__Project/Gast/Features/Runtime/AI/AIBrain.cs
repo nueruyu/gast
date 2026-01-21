@@ -4,7 +4,7 @@ using Gast.Domain.Characters;
 using Gast.Features.AI.Combat;
 using Gast.Features.AI.Strategic;
 using Gast.Lib.AI;
-using System;
+using Gast.Lib.AI.Debugging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -14,11 +14,17 @@ namespace Gast.Features.AI
 {
     public class AIBrain : ICharacterAIBrain
     {
+        const string StrategicDomainName = "Strategic";
+        const string CombatDomainName = "Combat";
+
         readonly StrategicDomain strategicDomain;
         readonly CombatDomain combatDomain;
         readonly GoalManager goalManager;
+        readonly IContextRegistry contextRegistry;
 
         ICharacter character;
+        ContextKey strategicContextKey;
+        ContextKey combatContextKey;
         CancellationTokenSource cts;
 
         public IReadOnlyList<IGoal> CurrentGoals => goalManager.CurrentGoals;
@@ -33,16 +39,26 @@ namespace Gast.Features.AI
         public AIBrain(
             StrategicDomain strategicDomain,
             CombatDomain combatDomain,
-            GoalManager goalManager)
+            GoalManager goalManager,
+            IContextRegistry contextRegistry)
         {
             this.strategicDomain = strategicDomain;
             this.combatDomain = combatDomain;
             this.goalManager = goalManager;
+            this.contextRegistry = contextRegistry;
         }
 
         public void OnAttached(ICharacter character)
         {
+            Debug.Log($"[AIBrain] OnAttached: {character.Id}");
+
             this.character = character;
+
+            strategicContextKey = new(character.Id, StrategicDomainName);
+            combatContextKey = new(character.Id, CombatDomainName);
+
+            contextRegistry.Register(strategicContextKey, strategicState);
+            contextRegistry.Register(combatContextKey, combatState);
 
             strategicAgentRunner = strategicDomain.CreateRunner();
             combatAgentRunner = combatDomain.CreateRunner();
@@ -60,9 +76,22 @@ namespace Gast.Features.AI
 
         public void OnDetached()
         {
+            if (character == null)
+                return;
+
+            DebugLogger.ClearContext(strategicContextKey);
+            DebugLogger.ClearContext(combatContextKey);
+
+            contextRegistry.Unregister(strategicContextKey);
+            contextRegistry.Unregister(combatContextKey);
+
             cts?.Cancel();
             cts?.Dispose();
             cts = null;
+
+            character = null;
+            strategicContextKey = default;
+            combatContextKey = default;
         }
 
         public void SetGoals(IEnumerable<IGoal> goals)
@@ -85,6 +114,7 @@ namespace Gast.Features.AI
             {
                 UpdateStrategicWorldState();
                 UpdateCombatWorldState();
+
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
@@ -93,7 +123,13 @@ namespace Gast.Features.AI
         {
             while (!token.IsCancellationRequested)
             {
-                await strategicAgentRunner.RunAsync(new(character, strategicState, memory, token));
+                await strategicAgentRunner.RunAsync(new(
+                    character,
+                    strategicState,
+                    memory,
+                    StrategicDomainName,
+                    token));
+
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
@@ -102,7 +138,13 @@ namespace Gast.Features.AI
         {
             while (!token.IsCancellationRequested)
             {
-                await combatAgentRunner.RunAsync(new(character, combatState, memory, token));
+                await combatAgentRunner.RunAsync(new(
+                    character,
+                    combatState,
+                    memory,
+                    CombatDomainName,
+                    token));
+
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
@@ -148,7 +190,7 @@ namespace Gast.Features.AI
             else
             {
                 combatState.HasTarget = false;
-                combatState.DistanceToTarget = float.MaxValue;
+                combatState.DistanceToTarget = float.PositiveInfinity;
             }
             combatState.IsReadyToAttack = character.CanAttack;
         }

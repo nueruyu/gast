@@ -41,33 +41,45 @@ namespace Gast.Lib.AI.Tasks
 
         public async UniTask RunAsync(TContext ctx)
         {
-            simulationState.CopyFrom(ctx.WorldState);
+            var contextKey = ctx.ContextKey;
 
-            var method = await SelectCurrentMethodAsync(
-                simulationState,
-                ctx.CancellationToken);
-
-            if (method == null)
-            {
-                DebugLogger.LogPlanFailed($"No valid method for {Name}");
-                return;
-            }
-
-            DebugLogger.LogMethodSelected(Name, method.Name, ctx.WorldState);
-
-            using var localCts = CancellationTokenSource.CreateLinkedTokenSource(ctx.CancellationToken);
-            var localCtx = ctx.WithCancellationToken(localCts.Token);
+            DebugLogger.EnterTask(contextKey, Name);
 
             try
             {
-                await UniTask.WhenAny(
-                    RunMethodAsync(method, localCtx),
-                    MonitorInterruptsAsync(method, localCtx)
-                );
+                simulationState.CopyFrom(ctx.WorldState);
+
+                var method = await SelectCurrentMethodAsync(
+                    simulationState,
+                    ctx.CancellationToken);
+
+                if (method == null)
+                {
+                    DebugLogger.LogPlanFailed(contextKey, $"No valid method for {Name}");
+                    return;
+                }
+
+                DebugLogger.LogMethodSelected(contextKey, Name, method.Name, ctx.WorldState);
+                DebugLogger.LogPlan(contextKey, method.SubTasks.Cast<ITask>());
+
+                using var localCts = CancellationTokenSource.CreateLinkedTokenSource(ctx.CancellationToken);
+                var localCtx = ctx.WithCancellationToken(localCts.Token);
+
+                try
+                {
+                    await UniTask.WhenAny(
+                        RunMethodAsync(method, localCtx),
+                        MonitorInterruptsAsync(method, localCtx)
+                    );
+                }
+                finally
+                {
+                    localCts.Cancel();
+                }
             }
             finally
             {
-                localCts.Cancel();
+                DebugLogger.ExitTask(contextKey);
             }
         }
 
@@ -85,6 +97,8 @@ namespace Gast.Lib.AI.Tasks
             Method<TWorldState, TContext> currentMethod,
             TContext ctx)
         {
+            var contextKey = ctx.ContextKey;
+
             while (true)
             {
                 await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
@@ -99,7 +113,7 @@ namespace Gast.Lib.AI.Tasks
 
                 if (interruptsMethod != null)
                 {
-                    DebugLogger.LogPlanFailed($"Interrupt: {Name} switching to {interruptsMethod.Name}");
+                    DebugLogger.LogPlanFailed(contextKey, $"Interrupt: {Name} switching to {interruptsMethod.Name}");
                     break;
                 }
             }

@@ -1,12 +1,14 @@
 {
-    "name": "Gast.Lib.AI",
-    "rootNamespace": "Gast.Lib.AI",
+    "name": "Gast.Lib.AI.Editor",
+    "rootNamespace": "Gast.Lib.AI.Editor",
     "references": [
-        "UniTask",
+        "Gast.Lib.AI",
         "R3.Unity",
-        "ObservableCollections"
+        "Gast.Shared"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

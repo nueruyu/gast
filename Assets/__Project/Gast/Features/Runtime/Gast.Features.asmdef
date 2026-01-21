@@ -11,7 +11,8 @@
         "Unity.InputSystem",
         "UniTask",
         "R3.Unity",
-        "Cinemachine"
+        "Cinemachine",
+        "VContainer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
