@@ -4,25 +4,18 @@ using System;
 
 namespace Gast.Features.AI.Strategic.Actions
 {
-    public class WaitAction : IAction<StrategicState, AIContext<StrategicState>>
+    public class WaitAction : IAction<StrategicState, AIContext<StrategicState>, float>
     {
-        readonly float seconds;
-
-        public WaitAction(float seconds)
-        {
-            this.seconds = seconds;
-        }
-
-        public bool CanExecute(StrategicState worldState)
+        public bool CanExecute(StrategicState worldState, float param)
         {
             return true;
         }
 
-        public void Simulate(StrategicState worldState)
+        public void Simulate(StrategicState worldState, float param)
         {
         }
 
-        public UniTask ExecuteAsync(AIContext<StrategicState> ctx)
+        public UniTask ExecuteAsync(AIContext<StrategicState> ctx, float seconds)
         {
             return UniTask.Delay(
                 TimeSpan.FromSeconds(seconds),

@@ -4,25 +4,18 @@ using System;
 
 namespace Gast.Features.AI.Gathering.Actions
 {
-    public class WaitAction : IAction<GatheringState, AIContext<GatheringState>>
+    public class WaitAction : IAction<GatheringState, AIContext<GatheringState>, float>
     {
-        readonly float seconds;
-
-        public WaitAction(float seconds)
-        {
-            this.seconds = seconds;
-        }
-
-        public bool CanExecute(GatheringState worldState)
+        public bool CanExecute(GatheringState worldState, float param)
         {
             return true;
         }
 
-        public void Simulate(GatheringState worldState)
+        public void Simulate(GatheringState worldState, float param)
         {
         }
 
-        public UniTask ExecuteAsync(AIContext<GatheringState> ctx)
+        public UniTask ExecuteAsync(AIContext<GatheringState> ctx, float seconds)
         {
             return UniTask.Delay(
                 TimeSpan.FromSeconds(seconds),
