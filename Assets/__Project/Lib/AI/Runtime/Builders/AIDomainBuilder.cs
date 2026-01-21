@@ -13,8 +13,7 @@ namespace Gast.Lib.AI.Builders
 
         public AIDomainBuilder<TWorldState, TContext> RegisterAction(string name, IAction<TWorldState, TContext> action)
         {
-            var task = new PrimitiveTask<TWorldState, TContext>(name, action);
-            registry[task.Name] = task;
+            registry[name] = action;
             return this;
         }
 
@@ -36,22 +35,10 @@ namespace Gast.Lib.AI.Builders
             return this;
         }
 
-        internal ITask<TWorldState, TContext> GetTask(string name)
+        internal object GetRegisteredItem(string name)
         {
-            if (registry.TryGetValue(name, out var item) && item is ITask<TWorldState, TContext> task)
-            {
-                return task;
-            }
-            return null;
-        }
-
-        internal IAction<TWorldState, TContext, TParam> GetAction<TParam>(string name)
-        {
-            if (registry.TryGetValue(name, out var item) && item is IAction<TWorldState, TContext, TParam> action)
-            {
-                return action;
-            }
-            return null;
+            registry.TryGetValue(name, out var item);
+            return item;
         }
 
         public AIDomain<TWorldState, TContext> Build(string rootTaskName)

@@ -38,25 +38,44 @@ namespace Gast.Lib.AI.Builders
         {
             foreach (var name in taskNames)
             {
-                var task = compoundBuilder.DomainBuilder.GetTask(name);
-                if (task == null)
+                var item = compoundBuilder.DomainBuilder.GetRegisteredItem(name);
+                if (item == null)
                 {
-                    throw new InvalidOperationException($"Task '{name}' is not registered or is a parametric action.");
+                    throw new InvalidOperationException($"'{name}' is not registered.");
                 }
-                subTasks.Add(task);
+
+                if (item is ITask<TWorldState, TContext> task)
+                {
+                    subTasks.Add(task);
+                }
+                else if (item is IAction<TWorldState, TContext> action)
+                {
+                    subTasks.Add(new PrimitiveTask<TWorldState, TContext>(name, action));
+                }
+                else
+                {
+                    throw new InvalidOperationException($"'{name}' requires parameters. Use Do(\"{name}\", param) instead.");
+                }
             }
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> Do<TParam>(string actionName, TParam param)
+        public MethodBuilder<TWorldState, TContext> Do<TParam>(string taskName, TParam param)
         {
-            var action = compoundBuilder.DomainBuilder.GetAction<TParam>(actionName);
-            if (action == null)
+            var item = compoundBuilder.DomainBuilder.GetRegisteredItem(taskName);
+            if (item == null)
             {
-                throw new InvalidOperationException($"Parametric action '{actionName}' for parameter type '{typeof(TParam).Name}' is not registered.");
+                throw new InvalidOperationException($"'{taskName}' is not registered.");
             }
-            var task = new ParametricPrimitiveTask<TWorldState, TContext, TParam>(actionName, action, param);
-            subTasks.Add(task);
+
+            if (item is IAction<TWorldState, TContext, TParam> action)
+            {
+                subTasks.Add(new ParametricPrimitiveTask<TWorldState, TContext, TParam>(taskName, action, param));
+            }
+            else
+            {
+                throw new InvalidOperationException($"'{taskName}' is not registered as a parametric action with type '{typeof(TParam).Name}'.");
+            }
             return this;
         }
 
