@@ -1,10 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Gast.Infrastructure.Remoting.AI
 {
+    // --- Attributes ---
+
+    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+    public class ObjectiveTypeAttribute : Attribute
+    {
+        public string TypeName { get; }
+        public ObjectiveTypeAttribute(string typeName) => TypeName = typeName;
+    }
+
     // --- Request DTOs ---
 
     public class PlanRequestDto
@@ -58,7 +69,8 @@ namespace Gast.Infrastructure.Remoting.AI
 
     /// <summary>
     /// Base class for objectives.
-    /// The JsonConverter handles selecting the concrete class based on the "type" field.
+    /// The JsonConverter handles selecting the concrete class based on the "type" field
+    /// mapped via [ObjectiveType] attributes.
     /// </summary>
     [JsonConverter(typeof(ObjectiveConverter))]
     public abstract class ObjectiveDto
@@ -67,6 +79,7 @@ namespace Gast.Infrastructure.Remoting.AI
         public int Priority { get; set; }
     }
 
+    [ObjectiveType("DefeatCharacter")]
     public class DefeatCharacterObjectiveDto : ObjectiveDto
     {
         public DefeatCharacterParametersDto Parameters { get; set; }
@@ -78,6 +91,7 @@ namespace Gast.Infrastructure.Remoting.AI
         public int Quantity { get; set; }
     }
 
+    [ObjectiveType("AcquireItem")]
     public class AcquireItemObjectiveDto : ObjectiveDto
     {
         public AcquireItemParametersDto Parameters { get; set; }
@@ -90,7 +104,7 @@ namespace Gast.Infrastructure.Remoting.AI
     }
 
     /// <summary>
-    /// Fallback for unknown objective types to prevent crash on new types.
+    /// Fallback for unknown objective types.
     /// </summary>
     public class UnknownObjectiveDto : ObjectiveDto
     {
@@ -101,6 +115,26 @@ namespace Gast.Infrastructure.Remoting.AI
 
     public class ObjectiveConverter : JsonConverter
     {
+        static readonly Dictionary<string, Type> TypeMap;
+
+        static ObjectiveConverter()
+        {
+            TypeMap = new Dictionary<string, Type>();
+
+            var types = Assembly.GetExecutingAssembly()
+                .GetTypes()
+                .Where(t => t.GetCustomAttribute<ObjectiveTypeAttribute>() != null);
+
+            foreach (var type in types)
+            {
+                var attr = type.GetCustomAttribute<ObjectiveTypeAttribute>();
+                if (attr != null && !string.IsNullOrEmpty(attr.TypeName))
+                {
+                    TypeMap[attr.TypeName] = type;
+                }
+            }
+        }
+
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(ObjectiveDto);
@@ -109,22 +143,32 @@ namespace Gast.Infrastructure.Remoting.AI
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var jsonObject = JObject.Load(reader);
-            var type = (string)jsonObject["type"];
 
-            ObjectiveDto dto = type switch
+            var typeToken = jsonObject["type"];
+            var typeName = typeToken?.ToString();
+
+            ObjectiveDto dto;
+
+            if (!string.IsNullOrEmpty(typeName) && TypeMap.TryGetValue(typeName, out var concreteType))
             {
-                "DefeatCharacter" => new DefeatCharacterObjectiveDto(),
-                "AcquireItem" => new AcquireItemObjectiveDto(),
-                _ => new UnknownObjectiveDto()
-            };
+                dto = (ObjectiveDto)Activator.CreateInstance(concreteType);
+            }
+            else
+            {
+                dto = new UnknownObjectiveDto();
+            }
 
-            serializer.Populate(jsonObject.CreateReader(), dto);
+            using (var subReader = jsonObject.CreateReader())
+            {
+                serializer.Populate(subReader, dto);
+            }
+
             return dto;
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            throw new NotImplementedException("ObjectiveDto serialization is not required for client requests.");
+            serializer.Serialize(writer, value);
         }
     }
 }
