@@ -12,4 +12,15 @@ namespace Gast.Lib.AI
 
         UniTask ExecuteAsync(TContext context);
     }
+
+    public interface IAction<in TWorldState, in TContext, in TParam>
+        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TContext : struct, IContext<TContext, TWorldState>
+    {
+        bool CanExecute(TWorldState worldState, TParam param);
+
+        void Simulate(TWorldState worldState, TParam param);
+
+        UniTask ExecuteAsync(TContext context, TParam param);
+    }
 }

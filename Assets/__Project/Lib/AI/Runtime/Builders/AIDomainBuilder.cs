@@ -1,7 +1,7 @@
 using Gast.Lib.AI.Tasks;
 using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
 
 namespace Gast.Lib.AI.Builders
 {
@@ -9,12 +9,17 @@ namespace Gast.Lib.AI.Builders
         where TWorldState : class, IWorldState<TWorldState>, new()
         where TContext : struct, IContext<TContext, TWorldState>
     {
-        readonly Dictionary<string, ITask<TWorldState, TContext>> taskRegistry = new();
+        readonly Dictionary<string, object> registry = new();
 
-        public AIDomainBuilder<TWorldState, TContext> RegisterTask(string name, IAction<TWorldState, TContext> action)
+        public AIDomainBuilder<TWorldState, TContext> RegisterAction(string name, IAction<TWorldState, TContext> action)
         {
-            var task = new PrimitiveTask<TWorldState, TContext>(name, action);
-            taskRegistry[task.Name] = task;
+            registry[name] = action;
+            return this;
+        }
+
+        public AIDomainBuilder<TWorldState, TContext> RegisterAction<TParam>(string name, IAction<TWorldState, TContext, TParam> action)
+        {
+            registry[name] = action;
             return this;
         }
 
@@ -26,19 +31,20 @@ namespace Gast.Lib.AI.Builders
         internal AIDomainBuilder<TWorldState, TContext> CompleteCompound(
             CompoundTask<TWorldState, TContext> task)
         {
-            taskRegistry[task.Name] = task;
+            registry[task.Name] = task;
             return this;
         }
 
-        internal ITask<TWorldState, TContext> GetTask(string name)
+        internal object GetRegisteredItem(string name)
         {
-            return taskRegistry[name];
+            registry.TryGetValue(name, out var item);
+            return item;
         }
 
         public AIDomain<TWorldState, TContext> Build(string rootTaskName)
         {
             return new AIDomain<TWorldState, TContext>(
-                taskRegistry.Values,
+                registry.Values.OfType<ITask<TWorldState, TContext>>(),
                 rootTaskName);
         }
     }
