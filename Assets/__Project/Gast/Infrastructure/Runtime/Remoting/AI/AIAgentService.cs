@@ -5,6 +5,7 @@ using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Infrastructure.Repositories;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace Gast.Infrastructure.Remoting.AI
         readonly CharacterTypeRepository characterTypeRepository;
         readonly ItemRepository itemRepository;
         readonly HttpClient httpClient;
+        readonly JsonSerializerSettings jsonSettings;
 
         public AIAgentService(AIServerSettings settings, CharacterTypeRepository characterTypeRepository, ItemRepository itemRepository)
         {
@@ -36,6 +38,15 @@ namespace Gast.Infrastructure.Remoting.AI
             httpClient = new HttpClient
             {
                 Timeout = DefaultTimeout
+            };
+
+            jsonSettings = new JsonSerializerSettings
+            {
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new SnakeCaseNamingStrategy()
+                },
+                Formatting = Formatting.None
             };
         }
 
@@ -60,7 +71,7 @@ namespace Gast.Infrastructure.Remoting.AI
 
             try
             {
-                requestJson = JsonConvert.SerializeObject(requestDto);
+                requestJson = JsonConvert.SerializeObject(requestDto, jsonSettings);
             }
             catch (JsonException ex)
             {
@@ -147,7 +158,7 @@ namespace Gast.Infrastructure.Remoting.AI
             PlanResponseDto plan;
             try
             {
-                plan = JsonConvert.DeserializeObject<PlanResponseDto>(responseBody);
+                plan = JsonConvert.DeserializeObject<PlanResponseDto>(responseBody, jsonSettings);
             }
             catch (JsonException ex)
             {
@@ -167,7 +178,7 @@ namespace Gast.Infrastructure.Remoting.AI
             }
 
             Debug.Log($"[AIAgentService] AI Thought: {plan.Thought}");
-            var goals = ParseObjectives(plan.Objectives);
+            var goals = ConvertObjectivesToGoals(plan.Objectives);
             Debug.Log($"[AIAgentService] Successfully parsed {goals.Count} goals");
             return AIAgentResult.Success(goals);
         }
@@ -181,14 +192,12 @@ namespace Gast.Infrastructure.Remoting.AI
 
         PlanRequestDto CreatePlanRequest(string instruction)
         {
-            // Context
             var context = new AgentContextDto
             {
                 AgentCharacterType = "soldier", // TODO: Should be dynamic based on the actual agent
                 MissionObjective = instruction
             };
 
-            // Definitions
             var characterTypes = characterTypeRepository.GetAllDefinitions()
                 .Select(def => new CharacterTypeDto
                 {
@@ -213,7 +222,6 @@ namespace Gast.Infrastructure.Remoting.AI
                 ItemTypes = items
             };
 
-            // Available Goals (Schema definition)
             var availableGoals = new List<GoalDefinitionDto>
             {
                 new GoalDefinitionDto
@@ -246,84 +254,44 @@ namespace Gast.Infrastructure.Remoting.AI
             };
         }
 
-        List<IGoal> ParseObjectives(List<ObjectiveDto> objectives)
+        List<IGoal> ConvertObjectivesToGoals(List<ObjectiveDto> objectives)
         {
             var goals = new List<IGoal>();
 
-            foreach (var obj in objectives)
+            foreach (var objective in objectives)
             {
                 try
                 {
-                    var parameters = obj.Parameters;
-
-                    switch (obj.Type)
+                    switch (objective)
                     {
-                        case "DefeatCharacter":
-                            if (TryGetString(parameters, "character_type_id", out var charTypeId) &&
-                                TryGetInt(parameters, "quantity", out var charQty))
+                        case DefeatCharacterObjectiveDto defeatObj:
+                            var charTypeId = CharacterTypeId.FromString(defeatObj.Parameters.CharacterTypeId);
+                            goals.Add(new DefeatCharacterGoal(charTypeId, defeatObj.Parameters.Quantity));
+                            break;
+
+                        case AcquireItemObjectiveDto itemObj:
+                            if (Guid.TryParse(itemObj.Parameters.ItemId, out var itemGuid))
                             {
-                                goals.Add(new DefeatCharacterGoal(CharacterTypeId.FromString(charTypeId), charQty));
+                                goals.Add(new AcquireItemGoal(ItemId.FromGuid(itemGuid), itemObj.Parameters.Quantity));
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"[AIAgentService] Invalid Item GUID: {itemObj.Parameters.ItemId}");
                             }
                             break;
 
-                        case "AcquireItem":
-                            if (TryGetString(parameters, "item_id", out var itemIdStr) &&
-                                TryGetInt(parameters, "quantity", out var itemQty))
-                            {
-                                // Handle item ID parsing robustly
-                                if (Guid.TryParse(itemIdStr, out var itemGuid))
-                                {
-                                    goals.Add(new AcquireItemGoal(ItemId.FromGuid(itemGuid), itemQty));
-                                }
-                                else
-                                {
-                                    Debug.LogWarning($"[AIAgentService] Invalid Item GUID: {itemIdStr}");
-                                }
-                            }
-                            break;
-
-                        default:
-                            Debug.LogWarning($"[AIAgentService] Unknown objective type: {obj.Type}");
+                        case UnknownObjectiveDto unknown:
+                            Debug.LogWarning($"[AIAgentService] Skipping unknown objective type: {unknown.Type}");
                             break;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"[AIAgentService] Failed to parse objective '{obj.Type}': {ex.Message}");
+                    Debug.LogError($"[AIAgentService] Failed to convert objective '{objective.Type}': {ex.Message}");
                 }
             }
 
             return goals;
-        }
-
-        // Helper methods to safely extract values from JSON.NET dictionary
-        static bool TryGetString(Dictionary<string, object> parameters, string key, out string value)
-        {
-            value = null;
-            if (parameters.TryGetValue(key, out var obj) && obj != null)
-            {
-                value = obj.ToString();
-                return true;
-            }
-            return false;
-        }
-
-        static bool TryGetInt(Dictionary<string, object> parameters, string key, out int value)
-        {
-            value = 1;
-            if (parameters.TryGetValue(key, out var obj))
-            {
-                try
-                {
-                    value = Convert.ToInt32(obj);
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-            return false;
         }
     }
 }

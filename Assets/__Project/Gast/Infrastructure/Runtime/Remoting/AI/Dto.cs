@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Gast.Infrastructure.Remoting.AI
 {
@@ -7,67 +9,41 @@ namespace Gast.Infrastructure.Remoting.AI
 
     public class PlanRequestDto
     {
-        [JsonProperty("context")]
         public AgentContextDto Context { get; set; }
-
-        [JsonProperty("definitions")]
         public StaticDefinitionsDto Definitions { get; set; }
-
-        [JsonProperty("available_goals")]
         public List<GoalDefinitionDto> AvailableGoals { get; set; }
     }
 
     public class AgentContextDto
     {
-        [JsonProperty("agent_character_type")]
         public string AgentCharacterType { get; set; }
-
-        [JsonProperty("mission_objective")]
         public string MissionObjective { get; set; }
     }
 
     public class StaticDefinitionsDto
     {
-        [JsonProperty("character_types")]
         public List<CharacterTypeDto> CharacterTypes { get; set; }
-
-        [JsonProperty("item_types")]
         public List<ItemDto> ItemTypes { get; set; }
     }
 
     public class CharacterTypeDto
     {
-        [JsonProperty("type_id")]
         public string TypeId { get; set; }
-
-        [JsonProperty("display_name")]
         public string DisplayName { get; set; }
-
-        [JsonProperty("threat_level")]
         public int ThreatLevel { get; set; }
     }
 
     public class ItemDto
     {
-        [JsonProperty("item_id")]
         public string ItemId { get; set; }
-
-        [JsonProperty("name")]
         public string Name { get; set; }
-
-        [JsonProperty("utility")]
         public int Utility { get; set; }
     }
 
     public class GoalDefinitionDto
     {
-        [JsonProperty("name")]
         public string Name { get; set; }
-
-        [JsonProperty("description")]
         public string Description { get; set; }
-
-        [JsonProperty("parameters")]
         public Dictionary<string, object> Parameters { get; set; }
     }
 
@@ -75,25 +51,80 @@ namespace Gast.Infrastructure.Remoting.AI
 
     public class PlanResponseDto
     {
-        [JsonProperty("overall_objective")]
         public string OverallObjective { get; set; }
-
-        [JsonProperty("objectives")]
         public List<ObjectiveDto> Objectives { get; set; }
-
-        [JsonProperty("thought")]
         public string Thought { get; set; }
     }
 
-    public class ObjectiveDto
+    /// <summary>
+    /// Base class for objectives.
+    /// The JsonConverter handles selecting the concrete class based on the "type" field.
+    /// </summary>
+    [JsonConverter(typeof(ObjectiveConverter))]
+    public abstract class ObjectiveDto
     {
-        [JsonProperty("type")]
         public string Type { get; set; }
-
-        [JsonProperty("parameters")]
-        public Dictionary<string, object> Parameters { get; set; }
-
-        [JsonProperty("priority")]
         public int Priority { get; set; }
+    }
+
+    public class DefeatCharacterObjectiveDto : ObjectiveDto
+    {
+        public DefeatCharacterParametersDto Parameters { get; set; }
+    }
+
+    public class DefeatCharacterParametersDto
+    {
+        public string CharacterTypeId { get; set; }
+        public int Quantity { get; set; }
+    }
+
+    public class AcquireItemObjectiveDto : ObjectiveDto
+    {
+        public AcquireItemParametersDto Parameters { get; set; }
+    }
+
+    public class AcquireItemParametersDto
+    {
+        public string ItemId { get; set; }
+        public int Quantity { get; set; }
+    }
+
+    /// <summary>
+    /// Fallback for unknown objective types to prevent crash on new types.
+    /// </summary>
+    public class UnknownObjectiveDto : ObjectiveDto
+    {
+        public Dictionary<string, object> Parameters { get; set; }
+    }
+
+    // --- Converters ---
+
+    public class ObjectiveConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(ObjectiveDto);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var jsonObject = JObject.Load(reader);
+            var type = (string)jsonObject["type"];
+
+            ObjectiveDto dto = type switch
+            {
+                "DefeatCharacter" => new DefeatCharacterObjectiveDto(),
+                "AcquireItem" => new AcquireItemObjectiveDto(),
+                _ => new UnknownObjectiveDto()
+            };
+
+            serializer.Populate(jsonObject.CreateReader(), dto);
+            return dto;
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException("ObjectiveDto serialization is not required for client requests.");
+        }
     }
 }
