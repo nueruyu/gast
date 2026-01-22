@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00561498ece89a64c96ff806db8ad675, type: 3}
   m_Name: AIServerSettings
   m_EditorClassIdentifier: Gast.Infrastructure::Gast.Infrastructure.Remoting.AI.AIServerSettings
-  serverUrl: http://localhost:8000/invoke
+  serverUrl: http://localhost:8000/request_plan
