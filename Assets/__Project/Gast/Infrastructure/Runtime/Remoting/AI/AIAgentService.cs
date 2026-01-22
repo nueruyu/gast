@@ -55,12 +55,12 @@ namespace Gast.Infrastructure.Remoting.AI
                     "AI server URL is not configured"));
             }
 
-            var requestDto = CreateRequestDto(instruction);
+            var requestDto = CreatePlanRequest(instruction);
             string requestJson;
 
             try
             {
-                requestJson = JsonConvert.SerializeObject(new { input = requestDto });
+                requestJson = JsonConvert.SerializeObject(requestDto);
             }
             catch (JsonException ex)
             {
@@ -144,10 +144,10 @@ namespace Gast.Infrastructure.Remoting.AI
                     responseBody));
             }
 
-            AIResponse responseDto;
+            PlanResponseDto plan;
             try
             {
-                responseDto = JsonConvert.DeserializeObject<AIResponse>(responseBody);
+                plan = JsonConvert.DeserializeObject<PlanResponseDto>(responseBody);
             }
             catch (JsonException ex)
             {
@@ -158,15 +158,16 @@ namespace Gast.Infrastructure.Remoting.AI
                     ex.Message));
             }
 
-            if (responseDto?.Output?.Goals == null)
+            if (plan?.Objectives == null)
             {
                 Debug.LogWarning("[AIAgentService] Server returned empty or invalid response");
                 return AIAgentResult.Failure(new AIAgentError(
                     AIAgentErrorCode.InvalidResponse,
-                    "Server returned empty or invalid response"));
+                    "Plan contained no objectives"));
             }
 
-            var goals = ParseGoals(responseDto);
+            Debug.Log($"[AIAgentService] AI Thought: {plan.Thought}");
+            var goals = ParseObjectives(plan.Objectives);
             Debug.Log($"[AIAgentService] Successfully parsed {goals.Count} goals");
             return AIAgentResult.Success(goals);
         }
@@ -178,56 +179,151 @@ namespace Gast.Infrastructure.Remoting.AI
                    ex.Message.Contains("refused", StringComparison.OrdinalIgnoreCase);
         }
 
-        AIRequest CreateRequestDto(string instruction)
+        PlanRequestDto CreatePlanRequest(string instruction)
         {
+            // Context
+            var context = new AgentContextDto
+            {
+                AgentCharacterType = "soldier", // TODO: Should be dynamic based on the actual agent
+                MissionObjective = instruction
+            };
+
+            // Definitions
             var characterTypes = characterTypeRepository.GetAllDefinitions()
-                .Select(def => new CharacterTypeDto { Id = def.TypeId.ToString(), Name = def.DisplayName })
+                .Select(def => new CharacterTypeDto
+                {
+                    TypeId = def.TypeId.ToString(),
+                    DisplayName = def.DisplayName,
+                    ThreatLevel = 5 // Default value, ideally added to ScriptableObject
+                })
                 .ToList();
 
             var items = itemRepository.GetAllDefinitions()
-                .Select(def => new ItemDto { Id = def.Id.ToString(), Name = def.Name })
+                .Select(def => new ItemDto
+                {
+                    ItemId = def.Id.ToString(),
+                    Name = def.Name,
+                    Utility = 5 // Default value
+                })
                 .ToList();
 
-            return new AIRequest
+            var definitions = new StaticDefinitionsDto
             {
-                Instruction = instruction,
                 CharacterTypes = characterTypes,
-                Items = items
+                ItemTypes = items
+            };
+
+            // Available Goals (Schema definition)
+            var availableGoals = new List<GoalDefinitionDto>
+            {
+                new GoalDefinitionDto
+                {
+                    Name = "DefeatCharacter",
+                    Description = "Eliminate a specific number of enemies of a certain type.",
+                    Parameters = new Dictionary<string, object>
+                    {
+                        { "character_type_id", "string" },
+                        { "quantity", "integer" }
+                    }
+                },
+                new GoalDefinitionDto
+                {
+                    Name = "AcquireItem",
+                    Description = "Collect a specific number of items.",
+                    Parameters = new Dictionary<string, object>
+                    {
+                        { "item_id", "string" },
+                        { "quantity", "integer" }
+                    }
+                }
+            };
+
+            return new PlanRequestDto
+            {
+                Context = context,
+                Definitions = definitions,
+                AvailableGoals = availableGoals
             };
         }
 
-        List<IGoal> ParseGoals(AIResponse response)
+        List<IGoal> ParseObjectives(List<ObjectiveDto> objectives)
         {
             var goals = new List<IGoal>();
 
-            foreach (var goalDto in response.Output.Goals)
+            foreach (var obj in objectives)
             {
                 try
                 {
-                    switch (goalDto.Type)
+                    var parameters = obj.Parameters;
+
+                    switch (obj.Type)
                     {
                         case "DefeatCharacter":
-                            var typeId = CharacterTypeId.FromString(goalDto.CharacterTypeId);
-                            goals.Add(new DefeatCharacterGoal(typeId, goalDto.Quantity));
+                            if (TryGetString(parameters, "character_type_id", out var charTypeId) &&
+                                TryGetInt(parameters, "quantity", out var charQty))
+                            {
+                                goals.Add(new DefeatCharacterGoal(CharacterTypeId.FromString(charTypeId), charQty));
+                            }
                             break;
 
                         case "AcquireItem":
-                            var itemId = ItemId.FromGuid(Guid.Parse(goalDto.ItemId));
-                            goals.Add(new AcquireItemGoal(itemId, goalDto.Quantity));
+                            if (TryGetString(parameters, "item_id", out var itemIdStr) &&
+                                TryGetInt(parameters, "quantity", out var itemQty))
+                            {
+                                // Handle item ID parsing robustly
+                                if (Guid.TryParse(itemIdStr, out var itemGuid))
+                                {
+                                    goals.Add(new AcquireItemGoal(ItemId.FromGuid(itemGuid), itemQty));
+                                }
+                                else
+                                {
+                                    Debug.LogWarning($"[AIAgentService] Invalid Item GUID: {itemIdStr}");
+                                }
+                            }
                             break;
 
                         default:
-                            Debug.LogWarning($"[AIAgentService] Unknown goal type: {goalDto.Type}");
+                            Debug.LogWarning($"[AIAgentService] Unknown objective type: {obj.Type}");
                             break;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogWarning($"[AIAgentService] Failed to parse goal '{goalDto.Type}': {ex.Message}");
+                    Debug.LogError($"[AIAgentService] Failed to parse objective '{obj.Type}': {ex.Message}");
                 }
             }
 
             return goals;
+        }
+
+        // Helper methods to safely extract values from JSON.NET dictionary
+        static bool TryGetString(Dictionary<string, object> parameters, string key, out string value)
+        {
+            value = null;
+            if (parameters.TryGetValue(key, out var obj) && obj != null)
+            {
+                value = obj.ToString();
+                return true;
+            }
+            return false;
+        }
+
+        static bool TryGetInt(Dictionary<string, object> parameters, string key, out int value)
+        {
+            value = 1;
+            if (parameters.TryGetValue(key, out var obj))
+            {
+                try
+                {
+                    value = Convert.ToInt32(obj);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            return false;
         }
     }
 }
