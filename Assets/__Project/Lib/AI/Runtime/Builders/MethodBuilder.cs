@@ -38,11 +38,7 @@ namespace Gast.Lib.AI.Builders
         {
             foreach (var name in taskNames)
             {
-                var item = compoundBuilder.DomainBuilder.GetRegisteredItem(name);
-                if (item == null)
-                {
-                    throw new InvalidOperationException($"'{name}' is not registered.");
-                }
+                var item = GetRegisteredItem(name);
 
                 if (item is ITask<TWorldState, TContext> task)
                 {
@@ -62,11 +58,7 @@ namespace Gast.Lib.AI.Builders
 
         public MethodBuilder<TWorldState, TContext> Do<TParam>(string taskName, TParam param)
         {
-            var item = compoundBuilder.DomainBuilder.GetRegisteredItem(taskName);
-            if (item == null)
-            {
-                throw new InvalidOperationException($"'{taskName}' is not registered.");
-            }
+            var item = GetRegisteredItem(taskName);
 
             if (item is IAction<TWorldState, TContext, TParam> action)
             {
@@ -77,6 +69,16 @@ namespace Gast.Lib.AI.Builders
                 throw new InvalidOperationException($"'{taskName}' is not registered as a parametric action with type '{typeof(TParam).Name}'.");
             }
             return this;
+        }
+
+        object GetRegisteredItem(string name)
+        {
+            var item = compoundBuilder.DomainBuilder.GetRegisteredItem(name);
+            if (item == null)
+            {
+                throw new InvalidOperationException($"'{name}' is not registered.");
+            }
+            return item;
         }
 
         public CompoundTaskBuilder<TWorldState, TContext> End()
