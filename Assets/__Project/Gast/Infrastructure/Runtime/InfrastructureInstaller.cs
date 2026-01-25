@@ -7,6 +7,7 @@ using Gast.Infrastructure.Remoting.AI;
 using Gast.Infrastructure.Repositories;
 using Gast.Infrastructure.Services;
 using Gast.Lib.AI.Debugging;
+using Gast.Lib.Gaia;
 
 namespace Gast.Infrastructure
 {
@@ -20,6 +21,7 @@ namespace Gast.Infrastructure
             builder.Register<DomainEventPublisher>().AsImplementedInterfaces();
 
             // AI Server Client
+            builder.Register<GaiaPlanningClient>().As<IGaiaPlanningClient>();
             builder.Register<AIPlanningService>().AsImplementedInterfaces();
 
             // Character

@@ -9,6 +9,7 @@
         "Gast.UI",
         "Gast.Shared",
         "Gast.Lib.AI",
+        "Gast.Lib.Gaia",
         "UniTask",
         "R3.Unity",
         "VContainer"

@@ -1,49 +1,35 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Gast.Application.AI;
 using Gast.Application.AI.Tools;
 using Gast.Application.AIPlanning;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using Gast.Lib.Gaia;
+using Gast.Lib.Gaia.Dto;
 using UnityEngine;
 
 namespace Gast.Infrastructure.Remoting.AI
 {
     public class AIPlanningService : IAIPlanningService
     {
-        readonly AIServerSettings settings;
+        readonly IGaiaPlanningClient gaiaClient;
         readonly IToolRegistry toolRegistry;
         readonly IObjectiveRegistry objectiveRegistry;
         readonly PlanConverter planConverter;
-        readonly HttpClient httpClient;
-        readonly JsonSerializerSettings serializerSettings;
 
         public AIPlanningService(
-            AIServerSettings settings,
+            IGaiaPlanningClient gaiaClient,
             IToolRegistry toolRegistry,
             IObjectiveRegistry objectiveRegistry,
             GameInfoTools gameInfoTools,
             PlanConverter planConverter)
         {
-            this.settings = settings;
+            this.gaiaClient = gaiaClient;
             this.toolRegistry = toolRegistry;
             this.objectiveRegistry = objectiveRegistry;
             this.planConverter = planConverter;
 
-            httpClient = new HttpClient { Timeout = System.TimeSpan.FromSeconds(60) };
-            serializerSettings = new JsonSerializerSettings
-            {
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new SnakeCaseNamingStrategy()
-                }
-            };
-
-            // Register the tools
             this.toolRegistry.RegisterToolSet(gameInfoTools);
         }
 
@@ -51,13 +37,20 @@ namespace Gast.Infrastructure.Remoting.AI
         {
             try
             {
-                var sessionDto = await CreateSessionAsync(instruction, cancellationToken);
+                var request = new CreateSessionRequest
+                {
+                    Instruction = instruction,
+                    ToolDefinitions = toolRegistry.GetToolDefinitions().Select(ModelToDto).ToList(),
+                    ObjectiveDefinitions = objectiveRegistry.GetObjectiveDefinitions().Select(ModelToDto).ToList()
+                };
+                var sessionDto = await gaiaClient.CreateSessionAsync(request, cancellationToken);
 
                 while (sessionDto.Status == SessionStatus.WaitingForTool && sessionDto.ToolCalls != null && sessionDto.ToolCalls.Any())
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var toolOutputs = await ExecuteToolsAsync(sessionDto.ToolCalls);
-                    sessionDto = await SubmitToolOutputsAsync(sessionDto.SessionId, toolOutputs, cancellationToken);
+                    var submitRequest = new SubmitToolOutputsRequest { ToolOutputs = toolOutputs };
+                    sessionDto = await gaiaClient.SubmitToolOutputsAsync(sessionDto.SessionId, submitRequest, cancellationToken);
                 }
 
                 if (sessionDto.Status == SessionStatus.Completed && sessionDto.Plan != null)
@@ -71,10 +64,20 @@ namespace Gast.Infrastructure.Remoting.AI
                     : "AI failed to generate a plan.";
                 return AIPlanningResult.Failure(new AIPlanningError(AIPlanningErrorCode.ServerError, errorMessage));
             }
-            catch (HttpRequestException ex)
+            catch (GaiaTimeoutException ex)
             {
-                Debug.LogError($"[AIAgentService] HTTP Request Error: {ex.Message}");
+                Debug.LogError($"[AIAgentService] Gaia Timeout Error: {ex.Message}");
+                return AIPlanningResult.Failure(new AIPlanningError(AIPlanningErrorCode.Timeout, "Request to AI server timed out."));
+            }
+            catch (GaiaConnectionException ex)
+            {
+                Debug.LogError($"[AIAgentService] Gaia Connection Error: {ex.Message}");
                 return AIPlanningResult.Failure(new AIPlanningError(AIPlanningErrorCode.NetworkError, "Failed to connect to AI server."));
+            }
+            catch (GaiaServerException ex)
+            {
+                Debug.LogError($"[AIAgentService] Gaia Server Error: {ex.StatusCode} - {ex.Message}");
+                return AIPlanningResult.Failure(new AIPlanningError(AIPlanningErrorCode.ServerError, "AI server returned an error.", ex.ResponseContent));
             }
             catch (System.OperationCanceledException)
             {
@@ -85,33 +88,6 @@ namespace Gast.Infrastructure.Remoting.AI
                 Debug.LogException(ex);
                 return AIPlanningResult.Failure(new AIPlanningError(AIPlanningErrorCode.InvalidResponse, "An unexpected error occurred.", ex.Message));
             }
-        }
-
-        async Task<PlanningSessionDto> CreateSessionAsync(string instruction, CancellationToken cancellationToken)
-        {
-            var request = new CreateSessionRequest
-            {
-                Instruction = instruction,
-                ToolDefinitions = toolRegistry.GetToolDefinitions().Select(ModelToDto).ToList(),
-                ObjectiveDefinitions = objectiveRegistry.GetObjectiveDefinitions().Select(ModelToDto).ToList()
-            };
-
-            var requestJson = JsonConvert.SerializeObject(request, serializerSettings);
-            var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
-
-            var response = await httpClient.PostAsync($"{settings.ServerUrl}/planning/request", content, cancellationToken);
-            return await ProcessResponseAsync(response);
-        }
-
-        async Task<PlanningSessionDto> SubmitToolOutputsAsync(string sessionId, List<ToolOutputDto> outputs, CancellationToken cancellationToken)
-        {
-            var request = new SubmitToolOutputsRequest { ToolOutputs = outputs };
-            var requestJson = JsonConvert.SerializeObject(request, serializerSettings);
-            var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
-
-            var url = $"{settings.ServerUrl}/planning/respond/{sessionId}";
-            var response = await httpClient.PostAsync(url, content, cancellationToken);
-            return await ProcessResponseAsync(response);
         }
 
         async Task<List<ToolOutputDto>> ExecuteToolsAsync(List<ToolCallDto> toolCalls)
@@ -126,14 +102,6 @@ namespace Gast.Infrastructure.Remoting.AI
             return (await Task.WhenAll(tasks)).ToList();
         }
 
-        async Task<PlanningSessionDto> ProcessResponseAsync(HttpResponseMessage response)
-        {
-            var responseJson = await response.Content.ReadAsStringAsync();
-            response.EnsureSuccessStatusCode();
-            return JsonConvert.DeserializeObject<PlanningSessionDto>(responseJson, serializerSettings);
-        }
-
-        // --- Mappers ---
         ToolDefinitionDto ModelToDto(ToolDefinition model)
         {
             return new ToolDefinitionDto

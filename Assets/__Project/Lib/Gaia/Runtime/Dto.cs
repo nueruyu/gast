@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Gast.Infrastructure.Remoting.AI
+namespace Gast.Lib.Gaia.Dto
 {
     // --- Enums ---
     public enum SessionStatus
