@@ -1,174 +1,86 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Gast.Infrastructure.Remoting.AI
 {
-    // --- Attributes ---
-
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class ObjectiveTypeAttribute : Attribute
+    // --- Enums ---
+    public enum SessionStatus
     {
-        public string TypeName { get; }
-        public ObjectiveTypeAttribute(string typeName) => TypeName = typeName;
+        Thinking,
+        WaitingForTool,
+        Completed,
+        Error
     }
 
-    // --- Request DTOs ---
-
-    public class PlanRequestDto
+    // --- Requests ---
+    public class CreateSessionRequest
     {
-        public AgentContextDto Context { get; set; }
-        public StaticDefinitionsDto Definitions { get; set; }
-        public List<GoalDefinitionDto> AvailableGoals { get; set; }
+        public string Instruction { get; set; }
+        public List<ToolDefinitionDto> ToolDefinitions { get; set; }
+        public List<ObjectiveDefinitionDto> ObjectiveDefinitions { get; set; }
     }
 
-    public class AgentContextDto
+    public class SubmitToolOutputsRequest
     {
-        public string AgentCharacterType { get; set; }
-        public string MissionObjective { get; set; }
+        public List<ToolOutputDto> ToolOutputs { get; set; }
     }
 
-    public class StaticDefinitionsDto
+    // --- Responses ---
+    public class PlanningSessionDto
     {
-        public List<CharacterTypeDto> CharacterTypes { get; set; }
-        public List<ItemDto> ItemTypes { get; set; }
+        public string SessionId { get; set; }
+        public SessionStatus Status { get; set; }
+        public List<ToolCallDto> ToolCalls { get; set; }
+        public PlanDto Plan { get; set; }
+        public string ErrorMessage { get; set; }
     }
 
-    public class CharacterTypeDto
-    {
-        public string TypeId { get; set; }
-        public string DisplayName { get; set; }
-        public int ThreatLevel { get; set; }
-    }
-
-    public class ItemDto
-    {
-        public string ItemId { get; set; }
-        public string Name { get; set; }
-        public int Utility { get; set; }
-    }
-
-    public class GoalDefinitionDto
+    // --- Shared Definitions ---
+    public class ToolDefinitionDto
     {
         public string Name { get; set; }
         public string Description { get; set; }
         public Dictionary<string, object> Parameters { get; set; }
     }
 
-    // --- Response DTOs ---
-
-    public class PlanResponseDto
+    public class ObjectiveDefinitionDto
     {
-        public string OverallObjective { get; set; }
-        public List<ObjectiveDto> Objectives { get; set; }
-        public string Thought { get; set; }
-    }
-
-    /// <summary>
-    /// Base class for objectives.
-    /// The JsonConverter handles selecting the concrete class based on the "type" field
-    /// mapped via [ObjectiveType] attributes.
-    /// </summary>
-    [JsonConverter(typeof(ObjectiveConverter))]
-    public abstract class ObjectiveDto
-    {
-        public string Type { get; set; }
-        public int Priority { get; set; }
-    }
-
-    [ObjectiveType("DefeatCharacter")]
-    public class DefeatCharacterObjectiveDto : ObjectiveDto
-    {
-        public DefeatCharacterParametersDto Parameters { get; set; }
-    }
-
-    public class DefeatCharacterParametersDto
-    {
-        public string CharacterTypeId { get; set; }
-        public int Quantity { get; set; }
-    }
-
-    [ObjectiveType("AcquireItem")]
-    public class AcquireItemObjectiveDto : ObjectiveDto
-    {
-        public AcquireItemParametersDto Parameters { get; set; }
-    }
-
-    public class AcquireItemParametersDto
-    {
-        public string ItemId { get; set; }
-        public int Quantity { get; set; }
-    }
-
-    /// <summary>
-    /// Fallback for unknown objective types.
-    /// </summary>
-    public class UnknownObjectiveDto : ObjectiveDto
-    {
+        public string Name { get; set; }
+        public string Description { get; set; }
         public Dictionary<string, object> Parameters { get; set; }
     }
 
-    // --- Converters ---
-
-    public class ObjectiveConverter : JsonConverter
+    public class ToolCallDto
     {
-        static readonly Dictionary<string, Type> TypeMap;
+        public string Id { get; set; }
+        public string FunctionName { get; set; }
+        public string Arguments { get; set; } // JSON String
+    }
 
-        static ObjectiveConverter()
-        {
-            TypeMap = new Dictionary<string, Type>();
+    public class ToolOutputDto
+    {
+        public string ToolCallId { get; set; }
+        public string Output { get; set; } // JSON String
+    }
 
-            var types = Assembly.GetExecutingAssembly()
-                .GetTypes()
-                .Where(t => t.GetCustomAttribute<ObjectiveTypeAttribute>() != null);
+    public class PlanDto
+    {
+        public string OverallObjective { get; set; }
+        public List<ObjectiveDto> Objectives { get; set; }
+        public StrategyDto Strategy { get; set; }
+        public string Thought { get; set; }
+    }
 
-            foreach (var type in types)
-            {
-                var attr = type.GetCustomAttribute<ObjectiveTypeAttribute>();
-                if (attr != null && !string.IsNullOrEmpty(attr.TypeName))
-                {
-                    TypeMap[attr.TypeName] = type;
-                }
-            }
-        }
+    public class ObjectiveDto
+    {
+        public string Type { get; set; }
+        public Dictionary<string, object> Parameters { get; set; }
+        public int Priority { get; set; }
+    }
 
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(ObjectiveDto);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            var jsonObject = JObject.Load(reader);
-
-            var typeToken = jsonObject["type"];
-            var typeName = typeToken?.ToString();
-
-            ObjectiveDto dto;
-
-            if (!string.IsNullOrEmpty(typeName) && TypeMap.TryGetValue(typeName, out var concreteType))
-            {
-                dto = (ObjectiveDto)Activator.CreateInstance(concreteType);
-            }
-            else
-            {
-                dto = new UnknownObjectiveDto();
-            }
-
-            using (var subReader = jsonObject.CreateReader())
-            {
-                serializer.Populate(subReader, dto);
-            }
-
-            return dto;
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            serializer.Serialize(writer, value);
-        }
+    public class StrategyDto
+    {
+        public string Priority { get; set; }
+        public string Engagement { get; set; }
+        public Dictionary<string, object> RetreatCondition { get; set; }
     }
 }

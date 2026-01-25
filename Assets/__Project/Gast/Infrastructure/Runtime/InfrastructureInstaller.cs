@@ -1,5 +1,9 @@
+using Gast.Application.AI.Objectives;
+using Gast.Application.AI.Tools;
 using Gast.Core.DI;
 using Gast.Features.Combat;
+using Gast.Infrastructure.AI.Objectives;
+using Gast.Infrastructure.AI.Tools;
 using Gast.Infrastructure.Factories;
 using Gast.Infrastructure.Remoting.AI;
 using Gast.Infrastructure.Repositories;
@@ -43,6 +47,13 @@ namespace Gast.Infrastructure
             // AI
             builder.Register<AIDebugger>().AsSelf().As<IContextRegistry>().As<IAIDebugger>();
             builder.Register<AIDebugInitializer>().AsImplementedInterfaces();
+
+            // AI Tools & Objectives
+            builder.Register<ReflectionToolRegistry>().As<IToolRegistry>();
+            builder.Register<ReflectionObjectiveRegistry>().As<IObjectiveRegistry>();
+            builder.Register<GameInfoTools>();
+            builder.Register<GoalInstantiator>();
+            builder.Register<PlanConverter>();
         }
     }
 }

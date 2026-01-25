@@ -1,297 +1,158 @@
-using Gast.Application.AI;
-using Gast.Domain.AI;
-using Gast.Domain.AI.Goals;
-using Gast.Domain.Characters;
-using Gast.Domain.Economy;
-using Gast.Infrastructure.Repositories;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Gast.Application.AI;
+using Gast.Application.AI.Models;
+using Gast.Application.AI.Objectives;
+using Gast.Application.AI.Tools;
+using Gast.Infrastructure.AI.Tools;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using UnityEngine;
 
 namespace Gast.Infrastructure.Remoting.AI
 {
     public class AIAgentService : IAIAgentService
     {
-        static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
-
         readonly AIServerSettings settings;
-        readonly CharacterTypeRepository characterTypeRepository;
-        readonly ItemRepository itemRepository;
+        readonly IToolRegistry toolRegistry;
+        readonly IObjectiveRegistry objectiveRegistry;
+        readonly PlanConverter planConverter;
         readonly HttpClient httpClient;
-        readonly JsonSerializerSettings jsonSettings;
+        readonly JsonSerializerSettings serializerSettings;
 
-        public AIAgentService(AIServerSettings settings, CharacterTypeRepository characterTypeRepository, ItemRepository itemRepository)
+        public AIAgentService(
+            AIServerSettings settings,
+            IToolRegistry toolRegistry,
+            IObjectiveRegistry objectiveRegistry,
+            GameInfoTools gameInfoTools,
+            PlanConverter planConverter)
         {
             this.settings = settings;
-            this.characterTypeRepository = characterTypeRepository;
-            this.itemRepository = itemRepository;
+            this.toolRegistry = toolRegistry;
+            this.objectiveRegistry = objectiveRegistry;
+            this.planConverter = planConverter;
 
-            httpClient = new HttpClient
-            {
-                Timeout = DefaultTimeout
-            };
-
-            jsonSettings = new JsonSerializerSettings
+            httpClient = new HttpClient { Timeout = System.TimeSpan.FromSeconds(60) };
+            serializerSettings = new JsonSerializerSettings
             {
                 ContractResolver = new DefaultContractResolver
                 {
                     NamingStrategy = new SnakeCaseNamingStrategy()
-                },
-                Formatting = Formatting.None
+                }
             };
+
+            // Register the tools
+            this.toolRegistry.Register(gameInfoTools);
         }
 
-        public async Task<AIAgentResult> GetGoalsAsync(string instruction, CancellationToken cancellationToken = default)
+        public async Task<AIAgentResult> GetGoalsAsync(string instruction, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(instruction))
-            {
-                return AIAgentResult.Failure(new AIAgentError(
-                    AIAgentErrorCode.InvalidResponse,
-                    "Instruction cannot be empty"));
-            }
-
-            if (string.IsNullOrWhiteSpace(settings.ServerUrl))
-            {
-                return AIAgentResult.Failure(new AIAgentError(
-                    AIAgentErrorCode.ServiceUnavailable,
-                    "AI server URL is not configured"));
-            }
-
-            var requestDto = CreatePlanRequest(instruction);
-            string requestJson;
-
             try
             {
-                requestJson = JsonConvert.SerializeObject(requestDto, jsonSettings);
-            }
-            catch (JsonException ex)
-            {
-                Debug.LogError($"[AIAgentService] Failed to serialize request: {ex.Message}");
-                return AIAgentResult.Failure(new AIAgentError(
-                    AIAgentErrorCode.InvalidResponse,
-                    "Failed to create request",
-                    ex.Message));
-            }
+                var sessionDto = await CreateSessionAsync(instruction, cancellationToken);
 
-            var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
+                while (sessionDto.Status == SessionStatus.WaitingForTool && sessionDto.ToolCalls != null && sessionDto.ToolCalls.Any())
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var toolOutputs = await ExecuteToolsAsync(sessionDto.ToolCalls);
+                    sessionDto = await SubmitToolOutputsAsync(sessionDto.SessionId, toolOutputs, cancellationToken);
+                }
 
-            try
-            {
-                using var response = await httpClient.PostAsync(settings.ServerUrl, content, cancellationToken);
-                return await HandleResponseAsync(response);
-            }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-            {
-                Debug.Log("[AIAgentService] Request was cancelled");
-                return AIAgentResult.Failure(new AIAgentError(
-                    AIAgentErrorCode.Cancelled,
-                    "Request was cancelled"));
-            }
-            catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
-            {
-                Debug.LogWarning($"[AIAgentService] Request timed out: {ex.Message}");
-                return AIAgentResult.Failure(new AIAgentError(
-                    AIAgentErrorCode.Timeout,
-                    "Request timed out",
-                    $"Timeout after {DefaultTimeout.TotalSeconds} seconds"));
-            }
-            catch (HttpRequestException ex) when (IsConnectionError(ex))
-            {
-                Debug.LogWarning($"[AIAgentService] Connection error: {ex.Message}");
-                return AIAgentResult.Failure(new AIAgentError(
-                    AIAgentErrorCode.NetworkError,
-                    "Failed to connect to AI server",
-                    ex.Message));
+                if (sessionDto.Status == SessionStatus.Completed && sessionDto.Plan != null)
+                {
+                    var goals = planConverter.ToGoals(sessionDto.Plan);
+                    return AIAgentResult.Success(goals);
+                }
+
+                var errorMessage = !string.IsNullOrEmpty(sessionDto.ErrorMessage)
+                    ? sessionDto.ErrorMessage
+                    : "AI failed to generate a plan.";
+                return AIAgentResult.Failure(new AIAgentError(AIAgentErrorCode.ServerError, errorMessage));
             }
             catch (HttpRequestException ex)
             {
-                Debug.LogError($"[AIAgentService] HTTP error: {ex.Message}");
-                return AIAgentResult.Failure(new AIAgentError(
-                    AIAgentErrorCode.NetworkError,
-                    "Network error occurred",
-                    ex.Message));
+                Debug.LogError($"[AIAgentService] HTTP Request Error: {ex.Message}");
+                return AIAgentResult.Failure(new AIAgentError(AIAgentErrorCode.NetworkError, "Failed to connect to AI server."));
             }
-            catch (Exception ex)
+            catch (System.OperationCanceledException)
             {
-                Debug.LogError($"[AIAgentService] Unexpected error: {ex.Message}");
+                return AIAgentResult.Failure(new AIAgentError(AIAgentErrorCode.Cancelled, "Operation was cancelled."));
+            }
+            catch (System.Exception ex)
+            {
                 Debug.LogException(ex);
-                return AIAgentResult.Failure(new AIAgentError(
-                    AIAgentErrorCode.ServerError,
-                    "An unexpected error occurred",
-                    ex.Message));
+                return AIAgentResult.Failure(new AIAgentError(AIAgentErrorCode.InvalidResponse, "An unexpected error occurred.", ex.Message));
             }
         }
 
-        async Task<AIAgentResult> HandleResponseAsync(HttpResponseMessage response)
+        async Task<PlanningSessionDto> CreateSessionAsync(string instruction, CancellationToken cancellationToken)
         {
-            var responseBody = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
+            var request = new CreateSessionRequest
             {
-                var errorCode = response.StatusCode switch
-                {
-                    HttpStatusCode.BadRequest => AIAgentErrorCode.InvalidResponse,
-                    HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => AIAgentErrorCode.ServiceUnavailable,
-                    HttpStatusCode.NotFound => AIAgentErrorCode.ServiceUnavailable,
-                    HttpStatusCode.RequestTimeout or HttpStatusCode.GatewayTimeout => AIAgentErrorCode.Timeout,
-                    HttpStatusCode.ServiceUnavailable => AIAgentErrorCode.ServiceUnavailable,
-                    >= HttpStatusCode.InternalServerError => AIAgentErrorCode.ServerError,
-                    _ => AIAgentErrorCode.NetworkError
-                };
+                Instruction = instruction,
+                ToolDefinitions = toolRegistry.GetToolDefinitions().Select(ModelToDto).ToList(),
+                ObjectiveDefinitions = objectiveRegistry.GetObjectiveDefinitions().Select(ModelToDto).ToList()
+            };
 
-                Debug.LogWarning($"[AIAgentService] Server returned {(int)response.StatusCode}: {responseBody}");
-                return AIAgentResult.Failure(new AIAgentError(
-                    errorCode,
-                    $"Server returned {(int)response.StatusCode} {response.ReasonPhrase}",
-                    responseBody));
-            }
+            var requestJson = JsonConvert.SerializeObject(request, serializerSettings);
+            var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
 
-            PlanResponseDto plan;
-            try
-            {
-                plan = JsonConvert.DeserializeObject<PlanResponseDto>(responseBody, jsonSettings);
-            }
-            catch (JsonException ex)
-            {
-                Debug.LogError($"[AIAgentService] Failed to parse response: {ex.Message}");
-                return AIAgentResult.Failure(new AIAgentError(
-                    AIAgentErrorCode.InvalidResponse,
-                    "Failed to parse server response",
-                    ex.Message));
-            }
-
-            if (plan?.Objectives == null)
-            {
-                Debug.LogWarning("[AIAgentService] Server returned empty or invalid response");
-                return AIAgentResult.Failure(new AIAgentError(
-                    AIAgentErrorCode.InvalidResponse,
-                    "Plan contained no objectives"));
-            }
-
-            Debug.Log($"[AIAgentService] AI Thought: {plan.Thought}");
-            var goals = ConvertObjectivesToGoals(plan.Objectives);
-            Debug.Log($"[AIAgentService] Successfully parsed {goals.Count} goals");
-            return AIAgentResult.Success(goals);
+            var response = await httpClient.PostAsync($"{settings.ServerUrl}/planning/request", content, cancellationToken);
+            return await ProcessResponseAsync(response);
         }
 
-        static bool IsConnectionError(HttpRequestException ex)
+        async Task<PlanningSessionDto> SubmitToolOutputsAsync(string sessionId, List<ToolOutputDto> outputs, CancellationToken cancellationToken)
         {
-            return ex.InnerException is SocketException ||
-                   ex.Message.Contains("connection", StringComparison.OrdinalIgnoreCase) ||
-                   ex.Message.Contains("refused", StringComparison.OrdinalIgnoreCase);
+            var request = new SubmitToolOutputsRequest { ToolOutputs = outputs };
+            var requestJson = JsonConvert.SerializeObject(request, serializerSettings);
+            var content = new StringContent(requestJson, Encoding.UTF8, "application/json");
+
+            var url = $"{settings.ServerUrl}/planning/respond/{sessionId}";
+            var response = await httpClient.PostAsync(url, content, cancellationToken);
+            return await ProcessResponseAsync(response);
         }
 
-        PlanRequestDto CreatePlanRequest(string instruction)
+        async Task<List<ToolOutputDto>> ExecuteToolsAsync(List<ToolCallDto> toolCalls)
         {
-            var context = new AgentContextDto
+            var tasks = toolCalls.Select(async call =>
             {
-                AgentCharacterType = "soldier", // TODO: Should be dynamic based on the actual agent
-                MissionObjective = instruction
-            };
+                var output = await toolRegistry.ExecuteAsync(call.FunctionName, call.Arguments);
+                return new ToolOutputDto { ToolCallId = call.Id, Output = output };
+            });
 
-            var characterTypes = characterTypeRepository.GetAllDefinitions()
-                .Select(def => new CharacterTypeDto
-                {
-                    TypeId = def.TypeId.ToString(),
-                    DisplayName = def.DisplayName,
-                    ThreatLevel = 5 // Default value, ideally added to ScriptableObject
-                })
-                .ToList();
+            return (await Task.WhenAll(tasks)).ToList();
+        }
 
-            var items = itemRepository.GetAllDefinitions()
-                .Select(def => new ItemDto
-                {
-                    ItemId = def.Id.ToString(),
-                    Name = def.Name,
-                    Utility = 5 // Default value
-                })
-                .ToList();
+        async Task<PlanningSessionDto> ProcessResponseAsync(HttpResponseMessage response)
+        {
+            var responseJson = await response.Content.ReadAsStringAsync();
+            response.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<PlanningSessionDto>(responseJson, serializerSettings);
+        }
 
-            var definitions = new StaticDefinitionsDto
+        // --- Mappers ---
+        ToolDefinitionDto ModelToDto(ToolDefinition model)
+        {
+            return new ToolDefinitionDto
             {
-                CharacterTypes = characterTypes,
-                ItemTypes = items
-            };
-
-            var availableGoals = new List<GoalDefinitionDto>
-            {
-                new GoalDefinitionDto
-                {
-                    Name = "DefeatCharacter",
-                    Description = "Eliminate a specific number of enemies of a certain type.",
-                    Parameters = new Dictionary<string, object>
-                    {
-                        { "character_type_id", "string" },
-                        { "quantity", "integer" }
-                    }
-                },
-                new GoalDefinitionDto
-                {
-                    Name = "AcquireItem",
-                    Description = "Collect a specific number of items.",
-                    Parameters = new Dictionary<string, object>
-                    {
-                        { "item_id", "string" },
-                        { "quantity", "integer" }
-                    }
-                }
-            };
-
-            return new PlanRequestDto
-            {
-                Context = context,
-                Definitions = definitions,
-                AvailableGoals = availableGoals
+                Name = model.Name,
+                Description = model.Description,
+                Parameters = model.Parameters
             };
         }
 
-        List<IGoal> ConvertObjectivesToGoals(List<ObjectiveDto> objectives)
+        ObjectiveDefinitionDto ModelToDto(ObjectiveDefinition model)
         {
-            var goals = new List<IGoal>();
-
-            foreach (var objective in objectives)
+            return new ObjectiveDefinitionDto
             {
-                try
-                {
-                    switch (objective)
-                    {
-                        case DefeatCharacterObjectiveDto defeatObj:
-                            var charTypeId = CharacterTypeId.FromString(defeatObj.Parameters.CharacterTypeId);
-                            goals.Add(new DefeatCharacterGoal(charTypeId, defeatObj.Parameters.Quantity));
-                            break;
-
-                        case AcquireItemObjectiveDto itemObj:
-                            if (Guid.TryParse(itemObj.Parameters.ItemId, out var itemGuid))
-                            {
-                                goals.Add(new AcquireItemGoal(ItemId.FromGuid(itemGuid), itemObj.Parameters.Quantity));
-                            }
-                            else
-                            {
-                                Debug.LogWarning($"[AIAgentService] Invalid Item GUID: {itemObj.Parameters.ItemId}");
-                            }
-                            break;
-
-                        case UnknownObjectiveDto unknown:
-                            Debug.LogWarning($"[AIAgentService] Skipping unknown objective type: {unknown.Type}");
-                            break;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError($"[AIAgentService] Failed to convert objective '{objective.Type}': {ex.Message}");
-                }
-            }
-
-            return goals;
+                Name = model.Name,
+                Description = model.Description,
+                Parameters = model.Parameters
+            };
         }
     }
 }
