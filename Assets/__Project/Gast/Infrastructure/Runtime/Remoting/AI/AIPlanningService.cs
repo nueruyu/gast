@@ -118,7 +118,8 @@ namespace Gast.Infrastructure.Remoting.AI
         {
             var tasks = toolCalls.Select(async call =>
             {
-                var output = await toolRegistry.ExecuteAsync(call.FunctionName, call.Arguments);
+                var tool = toolRegistry.GetTool(call.FunctionName);
+                var output = await tool.ExecuteAsync(call.Arguments);
                 return new ToolOutputDto { ToolCallId = call.Id, Output = output };
             });
 
@@ -149,7 +150,7 @@ namespace Gast.Infrastructure.Remoting.AI
             {
                 Name = model.Name,
                 Description = model.Description,
-                Parameters = model.Parameters
+                Parameters = new(model.Parameters),
             };
         }
     }
