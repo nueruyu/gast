@@ -15,11 +15,11 @@ namespace Gast.Infrastructure.Remoting.AI
             this.goalInstantiator = goalInstantiator;
         }
 
-        public List<IGoal> ToGoals(PlanDto plan)
+        public List<IAIObjective> ToGoals(PlanDto plan)
         {
             if (plan?.Objectives == null)
             {
-                return new List<IGoal>();
+                return new List<IAIObjective>();
             }
 
             return plan.Objectives
@@ -29,7 +29,7 @@ namespace Gast.Infrastructure.Remoting.AI
                 .ToList();
         }
 
-        IGoal TryConvertToGoal(ObjectiveDto objective)
+        IAIObjective TryConvertToGoal(ObjectiveDto objective)
         {
             try
             {

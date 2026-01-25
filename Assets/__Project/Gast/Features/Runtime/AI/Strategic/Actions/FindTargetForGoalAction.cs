@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Gast.Domain.AI.Goals;
+using Gast.Domain.AI.Objectives;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
 using System;
@@ -29,7 +29,7 @@ namespace Gast.Features.AI.Strategic.Actions
             var goal = ctx.WorldState.CurrentGoal;
             ICharacter foundTarget = null;
 
-            if (goal is DefeatCharacterGoal defeatGoal)
+            if (goal is DefeatCharacterObjective defeatGoal)
             {
                 foundTarget = FindClosestCharacterOfType(ctx.Actor, defeatGoal.TargetTypeId);
             }

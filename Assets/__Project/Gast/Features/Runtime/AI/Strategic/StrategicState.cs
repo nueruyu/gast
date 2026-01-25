@@ -5,7 +5,7 @@ namespace Gast.Features.AI.Strategic
 {
     public class StrategicState : IWorldState<StrategicState>
     {
-        public IGoal CurrentGoal { get; set; }
+        public IAIObjective CurrentGoal { get; set; }
         public bool HasGoal { get; set; }
         public bool IsThreatened { get; set; }
 

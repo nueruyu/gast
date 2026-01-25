@@ -1,4 +1,4 @@
-using Gast.Domain.AI.Goals;
+using Gast.Domain.AI.Objectives;
 using Gast.Features.AI.Gathering.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
@@ -31,7 +31,7 @@ namespace Gast.Features.AI.Gathering
                 .End()
                 .DefineCompound("Root")
                     .AddMethod("AcquireItemGoal")
-                        .Condition(s => !s.IsInCombat && s.HasGoal && s.CurrentGoal is AcquireItemGoal)
+                        .Condition(s => !s.IsInCombat && s.HasGoal && s.CurrentGoal is AcquireItemObjective)
                         .Do("AcquireItem")
                     .End()
                     .AddMethod("Idle")

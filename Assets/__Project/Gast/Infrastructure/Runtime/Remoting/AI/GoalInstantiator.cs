@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Gast.Domain.AI;
+using Gast.Domain.AI.Attributes;
 using Newtonsoft.Json.Linq;
 
 namespace Gast.Infrastructure.Remoting.AI
@@ -19,9 +20,9 @@ namespace Gast.Infrastructure.Remoting.AI
 
         void CacheGoalTypes()
         {
-            var assembly = typeof(IGoal).Assembly;
+            var assembly = typeof(IAIObjective).Assembly;
             var goalTypes = assembly.GetTypes()
-                .Where(t => typeof(IGoal).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+                .Where(t => typeof(IAIObjective).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
             foreach (var type in goalTypes)
             {
@@ -33,7 +34,7 @@ namespace Gast.Infrastructure.Remoting.AI
             }
         }
 
-        public IGoal CreateGoal(string objectiveType, Dictionary<string, object> parameters)
+        public IAIObjective CreateGoal(string objectiveType, Dictionary<string, object> parameters)
         {
             if (!goalTypeMap.TryGetValue(objectiveType, out var type))
             {
@@ -71,7 +72,7 @@ namespace Gast.Infrastructure.Remoting.AI
                 }
             }
 
-            return (IGoal)constructor.Invoke(args);
+            return (IAIObjective)constructor.Invoke(args);
         }
 
         string ToSnakeCase(string text)

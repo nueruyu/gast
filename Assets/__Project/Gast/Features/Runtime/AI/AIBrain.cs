@@ -22,7 +22,7 @@ namespace Gast.Features.AI
         readonly StrategicDomain strategicDomain;
         readonly CombatDomain combatDomain;
         readonly GatheringDomain gatheringDomain;
-        readonly GoalManager goalManager;
+        readonly ObjectiveManager objectiveManager;
         readonly IContextRegistry contextRegistry;
 
         ICharacter character;
@@ -31,7 +31,7 @@ namespace Gast.Features.AI
         ContextKey gatheringContextKey;
         CancellationTokenSource cts;
 
-        public IReadOnlyList<IGoal> CurrentGoals => goalManager.CurrentGoals;
+        public IReadOnlyList<IAIObjective> CurrentObjectives => objectiveManager.CurrentObjectives;
 
         AIRunner<StrategicState, AIContext<StrategicState>> strategicAgentRunner;
         AIRunner<CombatState, AIContext<CombatState>> combatAgentRunner;
@@ -46,13 +46,13 @@ namespace Gast.Features.AI
             StrategicDomain strategicDomain,
             CombatDomain combatDomain,
             GatheringDomain gatheringDomain,
-            GoalManager goalManager,
+            ObjectiveManager objectiveManager,
             IContextRegistry contextRegistry)
         {
             this.strategicDomain = strategicDomain;
             this.combatDomain = combatDomain;
             this.gatheringDomain = gatheringDomain;
-            this.goalManager = goalManager;
+            this.objectiveManager = objectiveManager;
             this.contextRegistry = contextRegistry;
         }
 
@@ -80,7 +80,7 @@ namespace Gast.Features.AI
             cts = new CancellationTokenSource();
             RunAsync(cts.Token).Forget();
 
-            goalManager
+            objectiveManager
                 .BindCharacter(character.Id)
                 .AddTo(cts.Token);
         }
@@ -107,9 +107,9 @@ namespace Gast.Features.AI
             gatheringContextKey = default;
         }
 
-        public void SetGoals(IEnumerable<IGoal> goals)
+        public void SetObjectives(IEnumerable<IAIObjective> objectives)
         {
-            goalManager.UpdateGoals(goals);
+            objectiveManager.UpdateObjectives(objectives);
         }
 
         async UniTaskVoid RunAsync(CancellationToken token)
@@ -181,7 +181,7 @@ namespace Gast.Features.AI
 
         void UpdateStrategicWorldState()
         {
-            var goals = goalManager.CurrentGoals;
+            var goals = objectiveManager.CurrentObjectives;
             var currentGoal = goals.FirstOrDefault(g => !g.IsCompleted);
             strategicState.CurrentGoal = currentGoal;
             strategicState.HasGoal = currentGoal != null;
@@ -210,7 +210,7 @@ namespace Gast.Features.AI
 
         void UpdateGatheringWorldState()
         {
-            var goals = goalManager.CurrentGoals;
+            var goals = objectiveManager.CurrentObjectives;
             var currentGoal = goals.FirstOrDefault(g => !g.IsCompleted);
             gatheringState.CurrentGoal = currentGoal;
             gatheringState.HasGoal = currentGoal != null;

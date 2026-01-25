@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Gast.Domain.Characters
 {
     /// <summary>
@@ -12,5 +14,7 @@ namespace Gast.Domain.Characters
         /// Thrown when no definition with the given ID exists.
         /// </exception>
         ICharacterTypeDefinition Get(CharacterTypeId id);
+
+        IEnumerable<ICharacterTypeDefinition> GetAllDefinitions();
     }
 }

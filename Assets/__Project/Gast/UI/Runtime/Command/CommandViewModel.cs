@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Gast.Application.AI;
+using Gast.Application.AIPlanning;
 using Gast.Core.Commands;
 using R3;
 using UnityEngine;

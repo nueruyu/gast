@@ -95,7 +95,7 @@ namespace Gast.Features.Players
 
         bool AreAllGoalsCompleted(ICharacterAIBrain brain)
         {
-            var goals = brain.CurrentGoals;
+            var goals = brain.CurrentObjectives;
 
             if (goals == null || goals.Count == 0)
                 return true;

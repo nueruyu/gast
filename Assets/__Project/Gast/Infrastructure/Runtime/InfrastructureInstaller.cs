@@ -1,9 +1,7 @@
-using Gast.Application.AI.Objectives;
-using Gast.Application.AI.Tools;
+using Gast.Application.AI;
 using Gast.Core.DI;
 using Gast.Features.Combat;
-using Gast.Infrastructure.AI.Objectives;
-using Gast.Infrastructure.AI.Tools;
+using Gast.Infrastructure.AI;
 using Gast.Infrastructure.Factories;
 using Gast.Infrastructure.Remoting.AI;
 using Gast.Infrastructure.Repositories;
@@ -22,7 +20,7 @@ namespace Gast.Infrastructure
             builder.Register<DomainEventPublisher>().AsImplementedInterfaces();
 
             // AI Server Client
-            builder.Register<AIAgentService>().AsImplementedInterfaces();
+            builder.Register<AIPlanningService>().AsImplementedInterfaces();
 
             // Character
             builder.Register<CharacterRepository>().AsImplementedInterfaces();
@@ -51,7 +49,6 @@ namespace Gast.Infrastructure
             // AI Tools & Objectives
             builder.Register<ReflectionToolRegistry>().As<IToolRegistry>();
             builder.Register<ReflectionObjectiveRegistry>().As<IObjectiveRegistry>();
-            builder.Register<GameInfoTools>();
             builder.Register<GoalInstantiator>();
             builder.Register<PlanConverter>();
         }
