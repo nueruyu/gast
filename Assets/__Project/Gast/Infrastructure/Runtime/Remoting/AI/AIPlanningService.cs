@@ -56,37 +56,28 @@ namespace Gast.Infrastructure.Remoting.AI
                 if (sessionDto.Status == SessionStatus.Completed && sessionDto.Plan != null)
                 {
                     var goals = planConverter.ToGoals(sessionDto.Plan);
-                    return AIPlanningResult.Success(goals);
+                    return new AIPlanningResult(goals);
                 }
 
                 var errorMessage = !string.IsNullOrEmpty(sessionDto.ErrorMessage)
                     ? sessionDto.ErrorMessage
                     : "AI failed to generate a plan.";
-                return AIPlanningResult.Failure(new AIPlanningError(AIPlanningErrorCode.ServerError, errorMessage));
+                throw new AIPlanningException(errorMessage);
             }
             catch (GaiaTimeoutException ex)
             {
                 Debug.LogError($"[AIAgentService] Gaia Timeout Error: {ex.Message}");
-                return AIPlanningResult.Failure(new AIPlanningError(AIPlanningErrorCode.Timeout, "Request to AI server timed out."));
+                throw new AIPlanningException("Request to AI server timed out.", ex);
             }
             catch (GaiaConnectionException ex)
             {
                 Debug.LogError($"[AIAgentService] Gaia Connection Error: {ex.Message}");
-                return AIPlanningResult.Failure(new AIPlanningError(AIPlanningErrorCode.NetworkError, "Failed to connect to AI server."));
+                throw new AIPlanningException("Failed to connect to AI server.", ex);
             }
             catch (GaiaServerException ex)
             {
                 Debug.LogError($"[AIAgentService] Gaia Server Error: {ex.StatusCode} - {ex.Message}");
-                return AIPlanningResult.Failure(new AIPlanningError(AIPlanningErrorCode.ServerError, "AI server returned an error.", ex.ResponseContent));
-            }
-            catch (System.OperationCanceledException)
-            {
-                return AIPlanningResult.Failure(new AIPlanningError(AIPlanningErrorCode.Cancelled, "Operation was cancelled."));
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogException(ex);
-                return AIPlanningResult.Failure(new AIPlanningError(AIPlanningErrorCode.InvalidResponse, "An unexpected error occurred.", ex.Message));
+                throw new AIPlanningException("AI server returned an error.", ex);
             }
         }
 

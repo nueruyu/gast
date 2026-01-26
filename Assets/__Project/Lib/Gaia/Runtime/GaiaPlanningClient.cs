@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Gast.Lib.Gaia.Dto;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
 namespace Gast.Lib.Gaia
@@ -22,7 +23,11 @@ namespace Gast.Lib.Gaia
             {
                 ContractResolver = new DefaultContractResolver
                 {
-                    NamingStrategy = new SnakeCaseNamingStrategy()
+                    NamingStrategy = new SnakeCaseNamingStrategy(),
+                },
+                Converters =
+                {
+                    new StringEnumConverter(new SnakeCaseNamingStrategy()),
                 }
             };
         }

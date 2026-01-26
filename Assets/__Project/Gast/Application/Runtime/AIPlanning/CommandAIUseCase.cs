@@ -25,11 +25,14 @@ namespace Gast.Application.AIPlanning
 
         public async ValueTask<CommandAIResult> ExecuteAsync(CommandAICommand command, CancellationToken cancellationToken)
         {
-            var result = await aiAgentService.GetObjectivesAsync(command.Instruction, cancellationToken);
-
-            if (!result.IsSuccess)
+            AIPlanningResult result;
+            try
             {
-                return CommandAIResult.Failure(result.Error.Message);
+                result = await aiAgentService.GetObjectivesAsync(command.Instruction, cancellationToken);
+            }
+            catch (AIPlanningException ex)
+            {
+                return CommandAIResult.Failure(ex.Message);
             }
 
             if (result.Objectives.Count == 0)

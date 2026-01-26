@@ -39,6 +39,7 @@ namespace Gast.Infrastructure.Remoting.AI
             catch (Exception ex)
             {
                 Debug.LogError($"[PlanConverter] Failed to instantiate goal for objective '{objective.Type}': {ex.Message}");
+                Debug.LogException(ex);
                 return null;
             }
         }

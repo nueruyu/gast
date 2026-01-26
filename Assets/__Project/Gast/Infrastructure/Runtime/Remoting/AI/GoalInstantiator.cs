@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Gast.Domain.AI;
 using Gast.Domain.AI.Attributes;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Gast.Infrastructure.Remoting.AI
@@ -12,10 +13,14 @@ namespace Gast.Infrastructure.Remoting.AI
     public class GoalInstantiator
     {
         readonly Dictionary<string, Type> goalTypeMap = new();
+        readonly JsonSerializer jsonSerializer;
 
         public GoalInstantiator()
         {
             CacheGoalTypes();
+
+            jsonSerializer = new JsonSerializer();
+            jsonSerializer.Converters.Add(new DomainValueObjectConverter());
         }
 
         void CacheGoalTypes()
@@ -63,8 +68,7 @@ namespace Gast.Infrastructure.Remoting.AI
 
                 if (jObject.TryGetValue(snakeName, StringComparison.OrdinalIgnoreCase, out var token))
                 {
-                    // Use JToken.ToObject for robust type conversion
-                    args[i] = token.ToObject(param.ParameterType);
+                    args[i] = token.ToObject(param.ParameterType, jsonSerializer);
                 }
                 else
                 {

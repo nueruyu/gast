@@ -15,7 +15,7 @@ namespace Gast.UI.Command
         readonly CancellationTokenSource cts = new();
 
         public ReactiveProperty<bool> IsVisible { get; } = new(false);
-        public ReactiveProperty<string> InstructionText { get; } = new("");
+        public ReactiveProperty<string> InstructionText { get; } = new("Explore the current area, eliminate any enemies, and collect healing items.");
         public ReactiveProperty<bool> IsLoading { get; } = new(false);
         public ReactiveProperty<string> StatusMessage { get; } = new("");
         public ReactiveProperty<bool> HasError { get; } = new(false);
@@ -39,7 +39,6 @@ namespace Gast.UI.Command
         async UniTaskVoid SendInstructionAsync()
         {
             var instruction = InstructionText.Value;
-            var command = new CommandAICommand(instruction);
 
             InstructionText.Value = "";
             StatusMessage.Value = "";
@@ -50,7 +49,8 @@ namespace Gast.UI.Command
 
             try
             {
-                var result = await commandDispatcher.DispatchAsync<CommandAICommand, CommandAIResult>(command, cts.Token);
+                var result = await commandDispatcher
+                    .DispatchAsync<CommandAICommand, CommandAIResult>(new(instruction), cts.Token);
 
                 if (result.IsSuccess)
                 {

@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Gast.Application.AI;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using UnityEngine;
 
@@ -27,6 +28,10 @@ namespace Gast.Infrastructure.AI
                 ContractResolver = new DefaultContractResolver
                 {
                     NamingStrategy = new SnakeCaseNamingStrategy()
+                },
+                Converters =
+                {
+                    new StringEnumConverter(new SnakeCaseNamingStrategy()),
                 }
             };
         }
