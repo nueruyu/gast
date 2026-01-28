@@ -1,7 +1,6 @@
 using Gast.Features.AI.Combat.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
-using UnityEngine;
 
 namespace Gast.Features.AI.Combat
 {
@@ -15,7 +14,8 @@ namespace Gast.Features.AI.Combat
             BackOffAction backOffAction,
             StrafeAction strafeAction,
             GuardAction guardAction,
-            StalkAction stalkAction)
+            StalkAction stalkAction,
+            PostAttackManeuverAction postAttackManeuverAction)
         {
             domain = new AIDomainBuilder<CombatState, AIContext<CombatState>>()
                 .RegisterAction("ChaseTarget", chaseTargetAction)
@@ -24,23 +24,16 @@ namespace Gast.Features.AI.Combat
                 .RegisterAction("Strafe", strafeAction)
                 .RegisterAction("Guard", guardAction)
                 .RegisterAction("Stalk", stalkAction)
+                .RegisterAction("PostAttackManeuver", postAttackManeuverAction)
                 .RegisterAction("Idle", new IdleAction())
                 .DefineCompound("EngageTarget")
                     .AddMethod("Attack")
                         .Condition(s => s.IsInAttackRange && s.IsReadyToAttack)
                         .Do("Stalk", "MeleeAttack")
                     .End()
-                    .AddMethod("PostAttack_Guard")
-                        .Condition(s => s.IsInAttackRange && !s.IsReadyToAttack && s.CanGuard && Random.value < 0.3f)
-                        .Do("Guard")
-                    .End()
-                    .AddMethod("PostAttack_Strafe")
-                        .Condition(s => s.IsInAttackRange && !s.IsReadyToAttack && Random.value < 0.5f)
-                        .Do("Strafe")
-                    .End()
-                    .AddMethod("PostAttack_BackOff")
+                    .AddMethod("Maneuver")
                         .Condition(s => s.IsInAttackRange && !s.IsReadyToAttack)
-                        .Do("BackOff")
+                        .Do("PostAttackManeuver")
                     .End()
                     .AddMethod("Approach_Tactical")
                         .Condition(s => !s.IsInAttackRange && s.IsInCombatRange)

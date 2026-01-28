@@ -15,6 +15,7 @@ namespace Gast.Features.Installers
             builder.Register<StrafeAction>(Lifetime.Transient);
             builder.Register<GuardAction>(Lifetime.Transient);
             builder.Register<StalkAction>(Lifetime.Transient);
+            builder.Register<PostAttackManeuverAction>(Lifetime.Transient);
         }
     }
 }
