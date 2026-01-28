@@ -10,6 +10,7 @@ namespace Gast.Features.AI.Combat
         public Vector3 TargetForward { get; set; }
         public float DistanceToTarget { get; set; }
         public bool IsReadyToAttack { get; set; }
+        public bool CanGuard { get; set; }
         public float AttackRange { get; set; }
         public float CombatRange { get; set; }
         public bool IsInAttackRange => HasTarget && DistanceToTarget <= AttackRange;
@@ -22,6 +23,7 @@ namespace Gast.Features.AI.Combat
             TargetForward = source.TargetForward;
             DistanceToTarget = source.DistanceToTarget;
             IsReadyToAttack = source.IsReadyToAttack;
+            CanGuard = source.CanGuard;
             AttackRange = source.AttackRange;
             CombatRange = source.CombatRange;
         }

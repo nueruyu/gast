@@ -40,6 +40,7 @@ namespace Gast.Features.Characters
         public ICharacterBody Body => context.Body;
         public bool IsAlive => status.IsAlive.Value;
         public bool CanAttack => IsAlive && actionController.CanAttack;
+        public bool CanGuard => IsAlive && typeDefinition != null && typeDefinition.CanGuard && actionController.CanGuard;
         public bool IsGuarding => actionController.IsGuarding;
         public bool IsDashing => actionController.IsDashing;
         public ISignal<ICharacter> Destroyed => destroyedSignal;

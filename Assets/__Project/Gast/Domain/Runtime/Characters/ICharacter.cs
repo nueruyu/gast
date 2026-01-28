@@ -45,6 +45,11 @@ namespace Gast.Domain.Characters
         bool CanAttack { get; }
 
         /// <summary>
+        /// Whether the character can start guarding.
+        /// </summary>
+        bool CanGuard { get; }
+
+        /// <summary>
         /// Whether the character is currently guarding.
         /// </summary>
         bool IsGuarding { get; }

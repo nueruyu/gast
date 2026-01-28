@@ -206,6 +206,7 @@ namespace Gast.Features.AI
                 combatState.DistanceToTarget = float.PositiveInfinity;
             }
             combatState.IsReadyToAttack = character.CanAttack;
+            combatState.CanGuard = character.CanGuard;
         }
 
         void UpdateGatheringWorldState()
