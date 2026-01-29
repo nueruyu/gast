@@ -29,8 +29,9 @@ namespace Gast.Features.AI.Combat.Actions
 
         public bool CanExecute(CombatState worldState)
         {
-            // This composite action is valid if the character is in range but on attack cooldown.
-            return worldState.IsInAttackRange && !worldState.IsReadyToAttack;
+            // Can be executed as long as we are in attack range.
+            // Even if IsReadyToAttack is true, the Utility Selector might choose this over Attack based on health.
+            return worldState.IsInAttackRange;
         }
 
         public void Simulate(CombatState worldState)

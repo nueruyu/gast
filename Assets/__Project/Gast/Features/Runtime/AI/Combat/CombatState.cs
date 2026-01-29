@@ -11,6 +11,7 @@ namespace Gast.Features.AI.Combat
         public float DistanceToTarget { get; set; }
         public bool IsReadyToAttack { get; set; }
         public bool CanGuard { get; set; }
+        public float SelfHealthRatio { get; set; }
         public float AttackRange { get; set; }
         public float CombatRange { get; set; }
         public bool IsInAttackRange => HasTarget && DistanceToTarget <= AttackRange;
@@ -24,6 +25,7 @@ namespace Gast.Features.AI.Combat
             DistanceToTarget = source.DistanceToTarget;
             IsReadyToAttack = source.IsReadyToAttack;
             CanGuard = source.CanGuard;
+            SelfHealthRatio = source.SelfHealthRatio;
             AttackRange = source.AttackRange;
             CombatRange = source.CombatRange;
         }

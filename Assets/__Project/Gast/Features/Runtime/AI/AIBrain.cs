@@ -207,6 +207,7 @@ namespace Gast.Features.AI
             }
             combatState.IsReadyToAttack = character.CanAttack;
             combatState.CanGuard = character.CanGuard;
+            combatState.SelfHealthRatio = character.Status.Health.Value / character.Status.MaxHealth;
         }
 
         void UpdateGatheringWorldState()

@@ -1,6 +1,7 @@
 using Gast.Features.AI.Combat.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
+using Gast.Lib.AI.MethodSelectors;
 
 namespace Gast.Features.AI.Combat
 {
@@ -27,20 +28,29 @@ namespace Gast.Features.AI.Combat
                 .RegisterAction("PostAttackManeuver", postAttackManeuverAction)
                 .RegisterAction("Idle", new IdleAction())
                 .DefineCompound("EngageTarget")
+                    .UseSelector(new UtilitySelector<CombatState, AIContext<CombatState>>())
                     .AddMethod("Attack")
                         .Condition(s => s.IsInAttackRange && s.IsReadyToAttack)
+                        .Score(s => 0.5f + 0.5f * s.SelfHealthRatio) // Higher health -> Higher aggro (0.5 ~ 1.0)
+                        .InterruptCost(s => 1.0f) // High cost to prevent cancelling an attack
                         .Do("Stalk", "MeleeAttack")
                     .End()
                     .AddMethod("Maneuver")
-                        .Condition(s => s.IsInAttackRange && !s.IsReadyToAttack)
+                        .Condition(s => s.IsInAttackRange)
+                        .Score(s => 0.2f + 0.8f * (1.0f - s.SelfHealthRatio)) // Lower health -> Higher defensive score (0.2 ~ 1.0)
+                        .InterruptCost(s => 0.3f) // Moderate cost: don't interrupt evasion easily
                         .Do("PostAttackManeuver")
                     .End()
                     .AddMethod("Approach_Tactical")
                         .Condition(s => !s.IsInAttackRange && s.IsInCombatRange)
+                        .Score(s => 0.6f)
+                        .InterruptCost(s => 0.1f) // Low cost
                         .Do("Strafe")
                     .End()
                     .AddMethod("Chase")
                         .Condition(s => !s.IsInCombatRange)
+                        .Score(s => 0.4f)
+                        .InterruptCost(s => 0.1f) // Low cost
                         .Do("ChaseTarget")
                     .End()
                 .End()
