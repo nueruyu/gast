@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Core.Tasks;
 using Gast.Domain.Inputs;
 using UnityEngine;
+using UnityEngine.InputSystem; // Added
 
 namespace Gast.UI.System
 {
@@ -18,27 +19,33 @@ namespace Gast.UI.System
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            inputModeManager.CurrentMode.SubscribeWithCurrent(mode =>
+            while (!cancellationToken.IsCancellationRequested)
             {
-                switch (mode)
-                {
-                    case InputMode.Gameplay:
-                        SetCursorState(true);
-                        break;
-
-                    default:
-                        SetCursorState(false);
-                        break;
-                }
-            }).AddTo(cancellationToken);
-
-            await UniTask.WaitUntilCanceled(cancellationToken);
+                UpdateCursorState();
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+            }
         }
 
-        void SetCursorState(bool locked)
+        void UpdateCursorState()
         {
-            Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
-            Cursor.visible = !locked;
+            var currentMode = inputModeManager.CurrentMode.Value;
+            var isAltPressed = Keyboard.current != null && Keyboard.current.leftAltKey.isPressed;
+
+            // Show cursor if we are in UI mode OR if Alt is held down
+            bool shouldShowCursor = currentMode == InputMode.UI || isAltPressed;
+
+            SetCursorVisibility(shouldShowCursor);
+        }
+
+        void SetCursorVisibility(bool visible)
+        {
+            var targetLockState = visible ? CursorLockMode.None : CursorLockMode.Locked;
+            
+            if (Cursor.lockState != targetLockState)
+            {
+                Cursor.lockState = targetLockState;
+                Cursor.visible = visible;
+            }
         }
     }
 }

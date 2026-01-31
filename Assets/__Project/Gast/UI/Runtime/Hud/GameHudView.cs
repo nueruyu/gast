@@ -15,6 +15,9 @@ namespace Gast.UI.Hud
         const string HpLabelName = "HpLabel";
         const string MoneyLabelName = "MoneyLabel";
         const string InventoryContainerName = "InventoryContainer";
+        const string AiStatusGroupName = "AiStatusGroup";
+        const string StopAiButtonName = "StopAiButton";
+        
         const string ItemSlotUssClassName = "game-hud__item-slot";
         const string ItemTextUssClassName = "game-hud__item-text";
 
@@ -22,6 +25,8 @@ namespace Gast.UI.Hud
         readonly Label hpLabel;
         readonly Label moneyLabel;
         readonly VisualElement inventoryContainer;
+        readonly VisualElement aiStatusGroup;
+        readonly Button stopAiButton;
 
         /// <summary>
         /// Creates the HUD view from a UXML asset.
@@ -37,6 +42,10 @@ namespace Gast.UI.Hud
             hpLabel = this.Q<Label>(HpLabelName);
             moneyLabel = this.Q<Label>(MoneyLabelName);
             inventoryContainer = this.Q<VisualElement>(InventoryContainerName);
+            
+            // New elements
+            aiStatusGroup = this.Q<VisualElement>(AiStatusGroupName);
+            stopAiButton = this.Q<Button>(StopAiButtonName);
         }
 
         /// <summary>
@@ -79,6 +88,15 @@ namespace Gast.UI.Hud
                         CreateItemSlot(stack);
                     }
                 })
+                .AddTo(disposables);
+
+            // Bind AI Status visibility
+            viewModel.IsAiControlActive
+                .Subscribe(active => aiStatusGroup.style.display = active ? DisplayStyle.Flex : DisplayStyle.None)
+                .AddTo(disposables);
+
+            // Bind Stop Button
+            stopAiButton.SubscribeEvent<ClickEvent>(_ => viewModel.StopAiControl())
                 .AddTo(disposables);
 
             this.SubscribeEvent<FocusInEvent>(evt =>

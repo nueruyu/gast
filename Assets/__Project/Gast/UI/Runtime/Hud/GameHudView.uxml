@@ -3,8 +3,11 @@
     noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" 
     editor-extension-mode="False"
     class="game-hud"
+    picking-mode="Ignore"
 >
     <Style src="GameHudView.uss"/>
+    
+    <!-- Existing StatusGroup -->
     <ui:VisualElement name="StatusGroup" class="game-hud__status-group">
         <ui:VisualElement name="HpContainer" class="game-hud__hp-container">
             <ui:VisualElement name="HpFill" class="game-hud__hp-fill"/>
@@ -12,5 +15,13 @@
         </ui:VisualElement>
         <ui:Label name="MoneyLabel" text="100G" class="game-hud__money-label"/>
     </ui:VisualElement>
+
+    <!-- NEW: AI Control Status -->
+    <ui:VisualElement name="AiStatusGroup" class="game-hud__ai-container">
+        <ui:Label text="AI ACTIVE" class="game-hud__ai-label"/>
+        <ui:Button name="StopAiButton" text="STOP (Hold Alt)" class="game-hud__ai-stop-button" picking-mode="Position"/>
+    </ui:VisualElement>
+
+    <!-- Existing InventoryContainer -->
     <ui:VisualElement name="InventoryContainer" class="game-hud__inventory-container"/>
 </ui:UXML>

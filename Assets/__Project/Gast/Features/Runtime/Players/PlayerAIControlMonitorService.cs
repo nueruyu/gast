@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Tasks;
 using Gast.Domain.AI;
-using Gast.Domain.Inputs;
-using Gast.Domain.Players;
+using Gast.Domain.Players; // InputProviderの参照は不要になるため削除可能ですが、ここでは残しても問題ありません
 using R3;
 using UnityEngine;
 
@@ -13,14 +12,15 @@ namespace Gast.Features.Players
 {
     public class PlayerAIControlMonitorService : ILifecycleTask
     {
-        readonly IInputProvider inputProvider;
+        // Polling interval for checking goal completion
+        const int PollIntervalMilliseconds = 500;
+
         readonly IPlayerManager playerManager;
 
         public PlayerAIControlMonitorService(
-            IInputProvider inputProvider,
+            Domain.Inputs.IInputProvider _, // Use discard for unused parameter
             IPlayerManager playerManager)
         {
-            this.inputProvider = inputProvider;
             this.playerManager = playerManager;
         }
 
@@ -53,45 +53,18 @@ namespace Gast.Features.Players
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                if (ShouldRestore(brain))
+                if (AreAllGoalsCompleted(brain))
                 {
-                    Debug.Log("AIControlMonitorService: Restoration conditions met, restoring player control");
+                    Debug.Log("AIControlMonitorService: All goals completed");
                     playerManager.RestorePlayerControl();
                     break;
                 }
 
-                await UniTask.NextFrame(cancellationToken);
+                await UniTask.Delay(PollIntervalMilliseconds, cancellationToken: cancellationToken);
             }
         }
 
-        bool ShouldRestore(ICharacterAIBrain brain)
-        {
-            if (HasPlayerInput())
-            {
-                Debug.Log("AIControlMonitorService: Player input detected");
-                return true;
-            }
-
-            if (AreAllGoalsCompleted(brain))
-            {
-                Debug.Log("AIControlMonitorService: All goals completed");
-                return true;
-            }
-
-            return false;
-        }
-
-        bool HasPlayerInput()
-        {
-            return inputProvider.Move.sqrMagnitude > 0.01f
-                || inputProvider.Look.sqrMagnitude > 0.01f
-                || inputProvider.Jump
-                || inputProvider.Sprint
-                || inputProvider.InteractPressed
-                || inputProvider.Attack
-                || inputProvider.Dash
-                || inputProvider.GuardHeld;
-        }
+        // HasPlayerInput() method removed
 
         bool AreAllGoalsCompleted(ICharacterAIBrain brain)
         {
