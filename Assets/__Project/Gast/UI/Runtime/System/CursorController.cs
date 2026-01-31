@@ -4,17 +4,18 @@ using Cysharp.Threading.Tasks;
 using Gast.Core.Tasks;
 using Gast.Domain.Inputs;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Gast.UI.System
 {
     public class CursorController : ILifecycleTask
     {
         readonly IInputModeManager inputModeManager;
+        readonly IInputProvider inputProvider;
 
-        public CursorController(IInputModeManager inputModeManager)
+        public CursorController(IInputModeManager inputModeManager, IInputProvider inputProvider)
         {
             this.inputModeManager = inputModeManager;
+            this.inputProvider = inputProvider;
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
@@ -29,10 +30,10 @@ namespace Gast.UI.System
         void UpdateCursorState()
         {
             var currentMode = inputModeManager.CurrentMode.Value;
-            var isAltPressed = Keyboard.current != null && Keyboard.current.leftAltKey.isPressed;
+            var isCursorOverridePressed = inputProvider.IsCursorOverridePressed;
 
-            // Show cursor if we are in UI mode OR if Alt is held down
-            bool shouldShowCursor = currentMode == InputMode.UI || isAltPressed;
+            // Show cursor if we are in UI mode OR if the override key is held down
+            bool shouldShowCursor = currentMode == InputMode.UI || isCursorOverridePressed;
 
             SetCursorVisibility(shouldShowCursor);
         }
@@ -40,7 +41,7 @@ namespace Gast.UI.System
         void SetCursorVisibility(bool visible)
         {
             var targetLockState = visible ? CursorLockMode.None : CursorLockMode.Locked;
-            
+
             if (Cursor.lockState != targetLockState)
             {
                 Cursor.lockState = targetLockState;
