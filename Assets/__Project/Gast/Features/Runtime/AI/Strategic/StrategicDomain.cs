@@ -1,3 +1,4 @@
+using Gast.Domain.AI.Objectives;
 using Gast.Features.AI.Strategic.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
@@ -20,19 +21,24 @@ namespace Gast.Features.AI.Strategic
                 .RegisterAction("Idle", new IdleAction())
                 .RegisterAction("Wait", new WaitAction())
                 .DefineCompound("Root")
-                    .AddMethod("SelectClosestThreat")
+                    .AddMethod("RespondToThreat")
                         .Condition(s => s.IsThreatened)
                         .Do("SelectThreat")
                     .End()
-                    .AddMethod("SelectTargetBasedOnGoal")
-                        .Condition(s => s.HasGoal)
+                    .AddMethod("PursueDefeatGoal")
+                        .Condition(s => s.HasGoal && s.CurrentGoal is DefeatCharacterObjective)
                         .Do("FindTargetForGoal")
+                    .End()
+                    .AddMethod("PursueAcquireGoal")
+                        .Condition(s => s.HasGoal && s.CurrentGoal is AcquireItemObjective)
+                        .Do("ClearTarget")
+                    .End()
+                    .AddMethod("Idle")
+                        .Condition(s => !s.HasGoal)
+                        .Do("ClearTarget", "Idle")
                     .End()
                     .AddMethod("Thinking")
                         .Do("Wait", 2f)
-                    .End()
-                    .AddMethod("Idle")
-                        .Do("ClearTarget", "Idle")
                     .End()
                 .End()
                 .Build("Root");

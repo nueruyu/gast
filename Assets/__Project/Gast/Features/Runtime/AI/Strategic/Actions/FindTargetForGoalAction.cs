@@ -18,7 +18,10 @@ namespace Gast.Features.AI.Strategic.Actions
             this.characterRepository = characterRepository;
         }
 
-        public bool CanExecute(StrategicState worldState) => worldState.HasGoal;
+        public bool CanExecute(StrategicState worldState)
+        {
+            return worldState.HasGoal && worldState.CurrentGoal is DefeatCharacterObjective;
+        }
 
         public void Simulate(StrategicState worldState)
         {
@@ -26,15 +29,17 @@ namespace Gast.Features.AI.Strategic.Actions
 
         public UniTask ExecuteAsync(AIContext<StrategicState> ctx)
         {
-            var goal = ctx.WorldState.CurrentGoal;
-            ICharacter foundTarget = null;
-
-            if (goal is DefeatCharacterObjective defeatGoal)
+            if (ctx.WorldState.CurrentGoal is DefeatCharacterObjective defeatGoal)
             {
-                foundTarget = FindClosestCharacterOfType(ctx.Actor, defeatGoal.TargetTypeId);
+                var foundTarget = FindClosestCharacterOfType(ctx.Actor, defeatGoal.TargetTypeId);
+                ctx.Memory.CombatTarget = foundTarget;
+            }
+            else
+            {
+                // Should not happen due to CanExecute, but as a safeguard.
+                ctx.Memory.CombatTarget = null;
             }
 
-            ctx.Memory.CombatTarget = foundTarget;
             return UniTask.CompletedTask;
         }
 

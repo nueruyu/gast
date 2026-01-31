@@ -46,6 +46,7 @@ namespace Gast.Features.AI.Gathering.Actions
             }
 
             await UniTask.NextFrame(ctx.CancellationToken);
+            await UniTask.NextFrame(ctx.CancellationToken);
         }
     }
 }
