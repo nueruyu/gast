@@ -17,9 +17,15 @@ namespace Gast.UI.Hud
         const string InventoryContainerName = "InventoryContainer";
         const string AiStatusGroupName = "AiStatusGroup";
         const string StopAiButtonName = "StopAiButton";
-        
+        const string AiObjectivesGroupName = "AiObjectivesGroup";
+        const string AiObjectivesListName = "AiObjectivesList";
+
         const string ItemSlotUssClassName = "game-hud__item-slot";
         const string ItemTextUssClassName = "game-hud__item-text";
+        const string ObjectiveItemUssClassName = "game-hud__objective-item";
+        const string ObjectiveItemCompletedUssClassName = "game-hud__objective-item--completed";
+        const string ObjectiveDescriptionUssClassName = "game-hud__objective-description";
+        const string ObjectiveProgressUssClassName = "game-hud__objective-progress";
 
         readonly VisualElement hpFill;
         readonly Label hpLabel;
@@ -27,6 +33,8 @@ namespace Gast.UI.Hud
         readonly VisualElement inventoryContainer;
         readonly VisualElement aiStatusGroup;
         readonly Button stopAiButton;
+        readonly VisualElement aiObjectivesGroup;
+        readonly VisualElement aiObjectivesList;
 
         /// <summary>
         /// Creates the HUD view from a UXML asset.
@@ -46,6 +54,9 @@ namespace Gast.UI.Hud
             // New elements
             aiStatusGroup = this.Q<VisualElement>(AiStatusGroupName);
             stopAiButton = this.Q<Button>(StopAiButtonName);
+
+            aiObjectivesGroup = this.Q<VisualElement>(AiObjectivesGroupName);
+            aiObjectivesList = this.Q<VisualElement>(AiObjectivesListName);
         }
 
         /// <summary>
@@ -99,6 +110,23 @@ namespace Gast.UI.Hud
             stopAiButton.SubscribeEvent<ClickEvent>(_ => viewModel.StopAiControl())
                 .AddTo(disposables);
 
+            // Bind AI Objectives visibility
+            viewModel.IsAiControlActive
+                .Subscribe(active => aiObjectivesGroup.style.display = active ? DisplayStyle.Flex : DisplayStyle.None)
+                .AddTo(disposables);
+
+            // Bind AI Objectives List
+            viewModel.AiObjectives
+                .Subscribe(objectives =>
+                {
+                    aiObjectivesList.Clear();
+                    foreach (var objectiveVm in objectives)
+                    {
+                        CreateObjectiveItem(objectiveVm);
+                    }
+                })
+                .AddTo(disposables);
+
             this.SubscribeEvent<FocusInEvent>(evt =>
             {
                 viewModel.SetFocus(true);
@@ -126,6 +154,23 @@ namespace Gast.UI.Hud
 
             slot.Add(text);
             inventoryContainer.Add(slot);
+        }
+
+        void CreateObjectiveItem(AIObjectiveViewModel objectiveVm)
+        {
+            var item = new VisualElement();
+            item.AddToClassList(ObjectiveItemUssClassName);
+            item.EnableInClassList(ObjectiveItemCompletedUssClassName, objectiveVm.IsCompleted);
+
+            var descriptionLabel = new Label(objectiveVm.Description);
+            descriptionLabel.AddToClassList(ObjectiveDescriptionUssClassName);
+
+            var progressLabel = new Label(objectiveVm.ProgressText);
+            progressLabel.AddToClassList(ObjectiveProgressUssClassName);
+
+            item.Add(descriptionLabel);
+            item.Add(progressLabel);
+            aiObjectivesList.Add(item);
         }
     }
 }

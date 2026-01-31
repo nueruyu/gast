@@ -129,3 +129,54 @@
     background-color: rgb(160, 40, 40);
     scale: 0.95;
 }
+
+/* --- AI Objectives Container (Top Right) --- */
+.game-hud__objectives-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    padding: 12px;
+    align-items: flex-start;
+}
+
+.game-hud__objectives-title {
+    color: rgb(200, 200, 200);
+    -unity-font-style: bold;
+    font-size: 16px;
+    margin-bottom: 8px;
+    -unity-text-align: middle-left;
+    width: 100%;
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(80, 80, 80);
+    padding-bottom: 4px;
+}
+
+.game-hud__objectives-list {
+    width: 100%;
+}
+
+.game-hud__objective-item {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 4px;
+}
+
+.game-hud__objective-item--completed .game-hud__objective-description,
+.game-hud__objective-item--completed .game-hud__objective-progress {
+    color: rgb(120, 120, 120);
+    -unity-font-style: italic;
+}
+
+.game-hud__objective-description {
+    color: white;
+    font-size: 14px;
+}
+
+.game-hud__objective-progress {
+    color: white;
+    font-size: 14px;
+    -unity-font-style: bold;
+}

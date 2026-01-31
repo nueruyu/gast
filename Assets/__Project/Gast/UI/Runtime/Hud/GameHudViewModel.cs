@@ -24,8 +24,9 @@ namespace Gast.UI.Hud
         public ReadOnlyReactiveProperty<int> CurrentMoney { get; }
         public ReadOnlyReactiveProperty<IReadOnlyList<ItemStackViewModel>> InventoryItems { get; }
         public ReadOnlyReactiveProperty<bool> HasFocus => hasFocus;
-        
+
         public ReadOnlyReactiveProperty<bool> IsAiControlActive { get; }
+        public ReadOnlyReactiveProperty<IReadOnlyList<AIObjectiveViewModel>> AiObjectives { get; }
 
         public GameHudViewModel(
             IPlayerManager playerManager,
@@ -38,6 +39,25 @@ namespace Gast.UI.Hud
                 .ToObservable()
                 .Select(brain => brain != null)
                 .ToReadOnlyReactiveProperty()
+                .AddTo(disposables);
+
+            AiObjectives = playerManager.CurrentAIBrain.ToObservable()
+                .Select(brain =>
+                {
+                    if (brain == null)
+                    {
+                        return Observable.Return((IReadOnlyList<AIObjectiveViewModel>)Array.Empty<AIObjectiveViewModel>());
+                    }
+
+                    // Poll every second to update progress
+                    return Observable.Interval(TimeSpan.FromSeconds(1))
+                        .Prepend(Unit.Default)
+                        .Select(_ => (IReadOnlyList<AIObjectiveViewModel>)brain.CurrentObjectives
+                            .Select(obj => new AIObjectiveViewModel(obj))
+                            .ToList());
+                })
+                .Switch()
+                .ToReadOnlyReactiveProperty(Array.Empty<AIObjectiveViewModel>())
                 .AddTo(disposables);
 
             var currentCharacter = playerManager.CurrentCharacter
