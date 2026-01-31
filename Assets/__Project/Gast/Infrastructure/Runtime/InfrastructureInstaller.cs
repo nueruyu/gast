@@ -1,5 +1,6 @@
 using Gast.Application.AI;
 using Gast.Application.AIPlanning;
+using Gast.Application.Economy;
 using Gast.Core.DI;
 using Gast.Features.Combat;
 using Gast.Infrastructure.AI;
@@ -54,6 +55,7 @@ namespace Gast.Infrastructure
 
             // Economy
             builder.Register<ItemRepository>().AsImplementedInterfaces().AsSelf();
+            builder.Register<ItemAssetService>().As<IItemAssetService>();
             builder.Register<ShopInitializer>().AsImplementedInterfaces();
 
             // Pickups

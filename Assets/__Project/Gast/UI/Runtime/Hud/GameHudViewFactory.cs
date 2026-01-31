@@ -16,7 +16,7 @@ namespace Gast.UI.Hud
 
         public GameHudView Create(CancellationToken cancellationToken)
         {
-            var view = new GameHudView(assetSettings.GameHudView);
+            var view = new GameHudView(assetSettings.GameHudView, assetSettings);
             view.Bind(hudViewModel).AddTo(cancellationToken);
             return view;
         }

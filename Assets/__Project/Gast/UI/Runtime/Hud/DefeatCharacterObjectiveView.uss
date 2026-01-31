@@ -1,0 +1,62 @@
+.objective-item {
+    flex-direction: column;
+    margin-bottom: 5px;
+    padding: 5px;
+    background-color: rgba(80, 40, 40, 0.5);
+    border-radius: 4px;
+}
+
+.objective-item--completed {
+    opacity: 0.5;
+}
+
+.objective-item__content {
+    flex-direction: row;
+    align-items: center;
+}
+
+.objective-item__icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    background-color: #533;
+    border-radius: 4px;
+}
+
+.objective-item__details {
+    flex-grow: 1;
+}
+
+.objective-item__description {
+    font-size: 14px;
+    color: white;
+}
+
+.objective-item__progress-bar {
+    height: 8px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    margin-top: 4px;
+}
+
+.objective-item__progress-bar-fill {
+    height: 100%;
+    background-color: rgb(200, 80, 80);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.2s ease-out;
+}
+
+.objective-item__progress-text {
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: white;
+    margin-left: 8px;
+    min-width: 50px;
+    -unity-text-align: middle-right;
+}
+
+.objective-item--completed .objective-item__description {
+    -unity-font-style: italic;
+    color: #999;
+}

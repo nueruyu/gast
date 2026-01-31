@@ -1,3 +1,4 @@
+using Gast.Core.Observables;
 using Gast.Domain.AI.Attributes;
 using Gast.Domain.Economy;
 
@@ -12,21 +13,22 @@ namespace Gast.Domain.AI.Objectives
         [AIObjectiveParameter("Number of items to collect")]
         public int TargetQuantity { get; }
 
-        public int CurrentQuantity { get; private set; }
-        public bool IsCompleted => CurrentQuantity >= TargetQuantity;
+        private readonly Live<int> currentQuantity = new(0);
+        public ILive<int> CurrentQuantity => currentQuantity;
+        public ILive<bool> IsCompleted { get; }
 
         public AcquireItemObjective(ItemId targetItemId, int targetQuantity)
         {
             TargetItemId = targetItemId;
             TargetQuantity = targetQuantity;
-            CurrentQuantity = 0;
+            IsCompleted = currentQuantity.Select(current => current >= TargetQuantity);
         }
 
         public void AddQuantity(int amount)
         {
-            if (!IsCompleted)
+            if (!IsCompleted.Value)
             {
-                CurrentQuantity += amount;
+                currentQuantity.Value += amount;
             }
         }
     }

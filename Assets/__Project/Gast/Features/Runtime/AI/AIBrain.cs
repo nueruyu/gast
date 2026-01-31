@@ -182,7 +182,7 @@ namespace Gast.Features.AI
         void UpdateStrategicWorldState()
         {
             var goals = objectiveManager.CurrentObjectives;
-            var currentGoal = goals.FirstOrDefault(g => !g.IsCompleted);
+            var currentGoal = goals.FirstOrDefault(g => !g.IsCompleted.Value);
             strategicState.CurrentGoal = currentGoal;
             strategicState.HasGoal = currentGoal != null;
 
@@ -213,7 +213,7 @@ namespace Gast.Features.AI
         void UpdateGatheringWorldState()
         {
             var goals = objectiveManager.CurrentObjectives;
-            var currentGoal = goals.FirstOrDefault(g => !g.IsCompleted);
+            var currentGoal = goals.FirstOrDefault(g => !g.IsCompleted.Value);
             gatheringState.CurrentGoal = currentGoal;
             gatheringState.HasGoal = currentGoal != null;
             gatheringState.IsInCombat = combatState.HasTarget;

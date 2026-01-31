@@ -1,4 +1,3 @@
-using Gast.Domain.Inputs;
 using Gast.Domain.Players;
 using Gast.Shared.Observables;
 using R3;
@@ -26,11 +25,12 @@ namespace Gast.UI.Hud
         public ReadOnlyReactiveProperty<bool> HasFocus => hasFocus;
 
         public ReadOnlyReactiveProperty<bool> IsAiControlActive { get; }
-        public ReadOnlyReactiveProperty<IReadOnlyList<AIObjectiveViewModel>> AiObjectives { get; }
+        public ReadOnlyReactiveProperty<IReadOnlyList<IAIObjectiveViewModel>> AiObjectives { get; }
 
         public GameHudViewModel(
             IPlayerManager playerManager,
-            ItemStackViewModelFactory itemStackViewModelFactory)
+            ItemStackViewModelFactory itemStackViewModelFactory,
+            AIObjectiveViewModelFactory objectiveViewModelFactory)
         {
             this.playerManager = playerManager;
 
@@ -46,18 +46,13 @@ namespace Gast.UI.Hud
                 {
                     if (brain == null)
                     {
-                        return Observable.Return((IReadOnlyList<AIObjectiveViewModel>)Array.Empty<AIObjectiveViewModel>());
+                        return (IReadOnlyList<IAIObjectiveViewModel>)Array.Empty<IAIObjectiveViewModel>();
                     }
-
-                    // Poll every second to update progress
-                    return Observable.Interval(TimeSpan.FromSeconds(1))
-                        .Prepend(Unit.Default)
-                        .Select(_ => (IReadOnlyList<AIObjectiveViewModel>)brain.CurrentObjectives
-                            .Select(obj => new AIObjectiveViewModel(obj))
-                            .ToList());
+                    return brain.CurrentObjectives
+                        .Select(objectiveViewModelFactory.Create)
+                        .ToList();
                 })
-                .Switch()
-                .ToReadOnlyReactiveProperty(Array.Empty<AIObjectiveViewModel>())
+                .ToReadOnlyReactiveProperty()
                 .AddTo(disposables);
 
             var currentCharacter = playerManager.CurrentCharacter

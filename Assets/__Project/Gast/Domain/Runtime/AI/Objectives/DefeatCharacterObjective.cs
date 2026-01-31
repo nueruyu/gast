@@ -1,3 +1,4 @@
+using Gast.Core.Observables;
 using Gast.Domain.AI.Attributes;
 using Gast.Domain.Characters;
 
@@ -12,21 +13,22 @@ namespace Gast.Domain.AI.Objectives
         [AIObjectiveParameter("Number of enemies to defeat")]
         public int TargetQuantity { get; }
 
-        public int CurrentQuantity { get; private set; }
-        public bool IsCompleted => CurrentQuantity >= TargetQuantity;
+        private readonly Live<int> currentQuantity = new(0);
+        public ILive<int> CurrentQuantity => currentQuantity;
+        public ILive<bool> IsCompleted { get; }
 
         public DefeatCharacterObjective(CharacterTypeId targetTypeId, int targetQuantity)
         {
             TargetTypeId = targetTypeId;
             TargetQuantity = targetQuantity;
-            CurrentQuantity = 0;
+            IsCompleted = currentQuantity.Select(current => current >= TargetQuantity);
         }
 
         public void IncrementCount()
         {
-            if (!IsCompleted)
+            if (!IsCompleted.Value)
             {
-                CurrentQuantity++;
+                currentQuantity.Value++;
             }
         }
     }

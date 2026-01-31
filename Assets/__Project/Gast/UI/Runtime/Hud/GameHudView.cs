@@ -1,7 +1,6 @@
 using System;
 using Gast.Shared.UnityExtensions;
 using R3;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Gast.UI.Hud
@@ -19,13 +18,11 @@ namespace Gast.UI.Hud
         const string StopAiButtonName = "StopAiButton";
         const string AiObjectivesGroupName = "AiObjectivesGroup";
         const string AiObjectivesListName = "AiObjectivesList";
+        const string MinimizeButtonName = "MinimizeButton";
+        const string AiObjectivesScrollViewName = "AiObjectivesScrollView";
 
         const string ItemSlotUssClassName = "game-hud__item-slot";
         const string ItemTextUssClassName = "game-hud__item-text";
-        const string ObjectiveItemUssClassName = "game-hud__objective-item";
-        const string ObjectiveItemCompletedUssClassName = "game-hud__objective-item--completed";
-        const string ObjectiveDescriptionUssClassName = "game-hud__objective-description";
-        const string ObjectiveProgressUssClassName = "game-hud__objective-progress";
 
         readonly VisualElement hpFill;
         readonly Label hpLabel;
@@ -35,12 +32,16 @@ namespace Gast.UI.Hud
         readonly Button stopAiButton;
         readonly VisualElement aiObjectivesGroup;
         readonly VisualElement aiObjectivesList;
+        readonly Button minimizeButton;
+        readonly ScrollView aiObjectivesScrollView;
+        readonly UIAssetSettings assetSettings;
 
         /// <summary>
         /// Creates the HUD view from a UXML asset.
         /// </summary>
-        public GameHudView(VisualTreeAsset asset)
+        public GameHudView(VisualTreeAsset asset, UIAssetSettings assetSettings)
         {
+            this.assetSettings = assetSettings;
             asset.CloneTree(this);
 
             focusable = true;
@@ -50,13 +51,15 @@ namespace Gast.UI.Hud
             hpLabel = this.Q<Label>(HpLabelName);
             moneyLabel = this.Q<Label>(MoneyLabelName);
             inventoryContainer = this.Q<VisualElement>(InventoryContainerName);
-            
-            // New elements
+
+            // AI elements
             aiStatusGroup = this.Q<VisualElement>(AiStatusGroupName);
             stopAiButton = this.Q<Button>(StopAiButtonName);
 
             aiObjectivesGroup = this.Q<VisualElement>(AiObjectivesGroupName);
             aiObjectivesList = this.Q<VisualElement>(AiObjectivesListName);
+            minimizeButton = this.Q<Button>(MinimizeButtonName);
+            aiObjectivesScrollView = this.Q<ScrollView>(AiObjectivesScrollViewName);
         }
 
         /// <summary>
@@ -122,10 +125,20 @@ namespace Gast.UI.Hud
                     aiObjectivesList.Clear();
                     foreach (var objectiveVm in objectives)
                     {
-                        CreateObjectiveItem(objectiveVm);
+                        var objectiveView = objectiveVm.CreateView(assetSettings);
+                        aiObjectivesList.Add(objectiveView);
                     }
                 })
                 .AddTo(disposables);
+
+            // Minimize Button Logic
+            bool isMinimized = false;
+            minimizeButton.SubscribeEvent<ClickEvent>(_ =>
+            {
+                isMinimized = !isMinimized;
+                aiObjectivesScrollView.style.display = isMinimized ? DisplayStyle.None : DisplayStyle.Flex;
+                minimizeButton.text = isMinimized ? "+" : "-";
+            }).AddTo(disposables);
 
             this.SubscribeEvent<FocusInEvent>(evt =>
             {
@@ -154,23 +167,6 @@ namespace Gast.UI.Hud
 
             slot.Add(text);
             inventoryContainer.Add(slot);
-        }
-
-        void CreateObjectiveItem(AIObjectiveViewModel objectiveVm)
-        {
-            var item = new VisualElement();
-            item.AddToClassList(ObjectiveItemUssClassName);
-            item.EnableInClassList(ObjectiveItemCompletedUssClassName, objectiveVm.IsCompleted);
-
-            var descriptionLabel = new Label(objectiveVm.Description);
-            descriptionLabel.AddToClassList(ObjectiveDescriptionUssClassName);
-
-            var progressLabel = new Label(objectiveVm.ProgressText);
-            progressLabel.AddToClassList(ObjectiveProgressUssClassName);
-
-            item.Add(descriptionLabel);
-            item.Add(progressLabel);
-            aiObjectivesList.Add(item);
         }
     }
 }

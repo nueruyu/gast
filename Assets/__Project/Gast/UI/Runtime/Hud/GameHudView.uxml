@@ -24,8 +24,13 @@
 
     <!-- NEW: AI Objectives -->
     <ui:VisualElement name="AiObjectivesGroup" class="game-hud__objectives-container">
-        <ui:Label text="AI OBJECTIVES" class="game-hud__objectives-title"/>
-        <ui:VisualElement name="AiObjectivesList" class="game-hud__objectives-list"/>
+        <ui:VisualElement class="game-hud__objectives-header">
+            <ui:Label text="AI OBJECTIVES" class="game-hud__objectives-title"/>
+            <ui:Button name="MinimizeButton" text="-" class="game-hud__objectives-minimize-button" picking-mode="Position"/>
+        </ui:VisualElement>
+        <ui:ScrollView name="AiObjectivesScrollView" class="game-hud__objectives-scrollview">
+            <ui:VisualElement name="AiObjectivesList" class="game-hud__objectives-list"/>
+        </ui:ScrollView>
     </ui:VisualElement>
 
     <!-- Existing InventoryContainer -->

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -5,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Core.Tasks;
 using Gast.Domain.AI;
 using Gast.Domain.Players;
+using Gast.Shared.Observables;
 using R3;
 using UnityEngine;
 
@@ -12,9 +14,6 @@ namespace Gast.Features.Players
 {
     public class PlayerAIControlMonitorService : ILifecycleTask
     {
-        // Polling interval for checking goal completion
-        const int PollIntervalMilliseconds = 500;
-
         readonly IPlayerManager playerManager;
 
         public PlayerAIControlMonitorService(IPlayerManager playerManager)
@@ -29,16 +28,19 @@ namespace Gast.Features.Players
             cancellationToken.Register(() =>
             {
                 monitorCts?.Cancel();
+                monitorCts?.Dispose();
             });
 
             playerManager.CurrentAIBrain
+                .ToObservable()
                 .Subscribe(aiBrain =>
                 {
                     monitorCts?.Cancel();
+                    monitorCts?.Dispose();
 
                     if (aiBrain != null)
                     {
-                        monitorCts = new CancellationTokenSource();
+                        monitorCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                         MonitorAsync(aiBrain, monitorCts.Token).Forget();
                     }
                 })
@@ -49,27 +51,34 @@ namespace Gast.Features.Players
 
         async UniTask MonitorAsync(ICharacterAIBrain brain, CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            if (brain.CurrentObjectives == null || brain.CurrentObjectives.Count == 0)
             {
-                if (AreAllGoalsCompleted(brain))
-                {
-                    Debug.Log("AIControlMonitorService: All goals completed");
-                    playerManager.RestorePlayerControl();
-                    break;
-                }
-
-                await UniTask.Delay(PollIntervalMilliseconds, cancellationToken: cancellationToken);
+                Debug.Log("AIControlMonitorService: No goals to monitor.");
+                playerManager.RestorePlayerControl();
+                return;
             }
-        }
 
-        bool AreAllGoalsCompleted(ICharacterAIBrain brain)
-        {
-            var goals = brain.CurrentObjectives;
+            // Combine the IsCompleted status of all objectives.
+            // When all are true, the combined observable will emit true.
 
-            if (goals == null || goals.Count == 0)
-                return true;
+            var allObjectivesCompleted = Observable.CombineLatest(brain.CurrentObjectives
+                .Select(obj => obj.IsCompleted.ToObservable()))
+                .Select(statuses => statuses.All(isCompleted => isCompleted));
 
-            return goals.All(g => g.IsCompleted);
+            try
+            {
+                // Wait until the first time `allObjectivesCompleted` becomes true.
+                await allObjectivesCompleted
+                    .Where(allCompleted => allCompleted)
+                    .FirstAsync(cancellationToken);
+
+                Debug.Log("AIControlMonitorService: All goals completed");
+                playerManager.RestorePlayerControl();
+            }
+            catch (OperationCanceledException)
+            {
+                // This is expected when monitoring is cancelled.
+            }
         }
     }
 }

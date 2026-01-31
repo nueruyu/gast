@@ -135,23 +135,46 @@
     position: absolute;
     top: 20px;
     right: 20px;
-    width: 300px;
-    background-color: rgba(0, 0, 0, 0.6);
+    width: 320px;
+    background-color: rgba(0, 0, 0, 0.75);
     border-radius: 8px;
-    padding: 12px;
-    align-items: flex-start;
+    padding: 8px;
+    transition: height 0.2s ease-out;
+}
+
+.game-hud__objectives-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px 4px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+    margin-bottom: 4px;
 }
 
 .game-hud__objectives-title {
-    color: rgb(200, 200, 200);
-    -unity-font-style: bold;
+    color: white;
     font-size: 16px;
-    margin-bottom: 8px;
-    -unity-text-align: middle-left;
-    width: 100%;
-    border-bottom-width: 1px;
-    border-bottom-color: rgb(80, 80, 80);
-    padding-bottom: 4px;
+    -unity-font-style: bold;
+}
+
+.game-hud__objectives-minimize-button {
+    width: 24px;
+    height: 24px;
+    font-size: 20px;
+    -unity-font-style: bold;
+    background-color: transparent;
+    border-width: 0;
+    color: #ccc;
+}
+
+.game-hud__objectives-minimize-button:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.game-hud__objectives-scrollview {
+    max-height: 300px;
 }
 
 .game-hud__objectives-list {
