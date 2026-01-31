@@ -41,12 +41,14 @@ namespace Gast.Composition
         GaiaServerSettings gaiaServerSettings;
 
         [SerializeField]
+        MockAIPlanningSettings mockAIPlanningSettings;
+
+        [SerializeField]
         UIAssetSettings uiAssetSettings;
 
         [Header("Scene Components")]
         [SerializeField]
         CameraRegistry cameraRegistry;
-
         [SerializeField]
         UIDocument mainUIDocument;
 
@@ -72,7 +74,7 @@ namespace Gast.Composition
             // Install registrations from each assembly
             new ApplicationInstaller().Install(builderAdapter);
             new FeaturesInstaller().Install(builderAdapter);
-            new InfrastructureInstaller().Install(builderAdapter);
+            new InfrastructureInstaller(mockAIPlanningSettings).Install(builderAdapter);
             new UIInstaller().Install(builderAdapter);
 
             // Register EntryPoints (VContainer specific)
@@ -87,6 +89,7 @@ namespace Gast.Composition
             RegisterInstance(builder, pickupSystemSettings, nameof(pickupSystemSettings));
             RegisterInstance(builder, itemDatabase, nameof(itemDatabase));
             RegisterInstance(builder, gaiaServerSettings, nameof(gaiaServerSettings));
+            RegisterInstance(builder, mockAIPlanningSettings, nameof(mockAIPlanningSettings));
             RegisterInstance(builder, uiAssetSettings, nameof(uiAssetSettings));
         }
 

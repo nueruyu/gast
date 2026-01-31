@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Core.Tasks;
 using Gast.Domain.Inputs;
 using UnityEngine;
-using UnityEngine.InputSystem; // Added
+using UnityEngine.InputSystem;
 
 namespace Gast.UI.System
 {

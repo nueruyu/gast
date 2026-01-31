@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Tasks;
 using Gast.Domain.AI;
-using Gast.Domain.Players; // InputProviderの参照は不要になるため削除可能ですが、ここでは残しても問題ありません
+using Gast.Domain.Players;
 using R3;
 using UnityEngine;
 
@@ -17,9 +17,7 @@ namespace Gast.Features.Players
 
         readonly IPlayerManager playerManager;
 
-        public PlayerAIControlMonitorService(
-            Domain.Inputs.IInputProvider _, // Use discard for unused parameter
-            IPlayerManager playerManager)
+        public PlayerAIControlMonitorService(IPlayerManager playerManager)
         {
             this.playerManager = playerManager;
         }
@@ -63,8 +61,6 @@ namespace Gast.Features.Players
                 await UniTask.Delay(PollIntervalMilliseconds, cancellationToken: cancellationToken);
             }
         }
-
-        // HasPlayerInput() method removed
 
         bool AreAllGoalsCompleted(ICharacterAIBrain brain)
         {

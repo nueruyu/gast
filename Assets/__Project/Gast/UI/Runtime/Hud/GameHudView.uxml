@@ -19,7 +19,7 @@
     <!-- NEW: AI Control Status -->
     <ui:VisualElement name="AiStatusGroup" class="game-hud__ai-container">
         <ui:Label text="AI ACTIVE" class="game-hud__ai-label"/>
-        <ui:Button name="StopAiButton" text="STOP (Hold Alt)" class="game-hud__ai-stop-button" picking-mode="Position"/>
+        <ui:Button name="StopAiButton" text="STOP AI" class="game-hud__ai-stop-button" picking-mode="Position"/>
     </ui:VisualElement>
 
     <!-- Existing InventoryContainer -->

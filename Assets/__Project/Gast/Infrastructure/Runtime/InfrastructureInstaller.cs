@@ -1,4 +1,5 @@
 using Gast.Application.AI;
+using Gast.Application.AIPlanning;
 using Gast.Core.DI;
 using Gast.Features.Combat;
 using Gast.Infrastructure.AI;
@@ -6,6 +7,7 @@ using Gast.Infrastructure.Factories;
 using Gast.Infrastructure.Remoting.AI;
 using Gast.Infrastructure.Repositories;
 using Gast.Infrastructure.Services;
+using Gast.Infrastructure.Settings;
 using Gast.Lib.AI.Debugging;
 using Gast.Lib.Gaia;
 
@@ -13,6 +15,13 @@ namespace Gast.Infrastructure
 {
     public class InfrastructureInstaller : IInstaller
     {
+        readonly MockAIPlanningSettings mockAIPlanningSettings;
+
+        public InfrastructureInstaller(MockAIPlanningSettings mockAIPlanningSettings)
+        {
+            this.mockAIPlanningSettings = mockAIPlanningSettings;
+        }
+
         public void Install(IContainerBuilder builder)
         {
             // Command & Event System
@@ -20,9 +29,16 @@ namespace Gast.Infrastructure
             builder.Register<JsonCommandSerializer>().AsImplementedInterfaces();
             builder.Register<DomainEventPublisher>().AsImplementedInterfaces();
 
-            // AI Server Client
-            builder.Register<GaiaPlanningClient>().As<IGaiaPlanningClient>();
-            builder.Register<AIPlanningService>().AsImplementedInterfaces();
+            // AI Server Client / Mock
+            if (mockAIPlanningSettings.IsEnabled)
+            {
+                builder.Register<MockAIPlanningService>().As<IAIPlanningService>();
+            }
+            else
+            {
+                builder.Register<GaiaPlanningClient>().As<IGaiaPlanningClient>();
+                builder.Register<AIPlanningService>().As<IAIPlanningService>();
+            }
 
             // Character
             builder.Register<CharacterRepository>().AsImplementedInterfaces();
