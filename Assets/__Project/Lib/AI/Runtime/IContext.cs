@@ -10,6 +10,8 @@ namespace Gast.Lib.AI
         TWorldState WorldState { get; }
         CancellationToken CancellationToken { get; }
 
+        void UpdateWorldState();
+
         TContext WithCancellationToken(CancellationToken cancellationToken);
     }
 }

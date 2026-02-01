@@ -90,6 +90,8 @@ namespace Gast.Lib.AI.Tasks
             foreach (var task in method.SubTasks)
             {
                 await task.RunAsync(ctx);
+
+                ctx.UpdateWorldState();
             }
         }
 

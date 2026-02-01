@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
@@ -10,24 +11,41 @@ namespace Gast.Features.AI
         public ICharacter Actor { get; }
         public TWorldState WorldState { get; }
         public AIMemory Memory { get; }
-        public string DomainName { get; }
         public CancellationToken CancellationToken { get; }
-
         public ContextKey ContextKey { get; }
 
-        public AIContext(ICharacter actor, TWorldState worldState, AIMemory memory, string domainName, CancellationToken cancellationToken)
+        readonly Action worldStateUpdater;
+
+        public AIContext(
+            ContextKey contextKey,
+            ICharacter actor,
+            TWorldState worldState,
+            AIMemory memory,
+            Action worldStateUpdater,
+            CancellationToken cancellationToken)
         {
+            ContextKey = contextKey;
             Actor = actor;
             WorldState = worldState;
             Memory = memory;
-            DomainName = domainName;
             CancellationToken = cancellationToken;
-            ContextKey = new ContextKey(actor.Id, domainName);
+            this.worldStateUpdater = worldStateUpdater;
+        }
+
+        public void UpdateWorldState()
+        {
+            worldStateUpdater?.Invoke();
         }
 
         public AIContext<TWorldState> WithCancellationToken(CancellationToken cancellationToken)
         {
-            return new AIContext<TWorldState>(Actor, WorldState, Memory, DomainName, cancellationToken);
+            return new AIContext<TWorldState>(
+                ContextKey,
+                Actor,
+                WorldState,
+                Memory,
+                worldStateUpdater,
+                cancellationToken);
         }
     }
 }

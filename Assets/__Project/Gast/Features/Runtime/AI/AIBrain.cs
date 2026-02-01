@@ -112,70 +112,73 @@ namespace Gast.Features.AI
             objectiveManager.UpdateObjectives(objectives);
         }
 
-        async UniTaskVoid RunAsync(CancellationToken token)
+        async UniTaskVoid RunAsync(CancellationToken cancellationToken)
         {
             await UniTask.WhenAll(
-                StateUpdateLoop(token),
-                StrategicLoop(token),
-                TacticalLoop(token),
-                GatheringLoop(token)
+                StateUpdateLoop(cancellationToken),
+                StrategicLoop(cancellationToken),
+                TacticalLoop(cancellationToken),
+                GatheringLoop(cancellationToken)
             );
         }
 
-        async UniTask StateUpdateLoop(CancellationToken token)
+        async UniTask StateUpdateLoop(CancellationToken cancellationToken)
         {
-            while (!token.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 UpdateStrategicWorldState();
                 UpdateCombatWorldState();
                 UpdateGatheringWorldState();
 
-                await UniTask.Yield(PlayerLoopTiming.Update, token);
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
         }
 
-        async UniTask StrategicLoop(CancellationToken token)
+        async UniTask StrategicLoop(CancellationToken cancellationToken)
         {
-            while (!token.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 await strategicAgentRunner.RunAsync(new(
+                    strategicContextKey,
                     character,
                     strategicState,
                     memory,
-                    StrategicDomainName,
-                    token));
+                    UpdateStrategicWorldState,
+                    cancellationToken));
 
-                await UniTask.Yield(PlayerLoopTiming.Update, token);
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
         }
 
-        async UniTask TacticalLoop(CancellationToken token)
+        async UniTask TacticalLoop(CancellationToken cancellationToken)
         {
-            while (!token.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 await combatAgentRunner.RunAsync(new(
+                    combatContextKey,
                     character,
                     combatState,
                     memory,
-                    CombatDomainName,
-                    token));
+                    UpdateCombatWorldState,
+                    cancellationToken));
 
-                await UniTask.Yield(PlayerLoopTiming.Update, token);
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
         }
 
-        async UniTask GatheringLoop(CancellationToken token)
+        async UniTask GatheringLoop(CancellationToken cancellationToken)
         {
-            while (!token.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 await gatheringAgentRunner.RunAsync(new(
+                    gatheringContextKey,
                     character,
                     gatheringState,
                     memory,
-                    GatheringDomainName,
-                    token));
+                    UpdateGatheringWorldState,
+                    cancellationToken));
 
-                await UniTask.Yield(PlayerLoopTiming.Update, token);
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
         }
 

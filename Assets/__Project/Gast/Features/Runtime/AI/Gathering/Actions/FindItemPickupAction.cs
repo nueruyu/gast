@@ -27,7 +27,7 @@ namespace Gast.Features.AI.Gathering.Actions
             worldState.HasInteractableTarget = true;
         }
 
-        public async UniTask ExecuteAsync(AIContext<GatheringState> ctx)
+        public UniTask ExecuteAsync(AIContext<GatheringState> ctx)
         {
             var goal = (AcquireItemObjective)ctx.WorldState.CurrentGoal;
 
@@ -45,8 +45,7 @@ namespace Gast.Features.AI.Gathering.Actions
                 ctx.Memory.InteractableTarget = (targetPickup as Component).GetComponentInChildren<IInteractable>();
             }
 
-            await UniTask.NextFrame(ctx.CancellationToken);
-            await UniTask.NextFrame(ctx.CancellationToken);
+            return UniTask.CompletedTask;
         }
     }
 }
