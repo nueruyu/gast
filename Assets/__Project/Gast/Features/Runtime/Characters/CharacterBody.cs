@@ -91,7 +91,9 @@ namespace Gast.Features.Characters
         /// </summary>
         void ApplyPhysics()
         {
-            // Apply gravity
+            if (!controller.enabled)
+                return;
+
             if (controller.isGrounded && verticalVelocity.y < 0)
             {
                 verticalVelocity.y = -2f; // Small downward force to keep grounded

@@ -2,23 +2,21 @@ using UnityEngine;
 
 namespace Gast.Features.Characters.Actions
 {
-    /// <summary>
-    /// Death action with highest priority (99).
-    /// Disables movement and triggers death animation.
-    /// </summary>
     public class DieAction : ICharacterAction
     {
         readonly CharacterBody body;
         readonly CharacterAnimator animator;
+        readonly CharacterController controller;
         bool isActive;
 
-        public int Priority => 99; // Highest priority - interrupts everything
+        public int Priority => 99;
         public bool IsActive => isActive;
 
         public DieAction(CharacterContext character)
         {
             this.body = character.Body;
             this.animator = character.Animator;
+            this.controller = character.Body.GetComponent<CharacterController>();
         }
 
         public bool CanExecute() => true;
@@ -28,6 +26,9 @@ namespace Gast.Features.Characters.Actions
             isActive = true;
             body.IsInputMovementEnabled = false;
             body.SetForcedVelocity(Vector3.zero);
+
+            if (controller != null)
+                controller.enabled = false;
 
             if (animator)
                 animator.SetDead(true);
@@ -39,7 +40,6 @@ namespace Gast.Features.Characters.Actions
 
         public void Move(Vector3 direction, float speed)
         {
-            // No movement allowed when dead
         }
 
         public void OnEnd()
