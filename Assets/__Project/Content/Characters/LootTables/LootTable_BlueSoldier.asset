@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88233fdd31549bb49b9e10d7814f6f64, type: 3}
-  m_Name: LootTable
+  m_Name: LootTable_BlueSoldier
   m_EditorClassIdentifier: Gast.Systems.Loot::Gast.Systems.Loot.LootTableSO
   entries:
-  - itemReference: {fileID: 11400000, guid: 9e1d5333592db124b8fc062071ce6cef, type: 2}
+  - itemReference: {fileID: 11400000, guid: 80be132b5dfe4eb40b2d6ab3e210f9a3, type: 2}
     dropRate: 1
     minQuantity: 1
     maxQuantity: 3

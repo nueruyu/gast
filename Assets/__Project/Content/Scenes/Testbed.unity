@@ -2577,15 +2577,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gast.Systems.SpawnSites::Gast.Systems.SpawnSites.SpawnSiteAnchor
   entries:
-  - characterTypeReference: {fileID: 11400000, guid: 74743be7f3db9d647b1ca2d8167fc767, type: 2}
+  - characterTypeReference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
     localPosition: {x: 1.98, y: 0, z: 1}
     localRotationEuler: {x: 0, y: 0, z: 0}
     faction: 3
-  - characterTypeReference: {fileID: 11400000, guid: e9db19cfea39ace4fb8ba7c43866f726, type: 2}
+  - characterTypeReference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
     localPosition: {x: 1.12, y: 0, z: -1.64}
     localRotationEuler: {x: 0, y: 0, z: 0}
     faction: 3
-  - characterTypeReference: {fileID: 11400000, guid: 74743be7f3db9d647b1ca2d8167fc767, type: 2}
+  - characterTypeReference: {fileID: 11400000, guid: d84ffdeb244f09244a7266fba056d347, type: 2}
     localPosition: {x: -1.8, y: 0, z: 1}
     localRotationEuler: {x: 0, y: 0, z: 0}
     faction: 3
@@ -2744,7 +2744,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gast.Systems.SpawnSites::Gast.Systems.SpawnSites.SpawnSiteAnchor
   entries:
-  - characterTypeReference: {fileID: 11400000, guid: 74743be7f3db9d647b1ca2d8167fc767, type: 2}
+  - characterTypeReference: {fileID: 11400000, guid: d84ffdeb244f09244a7266fba056d347, type: 2}
     localPosition: {x: 1.98, y: 0, z: 1}
     localRotationEuler: {x: 0, y: 0, z: 0}
     faction: 3
@@ -2758,7 +2758,7 @@ Transform:
   m_GameObject: {fileID: 2084794413}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -3.2, y: 0, z: 24.6}
+  m_LocalPosition: {x: -30.800001, y: 0, z: 18.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2782,7 +2782,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2101637811
 Transform:
   m_ObjectHideFlags: 0
