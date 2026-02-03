@@ -19,7 +19,18 @@ namespace Gast.Features.AI.Gathering.Actions
 
         public bool CanExecute(GatheringState worldState)
         {
-            return worldState.CurrentGoal is AcquireItemObjective && !worldState.HasInteractableTarget;
+            if (worldState.CurrentGoal is not AcquireItemObjective goal)
+                return false;
+
+            if (worldState.HasInteractableTarget)
+                return false;
+
+            return pickupRepository
+                .GetAll()
+                .Any(x =>
+                {
+                    return x.ItemId == goal.TargetItemId;
+                });
         }
 
         public void Simulate(GatheringState worldState)
