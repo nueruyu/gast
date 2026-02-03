@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Gast.Features.Economy
 {
@@ -8,6 +9,11 @@ namespace Gast.Features.Economy
         [SerializeField]
         Shop[] shops = { };
 
-        public IReadOnlyList<Shop> Shops => shops;
+        public Shop[] GetShops()
+        {
+            return shops
+                .Where(x => x != null && x.isActiveAndEnabled)
+                .ToArray();
+        }
     }
 }

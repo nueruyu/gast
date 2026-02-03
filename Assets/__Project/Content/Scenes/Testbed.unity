@@ -135,7 +135,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &28485938
 Transform:
   m_ObjectHideFlags: 0
@@ -797,7 +797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 250c095a896a6eb488bcb3ee87b0c014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Gast.Features.Gathering::Gast.Features.Gathering.GatheringSpotAnchor
-  itemReference: {fileID: 11400000, guid: 21b8dc3903c58e342a1fcd2c075bff66, type: 2}
+  itemReference: {fileID: 11400000, guid: f2a41c6867124424bb778f1dab2586dd, type: 2}
   quantity: 1
   respawnTime: 10
   spawnOnStart: 1
@@ -969,7 +969,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 250c095a896a6eb488bcb3ee87b0c014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Gast.Features.Gathering::Gast.Features.Gathering.GatheringSpotAnchor
-  itemReference: {fileID: 11400000, guid: 21b8dc3903c58e342a1fcd2c075bff66, type: 2}
+  itemReference: {fileID: 11400000, guid: f2a41c6867124424bb778f1dab2586dd, type: 2}
   quantity: 1
   respawnTime: 10
   spawnOnStart: 1
@@ -1347,7 +1347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 250c095a896a6eb488bcb3ee87b0c014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Gast.Features.Gathering::Gast.Features.Gathering.GatheringSpotAnchor
-  itemReference: {fileID: 11400000, guid: 21b8dc3903c58e342a1fcd2c075bff66, type: 2}
+  itemReference: {fileID: 11400000, guid: f2a41c6867124424bb778f1dab2586dd, type: 2}
   quantity: 1
   respawnTime: 10
   spawnOnStart: 1
@@ -1395,7 +1395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 250c095a896a6eb488bcb3ee87b0c014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Gast.Features.Gathering::Gast.Features.Gathering.GatheringSpotAnchor
-  itemReference: {fileID: 11400000, guid: 21b8dc3903c58e342a1fcd2c075bff66, type: 2}
+  itemReference: {fileID: 11400000, guid: f2a41c6867124424bb778f1dab2586dd, type: 2}
   quantity: 1
   respawnTime: 10
   spawnOnStart: 1
@@ -2473,7 +2473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 250c095a896a6eb488bcb3ee87b0c014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Gast.Features.Gathering::Gast.Features.Gathering.GatheringSpotAnchor
-  itemReference: {fileID: 11400000, guid: 21b8dc3903c58e342a1fcd2c075bff66, type: 2}
+  itemReference: {fileID: 11400000, guid: f2a41c6867124424bb778f1dab2586dd, type: 2}
   quantity: 1
   respawnTime: 10
   spawnOnStart: 1

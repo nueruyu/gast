@@ -16,4 +16,4 @@ MonoBehaviour:
   - itemReference: {fileID: 11400000, guid: 80be132b5dfe4eb40b2d6ab3e210f9a3, type: 2}
     dropRate: 1
     minQuantity: 1
-    maxQuantity: 3
+    maxQuantity: 1

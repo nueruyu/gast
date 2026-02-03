@@ -20,6 +20,9 @@ namespace Gast.Features.Pickups
         [SerializeField]
         float dropImpulse = 2f;
 
+        [SerializeField]
+        GameObject defaultVisualPrefab;
+
         ICommandDispatcher commandDispatcher;
         PickupId id;
         ItemId itemId;
@@ -40,7 +43,8 @@ namespace Gast.Features.Pickups
             string itemName,
             int quantity,
             ICommandDispatcher commandDispatcher,
-            InteractionSystem interactionSystem)
+            InteractionSystem interactionSystem,
+            GameObject visualPrefab = null)
         {
             this.id = id;
             this.itemId = itemId;
@@ -56,6 +60,10 @@ namespace Gast.Features.Pickups
             interactable.Interacted
                 .Subscribe(OnInteract)
                 .AddTo(destroyCancellationToken);
+
+            _ = visualPrefab != null ?
+                Instantiate(visualPrefab, transform) :
+                Instantiate(defaultVisualPrefab, transform);
         }
 
         public void Eject()
