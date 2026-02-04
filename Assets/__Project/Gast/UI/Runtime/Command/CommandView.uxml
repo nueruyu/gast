@@ -2,7 +2,7 @@
     <Style src="CommandView.uss"/>
     <ui:VisualElement class="command-modal__container">
         <ui:Label text="Send Instruction to AI" class="command-modal__title"/>
-        <ui:TextField name="InstructionInput" class="command-modal__input"/>
+        <ui:TextField name="InstructionInput" class="command-modal__input" multiline="true"/>
         <ui:Label name="StatusLabel" class="command-modal__status"/>
         <ui:Button name="SendButton" text="Send" class="command-modal__button"/>
     </ui:VisualElement>

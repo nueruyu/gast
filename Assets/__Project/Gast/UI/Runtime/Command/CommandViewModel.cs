@@ -40,7 +40,6 @@ namespace Gast.UI.Command
         {
             var instruction = InstructionText.Value;
 
-            InstructionText.Value = "";
             StatusMessage.Value = "";
             HasError.Value = false;
             IsLoading.Value = true;
