@@ -19,18 +19,7 @@ namespace Gast.Features.AI.Gathering.Actions
 
         public bool CanExecute(GatheringState worldState)
         {
-            if (worldState.CurrentGoal is not AcquireItemObjective goal)
-                return false;
-
-            if (worldState.HasInteractableTarget)
-                return false;
-
-            return pickupRepository
-                .GetAll()
-                .Any(x =>
-                {
-                    return x.ItemId == goal.TargetItemId;
-                });
+            return worldState.CurrentGoal is AcquireItemObjective && !worldState.HasInteractableTarget;
         }
 
         public void Simulate(GatheringState worldState)
@@ -40,7 +29,10 @@ namespace Gast.Features.AI.Gathering.Actions
 
         public UniTask ExecuteAsync(AIContext<GatheringState> ctx)
         {
-            var goal = (AcquireItemObjective)ctx.WorldState.CurrentGoal;
+            if (ctx.Memory.CurrentObjective is not AcquireItemObjective goal)
+            {
+                return UniTask.CompletedTask;
+            }
 
             var targetPickup = pickupRepository
                 .GetAll()

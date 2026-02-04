@@ -9,8 +9,7 @@ namespace Gast.Features.Installers
         public void Install(IContainerBuilder builder)
         {
             builder.Register<StrategicDomain>(Lifetime.Transient);
-            builder.Register<ClearTargetAction>(Lifetime.Transient);
-            builder.Register<FindTargetForGoalAction>(Lifetime.Transient);
+            builder.Register<SelectObjectiveAction>(Lifetime.Transient);
             builder.Register<SelectThreatAction>(Lifetime.Transient);
         }
     }
