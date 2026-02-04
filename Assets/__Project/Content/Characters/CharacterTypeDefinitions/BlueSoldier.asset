@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
   displayName: Blue Soldier
-  maxHealth: 30
+  maxHealth: 20
   walkSpeed: 2
   sprintSpeed: 5
   jumpForce: 15

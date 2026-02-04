@@ -10,12 +10,13 @@ namespace Gast.Features.AI.Strategic
 
         public StrategicDomain(
             SelectObjectiveAction selectObjectiveAction,
-            SelectThreatAction selectThreatAction)
+            SelectThreatAction selectThreatAction,
+            ClearTargetAction clearTargetAction)
         {
             domain = new AIDomainBuilder<StrategicState, AIContext<StrategicState>>()
                 .RegisterAction("SelectObjective", selectObjectiveAction)
                 .RegisterAction("SelectThreat", selectThreatAction)
-                .RegisterAction("Idle", new IdleAction())
+                .RegisterAction("ClearTarget", clearTargetAction)
                 .RegisterAction("Wait", new WaitAction())
                 .DefineCompound("Root")
                     .AddMethod("RespondToThreat")
@@ -23,11 +24,13 @@ namespace Gast.Features.AI.Strategic
                         .Do("SelectThreat")
                     .End()
                     .AddMethod("PursueObjective")
-                        .Condition(s => s.AvailableObjectives.Count > 0)
+                        .Condition(s => !s.IsThreatened && s.AvailableObjectives.Count > 0)
                         .Do("SelectObjective")
                     .End()
                     .AddMethod("Idle")
-                        .Do("Idle")
+                        .Condition(s => !s.IsThreatened && s.AvailableObjectives.Count == 0)
+                        .Do("ClearTarget")
+                        .Do("Wait", 1.0f)
                     .End()
                 .End()
                 .Build("Root");

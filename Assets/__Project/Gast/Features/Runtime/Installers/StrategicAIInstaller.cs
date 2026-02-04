@@ -11,6 +11,7 @@ namespace Gast.Features.Installers
             builder.Register<StrategicDomain>(Lifetime.Transient);
             builder.Register<SelectObjectiveAction>(Lifetime.Transient);
             builder.Register<SelectThreatAction>(Lifetime.Transient);
+            builder.Register<ClearTargetAction>(Lifetime.Transient);
         }
     }
 }

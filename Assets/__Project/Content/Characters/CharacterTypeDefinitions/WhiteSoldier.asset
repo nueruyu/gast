@@ -15,8 +15,8 @@ MonoBehaviour:
   reference: {fileID: 11400000, guid: d84ffdeb244f09244a7266fba056d347, type: 2}
   displayName: White Soldier
   maxHealth: 20
-  walkSpeed: 6
-  sprintSpeed: 10
+  walkSpeed: 5
+  sprintSpeed: 8
   jumpForce: 15
   dashForce: 20
   dashDuration: 0.4

@@ -28,3 +28,10 @@ MonoBehaviour:
       Value: 2af904b4-892f-4f9d-8858-192dfcef161f
     - Key: target_quantity
       Value: 1
+  - Type: AcquireItem
+    Priority: 2
+    Parameters:
+    - Key: target_item_id
+      Value: b9026298-63b6-4362-a854-036f96ea45b9
+    - Key: target_quantity
+      Value: 1
