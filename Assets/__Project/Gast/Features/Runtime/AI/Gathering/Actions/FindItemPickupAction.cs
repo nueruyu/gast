@@ -29,7 +29,10 @@ namespace Gast.Features.AI.Gathering.Actions
 
         public UniTask ExecuteAsync(AIContext<GatheringState> ctx)
         {
-            var goal = (AcquireItemObjective)ctx.WorldState.CurrentGoal;
+            if (ctx.Memory.CurrentObjective is not AcquireItemObjective goal)
+            {
+                return UniTask.CompletedTask;
+            }
 
             var targetPickup = pickupRepository
                 .GetAll()

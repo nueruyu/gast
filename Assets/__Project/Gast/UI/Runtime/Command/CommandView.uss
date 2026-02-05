@@ -27,7 +27,7 @@
 
 .command-modal__input {
     font-size: 16px;
-    height: 40px;
+    min-height: 80px;
     margin-bottom: 15px;
 }
 
@@ -37,6 +37,7 @@
     border-color: rgb(60, 60, 60);
     border-width: 1px;
     border-radius: 4px;
+    --unity-cursor-color: white;
 }
 
 .command-modal__status {

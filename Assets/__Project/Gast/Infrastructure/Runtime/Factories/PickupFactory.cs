@@ -4,6 +4,7 @@ using Gast.Domain.Economy;
 using Gast.Domain.Pickups;
 using Gast.Features.Interactions;
 using Gast.Features.Pickups;
+using Gast.Infrastructure.Repositories;
 using Gast.Infrastructure.Settings;
 using UnityEngine;
 using VContainer;
@@ -14,13 +15,13 @@ namespace Gast.Infrastructure.Factories
     {
         readonly PickupSystemSettings settings;
         readonly ICommandDispatcher commandDispatcher;
-        readonly IItemRepository itemRepository;
+        readonly ItemRepository itemRepository;
         readonly InteractionSystem interactionSystem;
 
         public PickupFactory(
             PickupSystemSettings settings,
             ICommandDispatcher commandDispatcher,
-            IItemRepository itemRepository,
+            ItemRepository itemRepository,
             InteractionSystem interactionSystem)
         {
             this.settings = settings;
@@ -45,7 +46,8 @@ namespace Gast.Infrastructure.Factories
                 itemDefinition.Name,
                 quantity,
                 commandDispatcher,
-                interactionSystem);
+                interactionSystem,
+                visualPrefab: itemDefinition.Prefab);
 
             return pickup;
         }

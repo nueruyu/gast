@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Gast.Core.Events;
 using Gast.Core.Observables;
 using Gast.Domain.AI;
@@ -6,6 +7,7 @@ using Gast.Domain.Combat;
 using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
+using System;
 using UnityEngine;
 
 namespace Gast.Features.Characters
@@ -28,6 +30,8 @@ namespace Gast.Features.Characters
         readonly Signal<ICharacter> attackedSignal = new();
 
         bool isSprinting;
+
+        const float CorpseDespawnDelaySeconds = 5f;
 
         public CharacterId Id => context.Id;
         public CharacterTypeId TypeId => context.TypeId;
@@ -211,6 +215,7 @@ namespace Gast.Features.Characters
                 Debug.Log($"[{Id}] Died.");
                 actionController.Die();
                 eventPublisher?.Publish(new CharacterDefeatedEvent(this, info.AttackerId));
+                DespawnAfterDelay().Forget();
             }
             else
             {
@@ -218,15 +223,24 @@ namespace Gast.Features.Characters
             }
         }
 
-        /// <summary>
-        /// Get the currently attached brain.
-        /// </summary>
         public ICharacterBrain GetBrain() => currentBrain;
 
         void OnDestroy()
         {
             DetachBrain();
             destroyedSignal.Publish(this);
+        }
+
+        async UniTaskVoid DespawnAfterDelay()
+        {
+            await UniTask.Delay(
+                TimeSpan.FromSeconds(CorpseDespawnDelaySeconds),
+                cancellationToken: this.destroyCancellationToken);
+
+            if (this != null && gameObject != null)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

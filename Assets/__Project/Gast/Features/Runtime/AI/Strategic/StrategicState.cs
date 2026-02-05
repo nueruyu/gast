@@ -1,19 +1,18 @@
 using Gast.Domain.AI;
 using Gast.Lib.AI;
+using System.Collections.Generic;
 
 namespace Gast.Features.AI.Strategic
 {
     public class StrategicState : IWorldState<StrategicState>
     {
-        public IAIObjective CurrentGoal { get; set; }
-        public bool HasGoal { get; set; }
         public bool IsThreatened { get; set; }
+        public List<IAIObjective> AvailableObjectives { get; set; } = new();
 
         public void CopyFrom(StrategicState source)
         {
-            CurrentGoal = source.CurrentGoal;
-            HasGoal = source.HasGoal;
             IsThreatened = source.IsThreatened;
+            AvailableObjectives = source.AvailableObjectives;
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Gast.Infrastructure.Services
 
         public Task RunAsync(CancellationToken cancellationToken)
         {
-            foreach (var shop in shopRegistry.Shops)
+            foreach (var shop in shopRegistry.GetShops())
             {
                 shop.Initialize(commandDispatcher, itemRepository, interactionSystem);
             }

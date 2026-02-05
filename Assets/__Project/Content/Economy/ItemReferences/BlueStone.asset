@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5f9eb7513a5bf6439bf110cf5336e3d, type: 3}
+  m_Name: BlueStone
+  m_EditorClassIdentifier: Gast.Features::Gast.Features.Economy.ItemReference
+  id: 55c41bb5-9925-414a-88cd-03459e5c58c2
