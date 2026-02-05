@@ -8,7 +8,7 @@ using Gast.Features.Gathering;
 using Gast.Features.Inputs;
 using Gast.Features.SpawnSites;
 using Gast.Infrastructure;
-using Gast.Infrastructure.Remoting.AI;
+using Gast.Lib.Gaia;
 using Gast.Infrastructure.Services;
 using Gast.Infrastructure.Settings;
 using Gast.UI;
@@ -38,7 +38,10 @@ namespace Gast.Composition
         ItemDatabaseSettings itemDatabase;
 
         [SerializeField]
-        AIServerSettings aiServerSettings;
+        GaiaServerSettings gaiaServerSettings;
+
+        [SerializeField]
+        MockAIPlanningSettings mockAIPlanningSettings;
 
         [SerializeField]
         UIAssetSettings uiAssetSettings;
@@ -46,7 +49,6 @@ namespace Gast.Composition
         [Header("Scene Components")]
         [SerializeField]
         CameraRegistry cameraRegistry;
-
         [SerializeField]
         UIDocument mainUIDocument;
 
@@ -72,7 +74,7 @@ namespace Gast.Composition
             // Install registrations from each assembly
             new ApplicationInstaller().Install(builderAdapter);
             new FeaturesInstaller().Install(builderAdapter);
-            new InfrastructureInstaller().Install(builderAdapter);
+            new InfrastructureInstaller(mockAIPlanningSettings).Install(builderAdapter);
             new UIInstaller().Install(builderAdapter);
 
             // Register EntryPoints (VContainer specific)
@@ -86,7 +88,8 @@ namespace Gast.Composition
             RegisterInstance(builder, characterDatabaseSettings, nameof(characterDatabaseSettings));
             RegisterInstance(builder, pickupSystemSettings, nameof(pickupSystemSettings));
             RegisterInstance(builder, itemDatabase, nameof(itemDatabase));
-            RegisterInstance(builder, aiServerSettings, nameof(aiServerSettings));
+            RegisterInstance(builder, gaiaServerSettings, nameof(gaiaServerSettings));
+            RegisterInstance(builder, mockAIPlanningSettings, nameof(mockAIPlanningSettings));
             RegisterInstance(builder, uiAssetSettings, nameof(uiAssetSettings));
         }
 

@@ -28,12 +28,17 @@ namespace Gast.Infrastructure.Repositories
             throw new KeyNotFoundException($"Item definition with ID '{id}' not found in repository.");
         }
 
+        public IEnumerable<ItemDefinition> GetAllDefinitions()
+        {
+            return definitionMap.Values;
+        }
+
         IItemDefinition IItemRepository.Get(ItemId id)
         {
             return Get(id);
         }
 
-        public IEnumerable<ItemDefinition> GetAllDefinitions()
+        IEnumerable<IItemDefinition> IItemRepository.GetAllDefinitions()
         {
             return definitionMap.Values;
         }

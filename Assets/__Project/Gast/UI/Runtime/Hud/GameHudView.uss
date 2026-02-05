@@ -10,7 +10,7 @@
     bottom: 0;
     padding: 20px;
     justify-content: space-between;
-    pointer-events: none;
+    justify-content: space-between;
 }
 
 /* --- Status Group (Top Left) --- */
@@ -83,4 +83,123 @@
     color: white;
     font-size: 14px;
     white-space: nowrap;
+}
+
+/* --- AI Status Container (Top Center) --- */
+.game-hud__ai-container {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    translate: -50% 0;
+    flex-direction: row;
+    background-color: rgba(20, 20, 20, 0.85);
+    border-radius: 20px;
+    padding: 8px 16px;
+    align-items: center;
+    border-width: 1px;
+    border-color: rgba(100, 149, 237, 0.5);
+}
+
+.game-hud__ai-label {
+    color: rgb(100, 149, 237);
+    -unity-font-style: bold;
+    font-size: 16px;
+    margin-right: 12px;
+}
+
+.game-hud__ai-stop-button {
+    background-color: rgb(200, 60, 60);
+    color: white;
+    border-width: 0;
+    border-radius: 4px;
+    font-size: 14px;
+    padding: 4px 12px;
+    height: 28px;
+    transition-duration: 0.1s;
+    height: 28px;
+    transition-duration: 0.1s;
+}
+
+.game-hud__ai-stop-button:hover {
+    background-color: rgb(230, 80, 80);
+    scale: 1.05;
+}
+
+.game-hud__ai-stop-button:active {
+    background-color: rgb(160, 40, 40);
+    scale: 0.95;
+}
+
+/* --- AI Objectives Container (Top Right) --- */
+.game-hud__objectives-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 320px;
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 8px;
+    padding: 8px;
+    transition: height 0.2s ease-out;
+}
+
+.game-hud__objectives-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px 4px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+    margin-bottom: 4px;
+}
+
+.game-hud__objectives-title {
+    color: white;
+    font-size: 16px;
+    -unity-font-style: bold;
+}
+
+.game-hud__objectives-minimize-button {
+    width: 24px;
+    height: 24px;
+    font-size: 20px;
+    -unity-font-style: bold;
+    background-color: transparent;
+    border-width: 0;
+    color: #ccc;
+}
+
+.game-hud__objectives-minimize-button:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.game-hud__objectives-scrollview {
+    max-height: 300px;
+}
+
+.game-hud__objectives-list {
+    width: 100%;
+}
+
+.game-hud__objective-item {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 4px;
+}
+
+.game-hud__objective-item--completed .game-hud__objective-description,
+.game-hud__objective-item--completed .game-hud__objective-progress {
+    color: rgb(120, 120, 120);
+    -unity-font-style: italic;
+}
+
+.game-hud__objective-description {
+    color: white;
+    font-size: 14px;
+}
+
+.game-hud__objective-progress {
+    color: white;
+    font-size: 14px;
+    -unity-font-style: bold;
 }

@@ -87,6 +87,7 @@ namespace Gast.Features.Characters
         }
 
         public bool CanAttack => CanActionExecute<AttackAction>();
+        public bool CanGuard => CanActionExecute<GuardAction>();
         public bool IsDashing => IsActionActive<DashAction>();
         public bool IsGuarding => IsActionActive<GuardAction>();
 

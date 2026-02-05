@@ -36,12 +36,17 @@ namespace Gast.Infrastructure.Repositories
             throw new KeyNotFoundException($"Character type definition with ID '{id}' not found in repository.");
         }
 
+        public IEnumerable<CharacterTypeDefinition> GetAllDefinitions()
+        {
+            return definitionMap.Values;
+        }
+
         ICharacterTypeDefinition ICharacterTypeRepository.Get(CharacterTypeId id)
         {
             return Get(id);
         }
 
-        public IEnumerable<CharacterTypeDefinition> GetAllDefinitions()
+        IEnumerable<ICharacterTypeDefinition> ICharacterTypeRepository.GetAllDefinitions()
         {
             return definitionMap.Values;
         }

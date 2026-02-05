@@ -1,4 +1,5 @@
-using Gast.Application.AI;
+using Gast.Application.AI.Tools;
+using Gast.Application.AIPlanning;
 using Gast.Application.Characters;
 using Gast.Application.Economy;
 using Gast.Application.Interactions;
@@ -28,6 +29,7 @@ namespace Gast.Application
 
             // AI
             builder.Register<CommandAIUseCase>().AsImplementedInterfaces();
+            builder.Register<GameInfoTools>();
         }
     }
 }

@@ -1,6 +1,6 @@
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Gast.Domain.AI.Goals;
+using Gast.Domain.AI.Objectives;
 using Gast.Domain.Interactions;
 using Gast.Domain.Pickups;
 using Gast.Lib.AI;
@@ -19,7 +19,7 @@ namespace Gast.Features.AI.Gathering.Actions
 
         public bool CanExecute(GatheringState worldState)
         {
-            return worldState.CurrentGoal is AcquireItemGoal && !worldState.HasInteractableTarget;
+            return worldState.CurrentGoal is AcquireItemObjective && !worldState.HasInteractableTarget;
         }
 
         public void Simulate(GatheringState worldState)
@@ -27,9 +27,9 @@ namespace Gast.Features.AI.Gathering.Actions
             worldState.HasInteractableTarget = true;
         }
 
-        public async UniTask ExecuteAsync(AIContext<GatheringState> ctx)
+        public UniTask ExecuteAsync(AIContext<GatheringState> ctx)
         {
-            var goal = (AcquireItemGoal)ctx.WorldState.CurrentGoal;
+            var goal = (AcquireItemObjective)ctx.WorldState.CurrentGoal;
 
             var targetPickup = pickupRepository
                 .GetAll()
@@ -45,7 +45,7 @@ namespace Gast.Features.AI.Gathering.Actions
                 ctx.Memory.InteractableTarget = (targetPickup as Component).GetComponentInChildren<IInteractable>();
             }
 
-            await UniTask.NextFrame(ctx.CancellationToken);
+            return UniTask.CompletedTask;
         }
     }
 }

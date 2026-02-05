@@ -35,5 +35,16 @@ namespace Gast.UI
         VisualTreeAsset commandView;
 
         public VisualTreeAsset CommandView => commandView;
+
+        [Header("HUD Objectives")]
+        [SerializeField]
+        VisualTreeAsset acquireItemObjectiveView;
+
+        public VisualTreeAsset AcquireItemObjectiveView => acquireItemObjectiveView;
+
+        [SerializeField]
+        VisualTreeAsset defeatCharacterObjectiveView;
+
+        public VisualTreeAsset DefeatCharacterObjectiveView => defeatCharacterObjectiveView;
     }
 }

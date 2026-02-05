@@ -1,4 +1,3 @@
-using Gast.Domain.Inputs;
 using Gast.Domain.Players;
 using Gast.Shared.Observables;
 using R3;
@@ -16,6 +15,7 @@ namespace Gast.UI.Hud
     {
         readonly CompositeDisposable disposables = new();
         readonly ReactiveProperty<bool> hasFocus = new(false);
+        readonly IPlayerManager playerManager;
 
         public ReadOnlyReactiveProperty<float> HpRatio { get; }
         public ReadOnlyReactiveProperty<string> HpText { get; }
@@ -24,10 +24,37 @@ namespace Gast.UI.Hud
         public ReadOnlyReactiveProperty<IReadOnlyList<ItemStackViewModel>> InventoryItems { get; }
         public ReadOnlyReactiveProperty<bool> HasFocus => hasFocus;
 
+        public ReadOnlyReactiveProperty<bool> IsAiControlActive { get; }
+        public ReadOnlyReactiveProperty<IReadOnlyList<IAIObjectiveViewModel>> AiObjectives { get; }
+
         public GameHudViewModel(
             IPlayerManager playerManager,
-            ItemStackViewModelFactory itemStackViewModelFactory)
+            ItemStackViewModelFactory itemStackViewModelFactory,
+            AIObjectiveViewModelFactory objectiveViewModelFactory)
         {
+            this.playerManager = playerManager;
+
+            // Added: Monitor if an AI Brain is currently active
+            IsAiControlActive = playerManager.CurrentAIBrain
+                .ToObservable()
+                .Select(brain => brain != null)
+                .ToReadOnlyReactiveProperty()
+                .AddTo(disposables);
+
+            AiObjectives = playerManager.CurrentAIBrain.ToObservable()
+                .Select(brain =>
+                {
+                    if (brain == null)
+                    {
+                        return (IReadOnlyList<IAIObjectiveViewModel>)Array.Empty<IAIObjectiveViewModel>();
+                    }
+                    return brain.CurrentObjectives
+                        .Select(objectiveViewModelFactory.Create)
+                        .ToList();
+                })
+                .ToReadOnlyReactiveProperty()
+                .AddTo(disposables);
+
             var currentCharacter = playerManager.CurrentCharacter
                 .ToObservable();
 
@@ -101,6 +128,11 @@ namespace Gast.UI.Hud
                 .Switch()
                 .ToReadOnlyReactiveProperty()
                 .AddTo(disposables);
+        }
+
+        public void StopAiControl()
+        {
+            playerManager.RestorePlayerControl();
         }
 
         public void SetFocus(bool hasFocus)

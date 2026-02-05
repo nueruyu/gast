@@ -9,6 +9,7 @@
         "Gast.Features",
         "Gast.UI",
         "Gast.Infrastructure",
+        "Gast.Lib.Gaia",
         "VContainer",
         "UniTask"
     ],

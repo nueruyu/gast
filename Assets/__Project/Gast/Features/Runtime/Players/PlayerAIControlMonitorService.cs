@@ -1,11 +1,12 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Tasks;
 using Gast.Domain.AI;
-using Gast.Domain.Inputs;
 using Gast.Domain.Players;
+using Gast.Shared.Observables;
 using R3;
 using UnityEngine;
 
@@ -13,14 +14,10 @@ namespace Gast.Features.Players
 {
     public class PlayerAIControlMonitorService : ILifecycleTask
     {
-        readonly IInputProvider inputProvider;
         readonly IPlayerManager playerManager;
 
-        public PlayerAIControlMonitorService(
-            IInputProvider inputProvider,
-            IPlayerManager playerManager)
+        public PlayerAIControlMonitorService(IPlayerManager playerManager)
         {
-            this.inputProvider = inputProvider;
             this.playerManager = playerManager;
         }
 
@@ -31,16 +28,19 @@ namespace Gast.Features.Players
             cancellationToken.Register(() =>
             {
                 monitorCts?.Cancel();
+                monitorCts?.Dispose();
             });
 
             playerManager.CurrentAIBrain
+                .ToObservable()
                 .Subscribe(aiBrain =>
                 {
                     monitorCts?.Cancel();
+                    monitorCts?.Dispose();
 
                     if (aiBrain != null)
                     {
-                        monitorCts = new CancellationTokenSource();
+                        monitorCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                         MonitorAsync(aiBrain, monitorCts.Token).Forget();
                     }
                 })
@@ -51,56 +51,34 @@ namespace Gast.Features.Players
 
         async UniTask MonitorAsync(ICharacterAIBrain brain, CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            if (brain.CurrentObjectives == null || brain.CurrentObjectives.Count == 0)
             {
-                if (ShouldRestore(brain))
-                {
-                    Debug.Log("AIControlMonitorService: Restoration conditions met, restoring player control");
-                    playerManager.RestorePlayerControl();
-                    break;
-                }
-
-                await UniTask.NextFrame(cancellationToken);
-            }
-        }
-
-        bool ShouldRestore(ICharacterAIBrain brain)
-        {
-            if (HasPlayerInput())
-            {
-                Debug.Log("AIControlMonitorService: Player input detected");
-                return true;
+                Debug.Log("AIControlMonitorService: No goals to monitor.");
+                playerManager.RestorePlayerControl();
+                return;
             }
 
-            if (AreAllGoalsCompleted(brain))
+            // Combine the IsCompleted status of all objectives.
+            // When all are true, the combined observable will emit true.
+
+            var allObjectivesCompleted = Observable.CombineLatest(brain.CurrentObjectives
+                .Select(obj => obj.IsCompleted.ToObservable()))
+                .Select(statuses => statuses.All(isCompleted => isCompleted));
+
+            try
             {
+                // Wait until the first time `allObjectivesCompleted` becomes true.
+                await allObjectivesCompleted
+                    .Where(allCompleted => allCompleted)
+                    .FirstAsync(cancellationToken);
+
                 Debug.Log("AIControlMonitorService: All goals completed");
-                return true;
+                playerManager.RestorePlayerControl();
             }
-
-            return false;
-        }
-
-        bool HasPlayerInput()
-        {
-            return inputProvider.Move.sqrMagnitude > 0.01f
-                || inputProvider.Look.sqrMagnitude > 0.01f
-                || inputProvider.Jump
-                || inputProvider.Sprint
-                || inputProvider.InteractPressed
-                || inputProvider.Attack
-                || inputProvider.Dash
-                || inputProvider.GuardHeld;
-        }
-
-        bool AreAllGoalsCompleted(ICharacterAIBrain brain)
-        {
-            var goals = brain.CurrentGoals;
-
-            if (goals == null || goals.Count == 0)
-                return true;
-
-            return goals.All(g => g.IsCompleted);
+            catch (OperationCanceledException)
+            {
+                // This is expected when monitoring is cancelled.
+            }
         }
     }
 }

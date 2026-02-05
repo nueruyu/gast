@@ -44,6 +44,7 @@ namespace Gast.Features.Inputs
         public bool Attack { get; private set; }
         public bool Dash { get; private set; }
         public bool GuardHeld { get; private set; }
+        public bool IsCursorOverridePressed { get; private set; }
         public ISignal ShowMenu => showMenu;
         public ISignal HideMenu => hideMenu;
 
@@ -92,6 +93,7 @@ namespace Gast.Features.Inputs
                     Sprint = sprintAction.IsPressed();
                     InteractHeld = interactAction.IsPressed();
                     GuardHeld = guardAction.IsPressed();
+                    IsCursorOverridePressed = Keyboard.current != null && Keyboard.current.leftAltKey.isPressed;
 
                     // Reset flags at end of frame
                     await UniTask.WaitForEndOfFrame(cancellationToken);

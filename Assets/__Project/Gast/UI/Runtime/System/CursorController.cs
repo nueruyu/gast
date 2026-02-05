@@ -10,35 +10,43 @@ namespace Gast.UI.System
     public class CursorController : ILifecycleTask
     {
         readonly IInputModeManager inputModeManager;
+        readonly IInputProvider inputProvider;
 
-        public CursorController(IInputModeManager inputModeManager)
+        public CursorController(IInputModeManager inputModeManager, IInputProvider inputProvider)
         {
             this.inputModeManager = inputModeManager;
+            this.inputProvider = inputProvider;
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            inputModeManager.CurrentMode.SubscribeWithCurrent(mode =>
+            while (!cancellationToken.IsCancellationRequested)
             {
-                switch (mode)
-                {
-                    case InputMode.Gameplay:
-                        SetCursorState(true);
-                        break;
-
-                    default:
-                        SetCursorState(false);
-                        break;
-                }
-            }).AddTo(cancellationToken);
-
-            await UniTask.WaitUntilCanceled(cancellationToken);
+                UpdateCursorState();
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+            }
         }
 
-        void SetCursorState(bool locked)
+        void UpdateCursorState()
         {
-            Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
-            Cursor.visible = !locked;
+            var currentMode = inputModeManager.CurrentMode.Value;
+            var isCursorOverridePressed = inputProvider.IsCursorOverridePressed;
+
+            // Show cursor if we are in UI mode OR if the override key is held down
+            bool shouldShowCursor = currentMode == InputMode.UI || isCursorOverridePressed;
+
+            SetCursorVisibility(shouldShowCursor);
+        }
+
+        void SetCursorVisibility(bool visible)
+        {
+            var targetLockState = visible ? CursorLockMode.None : CursorLockMode.Locked;
+
+            if (Cursor.lockState != targetLockState)
+            {
+                Cursor.lockState = targetLockState;
+                Cursor.visible = visible;
+            }
         }
     }
 }

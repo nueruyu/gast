@@ -7,7 +7,7 @@ namespace Gast.Features.AI.Gathering
 {
     public class GatheringState : IWorldState<GatheringState>
     {
-        public IGoal CurrentGoal { get; set; }
+        public IAIObjective CurrentGoal { get; set; }
         public bool HasGoal { get; set; }
         public bool HasInteractableTarget { get; set; }
         public InteractableId InteractableTargetId { get; set; }

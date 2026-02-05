@@ -12,6 +12,7 @@ namespace Gast.Lib.AI.Builders
         readonly string methodName;
         Func<TWorldState, bool> condition = _ => true;
         Func<TWorldState, float> scorer = null;
+        Func<TWorldState, float> interruptionCost = null;
         readonly List<ITask<TWorldState, TContext>> subTasks = new();
 
         internal MethodBuilder(
@@ -31,6 +32,12 @@ namespace Gast.Lib.AI.Builders
         public MethodBuilder<TWorldState, TContext> Score(Func<TWorldState, float> scoreFunc)
         {
             scorer = scoreFunc ?? throw new ArgumentNullException(nameof(scoreFunc));
+            return this;
+        }
+
+        public MethodBuilder<TWorldState, TContext> InterruptCost(Func<TWorldState, float> costFunc)
+        {
+            interruptionCost = costFunc ?? throw new ArgumentNullException(nameof(costFunc));
             return this;
         }
 
@@ -88,7 +95,8 @@ namespace Gast.Lib.AI.Builders
                 compoundBuilder.CurrentMethodCount,
                 subTasks,
                 condition,
-                scorer);
+                scorer,
+                interruptionCost);
 
             return compoundBuilder.CompleteMethod(method);
         }

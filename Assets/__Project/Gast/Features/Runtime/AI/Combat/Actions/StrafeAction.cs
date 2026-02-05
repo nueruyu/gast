@@ -9,8 +9,8 @@ namespace Gast.Features.AI.Combat.Actions
     [Serializable]
     public class StrafeAction : IAction<CombatState, AIContext<CombatState>>
     {
-        const float MinDuration = 1.0f;
-        const float MaxDuration = 3.0f;
+        const float MinDuration = 0.5f;
+        const float MaxDuration = 2.5f;
 
         public bool CanExecute(CombatState worldState)
         {

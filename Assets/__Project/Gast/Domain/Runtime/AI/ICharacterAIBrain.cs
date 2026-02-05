@@ -4,12 +4,12 @@ using System.Collections.Generic;
 namespace Gast.Domain.AI
 {
     /// <summary>
-    /// Interface for brain components that can receive and report goal assignments.
+    /// Interface for brain components that can receive and report objective assignments.
     /// </summary>
     public interface ICharacterAIBrain : ICharacterBrain
     {
-        void SetGoals(IEnumerable<IGoal> goals);
+        void SetObjectives(IEnumerable<IAIObjective> objectives);
 
-        IReadOnlyList<IGoal> CurrentGoals { get; }
+        IReadOnlyList<IAIObjective> CurrentObjectives { get; }
     }
 }

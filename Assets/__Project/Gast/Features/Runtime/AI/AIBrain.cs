@@ -22,7 +22,7 @@ namespace Gast.Features.AI
         readonly StrategicDomain strategicDomain;
         readonly CombatDomain combatDomain;
         readonly GatheringDomain gatheringDomain;
-        readonly GoalManager goalManager;
+        readonly ObjectiveManager objectiveManager;
         readonly IContextRegistry contextRegistry;
 
         ICharacter character;
@@ -31,7 +31,7 @@ namespace Gast.Features.AI
         ContextKey gatheringContextKey;
         CancellationTokenSource cts;
 
-        public IReadOnlyList<IGoal> CurrentGoals => goalManager.CurrentGoals;
+        public IReadOnlyList<IAIObjective> CurrentObjectives => objectiveManager.CurrentObjectives;
 
         AIRunner<StrategicState, AIContext<StrategicState>> strategicAgentRunner;
         AIRunner<CombatState, AIContext<CombatState>> combatAgentRunner;
@@ -46,13 +46,13 @@ namespace Gast.Features.AI
             StrategicDomain strategicDomain,
             CombatDomain combatDomain,
             GatheringDomain gatheringDomain,
-            GoalManager goalManager,
+            ObjectiveManager objectiveManager,
             IContextRegistry contextRegistry)
         {
             this.strategicDomain = strategicDomain;
             this.combatDomain = combatDomain;
             this.gatheringDomain = gatheringDomain;
-            this.goalManager = goalManager;
+            this.objectiveManager = objectiveManager;
             this.contextRegistry = contextRegistry;
         }
 
@@ -80,7 +80,7 @@ namespace Gast.Features.AI
             cts = new CancellationTokenSource();
             RunAsync(cts.Token).Forget();
 
-            goalManager
+            objectiveManager
                 .BindCharacter(character.Id)
                 .AddTo(cts.Token);
         }
@@ -107,82 +107,85 @@ namespace Gast.Features.AI
             gatheringContextKey = default;
         }
 
-        public void SetGoals(IEnumerable<IGoal> goals)
+        public void SetObjectives(IEnumerable<IAIObjective> objectives)
         {
-            goalManager.UpdateGoals(goals);
+            objectiveManager.UpdateObjectives(objectives);
         }
 
-        async UniTaskVoid RunAsync(CancellationToken token)
+        async UniTaskVoid RunAsync(CancellationToken cancellationToken)
         {
             await UniTask.WhenAll(
-                StateUpdateLoop(token),
-                StrategicLoop(token),
-                TacticalLoop(token),
-                GatheringLoop(token)
+                StateUpdateLoop(cancellationToken),
+                StrategicLoop(cancellationToken),
+                TacticalLoop(cancellationToken),
+                GatheringLoop(cancellationToken)
             );
         }
 
-        async UniTask StateUpdateLoop(CancellationToken token)
+        async UniTask StateUpdateLoop(CancellationToken cancellationToken)
         {
-            while (!token.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 UpdateStrategicWorldState();
                 UpdateCombatWorldState();
                 UpdateGatheringWorldState();
 
-                await UniTask.Yield(PlayerLoopTiming.Update, token);
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
         }
 
-        async UniTask StrategicLoop(CancellationToken token)
+        async UniTask StrategicLoop(CancellationToken cancellationToken)
         {
-            while (!token.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 await strategicAgentRunner.RunAsync(new(
+                    strategicContextKey,
                     character,
                     strategicState,
                     memory,
-                    StrategicDomainName,
-                    token));
+                    UpdateStrategicWorldState,
+                    cancellationToken));
 
-                await UniTask.Yield(PlayerLoopTiming.Update, token);
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
         }
 
-        async UniTask TacticalLoop(CancellationToken token)
+        async UniTask TacticalLoop(CancellationToken cancellationToken)
         {
-            while (!token.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 await combatAgentRunner.RunAsync(new(
+                    combatContextKey,
                     character,
                     combatState,
                     memory,
-                    CombatDomainName,
-                    token));
+                    UpdateCombatWorldState,
+                    cancellationToken));
 
-                await UniTask.Yield(PlayerLoopTiming.Update, token);
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
         }
 
-        async UniTask GatheringLoop(CancellationToken token)
+        async UniTask GatheringLoop(CancellationToken cancellationToken)
         {
-            while (!token.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 await gatheringAgentRunner.RunAsync(new(
+                    gatheringContextKey,
                     character,
                     gatheringState,
                     memory,
-                    GatheringDomainName,
-                    token));
+                    UpdateGatheringWorldState,
+                    cancellationToken));
 
-                await UniTask.Yield(PlayerLoopTiming.Update, token);
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
         }
 
         void UpdateStrategicWorldState()
         {
-            var goals = goalManager.CurrentGoals;
-            var currentGoal = goals.FirstOrDefault(g => !g.IsCompleted);
+            var goals = objectiveManager.CurrentObjectives;
+            var currentGoal = goals.FirstOrDefault(g => !g.IsCompleted.Value);
             strategicState.CurrentGoal = currentGoal;
             strategicState.HasGoal = currentGoal != null;
 
@@ -206,12 +209,14 @@ namespace Gast.Features.AI
                 combatState.DistanceToTarget = float.PositiveInfinity;
             }
             combatState.IsReadyToAttack = character.CanAttack;
+            combatState.CanGuard = character.CanGuard;
+            combatState.SelfHealthRatio = character.Status.Health.Value / character.Status.MaxHealth;
         }
 
         void UpdateGatheringWorldState()
         {
-            var goals = goalManager.CurrentGoals;
-            var currentGoal = goals.FirstOrDefault(g => !g.IsCompleted);
+            var goals = objectiveManager.CurrentObjectives;
+            var currentGoal = goals.FirstOrDefault(g => !g.IsCompleted.Value);
             gatheringState.CurrentGoal = currentGoal;
             gatheringState.HasGoal = currentGoal != null;
             gatheringState.IsInCombat = combatState.HasTarget;

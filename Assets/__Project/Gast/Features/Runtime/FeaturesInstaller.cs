@@ -21,7 +21,7 @@ namespace Gast.Features
         public void Install(IContainerBuilder builder)
         {
             // AI
-            builder.Register<GoalManager>(Lifetime.Transient);
+            builder.Register<ObjectiveManager>(Lifetime.Transient);
             builder.Register<AIBrain>(Lifetime.Transient);
 
             combatAIInstaller.Install(builder);
