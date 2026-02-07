@@ -1,7 +1,10 @@
 using Gast.Domain.Characters;
 using Gast.Domain.Loot;
 using Gast.Features.Characters;
+using Gast.Features.Characters.Actions;
 using Gast.Features.Combat;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Gast.Infrastructure.Settings
@@ -29,41 +32,25 @@ namespace Gast.Infrastructure.Settings
         [SerializeField]
         float sprintSpeed = 7f;
 
+        [Header("Actions")]
         [SerializeField]
-        float jumpForce = 5f;
+        List<CharacterActionSettings> actionSettings = new();
 
-        [Header("Actions - Dash")]
-        [SerializeField]
-        float dashForce = 15f;
-
-        [SerializeField]
-        float dashDuration = 0.5f;
-
-        [SerializeField]
-        float dashCooldown = 1.0f;
-
-        [SerializeField]
-        float attackCooldown = 1f;
-
-        [SerializeField]
-        AnimationCurve dashSpeedCurve = new(new Keyframe(0, 1), new Keyframe(1, 0));
-
-        [Header("Actions - Guard")]
-        [SerializeField]
-        bool canGuard = true;
-
+        [Header("Economy")]
         [SerializeField]
         int initialMoney = 100;
 
         [SerializeField]
         int slotCapacity = 20;
 
+        [Header("Prefabs")]
         [SerializeField]
         Character characterPrefab;
 
         [SerializeField]
         GameObject visualPrefab;
 
+        [Header("Combat")]
         [SerializeField]
         CombatMethodSettings combatMethodSettings;
 
@@ -71,7 +58,7 @@ namespace Gast.Infrastructure.Settings
         [SerializeField]
         CharacterFootstepSettings footstepSettings;
 
-        [Header("Economy")]
+        [Header("Loot")]
         [SerializeField]
         LootTable lootTable;
 
@@ -94,15 +81,10 @@ namespace Gast.Infrastructure.Settings
         public float MaxHealth => maxHealth;
         public float WalkSpeed => walkSpeed;
         public float SprintSpeed => sprintSpeed;
-        public float JumpForce => jumpForce;
-        public float DashForce => dashForce;
-        public float DashDuration => dashDuration;
-        public float DashCooldown => dashCooldown;
-        public float AttackCooldown => attackCooldown;
-        public bool CanGuard => canGuard;
+        public IReadOnlyList<CharacterActionSettings> ActionSettings => actionSettings;
+        public bool CanGuard => actionSettings.Any(s => s is GuardActionSettings);
         public int InitialMoney => initialMoney;
         public int SlotCapacity => slotCapacity;
-        public AnimationCurve DashSpeedCurve => dashSpeedCurve;
         public Character CharacterPrefab => characterPrefab;
         public GameObject VisualPrefab => visualPrefab;
         public CombatMethodSettings CombatMethodSettings => combatMethodSettings;

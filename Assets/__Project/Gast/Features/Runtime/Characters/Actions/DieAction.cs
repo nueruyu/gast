@@ -1,16 +1,17 @@
+using Gast.Features.Characters.Actions.Commands;
+using System;
 using UnityEngine;
 
 namespace Gast.Features.Characters.Actions
 {
-    public class DieAction : ICharacterAction
+    public class DieAction : ICharacterAction<DieCommand>
     {
         readonly CharacterBody body;
         readonly CharacterAnimator animator;
         readonly CharacterController controller;
-        bool isActive;
 
+        public Type CommandType => typeof(DieCommand);
         public int Priority => 99;
-        public bool IsActive => isActive;
 
         public DieAction(CharacterContext character)
         {
@@ -21,9 +22,8 @@ namespace Gast.Features.Characters.Actions
 
         public bool CanExecute() => true;
 
-        public void Execute()
+        public void Execute(in DieCommand command)
         {
-            isActive = true;
             body.IsInputMovementEnabled = false;
             body.SetForcedVelocity(Vector3.zero);
 
@@ -34,8 +34,9 @@ namespace Gast.Features.Characters.Actions
                 animator.SetDead(true);
         }
 
-        public void OnUpdate()
+        public bool OnUpdate()
         {
+            return true;
         }
 
         public void Move(Vector3 direction, float speed)
@@ -44,8 +45,6 @@ namespace Gast.Features.Characters.Actions
 
         public void OnEnd()
         {
-            isActive = false;
-
             if (animator)
                 animator.SetDead(false);
 

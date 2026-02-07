@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters.Actions
 {
@@ -6,76 +8,61 @@ namespace Gast.Features.Characters.Actions
     /// Dash action with curve-driven movement.
     /// Disables input movement and applies forced velocity based on animation curve.
     /// </summary>
-    public class DashAction : ICharacterAction
+    public class DashAction : ICharacterAction<DashCommand>
     {
         readonly CharacterBody body;
         readonly CharacterAnimator animator;
+        readonly DashActionSettings settings;
 
-        readonly float duration;
-        readonly float cooldown;
-        readonly float maxSpeed;
-        readonly AnimationCurve speedCurve;
-
-        bool isActive;
         float startTime;
         float lastDashTime = float.NegativeInfinity;
         Vector3 dashDirection;
 
+        public Type CommandType => typeof(DashCommand);
         public int Priority => 10;
-        public bool IsActive => isActive;
 
         public DashAction(
             CharacterContext character,
-            float duration,
-            float cooldown,
-            float maxSpeed,
-            AnimationCurve speedCurve)
+            DashActionSettings settings)
         {
             this.body = character.Body;
             this.animator = character.Animator;
-            this.duration = duration;
-            this.cooldown = cooldown;
-            this.maxSpeed = maxSpeed;
-            this.speedCurve = speedCurve;
+            this.settings = settings;
         }
 
         public bool CanExecute()
         {
-            return !isActive && Time.time >= lastDashTime + cooldown;
+            return Time.time >= lastDashTime + settings.Cooldown;
         }
 
-        public void Execute()
+        public void Execute(in DashCommand command)
         {
-            isActive = true;
             startTime = Time.time;
             lastDashTime = startTime;
 
-            // Disable input movement
             body.IsInputMovementEnabled = false;
 
-            // Determine dash direction (current facing direction)
             dashDirection = body.Forward;
 
-            // Play animation
             if (animator)
                 animator.PlayDash();
         }
 
-        public void OnUpdate()
+        public bool OnUpdate()
         {
             float elapsed = Time.time - startTime;
-            float progress = elapsed / duration;
+            float progress = elapsed / settings.Duration;
 
             if (progress >= 1.0f)
             {
-                isActive = false;
-                return;
+                return false;
             }
 
-            // Apply curve-driven velocity
-            float speedEval = speedCurve.Evaluate(progress);
-            body.SetForcedVelocity(dashDirection * (maxSpeed * speedEval));
-            body.SetLookDirection(dashDirection, 100f);
+            float speedEval = settings.SpeedCurve.Evaluate(progress);
+            body.SetForcedVelocity(dashDirection * (settings.MaxSpeed * speedEval));
+            body.SetLookDirection(dashDirection, settings.LookDirectionSpeed);
+
+            return true;
         }
 
         public void Move(Vector3 direction, float speed)
@@ -85,7 +72,6 @@ namespace Gast.Features.Characters.Actions
 
         public void OnEnd()
         {
-            isActive = false;
             body.IsInputMovementEnabled = true;
         }
     }

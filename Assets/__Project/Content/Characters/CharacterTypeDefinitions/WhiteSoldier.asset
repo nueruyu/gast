@@ -17,36 +17,13 @@ MonoBehaviour:
   maxHealth: 20
   walkSpeed: 5
   sprintSpeed: 8
-  jumpForce: 15
-  dashForce: 20
-  dashDuration: 0.4
-  dashCooldown: 1
-  attackCooldown: 4
-  dashSpeedCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  canGuard: 1
+  actionSettings:
+  - {fileID: 11400000, guid: 483a7dcaec60a744d8b94dc74af2728c, type: 2}
+  - {fileID: 11400000, guid: 744704839dee8b344bb522c82fa0be24, type: 2}
+  - {fileID: 11400000, guid: 4b340309f10e76c418d7902b318351ad, type: 2}
+  - {fileID: 11400000, guid: bd985741294605e4f9de1ef0add5cd44, type: 2}
+  - {fileID: 11400000, guid: f75472bdb23fe4e4a9420f1002140572, type: 2}
+  - {fileID: 11400000, guid: c716adfd088046244b0b717060e21c3f, type: 2}
   initialMoney: 100
   slotCapacity: 20
   characterPrefab: {fileID: 3056424131087975470, guid: 0b12064fcc816e540a373842a74f91ce, type: 3}

@@ -1,58 +1,52 @@
+using System;
 using UnityEngine;
-using Gast.Domain.Characters;
 using Gast.Domain.Combat;
 using Gast.Features.Combat;
+using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters.Actions
 {
     /// <summary>
     /// Attack action that stops movement and executes the attack method.
     /// </summary>
-    public class AttackAction : ICharacterAction
+    public class AttackAction : ICharacterAction<AttackCommand>
     {
         readonly CharacterContext character;
-
         readonly ICombatMethod method;
-        readonly float cooldown;
-        readonly float duration = 0.6f; // Fixed duration or from animation
+        readonly AttackActionSettings settings;
 
-        bool isActive;
         float startTime;
         float lastAttackTime = float.NegativeInfinity;
 
+        public Type CommandType => typeof(AttackCommand);
         public int Priority => 5;
-        public bool IsActive => isActive;
 
         public AttackAction(
             CharacterContext character,
             ICombatMethod method,
-            float cooldown)
+            AttackActionSettings settings)
         {
             this.character = character;
             this.method = method;
-            this.cooldown = cooldown;
+            this.settings = settings;
         }
 
         public bool CanExecute()
         {
-            return !isActive && Time.time >= lastAttackTime + cooldown;
+            return Time.time >= lastAttackTime + settings.Cooldown;
         }
 
-        public void Execute()
+        public void Execute(in AttackCommand command)
         {
-            isActive = true;
             startTime = Time.time;
             lastAttackTime = startTime;
 
             method.Attack(character);
         }
 
-        public void OnUpdate()
+        public bool OnUpdate()
         {
-            if (Time.time >= startTime + duration)
-            {
-                isActive = false;
-            }
+            return Time.time < startTime + settings.Duration;
         }
 
         public void Move(Vector3 direction, float speed)
@@ -67,7 +61,6 @@ namespace Gast.Features.Characters.Actions
 
         public void OnEnd()
         {
-            isActive = false;
         }
     }
 }

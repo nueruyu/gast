@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters.Actions
 {
@@ -6,57 +8,45 @@ namespace Gast.Features.Characters.Actions
     /// Guard action that allows reduced-speed movement while guarding.
     /// Reads latest input from CharacterActionController and applies movement penalty.
     /// </summary>
-    public class GuardAction : ICharacterAction
+    public class GuardAction : ICharacterAction<GuardCommand>
     {
         readonly CharacterBody body;
         readonly CharacterAnimator animator;
-        readonly float moveSpeedPenalty = 0.5f;
+        readonly GuardActionSettings settings;
 
-        bool isActive;
-
+        public Type CommandType => typeof(GuardCommand);
         public int Priority => 2;
-        public bool IsActive => isActive;
 
-        public GuardAction(CharacterContext character)
+        public GuardAction(CharacterContext character, GuardActionSettings settings)
         {
             this.body = character.Body;
             this.animator = character.Animator;
+            this.settings = settings;
         }
 
         public bool CanExecute() => true;
 
-        public void Execute()
+        public void Execute(in GuardCommand command)
         {
-            isActive = true;
             animator?.SetGuard(true);
         }
 
-        /// <summary>
-        /// Manually stop guard (called when button is released).
-        /// </summary>
-        public void ManualStop()
+        public bool OnUpdate()
         {
-            isActive = false;
-        }
-
-        public void OnUpdate()
-        {
-            // OnUpdate does nothing - movement is handled via Move() method
+            return true;
         }
 
         public void Move(Vector3 direction, float speed)
         {
-            // Apply reduced-speed movement while guarding
             if (direction.sqrMagnitude > 0.01f)
             {
-                body.SetInputVelocity(direction * (speed * moveSpeedPenalty));
-                body.SetLookDirection(direction, 5f); // Slower rotation while guarding
+                body.SetInputVelocity(direction * (speed * settings.MoveSpeedPenalty));
+                body.SetLookDirection(direction, settings.LookDirectionSpeed);
             }
         }
 
         public void OnEnd()
         {
-            isActive = false;
             animator?.SetGuard(false);
         }
     }

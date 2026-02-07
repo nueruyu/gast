@@ -7,6 +7,7 @@ using Gast.Domain.Combat;
 using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
+using Gast.Features.Characters.Actions.Commands;
 using System;
 using UnityEngine;
 
@@ -27,7 +28,6 @@ namespace Gast.Features.Characters
         CharacterContext context;
 
         readonly Signal<ICharacter> destroyedSignal = new();
-        readonly Signal<ICharacter> attackedSignal = new();
 
         bool isSprinting;
 
@@ -43,10 +43,10 @@ namespace Gast.Features.Characters
         public INavigationProvider NavigationProvider => context.NavigationProvider;
         public ICharacterBody Body => context.Body;
         public bool IsAlive => status.IsAlive.Value;
-        public bool CanAttack => IsAlive && actionController.CanAttack;
-        public bool CanGuard => IsAlive && typeDefinition != null && typeDefinition.CanGuard && actionController.CanGuard;
-        public bool IsGuarding => actionController.IsGuarding;
-        public bool IsDashing => actionController.IsDashing;
+        public bool CanAttack => IsAlive && actionController.CanExecuteAction<AttackCommand>();
+        public bool CanGuard => IsAlive && typeDefinition.CanGuard && actionController.CanExecuteAction<GuardCommand>();
+        public bool IsGuarding => actionController.IsActionActive<GuardCommand>();
+        public bool IsDashing => actionController.IsActionActive<DashCommand>();
         public ISignal<ICharacter> Destroyed => destroyedSignal;
 
         void Update()
@@ -129,7 +129,7 @@ namespace Gast.Features.Characters
         /// </summary>
         public void Move(Vector3 direction)
         {
-            if (!IsAlive || typeDefinition == null)
+            if (!IsAlive)
                 return;
 
             var speed = isSprinting ? typeDefinition.SprintSpeed : typeDefinition.WalkSpeed;
@@ -150,14 +150,10 @@ namespace Gast.Features.Characters
         /// </summary>
         public void Jump()
         {
-            if (!IsAlive || typeDefinition == null)
+            if (!IsAlive)
                 return;
 
-            var body = context.Body;
-            if (body.IsGrounded)
-            {
-                body.ApplyJump(typeDefinition.JumpForce);
-            }
+            actionController.ExecuteAction(new JumpCommand());
         }
 
         /// <summary>
@@ -168,8 +164,7 @@ namespace Gast.Features.Characters
             if (!IsAlive)
                 return;
 
-            actionController.Attack();
-            attackedSignal.Publish(this);
+            actionController.ExecuteAction(new AttackCommand());
         }
 
         /// <summary>
@@ -177,10 +172,10 @@ namespace Gast.Features.Characters
         /// </summary>
         public void Dash(Vector3 direction)
         {
-            if (!IsAlive || typeDefinition == null)
+            if (!IsAlive)
                 return;
 
-            actionController.Dash();
+            actionController.ExecuteAction(new DashCommand());
         }
 
         /// <summary>
@@ -188,16 +183,20 @@ namespace Gast.Features.Characters
         /// </summary>
         public void SetGuard(bool active)
         {
-            if (!IsAlive || typeDefinition == null)
+            if (!IsAlive)
                 return;
 
             if (!typeDefinition.CanGuard)
                 return;
 
             if (active)
-                actionController.Guard();
+            {
+                actionController.StartAction(new GuardCommand());
+            }
             else
-                actionController.StopGuard();
+            {
+                actionController.StopAction<GuardCommand>();
+            }
         }
 
         /// <summary>
@@ -213,13 +212,14 @@ namespace Gast.Features.Characters
             if (!status.IsAlive.Value)
             {
                 Debug.Log($"[{Id}] Died.");
-                actionController.Die();
+                actionController.ExecuteAction(new DieCommand());
+                DetachBrain();
                 eventPublisher?.Publish(new CharacterDefeatedEvent(this, info.AttackerId));
                 DespawnAfterDelay().Forget();
             }
             else
             {
-                actionController.TakeHit(info);
+                actionController.ExecuteAction(new HitCommand(info));
             }
         }
 
