@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using Gast.Domain.Interactions;
 using UnityEngine;
 
@@ -23,6 +25,11 @@ namespace Gast.Features.Interactions
 
         public IReadOnlyList<IInteractable> DetectableInteractables => detectableInteractables;
 
+        void Start()
+        {
+            RunCleanUp(destroyCancellationToken).Forget();
+        }
+
         void Update()
         {
             timer += Time.deltaTime;
@@ -31,8 +38,18 @@ namespace Gast.Features.Interactions
                 timer = 0f;
                 Detect();
             }
+        }
 
-            detectableInteractables.RemoveAll(x => x as Component == null);
+        async UniTask RunCleanUp(CancellationToken cancellationToken)
+        {
+            while (true)
+            {
+                await UniTask.Yield(
+                    PlayerLoopTiming.PostLateUpdate,
+                    cancellationToken: cancellationToken);
+
+                detectableInteractables.RemoveAll(x => x as Component == null);
+            }
         }
 
         void Detect()
