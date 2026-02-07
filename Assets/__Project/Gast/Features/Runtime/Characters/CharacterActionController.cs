@@ -15,7 +15,8 @@ namespace Gast.Features.Characters
     {
         readonly CharacterActionRouter router = new();
         readonly CharacterContext character;
-        readonly Dictionary<Type, ICharacterAction> commandActionMap = new();
+        readonly Dictionary<Type, ICharacterAction> triggerActionMap = new();
+        readonly Dictionary<Type, IStatefulCharacterAction> stateActionMap = new();
 
         public CharacterActionController(CharacterContext character)
         {
@@ -25,46 +26,44 @@ namespace Gast.Features.Characters
         public void RegisterAction(ICharacterAction action)
         {
             router.Register(action);
-            if (action.CommandType != null)
-            {
-                commandActionMap[action.CommandType] = action;
-            }
-        }
 
-        /// <summary>
-        /// Dispatch a command to trigger the corresponding action.
-        /// </summary>
-        public void Dispatch<TCommand>(in TCommand command) where TCommand : struct, ICharacterActionCommand
-        {
-            if (command is SetGuardCommand setGuardCmd)
+            if (action is IStatefulCharacterAction statefulAction)
             {
-                HandleSetGuard(setGuardCmd);
-                return;
-            }
-
-            if (commandActionMap.TryGetValue(typeof(TCommand), out var action))
-            {
-                router.TryExecute(action);
-            }
-        }
-
-        void HandleSetGuard(in SetGuardCommand command)
-        {
-            if (!commandActionMap.TryGetValue(typeof(SetGuardCommand), out var action) || action is not GuardAction guardAction)
-            {
-                return;
-            }
-
-            if (command.IsActive)
-            {
-                router.TryExecute(guardAction);
+                stateActionMap[action.CommandType] = statefulAction;
             }
             else
             {
-                if (guardAction.IsActive)
-                {
-                    guardAction.ManualStop();
-                }
+                triggerActionMap[action.CommandType] = action;
+            }
+        }
+
+        public void Dispatch<TCommand>(in TCommand command) where TCommand : struct, ITriggerActionCommand
+        {
+            var commandType = typeof(TCommand);
+
+            if (triggerActionMap.TryGetValue(commandType, out var triggerAction))
+            {
+                router.TryExecute(triggerAction);
+            }
+        }
+
+        public void Start<TCommand>(in TCommand command) where TCommand : struct, IStateActionCommand
+        {
+            var commandType = typeof(TCommand);
+
+            if (stateActionMap.TryGetValue(commandType, out var stateAction))
+            {
+                router.TryExecute(stateAction);
+            }
+        }
+
+        public void Stop<TCommand>() where TCommand : struct, IStateActionCommand
+        {
+            var commandType = typeof(TCommand);
+
+            if (stateActionMap.TryGetValue(commandType, out var stateAction))
+            {
+                stateAction.Stop();
             }
         }
 

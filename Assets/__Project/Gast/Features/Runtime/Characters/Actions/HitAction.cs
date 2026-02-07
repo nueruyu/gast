@@ -1,5 +1,6 @@
 using System;
 using Gast.Domain.Combat;
+using Gast.Features.Characters.Actions.Commands;
 using UnityEngine;
 
 namespace Gast.Features.Characters.Actions
@@ -19,7 +20,7 @@ namespace Gast.Features.Characters.Actions
 
         Vector3 knockbackVelocity;
 
-        public Type CommandType => null;
+        public Type CommandType => typeof(HitCommand);
 
         // Priority 8: Higher than Attack(5), lower than Dash(10)
         // This allows dash to avoid hits, but interrupts attacks and movement

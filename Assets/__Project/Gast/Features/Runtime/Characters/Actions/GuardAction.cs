@@ -8,7 +8,7 @@ namespace Gast.Features.Characters.Actions
     /// Guard action that allows reduced-speed movement while guarding.
     /// Reads latest input from CharacterActionController and applies movement penalty.
     /// </summary>
-    public class GuardAction : ICharacterAction
+    public class GuardAction : IStatefulCharacterAction
     {
         readonly CharacterBody body;
         readonly CharacterAnimator animator;
@@ -16,7 +16,7 @@ namespace Gast.Features.Characters.Actions
 
         bool isActive;
 
-        public Type CommandType => typeof(SetGuardCommand);
+        public Type CommandType => typeof(GuardCommand);
         public int Priority => 2;
         public bool IsActive => isActive;
 
@@ -34,26 +34,21 @@ namespace Gast.Features.Characters.Actions
             animator?.SetGuard(true);
         }
 
-        /// <summary>
-        /// Manually stop guard (called when button is released).
-        /// </summary>
-        public void ManualStop()
+        public void Stop()
         {
             isActive = false;
         }
 
         public void OnUpdate()
         {
-            // OnUpdate does nothing - movement is handled via Move() method
         }
 
         public void Move(Vector3 direction, float speed)
         {
-            // Apply reduced-speed movement while guarding
             if (direction.sqrMagnitude > 0.01f)
             {
                 body.SetInputVelocity(direction * (speed * moveSpeedPenalty));
-                body.SetLookDirection(direction, 5f); // Slower rotation while guarding
+                body.SetLookDirection(direction, 5f);
             }
         }
 

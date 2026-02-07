@@ -1,3 +1,4 @@
+using Gast.Features.Characters.Actions.Commands;
 using System;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace Gast.Features.Characters.Actions
         readonly CharacterController controller;
         bool isActive;
 
-        public Type CommandType => null;
+        public Type CommandType => typeof(DieCommand);
         public int Priority => 99;
         public bool IsActive => isActive;
 

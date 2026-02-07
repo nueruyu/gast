@@ -191,7 +191,14 @@ namespace Gast.Features.Characters
             if (!typeDefinition.CanGuard)
                 return;
 
-            actionController.Dispatch(new SetGuardCommand(active));
+            if (active)
+            {
+                actionController.Start(new GuardCommand());
+            }
+            else
+            {
+                actionController.Stop<GuardCommand>();
+            }
         }
 
         /// <summary>
