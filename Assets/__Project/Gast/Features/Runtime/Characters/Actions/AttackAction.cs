@@ -1,5 +1,4 @@
 using UnityEngine;
-using Gast.Domain.Characters;
 using Gast.Domain.Combat;
 using Gast.Features.Combat;
 
@@ -11,10 +10,9 @@ namespace Gast.Features.Characters.Actions
     public class AttackAction : ICharacterAction
     {
         readonly CharacterContext character;
-
         readonly ICombatMethod method;
-        readonly float cooldown;
-        readonly float duration = 0.6f; // Fixed duration or from animation
+        readonly AttackActionSettings settings;
+        readonly float duration = 0.6f;
 
         bool isActive;
         float startTime;
@@ -26,16 +24,16 @@ namespace Gast.Features.Characters.Actions
         public AttackAction(
             CharacterContext character,
             ICombatMethod method,
-            float cooldown)
+            AttackActionSettings settings)
         {
             this.character = character;
             this.method = method;
-            this.cooldown = cooldown;
+            this.settings = settings;
         }
 
         public bool CanExecute()
         {
-            return !isActive && Time.time >= lastAttackTime + cooldown;
+            return !isActive && Time.time >= lastAttackTime + settings.Cooldown;
         }
 
         public void Execute()

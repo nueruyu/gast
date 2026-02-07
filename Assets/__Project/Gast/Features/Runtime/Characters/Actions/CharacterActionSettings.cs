@@ -1,0 +1,10 @@
+using Gast.Features.Combat;
+using UnityEngine;
+
+namespace Gast.Features.Characters.Actions
+{
+    public abstract class CharacterActionSettings : ScriptableObject
+    {
+        public abstract ICharacterAction CreateAction(CharacterContext context, ICombatMethod combatMethod);
+    }
+}

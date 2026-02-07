@@ -43,6 +43,8 @@ namespace Gast.Features.Characters
             body.SetLookDirection(direction, 10f);
         }
 
+        public void Jump() => router.TryExecute<JumpAction>();
+
         public void Dash() => router.TryExecute<DashAction>();
 
         public void Attack() => router.TryExecute<AttackAction>();

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Gast.Domain.Loot;
 
 namespace Gast.Domain.Characters
@@ -33,30 +34,10 @@ namespace Gast.Domain.Characters
         float SprintSpeed { get; }
 
         /// <summary>
-        /// Dash force applied during dodge action.
-        /// </summary>
-        float DashForce { get; }
-
-        /// <summary>
-        /// Duration of the dash state in seconds.
-        /// </summary>
-        float DashDuration { get; }
-
-        /// <summary>
-        /// Cooldown time before dash can be used again in seconds.
-        /// </summary>
-        float DashCooldown { get; }
-
-        /// <summary>
         /// Whether this character type can guard.
         /// </summary>
         bool CanGuard { get; }
 
         ILootTable LootTable { get; }
-
-        /// <summary>
-        /// Jump force applied when the character jumps.
-        /// </summary>
-        float JumpForce { get; }
     }
 }

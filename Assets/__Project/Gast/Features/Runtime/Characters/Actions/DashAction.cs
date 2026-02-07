@@ -10,11 +10,7 @@ namespace Gast.Features.Characters.Actions
     {
         readonly CharacterBody body;
         readonly CharacterAnimator animator;
-
-        readonly float duration;
-        readonly float cooldown;
-        readonly float maxSpeed;
-        readonly AnimationCurve speedCurve;
+        readonly DashActionSettings settings;
 
         bool isActive;
         float startTime;
@@ -26,22 +22,16 @@ namespace Gast.Features.Characters.Actions
 
         public DashAction(
             CharacterContext character,
-            float duration,
-            float cooldown,
-            float maxSpeed,
-            AnimationCurve speedCurve)
+            DashActionSettings settings)
         {
             this.body = character.Body;
             this.animator = character.Animator;
-            this.duration = duration;
-            this.cooldown = cooldown;
-            this.maxSpeed = maxSpeed;
-            this.speedCurve = speedCurve;
+            this.settings = settings;
         }
 
         public bool CanExecute()
         {
-            return !isActive && Time.time >= lastDashTime + cooldown;
+            return !isActive && Time.time >= lastDashTime + settings.Cooldown;
         }
 
         public void Execute()
@@ -50,13 +40,10 @@ namespace Gast.Features.Characters.Actions
             startTime = Time.time;
             lastDashTime = startTime;
 
-            // Disable input movement
             body.IsInputMovementEnabled = false;
 
-            // Determine dash direction (current facing direction)
             dashDirection = body.Forward;
 
-            // Play animation
             if (animator)
                 animator.PlayDash();
         }
@@ -64,7 +51,7 @@ namespace Gast.Features.Characters.Actions
         public void OnUpdate()
         {
             float elapsed = Time.time - startTime;
-            float progress = elapsed / duration;
+            float progress = elapsed / settings.Duration;
 
             if (progress >= 1.0f)
             {
@@ -72,9 +59,8 @@ namespace Gast.Features.Characters.Actions
                 return;
             }
 
-            // Apply curve-driven velocity
-            float speedEval = speedCurve.Evaluate(progress);
-            body.SetForcedVelocity(dashDirection * (maxSpeed * speedEval));
+            float speedEval = settings.SpeedCurve.Evaluate(progress);
+            body.SetForcedVelocity(dashDirection * (settings.MaxSpeed * speedEval));
             body.SetLookDirection(dashDirection, 100f);
         }
 

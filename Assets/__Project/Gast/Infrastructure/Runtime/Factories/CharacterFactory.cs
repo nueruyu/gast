@@ -119,29 +119,23 @@ namespace Gast.Infrastructure.Factories
 
             var actionController = new CharacterActionController(character);
 
-            var dieAction = new DieAction(character);
-            actionController.RegisterAction(dieAction);
-
-            var dashAction = new DashAction(
-                character,
-                definition.DashDuration,
-                definition.DashCooldown,
-                definition.DashForce,
-                definition.DashSpeedCurve
-            );
-            actionController.RegisterAction(dashAction);
-
-            var hitAction = new HitAction(character);
-            actionController.RegisterAction(hitAction);
-
-            var attackAction = new AttackAction(
-                character,
-                combatMethod,
-                definition.AttackCooldown);
-            actionController.RegisterAction(attackAction);
-
-            var guardAction = new GuardAction(character);
-            actionController.RegisterAction(guardAction);
+            if (definition.ActionSettings != null)
+            {
+                foreach (var settings in definition.ActionSettings)
+                {
+                    if (settings == null)
+                    {
+                        Debug.LogWarning($"A null action setting was found in '{definition.name}'.");
+                        continue;
+                    }
+                    var action = settings.CreateAction(character, combatMethod);
+                    actionController.RegisterAction(action);
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"CharacterTypeDefinition '{definition.name}' has no ActionSettings assigned.");
+            }
 
             return actionController;
         }

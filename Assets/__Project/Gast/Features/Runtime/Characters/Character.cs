@@ -150,14 +150,10 @@ namespace Gast.Features.Characters
         /// </summary>
         public void Jump()
         {
-            if (!IsAlive || typeDefinition == null)
+            if (!IsAlive)
                 return;
 
-            var body = context.Body;
-            if (body.IsGrounded)
-            {
-                body.ApplyJump(typeDefinition.JumpForce);
-            }
+            actionController.Jump();
         }
 
         /// <summary>
@@ -214,6 +210,7 @@ namespace Gast.Features.Characters
             {
                 Debug.Log($"[{Id}] Died.");
                 actionController.Die();
+                DetachBrain();
                 eventPublisher?.Publish(new CharacterDefeatedEvent(this, info.AttackerId));
                 DespawnAfterDelay().Forget();
             }
