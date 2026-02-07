@@ -13,9 +13,9 @@ namespace Gast.Features.Characters.Actions
     {
         readonly CharacterBody body;
         readonly CharacterAnimator animator;
+        readonly HitActionSettings settings;
 
         float startTime;
-        float duration = 0.5f;
 
         Vector3 knockbackVelocity;
 
@@ -25,10 +25,11 @@ namespace Gast.Features.Characters.Actions
         // This allows dash to avoid hits, but interrupts attacks and movement
         public int Priority => 8;
 
-        public HitAction(CharacterContext character)
+        public HitAction(CharacterContext character, HitActionSettings settings)
         {
             this.body = character.Body;
             this.animator = character.Animator;
+            this.settings = settings;
         }
 
         public bool CanExecute() => true; // Can always execute when hit
@@ -52,7 +53,7 @@ namespace Gast.Features.Characters.Actions
 
         public bool OnUpdate()
         {
-            if (Time.time >= startTime + duration)
+            if (Time.time >= startTime + settings.Duration)
             {
                 return false;
             }

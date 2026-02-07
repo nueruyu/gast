@@ -14,7 +14,6 @@ namespace Gast.Features.Characters.Actions
         readonly CharacterContext character;
         readonly ICombatMethod method;
         readonly AttackActionSettings settings;
-        readonly float duration = 0.6f;
 
         float startTime;
         float lastAttackTime = float.NegativeInfinity;
@@ -47,7 +46,7 @@ namespace Gast.Features.Characters.Actions
 
         public bool OnUpdate()
         {
-            return Time.time < startTime + duration;
+            return Time.time < startTime + settings.Duration;
         }
 
         public void Move(Vector3 direction, float speed)
