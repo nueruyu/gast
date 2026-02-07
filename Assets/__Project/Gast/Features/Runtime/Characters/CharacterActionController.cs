@@ -1,17 +1,21 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Gast.Domain.Combat;
 using Gast.Features.Characters.Actions;
+using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters
 {
     /// <summary>
     /// Manages character actions through an ActionRouter.
-    /// Provides facade methods for action execution.
+    /// Provides command-based dispatch for action execution.
     /// </summary>
     public class CharacterActionController
     {
         readonly CharacterActionRouter router = new();
         readonly CharacterContext character;
+        readonly Dictionary<Type, ICharacterAction> commandActionMap = new();
 
         public CharacterActionController(CharacterContext character)
         {
@@ -21,6 +25,47 @@ namespace Gast.Features.Characters
         public void RegisterAction(ICharacterAction action)
         {
             router.Register(action);
+            if (action.CommandType != null)
+            {
+                commandActionMap[action.CommandType] = action;
+            }
+        }
+
+        /// <summary>
+        /// Dispatch a command to trigger the corresponding action.
+        /// </summary>
+        public void Dispatch<TCommand>(in TCommand command) where TCommand : struct, ICharacterActionCommand
+        {
+            if (command is SetGuardCommand setGuardCmd)
+            {
+                HandleSetGuard(setGuardCmd);
+                return;
+            }
+
+            if (commandActionMap.TryGetValue(typeof(TCommand), out var action))
+            {
+                router.TryExecute(action);
+            }
+        }
+
+        void HandleSetGuard(in SetGuardCommand command)
+        {
+            if (!commandActionMap.TryGetValue(typeof(SetGuardCommand), out var action) || action is not GuardAction guardAction)
+            {
+                return;
+            }
+
+            if (command.IsActive)
+            {
+                router.TryExecute(guardAction);
+            }
+            else
+            {
+                if (guardAction.IsActive)
+                {
+                    guardAction.ManualStop();
+                }
+            }
         }
 
         /// <summary>
@@ -30,41 +75,18 @@ namespace Gast.Features.Characters
         /// </summary>
         public void Move(Vector3 direction, float speed)
         {
-            // If an action is running, let it handle movement
             if (router.IsActionRunning)
             {
                 router.CurrentAction?.Move(direction, speed);
                 return;
             }
 
-            // Apply normal movement
             var body = character.Body;
             body.SetInputVelocity(direction * speed);
             body.SetLookDirection(direction, 10f);
         }
 
-        public void Jump() => router.TryExecute<JumpAction>();
-
-        public void Dash() => router.TryExecute<DashAction>();
-
-        public void Attack() => router.TryExecute<AttackAction>();
-
-        public void Guard() => router.TryExecute<GuardAction>();
-
         public void Die() => router.TryExecute<DieAction>();
-
-        /// <summary>
-        /// Stop guard action if it's currently active.
-        /// Called when guard button is released.
-        /// </summary>
-        public void StopGuard()
-        {
-            var guardAction = router.GetAction<GuardAction>();
-            if (guardAction != null && guardAction.IsActive)
-            {
-                guardAction.ManualStop();
-            }
-        }
 
         /// <summary>
         /// Apply hit reaction with damage information.
@@ -76,7 +98,7 @@ namespace Gast.Features.Characters
             if (hitAction != null)
             {
                 hitAction.Setup(info);
-                router.TryExecute<HitAction>();
+                router.TryExecute(hitAction);
             }
         }
 

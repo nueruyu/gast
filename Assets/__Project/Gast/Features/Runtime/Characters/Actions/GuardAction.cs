@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters.Actions
 {
@@ -14,6 +16,7 @@ namespace Gast.Features.Characters.Actions
 
         bool isActive;
 
+        public Type CommandType => typeof(SetGuardCommand);
         public int Priority => 2;
         public bool IsActive => isActive;
 

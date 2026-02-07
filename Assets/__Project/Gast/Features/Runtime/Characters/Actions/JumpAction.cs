@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters.Actions
 {
@@ -8,6 +10,7 @@ namespace Gast.Features.Characters.Actions
         readonly JumpActionSettings settings;
         bool isActive;
 
+        public Type CommandType => typeof(JumpCommand);
         public int Priority => 3;
         public bool IsActive => isActive;
 

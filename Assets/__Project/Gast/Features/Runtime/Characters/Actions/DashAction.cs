@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters.Actions
 {
@@ -17,6 +19,7 @@ namespace Gast.Features.Characters.Actions
         float lastDashTime = float.NegativeInfinity;
         Vector3 dashDirection;
 
+        public Type CommandType => typeof(DashCommand);
         public int Priority => 10;
         public bool IsActive => isActive;
 

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Gast.Features.Characters
@@ -8,6 +9,12 @@ namespace Gast.Features.Characters
     /// </summary>
     public interface ICharacterAction
     {
+        /// <summary>
+        /// The type of command that triggers this action.
+        /// Returns null if this action is not triggered by a command (e.g., DieAction, HitAction).
+        /// </summary>
+        Type CommandType { get; }
+
         /// <summary>
         /// Whether this action is currently active.
         /// </summary>

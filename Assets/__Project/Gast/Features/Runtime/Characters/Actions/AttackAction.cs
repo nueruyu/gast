@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using Gast.Domain.Combat;
 using Gast.Features.Combat;
+using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters.Actions
 {
@@ -18,6 +20,7 @@ namespace Gast.Features.Characters.Actions
         float startTime;
         float lastAttackTime = float.NegativeInfinity;
 
+        public Type CommandType => typeof(AttackCommand);
         public int Priority => 5;
         public bool IsActive => isActive;
 

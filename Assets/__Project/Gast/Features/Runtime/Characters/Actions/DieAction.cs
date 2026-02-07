@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Gast.Features.Characters.Actions
@@ -9,6 +10,7 @@ namespace Gast.Features.Characters.Actions
         readonly CharacterController controller;
         bool isActive;
 
+        public Type CommandType => null;
         public int Priority => 99;
         public bool IsActive => isActive;
 

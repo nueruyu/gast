@@ -1,6 +1,6 @@
+using System;
 using Gast.Domain.Combat;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 namespace Gast.Features.Characters.Actions
 {
@@ -15,9 +15,11 @@ namespace Gast.Features.Characters.Actions
 
         bool isActive;
         float startTime;
-        float duration = 0.5f; // Duration should match animation length
+        float duration = 0.5f;
 
         Vector3 knockbackVelocity;
+
+        public Type CommandType => null;
 
         // Priority 8: Higher than Attack(5), lower than Dash(10)
         // This allows dash to avoid hits, but interrupts attacks and movement

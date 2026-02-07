@@ -7,6 +7,7 @@ using Gast.Domain.Combat;
 using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
+using Gast.Features.Characters.Actions.Commands;
 using System;
 using UnityEngine;
 
@@ -153,7 +154,7 @@ namespace Gast.Features.Characters
             if (!IsAlive)
                 return;
 
-            actionController.Jump();
+            actionController.Dispatch(new JumpCommand());
         }
 
         /// <summary>
@@ -164,7 +165,7 @@ namespace Gast.Features.Characters
             if (!IsAlive)
                 return;
 
-            actionController.Attack();
+            actionController.Dispatch(new AttackCommand());
             attackedSignal.Publish(this);
         }
 
@@ -176,7 +177,7 @@ namespace Gast.Features.Characters
             if (!IsAlive || typeDefinition == null)
                 return;
 
-            actionController.Dash();
+            actionController.Dispatch(new DashCommand());
         }
 
         /// <summary>
@@ -190,10 +191,7 @@ namespace Gast.Features.Characters
             if (!typeDefinition.CanGuard)
                 return;
 
-            if (active)
-                actionController.Guard();
-            else
-                actionController.StopGuard();
+            actionController.Dispatch(new SetGuardCommand(active));
         }
 
         /// <summary>

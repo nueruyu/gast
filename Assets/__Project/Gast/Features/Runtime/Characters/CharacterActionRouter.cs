@@ -39,25 +39,32 @@ namespace Gast.Features.Characters
         /// </summary>
         public void TryExecute<T>() where T : class, ICharacterAction
         {
-            if (!registeredActions.TryGetValue(typeof(T), out var newAction))
+            if (registeredActions.TryGetValue(typeof(T), out var action))
+            {
+                TryExecute(action);
+            }
+        }
+
+        /// <summary>
+        /// Attempt to execute a specific action instance.
+        /// Handles precondition checks, interruption logic, and lifecycle management.
+        /// </summary>
+        public void TryExecute(ICharacterAction newAction)
+        {
+            if (newAction == null)
                 return;
 
-            // Check preconditions
             if (!newAction.CanExecute())
                 return;
 
-            // Handle interruption
             if (currentAction != null && currentAction.IsActive)
             {
-                // Lower or equal priority cannot interrupt
                 if (newAction.Priority <= currentAction.Priority)
                     return;
 
-                // Interrupt current action
                 currentAction.OnEnd();
             }
 
-            // Execute new action
             currentAction = newAction;
             currentAction.Execute();
         }
