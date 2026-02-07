@@ -59,7 +59,7 @@ namespace Gast.Features.Characters.Actions
             }
 
             // Apply friction to knockback velocity
-            knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, Time.deltaTime * 5f);
+            knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, Time.deltaTime * settings.KnockbackFriction);
             body.SetForcedVelocity(knockbackVelocity);
             return true;
         }

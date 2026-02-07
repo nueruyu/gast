@@ -60,7 +60,7 @@ namespace Gast.Features.Characters.Actions
 
             float speedEval = settings.SpeedCurve.Evaluate(progress);
             body.SetForcedVelocity(dashDirection * (settings.MaxSpeed * speedEval));
-            body.SetLookDirection(dashDirection, 100f);
+            body.SetLookDirection(dashDirection, settings.LookDirectionSpeed);
 
             return true;
         }

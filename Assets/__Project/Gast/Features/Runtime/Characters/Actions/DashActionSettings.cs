@@ -18,10 +18,14 @@ namespace Gast.Features.Characters.Actions
         [SerializeField]
         AnimationCurve speedCurve = new(new Keyframe(0, 1), new Keyframe(1, 0));
 
+        [SerializeField]
+        float lookDirectionSpeed = 100f;
+
         public float Duration => duration;
         public float Cooldown => cooldown;
         public float MaxSpeed => maxSpeed;
         public AnimationCurve SpeedCurve => speedCurve;
+        public float LookDirectionSpeed => lookDirectionSpeed;
 
         public override ICharacterAction CreateAction(CharacterContext context, ICombatMethod combatMethod)
         {

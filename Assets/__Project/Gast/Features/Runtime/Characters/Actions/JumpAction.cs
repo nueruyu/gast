@@ -40,7 +40,7 @@ namespace Gast.Features.Characters.Actions
             if (direction.sqrMagnitude > 0.01f)
             {
                 body.SetInputVelocity(direction * speed);
-                body.SetLookDirection(direction, 10f);
+                body.SetLookDirection(direction, settings.LookDirectionSpeed);
             }
         }
 

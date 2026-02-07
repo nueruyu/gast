@@ -9,7 +9,11 @@ namespace Gast.Features.Characters.Actions
         [SerializeField]
         float force = 5f;
 
+        [SerializeField]
+        float lookDirectionSpeed = 10f;
+
         public float Force => force;
+        public float LookDirectionSpeed => lookDirectionSpeed;
 
         public override ICharacterAction CreateAction(CharacterContext context, ICombatMethod combatMethod)
         {

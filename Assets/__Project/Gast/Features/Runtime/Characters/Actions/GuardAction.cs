@@ -12,15 +12,16 @@ namespace Gast.Features.Characters.Actions
     {
         readonly CharacterBody body;
         readonly CharacterAnimator animator;
-        readonly float moveSpeedPenalty = 0.5f;
+        readonly GuardActionSettings settings;
 
         public Type CommandType => typeof(GuardCommand);
         public int Priority => 2;
 
-        public GuardAction(CharacterContext character)
+        public GuardAction(CharacterContext character, GuardActionSettings settings)
         {
             this.body = character.Body;
             this.animator = character.Animator;
+            this.settings = settings;
         }
 
         public bool CanExecute() => true;
@@ -39,8 +40,8 @@ namespace Gast.Features.Characters.Actions
         {
             if (direction.sqrMagnitude > 0.01f)
             {
-                body.SetInputVelocity(direction * (speed * moveSpeedPenalty));
-                body.SetLookDirection(direction, 5f);
+                body.SetInputVelocity(direction * (speed * settings.MoveSpeedPenalty));
+                body.SetLookDirection(direction, settings.LookDirectionSpeed);
             }
         }
 

@@ -6,9 +6,18 @@ namespace Gast.Features.Characters.Actions
     [CreateAssetMenu(fileName = "GuardActionSettings", menuName = "Gast/Actions/Guard Action Settings")]
     public class GuardActionSettings : CharacterActionSettings
     {
+        [SerializeField]
+        float moveSpeedPenalty = 0.5f;
+
+        [SerializeField]
+        float lookDirectionSpeed = 5f;
+
+        public float MoveSpeedPenalty => moveSpeedPenalty;
+        public float LookDirectionSpeed => lookDirectionSpeed;
+
         public override ICharacterAction CreateAction(CharacterContext context, ICombatMethod combatMethod)
         {
-            return new GuardAction(context);
+            return new GuardAction(context, this);
         }
     }
 }

@@ -9,7 +9,11 @@ namespace Gast.Features.Characters.Actions
         [SerializeField]
         float duration = 0.5f;
 
+        [SerializeField]
+        float knockbackFriction = 5f;
+
         public float Duration => duration;
+        public float KnockbackFriction => knockbackFriction;
 
         public override ICharacterAction CreateAction(CharacterContext context, ICombatMethod combatMethod)
         {
