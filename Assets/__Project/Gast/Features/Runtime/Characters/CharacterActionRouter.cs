@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters
 {
@@ -12,7 +13,7 @@ namespace Gast.Features.Characters
         readonly Dictionary<Type, ICharacterAction> registeredActions = new();
         ICharacterAction currentAction;
 
-        public bool IsActionRunning => currentAction != null && currentAction.IsActive;
+        public bool IsActionRunning => currentAction != null;
         public ICharacterAction CurrentAction => currentAction;
 
         /// <summary>
@@ -20,53 +21,50 @@ namespace Gast.Features.Characters
         /// </summary>
         public void Register(ICharacterAction action)
         {
-            if (action == null)
-                return;
-            registeredActions[action.GetType()] = action;
-        }
-
-        /// <summary>
-        /// Get a registered action by type.
-        /// </summary>
-        public T GetAction<T>() where T : class, ICharacterAction
-        {
-            return registeredActions.TryGetValue(typeof(T), out var action) ? action as T : null;
-        }
-
-        /// <summary>
-        /// Attempt to execute an action by type.
-        /// Handles precondition checks, interruption logic, and lifecycle management.
-        /// </summary>
-        public void TryExecute<T>() where T : class, ICharacterAction
-        {
-            if (registeredActions.TryGetValue(typeof(T), out var action))
+            if (action is null)
             {
-                TryExecute(action);
+                throw new ArgumentNullException(nameof(action));
             }
+
+            registeredActions[action.CommandType] = action;
         }
 
         /// <summary>
-        /// Attempt to execute a specific action instance.
+        /// Attempt to execute an action by command type.
         /// Handles precondition checks, interruption logic, and lifecycle management.
         /// </summary>
-        public void TryExecute(ICharacterAction newAction)
+        public bool TryExecute<TCommand>(in TCommand command)
+            where TCommand : struct, ICharacterActionCommand
         {
-            if (newAction == null)
-                return;
+            if (!TryGetAction<TCommand>(out var action))
+                return false;
 
-            if (!newAction.CanExecute())
-                return;
+            if (!action.CanExecute())
+                return false;
 
-            if (currentAction != null && currentAction.IsActive)
+            if (currentAction != null)
             {
-                if (newAction.Priority <= currentAction.Priority)
-                    return;
+                if (action.Priority <= currentAction.Priority)
+                    return false;
 
                 currentAction.OnEnd();
             }
 
-            currentAction = newAction;
-            currentAction.Execute();
+            currentAction = action;
+            action.Execute(in command);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Forcibly stops the currently running action if it matches the command type.
+        /// </summary>
+        public void Stop<TCommand>() where TCommand : struct, IStateActionCommand
+        {
+            if (currentAction?.CommandType == typeof(TCommand))
+            {
+                CancelCurrent();
+            }
         }
 
         /// <summary>
@@ -89,17 +87,33 @@ namespace Gast.Features.Characters
         {
             if (currentAction != null)
             {
-                if (currentAction.IsActive)
-                {
-                    currentAction.OnUpdate();
-                }
-                else
+                if (!currentAction.OnUpdate())
                 {
                     // Action finished naturally
                     currentAction.OnEnd();
                     currentAction = null;
                 }
             }
+        }
+
+        public bool TryGetAction<TCommand>(out ICharacterAction<TCommand> action)
+            where TCommand : struct, ICharacterActionCommand
+        {
+            action = default;
+
+            if (!registeredActions.TryGetValue(typeof(TCommand), out var rawAction))
+                return false;
+
+            if (rawAction is not ICharacterAction<TCommand> typedAction)
+                return false;
+
+            action = typedAction;
+            return true;
+        }
+
+        public bool IsActionActive<TCommand>() where TCommand : struct, ICharacterActionCommand
+        {
+            return currentAction != null && currentAction.CommandType == typeof(TCommand);
         }
     }
 }

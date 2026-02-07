@@ -4,15 +4,13 @@ using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters.Actions
 {
-    public class JumpAction : ICharacterAction
+    public class JumpAction : ICharacterAction<JumpCommand>
     {
         readonly CharacterBody body;
         readonly JumpActionSettings settings;
-        bool isActive;
 
         public Type CommandType => typeof(JumpCommand);
         public int Priority => 3;
-        public bool IsActive => isActive;
 
         public JumpAction(CharacterContext character, JumpActionSettings settings)
         {
@@ -22,19 +20,18 @@ namespace Gast.Features.Characters.Actions
 
         public bool CanExecute()
         {
-            return !isActive && body.IsGrounded;
+            return body.IsGrounded;
         }
 
-        public void Execute()
+        public void Execute(in JumpCommand command)
         {
-            isActive = true;
             body.ApplyJump(settings.Force);
         }
 
-        public void OnUpdate()
+        public bool OnUpdate()
         {
             // Jump is an instant action.
-            isActive = false;
+            return false;
         }
 
         public void Move(Vector3 direction, float speed)
@@ -49,7 +46,6 @@ namespace Gast.Features.Characters.Actions
 
         public void OnEnd()
         {
-            isActive = false;
         }
     }
 }

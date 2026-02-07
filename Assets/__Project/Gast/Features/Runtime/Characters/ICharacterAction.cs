@@ -1,52 +1,37 @@
 using System;
 using UnityEngine;
+using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters
 {
     /// <summary>
-    /// Base interface for all character actions.
-    /// Actions are discrete, composable units with clear preconditions, execution logic, and lifecycle.
+    /// Base non-generic interface for all character actions.
     /// </summary>
     public interface ICharacterAction
     {
         /// <summary>
         /// The type of command that triggers this action.
-        /// Returns null if this action is not triggered by a command (e.g., DieAction, HitAction).
         /// </summary>
         Type CommandType { get; }
 
         /// <summary>
-        /// Whether this action is currently active.
-        /// </summary>
-        bool IsActive { get; }
-
-        /// <summary>
         /// Action priority for interruption handling.
-        /// Higher priority actions can interrupt lower priority ones.
-        /// Example: Movement=0, Guard=2, Attack=5, Dash=10, Damage=99
         /// </summary>
         int Priority { get; }
 
         /// <summary>
         /// Check if this action can be executed right now.
-        /// Called before Execute() to validate preconditions (cooldowns, state, etc.).
         /// </summary>
         bool CanExecute();
 
         /// <summary>
-        /// Begin executing this action.
-        /// Called once when the action starts.
-        /// </summary>
-        void Execute();
-
-        /// <summary>
         /// Update logic called every frame while the action is active.
         /// </summary>
-        void OnUpdate();
+        /// <returns>True if the action should continue, false if it has finished.</returns>
+        bool OnUpdate();
 
         /// <summary>
         /// Handle movement input while this action is active.
-        /// Each action can decide how to handle movement (allow, restrict, modify speed, etc.).
         /// </summary>
         void Move(Vector3 direction, float speed);
 
@@ -54,5 +39,16 @@ namespace Gast.Features.Characters
         /// Cleanup logic called when the action completes or is interrupted.
         /// </summary>
         void OnEnd();
+    }
+
+    /// <summary>
+    /// Generic interface for character actions that are triggered by a specific command type.
+    /// </summary>
+    public interface ICharacterAction<TCommand> : ICharacterAction where TCommand : struct, ICharacterActionCommand
+    {
+        /// <summary>
+        /// Begin executing this action with a specific command.
+        /// </summary>
+        void Execute(in TCommand command);
     }
 }

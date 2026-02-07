@@ -8,20 +8,18 @@ namespace Gast.Features.Characters.Actions
     /// Dash action with curve-driven movement.
     /// Disables input movement and applies forced velocity based on animation curve.
     /// </summary>
-    public class DashAction : ICharacterAction
+    public class DashAction : ICharacterAction<DashCommand>
     {
         readonly CharacterBody body;
         readonly CharacterAnimator animator;
         readonly DashActionSettings settings;
 
-        bool isActive;
         float startTime;
         float lastDashTime = float.NegativeInfinity;
         Vector3 dashDirection;
 
         public Type CommandType => typeof(DashCommand);
         public int Priority => 10;
-        public bool IsActive => isActive;
 
         public DashAction(
             CharacterContext character,
@@ -34,12 +32,11 @@ namespace Gast.Features.Characters.Actions
 
         public bool CanExecute()
         {
-            return !isActive && Time.time >= lastDashTime + settings.Cooldown;
+            return Time.time >= lastDashTime + settings.Cooldown;
         }
 
-        public void Execute()
+        public void Execute(in DashCommand command)
         {
-            isActive = true;
             startTime = Time.time;
             lastDashTime = startTime;
 
@@ -51,20 +48,21 @@ namespace Gast.Features.Characters.Actions
                 animator.PlayDash();
         }
 
-        public void OnUpdate()
+        public bool OnUpdate()
         {
             float elapsed = Time.time - startTime;
             float progress = elapsed / settings.Duration;
 
             if (progress >= 1.0f)
             {
-                isActive = false;
-                return;
+                return false;
             }
 
             float speedEval = settings.SpeedCurve.Evaluate(progress);
             body.SetForcedVelocity(dashDirection * (settings.MaxSpeed * speedEval));
             body.SetLookDirection(dashDirection, 100f);
+
+            return true;
         }
 
         public void Move(Vector3 direction, float speed)
@@ -74,7 +72,6 @@ namespace Gast.Features.Characters.Actions
 
         public void OnEnd()
         {
-            isActive = false;
             body.IsInputMovementEnabled = true;
         }
     }

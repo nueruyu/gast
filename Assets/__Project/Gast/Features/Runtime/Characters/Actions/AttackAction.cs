@@ -9,20 +9,18 @@ namespace Gast.Features.Characters.Actions
     /// <summary>
     /// Attack action that stops movement and executes the attack method.
     /// </summary>
-    public class AttackAction : ICharacterAction
+    public class AttackAction : ICharacterAction<AttackCommand>
     {
         readonly CharacterContext character;
         readonly ICombatMethod method;
         readonly AttackActionSettings settings;
         readonly float duration = 0.6f;
 
-        bool isActive;
         float startTime;
         float lastAttackTime = float.NegativeInfinity;
 
         public Type CommandType => typeof(AttackCommand);
         public int Priority => 5;
-        public bool IsActive => isActive;
 
         public AttackAction(
             CharacterContext character,
@@ -36,24 +34,20 @@ namespace Gast.Features.Characters.Actions
 
         public bool CanExecute()
         {
-            return !isActive && Time.time >= lastAttackTime + settings.Cooldown;
+            return Time.time >= lastAttackTime + settings.Cooldown;
         }
 
-        public void Execute()
+        public void Execute(in AttackCommand command)
         {
-            isActive = true;
             startTime = Time.time;
             lastAttackTime = startTime;
 
             method.Attack(character);
         }
 
-        public void OnUpdate()
+        public bool OnUpdate()
         {
-            if (Time.time >= startTime + duration)
-            {
-                isActive = false;
-            }
+            return Time.time < startTime + duration;
         }
 
         public void Move(Vector3 direction, float speed)
@@ -68,7 +62,6 @@ namespace Gast.Features.Characters.Actions
 
         public void OnEnd()
         {
-            isActive = false;
         }
     }
 }
