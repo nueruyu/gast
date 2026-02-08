@@ -14,7 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: d84ffdeb244f09244a7266fba056d347, type: 2}
   displayName: White Soldier
-  maxHealth: 20
+  initialStats:
+  - Definition: {fileID: 11400000, guid: c98a8cf8882e21047a0b6ca4564758f6, type: 2}
+    Value: 20
+  - Definition: {fileID: 11400000, guid: 37c2866bcfffb704faeacf6abc042b92, type: 2}
+    Value: 20
   walkSpeed: 5
   sprintSpeed: 8
   actionSettings:

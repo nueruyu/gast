@@ -14,7 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: e9db19cfea39ace4fb8ba7c43866f726, type: 2}
   displayName: Default Human
-  maxHealth: 1000
+  initialStats:
+  - Definition: {fileID: 11400000, guid: c98a8cf8882e21047a0b6ca4564758f6, type: 2}
+    Value: 1000
+  - Definition: {fileID: 11400000, guid: 37c2866bcfffb704faeacf6abc042b92, type: 2}
+    Value: 1000
   walkSpeed: 4
   sprintSpeed: 7
   actionSettings:
