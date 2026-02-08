@@ -46,7 +46,7 @@ namespace Gast.Features.Combat
             if (!other.TryGetComponent<Character>(out var character))
                 return;
 
-            if (character.Status.Faction == ownerFaction)
+            if (character.Faction == ownerFaction)
                 return;
 
             var hitPosition = other.ClosestPoint(transform.position);

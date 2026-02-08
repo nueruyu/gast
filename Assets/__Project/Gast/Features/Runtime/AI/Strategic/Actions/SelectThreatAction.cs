@@ -20,7 +20,7 @@ namespace Gast.Features.AI.Strategic.Actions
             var self = ctx.Actor;
             var closestThreat = self.VisionSensor.VisibleCharacters
                 .Where(c => c.IsAlive)
-                .Where(c => c.Status.Faction != self.Status.Faction)
+                .Where(c => c.Faction != self.Faction)
                 .OrderBy(e => Vector3.Distance(self.VisionSensor.EyePosition, e.Body.Position))
                 .FirstOrDefault();
 

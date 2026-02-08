@@ -1,8 +1,10 @@
 using Gast.Domain.Characters;
 using Gast.Domain.Loot;
+using Gast.Domain.Stats;
 using Gast.Features.Characters;
 using Gast.Features.Characters.Actions;
 using Gast.Features.Combat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,14 +18,22 @@ namespace Gast.Infrastructure.Settings
     [CreateAssetMenu(fileName = "CharacterType", menuName = "Gast/Characters/Type Definition")]
     public class CharacterTypeDefinition : ScriptableObject, ICharacterTypeDefinition
     {
+        [Serializable]
+        public class InitialStat
+        {
+            public StatDefinition Definition;
+            public float Value;
+        }
+
         [SerializeField]
         CharacterTypeReference reference;
 
         [SerializeField]
         string displayName;
 
+        [Header("Stats")]
         [SerializeField]
-        float maxHealth = 100f;
+        List<InitialStat> initialStats = new();
 
         [Header("Movement")]
         [SerializeField]
@@ -78,7 +88,6 @@ namespace Gast.Infrastructure.Settings
 
         public CharacterTypeId TypeId => reference.Id;
         public string DisplayName => displayName;
-        public float MaxHealth => maxHealth;
         public float WalkSpeed => walkSpeed;
         public float SprintSpeed => sprintSpeed;
         public IReadOnlyList<CharacterActionSettings> ActionSettings => actionSettings;
@@ -93,6 +102,7 @@ namespace Gast.Infrastructure.Settings
         public float SensorViewAngle => sensorViewAngle;
         public Vector3 SensorEyeOffset => sensorEyeOffset;
         public float NavigationStoppingDistance => navigationStoppingDistance;
+        public List<InitialStat> InitialStats => initialStats;
 
         ILootTable ICharacterTypeDefinition.LootTable => lootTable;
     }

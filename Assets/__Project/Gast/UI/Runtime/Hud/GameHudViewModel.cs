@@ -1,4 +1,5 @@
 using Gast.Domain.Players;
+using Gast.Domain.Stats;
 using Gast.Shared.Observables;
 using R3;
 using System;
@@ -34,6 +35,9 @@ namespace Gast.UI.Hud
         {
             this.playerManager = playerManager;
 
+            var healthStatId = StatId.FromString("Health");
+            var maxHealthStatId = StatId.FromString("MaxHealth");
+
             // Added: Monitor if an AI Brain is currently active
             IsAiControlActive = playerManager.CurrentAIBrain
                 .ToObservable()
@@ -67,13 +71,13 @@ namespace Gast.UI.Hud
                 .Select(character =>
                 {
                     if (character == null)
-                    {
                         return Observable.Return(0f);
-                    }
 
-                    var maxHealth = character.Status.MaxHealth;
-                    return character.Status.Health
-                        .ToObservable()
+                    if (!character.Status.TryGetStat(healthStatId, out var health))
+                        return Observable.Return(0f);
+
+                    character.Status.TryGetStatValue(maxHealthStatId, out var maxHealth);
+                    return health.ToObservable()
                         .Select(current => maxHealth > 0 ? Mathf.Clamp01(current / maxHealth) : 0f);
                 })
                 .Switch()
@@ -84,13 +88,13 @@ namespace Gast.UI.Hud
                 .Select(character =>
                 {
                     if (character == null)
-                    {
                         return Observable.Return(string.Empty);
-                    }
 
-                    var maxHealth = character.Status.MaxHealth;
-                    return character.Status.Health
-                        .ToObservable()
+                    if (!character.Status.TryGetStat(healthStatId, out var health))
+                        return Observable.Return(string.Empty);
+
+                    character.Status.TryGetStatValue(maxHealthStatId, out var maxHealth);
+                    return health.ToObservable()
                         .Select(current => $"{Mathf.CeilToInt(current)} / {maxHealth}");
                 })
                 .Switch()

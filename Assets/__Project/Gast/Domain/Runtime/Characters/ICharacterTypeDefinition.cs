@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Gast.Domain.Loot;
+using Gast.Domain.Stats;
 
 namespace Gast.Domain.Characters
 {
@@ -17,11 +18,6 @@ namespace Gast.Domain.Characters
         /// Display name for this character type.
         /// </summary>
         string DisplayName { get; }
-
-        /// <summary>
-        /// Maximum health for characters of this type.
-        /// </summary>
-        float MaxHealth { get; }
 
         /// <summary>
         /// Movement speed for characters of this type.

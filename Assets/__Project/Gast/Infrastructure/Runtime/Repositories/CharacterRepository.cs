@@ -44,7 +44,7 @@ namespace Gast.Infrastructure.Repositories
 
         public IEnumerable<ICharacter> GetByFaction(Faction faction)
         {
-            return characters.Values.Where(c => c.Status.Faction == faction);
+            return characters.Values.Where(c => c.Faction == faction);
         }
     }
 }

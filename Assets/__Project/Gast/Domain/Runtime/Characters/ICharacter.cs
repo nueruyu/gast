@@ -25,9 +25,14 @@ namespace Gast.Domain.Characters
         CharacterTypeId TypeId { get; }
 
         /// <summary>
-        /// Character's health and status information.
+        /// Character's generic status container.
         /// </summary>
         CharacterStatus Status { get; }
+
+        /// <summary>
+        /// The character's faction affiliation.
+        /// </summary>
+        Faction Faction { get; }
 
         /// <summary>
         /// Read-only access to the character's physical state.
@@ -125,7 +130,13 @@ namespace Gast.Domain.Characters
         /// <summary>
         /// Apply damage and hit reaction to the character.
         /// </summary>
-        void TakeDamage(DamageInfo info);
+        void Hit(DamageInfo info);
+
+        /// <summary>
+        /// Initiates the character's death sequence.
+        /// Typically called by an external system based on game rules (e.g., health reaching zero).
+        /// </summary>
+        void Die(DamageInfo info);
 
         /// <summary>
         /// Get the currently attached brain.

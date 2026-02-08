@@ -1,48 +1,72 @@
-using UnityEngine;
 using Gast.Core.Observables;
+using Gast.Domain.Stats;
+using System.Collections.Generic;
 
 namespace Gast.Domain.Characters
 {
     /// <summary>
-    /// Manages dynamic character stats (Health, IsAlive).
-    /// Uses observable Live values for reactive state updates.
+    /// Manages dynamic character stats.
+    /// Uses a dictionary of observable Live values for reactive state updates.
+    /// This is a generic container and holds no logic about specific stats like Health.
     /// </summary>
     public class CharacterStatus
     {
-        readonly Live<float> health;
-        readonly Live<bool> isAlive;
-        readonly float maxHealth;
-        readonly Faction faction;
+        readonly Dictionary<StatId, Live<float>> stats = new();
 
-        public ILive<float> Health => health;
-        public ILive<bool> IsAlive => isAlive;
-        public float MaxHealth => maxHealth;
-        public Faction Faction => faction;
-
-        public CharacterStatus(float maxHealth, Faction faction)
+        public CharacterStatus(IEnumerable<(IStatDefinition def, float value)> initialStats)
         {
-            this.maxHealth = maxHealth;
-            this.faction = faction;
-            this.health = new Live<float>(maxHealth);
-            this.isAlive = new Live<bool>(true);
+            foreach (var (def, value) in initialStats)
+            {
+                stats[def.Id] = new Live<float>(value);
+            }
         }
 
         /// <summary>
-        /// Apply damage to the character's health.
-        /// If health reaches 0, sets IsAlive to false.
+        /// Tries to get the observable Live object for a stat.
         /// </summary>
-        public void ApplyDamage(float amount)
+        public bool TryGetStat(StatId statId, out ILive<float> stat)
         {
-            if (!isAlive.Value) return;
-
-            var current = health.Value;
-            var next = Mathf.Max(0f, current - amount);
-            health.Value = next;
-
-            if (next <= 0f)
+            if (stats.TryGetValue(statId, out var liveStat))
             {
-                isAlive.Value = false;
+                stat = liveStat;
+                return true;
+            }
+            stat = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Tries to get the current value of a stat.
+        /// </summary>
+        public bool TryGetStatValue(StatId statId, out float value)
+        {
+            if (stats.TryGetValue(statId, out var liveStat))
+            {
+                value = liveStat.Value;
+                return true;
+            }
+            value = 0;
+            return false;
+        }
+
+        /// <summary>
+        /// Sets the value of a stat. If the stat doesn't exist, it will be added.
+        /// </summary>
+        public void SetStat(StatId statId, float value)
+        {
+            if (stats.TryGetValue(statId, out var liveStat))
+            {
+                liveStat.Value = value;
+            }
+            else
+            {
+                stats[statId] = new Live<float>(value);
             }
         }
+
+        /// <summary>
+        /// Gets all stats as a read-only dictionary.
+        /// </summary>
+        public IReadOnlyDictionary<StatId, Live<float>> GetAllStats() => stats;
     }
 }

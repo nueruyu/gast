@@ -33,7 +33,6 @@ namespace Gast.Application.AI.Tools
                 {
                     Id = def.TypeId.ToString(),
                     Name = def.DisplayName,
-                    def.MaxHealth,
                     def.CanGuard,
                     Loot = def.LootTable?.Entries.Select(entry =>
                     {

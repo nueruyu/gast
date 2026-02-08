@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gast.Domain.Combat;
+using Gast.Domain.Stats;
 using Gast.Features.Characters;
 using Gast.Features.Combat.MethodSettings;
 using Gast.Shared.Observables;
@@ -102,7 +103,23 @@ namespace Gast.Features.Combat.Methods
                 hit.AttackerId
             );
 
-            hit.Character.TakeDamage(damageInfo);
+            hit.Character.Hit(damageInfo);
+
+            if (hit.Character.IsAlive)
+            {
+                var healthStatId = StatId.FromString("Health");
+                var hitCharacterStatus = hit.Character.Status;
+                if (hitCharacterStatus.TryGetStatValue(healthStatId, out var currentHealth))
+                {
+                    var newHealth = Mathf.Max(currentHealth - damageInfo.Amount, 0);
+                    hitCharacterStatus.SetStat(healthStatId, newHealth);
+
+                    if (newHealth == 0)
+                    {
+                        hit.Character.Die(damageInfo);
+                    }
+                }
+            }
         }
 
         void PlayWeaponSwing(AudioSource audioSource)

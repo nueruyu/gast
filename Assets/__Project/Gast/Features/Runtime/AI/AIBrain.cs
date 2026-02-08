@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
+using Gast.Domain.Stats;
 using Gast.Features.AI.Combat;
 using Gast.Features.AI.Gathering;
 using Gast.Features.AI.Strategic;
@@ -42,6 +43,9 @@ namespace Gast.Features.AI
         readonly CombatState combatState = new();
         readonly GatheringState gatheringState = new();
 
+        StatId healthStatId;
+        StatId maxHealthStatId;
+
         public AIBrain(
             StrategicDomain strategicDomain,
             CombatDomain combatDomain,
@@ -61,6 +65,9 @@ namespace Gast.Features.AI
             Debug.Log($"[AIBrain] OnAttached: {character.Id}");
 
             this.character = character;
+
+            healthStatId = StatId.FromString("Health");
+            maxHealthStatId = StatId.FromString("MaxHealth");
 
             strategicContextKey = new(character.Id, StrategicDomainName);
             combatContextKey = new(character.Id, CombatDomainName);
@@ -189,7 +196,7 @@ namespace Gast.Features.AI
                 .ToList();
 
             strategicState.IsThreatened = character.VisionSensor.VisibleCharacters
-                .Any(c => c.IsAlive && c.Status.Faction != character.Status.Faction);
+                .Any(c => c.IsAlive && c.Faction != character.Faction);
         }
 
         void UpdateCombatWorldState()
@@ -209,7 +216,16 @@ namespace Gast.Features.AI
             }
             combatState.IsReadyToAttack = character.CanAttack;
             combatState.CanGuard = character.CanGuard;
-            combatState.SelfHealthRatio = character.Status.Health.Value / character.Status.MaxHealth;
+            if (character.Status.TryGetStatValue(healthStatId, out var health) &&
+                character.Status.TryGetStatValue(maxHealthStatId, out var maxHealth) &&
+                maxHealth > 0)
+            {
+                combatState.SelfHealthRatio = health / maxHealth;
+            }
+            else
+            {
+                combatState.SelfHealthRatio = 1f;
+            }
         }
 
         void UpdateGatheringWorldState()

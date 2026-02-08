@@ -7,6 +7,7 @@ using Gast.Domain.Combat;
 using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
+using Gast.Domain.Stats;
 using Gast.Features.Characters.Actions.Commands;
 using System;
 using UnityEngine;
@@ -20,7 +21,6 @@ namespace Gast.Features.Characters
     public class Character : MonoBehaviour, ICharacter
     {
         ICharacterTypeDefinition typeDefinition;
-        CharacterStatus status;
         ICharacterBrain currentBrain;
         IDomainEventPublisher eventPublisher;
 
@@ -30,19 +30,21 @@ namespace Gast.Features.Characters
         readonly Signal<ICharacter> destroyedSignal = new();
 
         bool isSprinting;
+        bool isAlive = true;
 
         const float CorpseDespawnDelaySeconds = 5f;
 
         public CharacterId Id => context.Id;
         public CharacterTypeId TypeId => context.TypeId;
-        public CharacterStatus Status => status;
+        public CharacterStatus Status { get; private set; }
+        public Faction Faction { get; private set; }
         public Wallet Wallet { get; private set; }
         public Inventory Inventory { get; private set; }
         public IVisionSensor VisionSensor => context.VisionSensor;
         public IInteractionSensor InteractionSensor => context.InteractionSensor;
         public INavigationProvider NavigationProvider => context.NavigationProvider;
         public ICharacterBody Body => context.Body;
-        public bool IsAlive => status.IsAlive.Value;
+        public bool IsAlive => isAlive;
         public bool CanAttack => IsAlive && actionController.CanExecuteAction<AttackCommand>();
         public bool CanGuard => IsAlive && typeDefinition.CanGuard && actionController.CanExecuteAction<GuardCommand>();
         public bool IsGuarding => actionController.IsActionActive<GuardCommand>();
@@ -89,6 +91,7 @@ namespace Gast.Features.Characters
             ICharacterTypeDefinition typeDefinition,
             CharacterActionController actionController,
             CharacterStatus status,
+            Faction faction,
             Wallet wallet,
             Inventory inventory,
             IDomainEventPublisher eventPublisher)
@@ -96,7 +99,8 @@ namespace Gast.Features.Characters
             this.context = context;
             this.typeDefinition = typeDefinition;
             this.actionController = actionController;
-            this.status = status;
+            Status = status;
+            Faction = faction;
             Wallet = wallet;
             Inventory = inventory;
             this.eventPublisher = eventPublisher;
@@ -202,25 +206,24 @@ namespace Gast.Features.Characters
         /// <summary>
         /// Apply damage and hit reaction to the character.
         /// </summary>
-        public void TakeDamage(DamageInfo info)
+        public void Hit(DamageInfo info)
         {
             if (!IsAlive)
                 return;
 
-            status.ApplyDamage(info.Amount);
+            actionController.ExecuteAction(new HitCommand(info));
+        }
 
-            if (!status.IsAlive.Value)
-            {
-                Debug.Log($"[{Id}] Died.");
-                actionController.ExecuteAction(new DieCommand());
-                DetachBrain();
-                eventPublisher?.Publish(new CharacterDefeatedEvent(this, info.AttackerId));
-                DespawnAfterDelay().Forget();
-            }
-            else
-            {
-                actionController.ExecuteAction(new HitCommand(info));
-            }
+        public void Die(DamageInfo info)
+        {
+            if (!isAlive) return;
+
+            isAlive = false;
+
+            actionController.ExecuteAction(new DieCommand());
+            DetachBrain();
+            eventPublisher?.Publish(new CharacterDefeatedEvent(this, info.AttackerId));
+            DespawnAfterDelay().Forget();
         }
 
         public ICharacterBrain GetBrain() => currentBrain;

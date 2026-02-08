@@ -49,6 +49,7 @@ namespace Gast.Composition
         [Header("Scene Components")]
         [SerializeField]
         CameraRegistry cameraRegistry;
+
         [SerializeField]
         UIDocument mainUIDocument;
 

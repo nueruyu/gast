@@ -86,7 +86,7 @@ namespace Gast.Features.AI.Strategic.Actions
         private ICharacter FindClosestCharacterOfType(ICharacter self, CharacterTypeId typeId)
         {
             return _characterRepository.GetAll()
-                .Where(c => c.TypeId == typeId && c.IsAlive && c.Status.Faction != self.Status.Faction)
+                .Where(c => c.TypeId == typeId && c.IsAlive && c.Faction != self.Faction)
                 .OrderBy(c => Vector3.Distance(self.Body.Position, c.Body.Position))
                 .FirstOrDefault();
         }

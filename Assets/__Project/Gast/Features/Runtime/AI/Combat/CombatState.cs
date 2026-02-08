@@ -32,7 +32,7 @@ namespace Gast.Features.AI.Combat
 
         public override string ToString()
         {
-            return $"Combat[Dist:{DistanceToTarget:F1}, InRange:{IsInAttackRange}, Ready:{IsReadyToAttack}]";
+            return $"Combat[Dist:{DistanceToTarget:F1}, InRange:{IsInAttackRange}, Ready:{IsReadyToAttack}, HP:{SelfHealthRatio:P0}]";
         }
     }
 }

@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using Gast.Core.Events;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
+using Gast.Domain.Stats;
 using Gast.Features.Characters;
 using Gast.Features.Characters.Actions;
 using Gast.Features.Combat;
@@ -59,7 +61,8 @@ namespace Gast.Infrastructure.Factories
 
             var context = CreateContext(characterId, character.gameObject, definition, faction);
 
-            var status = new CharacterStatus(definition.MaxHealth, faction);
+            var initialStats = definition.InitialStats.Select(s => ((IStatDefinition)s.Definition, s.Value));
+            var status = new CharacterStatus(initialStats);
             var wallet = new Wallet(definition.InitialMoney);
             var inventory = new Inventory(definition.SlotCapacity);
 
@@ -69,6 +72,7 @@ namespace Gast.Infrastructure.Factories
                 definition,
                 actionController,
                 status,
+                faction,
                 wallet,
                 inventory,
                 eventPublisher);
