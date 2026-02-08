@@ -1,26 +1,26 @@
-using Gast.Domain.Characters;
-using Gast.Features.Characters;
+using Gast.Core.Events;
 using Gast.Features.Combat;
-using Gast.Features.AI;
-using Gast.Infrastructure.Settings;
-using System;
-using System.Collections.Generic;
 
 namespace Gast.Infrastructure.Factories
 {
     public class CombatMethodFactory : ICombatMethodFactory
     {
         readonly CombatFeedbackService combatFeedbackService;
+        readonly IDomainEventPublisher eventPublisher;
 
-        public CombatMethodFactory(CombatFeedbackService combatFeedbackService)
+        public CombatMethodFactory(
+            CombatFeedbackService combatFeedbackService,
+            IDomainEventPublisher eventPublisher)
         {
             this.combatFeedbackService = combatFeedbackService;
+            this.eventPublisher = eventPublisher;
         }
 
         public ICombatMethod CreateMethod(CombatMethodSettings methodSettings)
         {
             var context = new CombatContext(
-                combatFeedbackService);
+                combatFeedbackService,
+                eventPublisher);
 
             return methodSettings.CreateMethod(context);
         }

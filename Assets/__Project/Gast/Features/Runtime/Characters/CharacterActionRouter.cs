@@ -1,6 +1,6 @@
+using Gast.Domain.Characters;
 using System;
 using System.Collections.Generic;
-using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters
 {
@@ -59,7 +59,7 @@ namespace Gast.Features.Characters
         /// <summary>
         /// Forcibly stops the currently running action if it matches the command type.
         /// </summary>
-        public void Stop<TCommand>() where TCommand : struct, IStateActionCommand
+        public void Stop<TCommand>() where TCommand : struct, ICharacterStateCommand
         {
             if (currentAction?.CommandType == typeof(TCommand))
             {

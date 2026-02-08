@@ -1,6 +1,8 @@
+using Gast.Domain.Characters;
+
 namespace Gast.Features.Characters.Actions.Commands
 {
-    public readonly struct DieCommand : ITriggerActionCommand
+    public readonly struct DieCommand : ICharacterTriggerCommand
     {
     }
 }

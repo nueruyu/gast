@@ -1,0 +1,26 @@
+{
+    "name": "GastGame",
+    "rootNamespace": "GastGame",
+    "references": [
+        "Gast.Core",
+        "Gast.Domain",
+        "Gast.Application",
+        "Gast.Shared",
+        "Gast.Features",
+        "Gast.UI",
+        "Gast.Infrastructure",
+        "Gast.Lib.Gaia",
+        "Gast.Lib.AI",
+        "VContainer",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

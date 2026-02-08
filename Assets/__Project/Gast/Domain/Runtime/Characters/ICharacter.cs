@@ -40,34 +40,11 @@ namespace Gast.Domain.Characters
         ICharacterBody Body { get; }
 
         /// <summary>
-        /// Whether this character is currently alive.
-        /// </summary>
-        bool IsAlive { get; }
-
-        /// <summary>
-        /// Whether the character is ready to attack (e.g. not in cooldown).
-        /// </summary>
-        bool CanAttack { get; }
-
-        /// <summary>
-        /// Whether the character can start guarding.
-        /// </summary>
-        bool CanGuard { get; }
-
-        /// <summary>
-        /// Whether the character is currently guarding.
-        /// </summary>
-        bool IsGuarding { get; }
-
-        /// <summary>
-        /// Whether the character is currently dashing.
-        /// </summary>
-        bool IsDashing { get; }
-
-        /// <summary>
         /// Signal raised when this character is destroyed.
         /// </summary>
         ISignal<ICharacter> Destroyed { get; }
+
+        ICharacterActionController ActionController { get; }
 
         /// <summary>
         /// Wallet managing the character's currency.
@@ -84,8 +61,6 @@ namespace Gast.Domain.Characters
         IInteractionSensor InteractionSensor { get; }
 
         INavigationProvider NavigationProvider { get; }
-
-        // === Operation Methods ===
 
         /// <summary>
         /// Attach a brain to this character, detaching any existing brain first.
@@ -106,41 +81,5 @@ namespace Gast.Domain.Characters
         /// Set whether the character is sprinting.
         /// </summary>
         void SetSprint(bool isSprinting);
-
-        /// <summary>
-        /// Make the character jump if grounded.
-        /// </summary>
-        void Jump();
-
-        /// <summary>
-        /// Execute an attack action.
-        /// </summary>
-        void Attack();
-
-        /// <summary>
-        /// Perform a dash action in the specified direction.
-        /// </summary>
-        void Dash(Vector3 direction);
-
-        /// <summary>
-        /// Set the guard state.
-        /// </summary>
-        void SetGuard(bool active);
-
-        /// <summary>
-        /// Apply damage and hit reaction to the character.
-        /// </summary>
-        void Hit(DamageInfo info);
-
-        /// <summary>
-        /// Initiates the character's death sequence.
-        /// Typically called by an external system based on game rules (e.g., health reaching zero).
-        /// </summary>
-        void Die(DamageInfo info);
-
-        /// <summary>
-        /// Get the currently attached brain.
-        /// </summary>
-        ICharacterBrain GetBrain();
     }
 }

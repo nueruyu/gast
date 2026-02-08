@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Gast.Features.Characters.Actions.Commands;
 using Gast.Lib.AI;
 using System;
 
@@ -19,14 +20,14 @@ namespace Gast.Features.AI.Combat.Actions
         public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
         {
             var actor = ctx.Actor;
-            actor.SetGuard(true);
+            actor.ActionController.StartAction(new GuardCommand());
             try
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(1.5f), cancellationToken: ctx.CancellationToken);
             }
             finally
             {
-                actor.SetGuard(false);
+                actor.ActionController.StopAction<GuardCommand>();
             }
         }
     }

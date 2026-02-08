@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Domain.Cameras;
 using Gast.Domain.Characters;
 using Gast.Domain.Inputs;
+using Gast.Features.Characters.Actions.Commands;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -66,7 +67,7 @@ namespace Gast.Features.Players
                 // Handle jump
                 if (inputProvider.Jump)
                 {
-                    character.Jump();
+                    character.ActionController.ExecuteAction(new JumpCommand());
                 }
 
                 // Handle dash
@@ -77,16 +78,23 @@ namespace Gast.Features.Players
                     {
                         moveDir = character.Body.Forward;
                     }
-                    character.Dash(moveDir);
+                    character.ActionController.ExecuteAction(new DashCommand(moveDir));
                 }
 
                 // Handle guard
-                character.SetGuard(inputProvider.GuardHeld);
+                if (inputProvider.GuardHeld)
+                {
+                    character.ActionController.StartAction(new GuardCommand());
+                }
+                else
+                {
+                    character.ActionController.StopAction<GuardCommand>();
+                }
 
                 // Handle attack
                 if (inputProvider.Attack)
                 {
-                    character.Attack();
+                    character.ActionController.ExecuteAction(new AttackCommand());
                 }
             }
         }

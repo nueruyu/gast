@@ -1,8 +1,9 @@
+using Gast.Domain.Characters;
 using Gast.Domain.Combat;
 
 namespace Gast.Features.Characters.Actions.Commands
 {
-    public readonly struct HitCommand : ITriggerActionCommand
+    public readonly struct HitCommand : ICharacterTriggerCommand
     {
         public DamageInfo DamageInfo { get; }
 

@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using Gast.Domain.Combat;
 using Gast.Features.Combat;
 using Gast.Features.Characters.Actions.Commands;
 

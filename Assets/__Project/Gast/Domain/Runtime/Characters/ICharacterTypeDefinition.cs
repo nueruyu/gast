@@ -29,11 +29,6 @@ namespace Gast.Domain.Characters
         /// </summary>
         float SprintSpeed { get; }
 
-        /// <summary>
-        /// Whether this character type can guard.
-        /// </summary>
-        bool CanGuard { get; }
-
         ILootTable LootTable { get; }
     }
 }

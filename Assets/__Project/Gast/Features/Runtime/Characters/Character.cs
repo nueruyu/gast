@@ -1,14 +1,10 @@
 using Cysharp.Threading.Tasks;
-using Gast.Core.Events;
 using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
-using Gast.Domain.Combat;
 using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
-using Gast.Domain.Stats;
-using Gast.Features.Characters.Actions.Commands;
 using System;
 using UnityEngine;
 
@@ -22,7 +18,6 @@ namespace Gast.Features.Characters
     {
         ICharacterTypeDefinition typeDefinition;
         ICharacterBrain currentBrain;
-        IDomainEventPublisher eventPublisher;
 
         CharacterActionController actionController;
         CharacterContext context;
@@ -30,7 +25,6 @@ namespace Gast.Features.Characters
         readonly Signal<ICharacter> destroyedSignal = new();
 
         bool isSprinting;
-        bool isAlive = true;
 
         const float CorpseDespawnDelaySeconds = 5f;
 
@@ -44,11 +38,7 @@ namespace Gast.Features.Characters
         public IInteractionSensor InteractionSensor => context.InteractionSensor;
         public INavigationProvider NavigationProvider => context.NavigationProvider;
         public ICharacterBody Body => context.Body;
-        public bool IsAlive => isAlive;
-        public bool CanAttack => IsAlive && actionController.CanExecuteAction<AttackCommand>();
-        public bool CanGuard => IsAlive && typeDefinition.CanGuard && actionController.CanExecuteAction<GuardCommand>();
-        public bool IsGuarding => actionController.IsActionActive<GuardCommand>();
-        public bool IsDashing => actionController.IsActionActive<DashCommand>();
+        public ICharacterActionController ActionController => actionController;
         public ISignal<ICharacter> Destroyed => destroyedSignal;
 
         void Update()
@@ -93,8 +83,7 @@ namespace Gast.Features.Characters
             CharacterStatus status,
             Faction faction,
             Wallet wallet,
-            Inventory inventory,
-            IDomainEventPublisher eventPublisher)
+            Inventory inventory)
         {
             this.context = context;
             this.typeDefinition = typeDefinition;
@@ -103,7 +92,6 @@ namespace Gast.Features.Characters
             Faction = faction;
             Wallet = wallet;
             Inventory = inventory;
-            this.eventPublisher = eventPublisher;
         }
 
         /// <summary>
@@ -133,9 +121,6 @@ namespace Gast.Features.Characters
         /// </summary>
         public void Move(Vector3 direction)
         {
-            if (!IsAlive)
-                return;
-
             var speed = isSprinting ? typeDefinition.SprintSpeed : typeDefinition.WalkSpeed;
 
             actionController.Move(direction, speed);
@@ -149,92 +134,13 @@ namespace Gast.Features.Characters
             this.isSprinting = isSprinting;
         }
 
-        /// <summary>
-        /// Make the character jump if grounded.
-        /// </summary>
-        public void Jump()
-        {
-            if (!IsAlive)
-                return;
-
-            actionController.ExecuteAction(new JumpCommand());
-        }
-
-        /// <summary>
-        /// Execute an attack action.
-        /// </summary>
-        public void Attack()
-        {
-            if (!IsAlive)
-                return;
-
-            actionController.ExecuteAction(new AttackCommand());
-        }
-
-        /// <summary>
-        /// Perform a dash action in the specified direction.
-        /// </summary>
-        public void Dash(Vector3 direction)
-        {
-            if (!IsAlive)
-                return;
-
-            actionController.ExecuteAction(new DashCommand());
-        }
-
-        /// <summary>
-        /// Set the guard state.
-        /// </summary>
-        public void SetGuard(bool active)
-        {
-            if (!IsAlive)
-                return;
-
-            if (!typeDefinition.CanGuard)
-                return;
-
-            if (active)
-            {
-                actionController.StartAction(new GuardCommand());
-            }
-            else
-            {
-                actionController.StopAction<GuardCommand>();
-            }
-        }
-
-        /// <summary>
-        /// Apply damage and hit reaction to the character.
-        /// </summary>
-        public void Hit(DamageInfo info)
-        {
-            if (!IsAlive)
-                return;
-
-            actionController.ExecuteAction(new HitCommand(info));
-        }
-
-        public void Die(DamageInfo info)
-        {
-            if (!isAlive) return;
-
-            isAlive = false;
-
-            actionController.ExecuteAction(new DieCommand());
-            DetachBrain();
-            eventPublisher?.Publish(new CharacterDefeatedEvent(this, info.AttackerId));
-            DespawnAfterDelay().Forget();
-        }
-
-        public ICharacterBrain GetBrain() => currentBrain;
-
         void OnDestroy()
         {
             DetachBrain();
             destroyedSignal.Publish(this);
         }
 
-        async UniTaskVoid DespawnAfterDelay()
+        public async UniTaskVoid DespawnAfterDelay()
         {
             await UniTask.Delay(
                 TimeSpan.FromSeconds(CorpseDespawnDelaySeconds),

@@ -5,6 +5,7 @@ using Gast.Domain.Stats;
 using Gast.Features.AI.Combat;
 using Gast.Features.AI.Gathering;
 using Gast.Features.AI.Strategic;
+using Gast.Features.Characters.Actions.Commands;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Debugging;
 using System.Collections.Generic;
@@ -196,13 +197,13 @@ namespace Gast.Features.AI
                 .ToList();
 
             strategicState.IsThreatened = character.VisionSensor.VisibleCharacters
-                .Any(c => c.IsAlive && c.Faction != character.Faction);
+                .Any(c => c.IsAlive() && c.Faction != character.Faction);
         }
 
         void UpdateCombatWorldState()
         {
             var target = memory.CombatTarget;
-            if (target != null && target.IsAlive)
+            if (target != null && target.IsAlive())
             {
                 combatState.HasTarget = true;
                 combatState.TargetPosition = target.Body.Position;
@@ -214,8 +215,8 @@ namespace Gast.Features.AI
                 combatState.HasTarget = false;
                 combatState.DistanceToTarget = float.PositiveInfinity;
             }
-            combatState.IsReadyToAttack = character.CanAttack;
-            combatState.CanGuard = character.CanGuard;
+            combatState.IsReadyToAttack = character.ActionController.CanExecuteAction<AttackCommand>();
+            combatState.CanGuard = character.ActionController.CanExecuteAction<GuardCommand>();
             if (character.Status.TryGetStatValue(healthStatId, out var health) &&
                 character.Status.TryGetStatValue(maxHealthStatId, out var maxHealth) &&
                 maxHealth > 0)

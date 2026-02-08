@@ -1,7 +1,5 @@
+using Gast.Domain.Characters;
 using UnityEngine;
-using Gast.Domain.Combat;
-using Gast.Features.Characters.Actions;
-using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters
 {
@@ -9,7 +7,7 @@ namespace Gast.Features.Characters
     /// Manages character actions through an ActionRouter.
     /// Provides command-based dispatch for action execution.
     /// </summary>
-    public class CharacterActionController
+    public class CharacterActionController : ICharacterActionController
     {
         readonly CharacterActionRouter router = new();
         readonly CharacterContext character;
@@ -24,17 +22,17 @@ namespace Gast.Features.Characters
             router.Register(action);
         }
 
-        public void ExecuteAction<TCommand>(in TCommand command) where TCommand : struct, ITriggerActionCommand
+        public void ExecuteAction<TCommand>(in TCommand command) where TCommand : struct, ICharacterTriggerCommand
         {
             router.TryExecute(in command);
         }
 
-        public void StartAction<TCommand>(in TCommand command) where TCommand : struct, IStateActionCommand
+        public void StartAction<TCommand>(in TCommand command) where TCommand : struct, ICharacterStateCommand
         {
             router.TryExecute(in command);
         }
 
-        public void StopAction<TCommand>() where TCommand : struct, IStateActionCommand
+        public void StopAction<TCommand>() where TCommand : struct, ICharacterStateCommand
         {
             router.Stop<TCommand>();
         }

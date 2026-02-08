@@ -1,8 +1,6 @@
 using Gast.Domain.Characters;
 using Gast.Domain.Loot;
-using Gast.Domain.Stats;
 using Gast.Features.Characters;
-using Gast.Features.Characters.Actions;
 using Gast.Features.Combat;
 using System;
 using System.Collections.Generic;
@@ -91,7 +89,6 @@ namespace Gast.Infrastructure.Settings
         public float WalkSpeed => walkSpeed;
         public float SprintSpeed => sprintSpeed;
         public IReadOnlyList<CharacterActionSettings> ActionSettings => actionSettings;
-        public bool CanGuard => actionSettings.Any(s => s is GuardActionSettings);
         public int InitialMoney => initialMoney;
         public int SlotCapacity => slotCapacity;
         public Character CharacterPrefab => characterPrefab;

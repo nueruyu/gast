@@ -1,6 +1,6 @@
+using Gast.Domain.Characters;
 using System;
 using UnityEngine;
-using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters
 {

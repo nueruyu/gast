@@ -1,4 +1,4 @@
-namespace Gast.Features.Characters.Actions.Commands
+namespace Gast.Domain.Characters
 {
     /// <summary>
     /// Base marker interface for character action commands.
@@ -11,14 +11,14 @@ namespace Gast.Features.Characters.Actions.Commands
     /// <summary>
     /// For commands that trigger an action once.
     /// </summary>
-    public interface ITriggerActionCommand : ICharacterActionCommand
+    public interface ICharacterTriggerCommand : ICharacterActionCommand
     {
     }
 
     /// <summary>
     /// For commands that manage an action's state (e.g., on/off).
     /// </summary>
-    public interface IStateActionCommand : ICharacterActionCommand
+    public interface ICharacterStateCommand : ICharacterActionCommand
     {
     }
 }

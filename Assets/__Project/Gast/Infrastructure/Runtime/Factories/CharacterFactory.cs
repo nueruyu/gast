@@ -6,7 +6,6 @@ using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
 using Gast.Domain.Stats;
 using Gast.Features.Characters;
-using Gast.Features.Characters.Actions;
 using Gast.Features.Combat;
 using Gast.Features.Navigations;
 using Gast.Features.Sensors;
@@ -15,7 +14,6 @@ using Gast.Infrastructure.Services;
 using Gast.Infrastructure.Settings;
 using Gast.Shared.UnityExtensions;
 using UnityEngine;
-using VContainer;
 
 namespace Gast.Infrastructure.Factories
 {
@@ -28,7 +26,6 @@ namespace Gast.Infrastructure.Factories
         readonly ICharacterActorRepository characterActorRepository;
         readonly CharacterFootstepService footstepService;
         readonly ICombatMethodFactory combatMethodFactory;
-        readonly IDomainEventPublisher eventPublisher;
 
         public CharacterFactory(
             CharacterTypeRepository typeRepository,
@@ -41,7 +38,6 @@ namespace Gast.Infrastructure.Factories
             this.characterActorRepository = characterActorRepository ?? throw new ArgumentNullException(nameof(characterActorRepository));
             this.footstepService = footstepService ?? throw new ArgumentNullException(nameof(footstepService));
             this.combatMethodFactory = combatMethodFactory ?? throw new ArgumentNullException(nameof(combatMethodFactory));
-            this.eventPublisher = eventPublisher ?? throw new ArgumentNullException(nameof(eventPublisher));
         }
 
         public ICharacter Create(CharacterTypeId typeId, Vector3 position, Quaternion rotation, Faction faction)
@@ -74,8 +70,7 @@ namespace Gast.Infrastructure.Factories
                 status,
                 faction,
                 wallet,
-                inventory,
-                eventPublisher);
+                inventory);
 
             characterActorRepository.Register(character);
             footstepService.Register(context, definition.FootstepSettings);

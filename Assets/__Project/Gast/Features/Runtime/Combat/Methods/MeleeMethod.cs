@@ -1,7 +1,9 @@
 using Cysharp.Threading.Tasks;
+using Gast.Domain.Characters;
 using Gast.Domain.Combat;
 using Gast.Domain.Stats;
 using Gast.Features.Characters;
+using Gast.Features.Characters.Actions.Commands;
 using Gast.Features.Combat.MethodSettings;
 using Gast.Shared.Observables;
 using R3;
@@ -103,20 +105,23 @@ namespace Gast.Features.Combat.Methods
                 hit.AttackerId
             );
 
-            hit.Character.Hit(damageInfo);
+            hit.Character.ActionController.ExecuteAction(new HitCommand(damageInfo));
 
-            if (hit.Character.IsAlive)
+            var healthStatId = StatId.FromString("Health");
+            var hitCharacterStatus = hit.Character.Status;
+            if (hitCharacterStatus.TryGetStatValue(healthStatId, out var currentHealth))
             {
-                var healthStatId = StatId.FromString("Health");
-                var hitCharacterStatus = hit.Character.Status;
-                if (hitCharacterStatus.TryGetStatValue(healthStatId, out var currentHealth))
+                if (currentHealth > 0)
                 {
                     var newHealth = Mathf.Max(currentHealth - damageInfo.Amount, 0);
                     hitCharacterStatus.SetStat(healthStatId, newHealth);
 
                     if (newHealth == 0)
                     {
-                        hit.Character.Die(damageInfo);
+                        hit.Character.ActionController.ExecuteAction(new DieCommand());
+                        hit.Character.DetachBrain();
+                        context.EventPublisher.Publish(new CharacterDefeatedEvent(hit.Character, damageInfo.AttackerId));
+                        hit.Character.DespawnAfterDelay().Forget();
                     }
                 }
             }
