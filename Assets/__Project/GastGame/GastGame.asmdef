@@ -12,7 +12,8 @@
         "Gast.Lib.Gaia",
         "Gast.Lib.AI",
         "VContainer",
-        "UniTask"
+        "UniTask",
+        "R3.Unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

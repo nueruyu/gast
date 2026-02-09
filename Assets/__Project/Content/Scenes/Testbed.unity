@@ -2637,6 +2637,8 @@ MonoBehaviour:
   gatheringSpotRegistry: {fileID: 789442411}
   spawnSiteRegistry: {fileID: 803372590}
   playerSpawnPoint: {fileID: 28649253}
+  additionalInstallers:
+  - {fileID: 11400000, guid: fddaaf51d35ab5646ac8817b62c7f584, type: 2}
 --- !u!4 &2080562602
 Transform:
   m_ObjectHideFlags: 0

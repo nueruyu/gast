@@ -46,7 +46,6 @@ namespace Gast.Infrastructure
             builder.Register<CharacterActorRepository>().AsImplementedInterfaces();
             builder.Register<CharacterTypeRepository>().AsImplementedInterfaces().AsSelf();
             builder.Register<CharacterFactory>().AsImplementedInterfaces();
-            builder.Register<CharacterAIBrainFactory>().AsImplementedInterfaces();
             builder.Register<CharacterFootstepService>().AsImplementedInterfaces().AsSelf();
 
             // Combat
