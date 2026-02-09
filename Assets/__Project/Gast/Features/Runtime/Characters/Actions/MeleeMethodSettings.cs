@@ -1,16 +1,16 @@
 using Cysharp.Threading.Tasks;
 using Gast.Features.Characters;
-using Gast.Features.Combat.Methods;
+using Gast.Features.Combat;
 using R3;
 using UnityEngine;
 
-namespace Gast.Features.Combat.MethodSettings
+namespace Gast.Features.Characters.Actions
 {
     /// <summary>
     /// Configuration for melee attack behavior.
     /// </summary>
     [CreateAssetMenu(menuName = "Gast/Combat/Method Settings/Melee")]
-    public class MeleeMethodSettings : CombatMethodSettings
+    public class MeleeMethodSettings : ScriptableObject
     {
         [Header("Damage Area")]
         [SerializeField]
@@ -70,10 +70,5 @@ namespace Gast.Features.Combat.MethodSettings
         public GameObject HitVfxPrefab => hitVfxPrefab;
         public AudioClip HitSfx => hitSfx;
         public float SfxVolume => sfxVolume;
-
-        public override ICombatMethod CreateMethod(CombatContext context)
-        {
-            return new MeleeMethod(this, context);
-        }
     }
 }

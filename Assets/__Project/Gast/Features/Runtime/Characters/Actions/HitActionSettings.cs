@@ -15,7 +15,7 @@ namespace Gast.Features.Characters.Actions
         public float Duration => duration;
         public float KnockbackFriction => knockbackFriction;
 
-        public override ICharacterAction CreateAction(CharacterContext context, ICombatMethod combatMethod)
+        public override ICharacterAction CreateAction(CharacterContext context)
         {
             return new HitAction(context, this);
         }

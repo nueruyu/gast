@@ -12,12 +12,17 @@ namespace Gast.Features.Characters.Actions
         [SerializeField]
         float duration = 0.6f;
 
+        [SerializeField]
+        MeleeMethodSettings meleeMethodSettings;
+
         public float Cooldown => cooldown;
         public float Duration => duration;
 
-        public override ICharacterAction CreateAction(CharacterContext context, ICombatMethod combatMethod)
+        public MeleeMethodSettings MeleeMethodSettings => meleeMethodSettings;
+
+        public override ICharacterAction CreateAction(CharacterContext context)
         {
-            return new AttackAction(context, combatMethod, this);
+            return new AttackAction(context, this);
         }
     }
 }

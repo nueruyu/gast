@@ -25,19 +25,22 @@ namespace Gast.Infrastructure.Factories
         readonly CharacterTypeRepository typeRepository;
         readonly ICharacterActorRepository characterActorRepository;
         readonly CharacterFootstepService footstepService;
-        readonly ICombatMethodFactory combatMethodFactory;
+
+        readonly CombatFeedbackService feedbackService;
+        readonly IDomainEventPublisher eventPublisher;
 
         public CharacterFactory(
             CharacterTypeRepository typeRepository,
             ICharacterActorRepository characterActorRepository,
             CharacterFootstepService footstepService,
-            ICombatMethodFactory combatMethodFactory,
+            CombatFeedbackService feedbackService,
             IDomainEventPublisher eventPublisher)
         {
             this.typeRepository = typeRepository ?? throw new ArgumentNullException(nameof(typeRepository));
             this.characterActorRepository = characterActorRepository ?? throw new ArgumentNullException(nameof(characterActorRepository));
             this.footstepService = footstepService ?? throw new ArgumentNullException(nameof(footstepService));
-            this.combatMethodFactory = combatMethodFactory ?? throw new ArgumentNullException(nameof(combatMethodFactory));
+            this.feedbackService = feedbackService;
+            this.eventPublisher = eventPublisher;
         }
 
         public ICharacter Create(CharacterTypeId typeId, Vector3 position, Quaternion rotation, Faction faction)
@@ -108,14 +111,13 @@ namespace Gast.Infrastructure.Factories
                 audio,
                 visionSensor,
                 interactionSensor,
-                navigationProvider);
+                navigationProvider,
+                feedbackService,
+                eventPublisher);
         }
 
         CharacterActionController CreateActionController(CharacterContext character, CharacterTypeDefinition definition)
         {
-            var combatMethod = combatMethodFactory.CreateMethod(definition.CombatMethodSettings);
-            combatMethod.BindEvents(character);
-
             var actionController = new CharacterActionController(character);
 
             if (definition.ActionSettings != null)
@@ -127,7 +129,7 @@ namespace Gast.Infrastructure.Factories
                         Debug.LogWarning($"A null action setting was found in '{definition.name}'.");
                         continue;
                     }
-                    var action = settings.CreateAction(character, combatMethod);
+                    var action = settings.CreateAction(character);
                     actionController.RegisterAction(action);
                 }
             }

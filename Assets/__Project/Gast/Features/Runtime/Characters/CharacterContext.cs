@@ -1,7 +1,9 @@
+using Gast.Core.Events;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
+using Gast.Features.Combat;
 
 namespace Gast.Features.Characters
 {
@@ -15,5 +17,7 @@ namespace Gast.Features.Characters
         CharacterAudio Audio,
         IVisionSensor VisionSensor,
         IInteractionSensor InteractionSensor,
-        INavigationProvider NavigationProvider);
+        INavigationProvider NavigationProvider,
+        CombatFeedbackService FeedbackService,
+        IDomainEventPublisher EventPublisher);
 }

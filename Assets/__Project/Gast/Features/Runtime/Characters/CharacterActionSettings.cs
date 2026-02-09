@@ -5,6 +5,6 @@ namespace Gast.Features.Characters
 {
     public abstract class CharacterActionSettings : ScriptableObject
     {
-        public abstract ICharacterAction CreateAction(CharacterContext context, ICombatMethod combatMethod);
+        public abstract ICharacterAction CreateAction(CharacterContext context);
     }
 }

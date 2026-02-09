@@ -27,7 +27,7 @@ namespace Gast.Features.Characters.Actions
         public AnimationCurve SpeedCurve => speedCurve;
         public float LookDirectionSpeed => lookDirectionSpeed;
 
-        public override ICharacterAction CreateAction(CharacterContext context, ICombatMethod combatMethod)
+        public override ICharacterAction CreateAction(CharacterContext context)
         {
             return new DashAction(context, this);
         }

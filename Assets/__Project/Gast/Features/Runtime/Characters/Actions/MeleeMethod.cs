@@ -4,26 +4,26 @@ using Gast.Domain.Combat;
 using Gast.Domain.Stats;
 using Gast.Features.Characters;
 using Gast.Features.Characters.Actions.Commands;
-using Gast.Features.Combat.MethodSettings;
+using Gast.Features.Combat;
 using Gast.Shared.Observables;
 using R3;
 using System;
 using System.Threading;
 using UnityEngine;
 
-namespace Gast.Features.Combat.Methods
+namespace Gast.Features.Characters.Actions
 {
     /// <summary>
     /// Melee method implementation.
     /// </summary>
-    public class MeleeMethod : ICombatMethod
+    public class MeleeMethod
     {
         readonly MeleeMethodSettings settings;
-        readonly CombatContext context;
+        readonly CharacterContext context;
 
         public MeleeMethod(
             MeleeMethodSettings settings,
-            CombatContext context)
+            CharacterContext context)
         {
             this.settings = settings != null ? settings : throw new ArgumentNullException(nameof(settings));
             this.context = context ?? throw new ArgumentNullException(nameof(context));

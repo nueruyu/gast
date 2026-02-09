@@ -15,7 +15,7 @@ namespace Gast.Features.Characters.Actions
         public float MoveSpeedPenalty => moveSpeedPenalty;
         public float LookDirectionSpeed => lookDirectionSpeed;
 
-        public override ICharacterAction CreateAction(CharacterContext context, ICombatMethod combatMethod)
+        public override ICharacterAction CreateAction(CharacterContext context)
         {
             return new GuardAction(context, this);
         }

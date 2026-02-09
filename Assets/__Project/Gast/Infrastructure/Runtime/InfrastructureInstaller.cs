@@ -51,7 +51,6 @@ namespace Gast.Infrastructure
 
             // Combat
             builder.Register<CombatFeedbackService>();
-            builder.Register<CombatMethodFactory>().AsImplementedInterfaces();
 
             // Economy
             builder.Register<ItemRepository>().AsImplementedInterfaces().AsSelf();

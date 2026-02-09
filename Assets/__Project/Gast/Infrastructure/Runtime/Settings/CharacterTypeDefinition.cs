@@ -58,10 +58,6 @@ namespace Gast.Infrastructure.Settings
         [SerializeField]
         GameObject visualPrefab;
 
-        [Header("Combat")]
-        [SerializeField]
-        CombatMethodSettings combatMethodSettings;
-
         [Header("Audio")]
         [SerializeField]
         CharacterFootstepSettings footstepSettings;
@@ -93,7 +89,6 @@ namespace Gast.Infrastructure.Settings
         public int SlotCapacity => slotCapacity;
         public Character CharacterPrefab => characterPrefab;
         public GameObject VisualPrefab => visualPrefab;
-        public CombatMethodSettings CombatMethodSettings => combatMethodSettings;
         public CharacterFootstepSettings FootstepSettings => footstepSettings;
         public float SensorViewRadius => sensorViewRadius;
         public float SensorViewAngle => sensorViewAngle;

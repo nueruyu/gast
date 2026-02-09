@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using Gast.Features.Combat;
 using Gast.Features.Characters.Actions.Commands;
+using Cysharp.Threading.Tasks;
 
 namespace Gast.Features.Characters.Actions
 {
@@ -11,7 +12,7 @@ namespace Gast.Features.Characters.Actions
     public class AttackAction : ICharacterAction<AttackCommand>
     {
         readonly CharacterContext character;
-        readonly ICombatMethod method;
+        readonly MeleeMethod method;
         readonly AttackActionSettings settings;
 
         float startTime;
@@ -22,12 +23,12 @@ namespace Gast.Features.Characters.Actions
 
         public AttackAction(
             CharacterContext character,
-            ICombatMethod method,
             AttackActionSettings settings)
         {
             this.character = character;
-            this.method = method;
             this.settings = settings;
+            method = new MeleeMethod(settings.MeleeMethodSettings, character);
+            method.BindEvents(character).AddTo(character.Body.destroyCancellationToken);
         }
 
         public bool CanExecute()
