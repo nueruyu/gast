@@ -1,6 +1,7 @@
+using Gast.Core.DI;
 using UnityEngine;
 
-namespace Gast.Core.DI
+namespace Gast.Shared.DI
 {
     public abstract class InstallerAsset : ScriptableObject, IInstaller
     {

@@ -1,4 +1,5 @@
 using Gast.Core.DI;
+using Gast.Shared.DI;
 using GastGame.AI;
 using GastGame.AI.Combat;
 using GastGame.AI.Combat.Actions;

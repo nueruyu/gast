@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Gast.Application;
-using Gast.Core.DI;
 using Gast.Core.Exceptions;
 using Gast.Features;
 using Gast.Features.Cameras;
@@ -19,6 +18,7 @@ using UnityEngine.UIElements;
 using VContainer;
 using VContainer.Unity;
 using IContainerBuilder = VContainer.IContainerBuilder;
+using Gast.Shared.DI;
 
 namespace Gast.Composition
 {
