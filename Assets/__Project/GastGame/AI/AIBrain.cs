@@ -1,13 +1,12 @@
 using Cysharp.Threading.Tasks;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
-using Gast.Domain.Stats;
+using Gast.Lib.AI;
+using Gast.Lib.AI.Debugging;
+using GastGame.Actors;
 using GastGame.AI.Combat;
 using GastGame.AI.Gathering;
 using GastGame.AI.Strategic;
-using GastGame.Actions.Commands;
-using Gast.Lib.AI;
-using Gast.Lib.AI.Debugging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -27,7 +26,7 @@ namespace GastGame.AI
         readonly ObjectiveManager objectiveManager;
         readonly IContextRegistry contextRegistry;
 
-        ICharacter character;
+        Actor actor;
         ContextKey strategicContextKey;
         ContextKey combatContextKey;
         ContextKey gatheringContextKey;
@@ -43,9 +42,6 @@ namespace GastGame.AI
         readonly StrategicState strategicState = new();
         readonly CombatState combatState = new();
         readonly GatheringState gatheringState = new();
-
-        StatId healthStatId;
-        StatId maxHealthStatId;
 
         public AIBrain(
             StrategicDomain strategicDomain,
@@ -65,14 +61,11 @@ namespace GastGame.AI
         {
             Debug.Log($"[AIBrain] OnAttached: {character.Id}");
 
-            this.character = character;
+            this.actor = new Actor(character);
 
-            healthStatId = StatId.FromString("Health");
-            maxHealthStatId = StatId.FromString("MaxHealth");
-
-            strategicContextKey = new(character.Id, StrategicDomainName);
-            combatContextKey = new(character.Id, CombatDomainName);
-            gatheringContextKey = new(character.Id, GatheringDomainName);
+            strategicContextKey = new(actor.Id, StrategicDomainName);
+            combatContextKey = new(actor.Id, CombatDomainName);
+            gatheringContextKey = new(actor.Id, GatheringDomainName);
 
             contextRegistry.Register(strategicContextKey, strategicState);
             contextRegistry.Register(combatContextKey, combatState);
@@ -89,13 +82,13 @@ namespace GastGame.AI
             RunAsync(cts.Token).Forget();
 
             objectiveManager
-                .BindCharacter(character.Id)
+                .BindCharacter(actor.Id)
                 .AddTo(cts.Token);
         }
 
         public void OnDetached()
         {
-            if (character == null)
+            if (actor.Character == null)
                 return;
 
             DebugLogger.ClearContext(strategicContextKey);
@@ -109,7 +102,7 @@ namespace GastGame.AI
             cts?.Dispose();
             cts = null;
 
-            character = null;
+            actor = default;
             strategicContextKey = default;
             combatContextKey = default;
             gatheringContextKey = default;
@@ -148,7 +141,7 @@ namespace GastGame.AI
             {
                 await strategicAgentRunner.RunAsync(new(
                     strategicContextKey,
-                    character,
+                    actor,
                     strategicState,
                     memory,
                     UpdateStrategicWorldState,
@@ -164,7 +157,7 @@ namespace GastGame.AI
             {
                 await combatAgentRunner.RunAsync(new(
                     combatContextKey,
-                    character,
+                    actor,
                     combatState,
                     memory,
                     UpdateCombatWorldState,
@@ -180,7 +173,7 @@ namespace GastGame.AI
             {
                 await gatheringAgentRunner.RunAsync(new(
                     gatheringContextKey,
-                    character,
+                    actor,
                     gatheringState,
                     memory,
                     UpdateGatheringWorldState,
@@ -196,32 +189,37 @@ namespace GastGame.AI
                 .Where(o => !o.IsCompleted.Value)
                 .ToList();
 
-            strategicState.IsThreatened = character.VisionSensor.VisibleCharacters
-                .Any(c => c.IsAlive() && c.Faction != character.Faction);
+            strategicState.IsThreatened = actor.VisionSensor.VisibleCharacters
+                .Select(c => new Actor(c))
+                .Any(otherActor => otherActor.IsThreatTo(actor));
         }
 
         void UpdateCombatWorldState()
         {
             var target = memory.CombatTarget;
-            if (target != null && target.IsAlive())
+            var targetActor = target != null ? new Actor(target) : default;
+            var isTargetAlive = target != null && targetActor.IsAlive;
+
+            if (isTargetAlive)
             {
                 combatState.HasTarget = true;
                 combatState.TargetPosition = target.Body.Position;
                 combatState.TargetForward = target.Body.Forward;
-                combatState.DistanceToTarget = Vector3.Distance(character.Body.Position, target.Body.Position);
+                combatState.DistanceToTarget = Vector3.Distance(actor.Body.Position, target.Body.Position);
             }
             else
             {
                 combatState.HasTarget = false;
                 combatState.DistanceToTarget = float.PositiveInfinity;
             }
-            combatState.IsReadyToAttack = character.ActionController.CanExecuteAction<AttackCommand>();
-            combatState.CanGuard = character.ActionController.CanExecuteAction<GuardCommand>();
-            if (character.Status.TryGetStatValue(healthStatId, out var health) &&
-                character.Status.TryGetStatValue(maxHealthStatId, out var maxHealth) &&
-                maxHealth > 0)
+            combatState.IsReadyToAttack = actor.CanAttack();
+            combatState.CanGuard = actor.CanGuard();
+
+            var currentHealth = actor.Health;
+            var maxHealth = actor.MaxHealth;
+            if (maxHealth > 0)
             {
-                combatState.SelfHealthRatio = health / maxHealth;
+                combatState.SelfHealthRatio = currentHealth / maxHealth;
             }
             else
             {
@@ -249,7 +247,7 @@ namespace GastGame.AI
             {
                 gatheringState.InteractableTargetId = interactableTarget.Id;
                 gatheringState.InteractableTargetPosition = interactableTarget.Position;
-                var distance = Vector3.Distance(character.Body.Position, interactableTarget.Position);
+                var distance = Vector3.Distance(actor.Body.Position, interactableTarget.Position);
                 gatheringState.IsInRangeToInteract = distance <= 1.5f;
             }
         }

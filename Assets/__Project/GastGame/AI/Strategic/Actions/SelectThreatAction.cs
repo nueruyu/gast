@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
+using GastGame.Actors;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -19,9 +20,10 @@ namespace GastGame.AI.Strategic.Actions
         {
             var self = ctx.Actor;
             var closestThreat = self.VisionSensor.VisibleCharacters
-                .Where(c => c.IsAlive())
-                .Where(c => c.Faction != self.Faction)
-                .OrderBy(e => Vector3.Distance(self.VisionSensor.EyePosition, e.Body.Position))
+                .Select(c => new Actor(c))
+                .Where(a => a.IsThreatTo(self))
+                .OrderBy(a => Vector3.Distance(self.VisionSensor.EyePosition, a.Body.Position))
+                .Select(a => a.Character)
                 .FirstOrDefault();
 
             ctx.Memory.CombatTarget = closestThreat;

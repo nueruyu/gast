@@ -5,6 +5,7 @@ using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Domain.Pickups;
 using Gast.Lib.AI;
+using GastGame.Actors;
 using System.Linq;
 using UnityEngine;
 
@@ -63,7 +64,7 @@ namespace GastGame.AI.Strategic.Actions
             return UniTask.CompletedTask;
         }
 
-        private (float cost, ICharacter target) CalculateObjectiveCost(ICharacter self, IAIObjective objective)
+        private (float cost, ICharacter target) CalculateObjectiveCost(Actor self, IAIObjective objective)
         {
             switch (objective)
             {
@@ -86,15 +87,17 @@ namespace GastGame.AI.Strategic.Actions
             }
         }
 
-        private ICharacter FindClosestCharacterOfType(ICharacter self, CharacterTypeId typeId)
+        private ICharacter FindClosestCharacterOfType(Actor self, CharacterTypeId typeId)
         {
             return _characterRepository.GetAll()
-                .Where(c => c.TypeId == typeId && c.IsAlive() && c.Faction != self.Faction)
-                .OrderBy(c => Vector3.Distance(self.Body.Position, c.Body.Position))
+                .Select(c => new Actor(c))
+                .Where(a => a.TypeId == typeId && a.IsAlive && a.Faction != self.Faction)
+                .OrderBy(a => Vector3.Distance(self.Body.Position, a.Body.Position))
+                .Select(a => a.Character)
                 .FirstOrDefault();
         }
 
-        private IPickup FindClosestPickupOfType(ICharacter self, ItemId itemId)
+        private IPickup FindClosestPickupOfType(Actor self, ItemId itemId)
         {
             return _pickupRepository.GetAll()
                 .Where(p => p.ItemId == itemId)

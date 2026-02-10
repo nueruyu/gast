@@ -2,18 +2,13 @@ using Cysharp.Threading.Tasks;
 using Gast.Domain.Cameras;
 using Gast.Domain.Characters;
 using Gast.Domain.Inputs;
-using GastGame.Actions.Commands;
+using GastGame.Actors;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace GastGame.Players
 {
-    /// <summary>
-    /// Player-controlled brain implementation.
-    /// Converts input and camera state into camera-relative movement commands.
-    /// </summary>
     public class PlayerBrain : ICharacterBrain
     {
         readonly IInputProvider inputProvider;
@@ -35,7 +30,8 @@ namespace GastGame.Players
                 throw new InvalidOperationException();
 
             cts = new();
-            RunAsync(character, cts.Token).Forget();
+            var actor = new Actor(character);
+            RunAsync(actor, cts.Token).Forget();
         }
 
         public void OnDetached()
@@ -44,7 +40,7 @@ namespace GastGame.Players
             cts = null;
         }
 
-        async UniTask RunAsync(ICharacter character, CancellationToken cancellationToken)
+        async UniTask RunAsync(Actor actor, CancellationToken cancellationToken)
         {
             while (true)
             {
@@ -52,49 +48,42 @@ namespace GastGame.Players
 
                 var inputMove = inputProvider.Move;
 
-                // Convert input to camera-relative direction
                 var moveDirection = CalculateMoveDirection(inputMove);
 
-                // Set sprint state
-                character.SetSprint(inputProvider.Sprint);
+                actor.SetSprint(inputProvider.Sprint);
 
-                // Move character
                 if (moveDirection.magnitude > 0.1f)
                 {
-                    character.Move(moveDirection);
+                    actor.Move(moveDirection);
                 }
 
-                // Handle jump
                 if (inputProvider.Jump)
                 {
-                    character.ActionController.ExecuteAction(new JumpCommand());
+                    actor.Jump();
                 }
 
-                // Handle dash
                 if (inputProvider.Dash)
                 {
                     var moveDir = CalculateMoveDirection(inputMove);
                     if (moveDir.sqrMagnitude < 0.01f)
                     {
-                        moveDir = character.Body.Forward;
+                        moveDir = actor.Body.Forward;
                     }
-                    character.ActionController.ExecuteAction(new DashCommand(moveDir));
+                    actor.Dash(moveDir);
                 }
 
-                // Handle guard
                 if (inputProvider.GuardHeld)
                 {
-                    character.ActionController.StartAction(new GuardCommand());
+                    actor.StartGuard();
                 }
                 else
                 {
-                    character.ActionController.StopAction<GuardCommand>();
+                    actor.StopGuard();
                 }
 
-                // Handle attack
                 if (inputProvider.Attack)
                 {
-                    character.ActionController.ExecuteAction(new AttackCommand());
+                    actor.Attack();
                 }
             }
         }

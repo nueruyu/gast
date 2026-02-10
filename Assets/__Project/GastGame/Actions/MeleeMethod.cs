@@ -4,6 +4,7 @@ using Gast.Domain.Combat;
 using Gast.Domain.Stats;
 using Gast.Features.Characters;
 using GastGame.Actions.Commands;
+using GastGame.Actors;
 using Gast.Features.Combat;
 using Gast.Shared.Observables;
 using R3;
@@ -107,22 +108,18 @@ namespace GastGame.Actions
 
             hit.Character.ActionController.ExecuteAction(new HitCommand(damageInfo));
 
-            var healthStatId = StatId.FromString("Health");
-            var hitCharacterStatus = hit.Character.Status;
-            if (hitCharacterStatus.TryGetStatValue(healthStatId, out var currentHealth))
+            var hitActor = new Actor(hit.Character);
+            if (hitActor.IsAlive)
             {
-                if (currentHealth > 0)
-                {
-                    var newHealth = Mathf.Max(currentHealth - damageInfo.Amount, 0);
-                    hitCharacterStatus.SetStat(healthStatId, newHealth);
+                var newHealth = Mathf.Max(hitActor.Health - damageInfo.Amount, 0);
+                hit.Character.Status.SetStat(StatId.FromString("Health"), newHealth);
 
-                    if (newHealth == 0)
-                    {
-                        hit.Character.ActionController.ExecuteAction(new DieCommand());
-                        hit.Character.DetachBrain();
-                        context.EventPublisher.Publish(new CharacterDefeatedEvent(hit.Character, damageInfo.AttackerId));
-                        hit.Character.DespawnAfterDelay().Forget();
-                    }
+                if (newHealth <= 0)
+                {
+                    hit.Character.ActionController.ExecuteAction(new DieCommand());
+                    hit.Character.DetachBrain();
+                    context.EventPublisher.Publish(new CharacterDefeatedEvent(hit.Character, damageInfo.AttackerId));
+                    hit.Character.DespawnAfterDelay().Forget();
                 }
             }
         }

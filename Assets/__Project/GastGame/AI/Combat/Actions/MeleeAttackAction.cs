@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using GastGame.Actions.Commands;
 using Gast.Lib.AI;
 using System;
 using UnityEngine;
@@ -61,7 +60,7 @@ namespace GastGame.AI.Combat.Actions
             navigator.Stop();
             actor.Move(Vector3.zero); // Stop movement input
 
-            actor.ActionController.ExecuteAction(new AttackCommand());
+            actor.Attack();
 
             await UniTask.Delay(500, cancellationToken: ctx.CancellationToken);
         }
