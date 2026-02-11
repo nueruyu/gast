@@ -20,7 +20,7 @@ namespace GastGame
         public override void Install(IContainerBuilder builder)
         {
             // Aspects
-            builder.Register<ActorFactory>(Lifetime.Singleton);
+            builder.Register<ActorFactory>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // AI Brain
             builder.Register<ObjectiveManager>(Lifetime.Transient);

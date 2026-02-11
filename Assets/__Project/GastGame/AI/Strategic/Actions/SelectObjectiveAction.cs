@@ -43,7 +43,7 @@ namespace GastGame.AI.Strategic.Actions
             var objectives = ctx.WorldState.AvailableObjectives;
 
             IAIObjective bestObjective = null;
-            ICharacter bestTarget = null;
+            IActor bestTarget = null;
             float lowestCost = float.MaxValue;
 
             foreach (var objective in objectives)
@@ -64,7 +64,7 @@ namespace GastGame.AI.Strategic.Actions
             return UniTask.CompletedTask;
         }
 
-        private (float cost, ICharacter target) CalculateObjectiveCost(IActor self, IAIObjective objective)
+        private (float cost, IActor target) CalculateObjectiveCost(IActor self, IAIObjective objective)
         {
             switch (objective)
             {
@@ -87,13 +87,12 @@ namespace GastGame.AI.Strategic.Actions
             }
         }
 
-        private ICharacter FindClosestCharacterOfType(IActor self, CharacterTypeId typeId)
+        private IActor FindClosestCharacterOfType(IActor self, CharacterTypeId typeId)
         {
             return _characterRepository.GetAll()
                 .Select(c => c.As<IActor>())
                 .Where(a => a.TypeId == typeId && a.IsAlive.Value && a.Faction != self.Faction)
                 .OrderBy(a => Vector3.Distance(self.Body.Position, a.Body.Position))
-                .Select(a => a.Character)
                 .FirstOrDefault();
         }
 

@@ -9,7 +9,6 @@ namespace GastGame.Actors
 {
     public interface IActor : ICharacterAspect
     {
-        ICharacter Character { get; }
         CharacterId Id { get; }
         CharacterTypeId TypeId { get; }
         Faction Faction { get; }

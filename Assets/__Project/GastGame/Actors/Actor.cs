@@ -14,15 +14,15 @@ namespace GastGame.Actors
 {
     public class Actor : IActor
     {
-        public ICharacter Character { get; }
+        readonly ICharacter character;
 
-        public CharacterId Id => Character.Id;
-        public CharacterTypeId TypeId => Character.TypeId;
-        public Faction Faction => Character.Faction;
-        public ICharacterBody Body => Character.Body;
-        public IVisionSensor VisionSensor => Character.VisionSensor;
-        public IInteractionSensor InteractionSensor => Character.InteractionSensor;
-        public INavigationProvider NavigationProvider => Character.NavigationProvider;
+        public CharacterId Id => character.Id;
+        public CharacterTypeId TypeId => character.TypeId;
+        public Faction Faction => character.Faction;
+        public ICharacterBody Body => character.Body;
+        public IVisionSensor VisionSensor => character.VisionSensor;
+        public IInteractionSensor InteractionSensor => character.InteractionSensor;
+        public INavigationProvider NavigationProvider => character.NavigationProvider;
 
         public ILive<bool> IsAlive { get; }
         public ILive<float> Health { get; }
@@ -30,7 +30,7 @@ namespace GastGame.Actors
 
         public Actor(ICharacter character)
         {
-            Character = character;
+            this.character = character;
 
             var healthStatId = StatId.FromString("Health");
             var maxHealthStatId = StatId.FromString("MaxHealth");
@@ -44,27 +44,27 @@ namespace GastGame.Actors
         {
             if (!IsAlive.Value)
                 return false;
-            if (Character.Faction == other.Character.Faction)
+            if (Faction == other.Faction)
                 return false;
             return true;
         }
 
-        public void Move(Vector3 direction) => Character.Move(direction);
+        public void Move(Vector3 direction) => character.Move(direction);
 
-        public void SetSprint(bool isSprinting) => Character.SetSprint(isSprinting);
+        public void SetSprint(bool isSprinting) => character.SetSprint(isSprinting);
 
-        public bool CanAttack() => Character.ActionController.CanExecuteAction<AttackCommand>();
+        public bool CanAttack() => character.ActionController.CanExecuteAction<AttackCommand>();
 
-        public void Attack() => Character.ActionController.ExecuteAction(new AttackCommand());
+        public void Attack() => character.ActionController.ExecuteAction(new AttackCommand());
 
-        public bool CanGuard() => Character.ActionController.CanExecuteAction<GuardCommand>();
+        public bool CanGuard() => character.ActionController.CanExecuteAction<GuardCommand>();
 
-        public void StartGuard() => Character.ActionController.StartAction(new GuardCommand());
+        public void StartGuard() => character.ActionController.StartAction(new GuardCommand());
 
-        public void StopGuard() => Character.ActionController.StopAction<GuardCommand>();
+        public void StopGuard() => character.ActionController.StopAction<GuardCommand>();
 
-        public void Dash(Vector3 direction) => Character.ActionController.ExecuteAction(new DashCommand(direction));
+        public void Dash(Vector3 direction) => character.ActionController.ExecuteAction(new DashCommand(direction));
 
-        public void Jump() => Character.ActionController.ExecuteAction(new JumpCommand());
+        public void Jump() => character.ActionController.ExecuteAction(new JumpCommand());
     }
 }

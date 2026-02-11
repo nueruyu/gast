@@ -197,8 +197,7 @@ namespace GastGame.AI
         void UpdateCombatWorldState()
         {
             var target = memory.CombatTarget;
-            var targetActor = target?.As<IActor>();
-            var isTargetAlive = targetActor != null && targetActor.IsAlive.Value;
+            var isTargetAlive = target != null && target.IsAlive.Value;
 
             if (isTargetAlive)
             {

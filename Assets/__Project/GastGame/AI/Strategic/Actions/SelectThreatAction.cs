@@ -23,7 +23,6 @@ namespace GastGame.AI.Strategic.Actions
                 .Select(c => c.As<IActor>())
                 .Where(a => a.IsThreatTo(self))
                 .OrderBy(a => Vector3.Distance(self.VisionSensor.EyePosition, a.Body.Position))
-                .Select(a => a.Character)
                 .FirstOrDefault();
 
             ctx.Memory.CombatTarget = closestThreat;
