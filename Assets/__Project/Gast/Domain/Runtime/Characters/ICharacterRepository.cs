@@ -40,5 +40,10 @@ namespace Gast.Domain.Characters
         /// Signal emitted when a new character is registered.
         /// </summary>
         ISignal<ICharacter> Registered { get; }
+
+        /// <summary>
+        /// Signal emitted when a character is unregistered.
+        /// </summary>
+        ISignal<ICharacter> Unregistered { get; }
     }
 }

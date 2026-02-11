@@ -7,7 +7,7 @@ using GastGame.AI.Gathering;
 using GastGame.AI.Gathering.Actions;
 using GastGame.AI.Strategic;
 using GastGame.AI.Strategic.Actions;
-using GastGame.Factories;
+using GastGame.Adapters;
 using GastGame.Players;
 using UnityEngine;
 

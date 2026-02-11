@@ -12,8 +12,10 @@ namespace Gast.Infrastructure.Repositories
     {
         readonly Dictionary<CharacterId, ICharacter> characters = new();
         readonly Signal<ICharacter> registeredSignal = new();
+        readonly Signal<ICharacter> unregisteredSignal = new();
 
         public ISignal<ICharacter> Registered => registeredSignal;
+        public ISignal<ICharacter> Unregistered => unregisteredSignal;
 
         public void Register(ICharacter character)
         {
@@ -26,7 +28,10 @@ namespace Gast.Infrastructure.Repositories
 
         public void Unregister(CharacterId id)
         {
-            characters.Remove(id);
+            if (characters.Remove(id, out var character))
+            {
+                unregisteredSignal.Publish(character);
+            }
         }
 
         public ICharacter Get(CharacterId id)

@@ -1,5 +1,4 @@
 using Gast.Features.Characters;
-using Gast.Features.Combat;
 using UnityEngine;
 
 namespace GastGame.Actions

@@ -1,7 +1,6 @@
 using Gast.Features.Characters;
 using System;
 using UnityEngine;
-using Gast.Features.Combat;
 using GastGame.Actions.Commands;
 using Cysharp.Threading.Tasks;
 
