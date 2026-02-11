@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace GastGame.AI.Strategic.Actions
+namespace GastGame.Features.AI.Strategic.Actions
 {
     [Serializable]
     public class SelectThreatAction : IAction<StrategicState, AIContext<StrategicState>>

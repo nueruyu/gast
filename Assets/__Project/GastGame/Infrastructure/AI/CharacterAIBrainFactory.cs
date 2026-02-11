@@ -1,5 +1,5 @@
 using Gast.Domain.AI;
-using GastGame.AI;
+using GastGame.Features.AI;
 using VContainer;
 
 namespace GastGame.Infrastructure.AI

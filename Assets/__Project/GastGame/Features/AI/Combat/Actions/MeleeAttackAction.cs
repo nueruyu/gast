@@ -3,7 +3,7 @@ using Gast.Lib.AI;
 using System;
 using UnityEngine;
 
-namespace GastGame.AI.Combat.Actions
+namespace GastGame.Features.AI.Combat.Actions
 {
     [Serializable]
     public class MeleeAttackAction : IAction<CombatState, AIContext<CombatState>>

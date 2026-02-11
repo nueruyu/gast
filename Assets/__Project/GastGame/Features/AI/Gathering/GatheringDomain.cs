@@ -1,9 +1,9 @@
 using Gast.Domain.AI.Objectives;
-using GastGame.AI.Gathering.Actions;
+using GastGame.Features.AI.Gathering.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 
-namespace GastGame.AI.Gathering
+namespace GastGame.Features.AI.Gathering
 {
     public class GatheringDomain
     {

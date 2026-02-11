@@ -1,7 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 
-namespace GastGame.AI.Strategic.Actions
+namespace GastGame.Features.AI.Strategic.Actions
 {
     public class IdleAction : IAction<StrategicState, AIContext<StrategicState>>
     {

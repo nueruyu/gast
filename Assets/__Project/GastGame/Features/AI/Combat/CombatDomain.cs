@@ -1,9 +1,9 @@
-using GastGame.AI.Combat.Actions;
+using GastGame.Features.AI.Combat.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 using Gast.Lib.AI.MethodSelectors;
 
-namespace GastGame.AI.Combat
+namespace GastGame.Features.AI.Combat
 {
     public class CombatDomain
     {

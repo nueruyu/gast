@@ -3,7 +3,7 @@ using Gast.Lib.AI;
 using System;
 using Random = UnityEngine.Random;
 
-namespace GastGame.AI.Combat.Actions
+namespace GastGame.Features.AI.Combat.Actions
 {
     /// <summary>
     /// This action decides and executes a single maneuver (Guard, Strafe, or BackOff)

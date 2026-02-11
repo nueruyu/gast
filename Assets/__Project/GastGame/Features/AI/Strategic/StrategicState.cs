@@ -2,7 +2,7 @@ using Gast.Domain.AI;
 using Gast.Lib.AI;
 using System.Collections.Generic;
 
-namespace GastGame.AI.Strategic
+namespace GastGame.Features.AI.Strategic
 {
     public class StrategicState : IWorldState<StrategicState>
     {

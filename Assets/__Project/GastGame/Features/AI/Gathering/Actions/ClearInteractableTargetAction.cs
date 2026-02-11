@@ -1,7 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 
-namespace GastGame.AI.Gathering.Actions
+namespace GastGame.Features.AI.Gathering.Actions
 {
     public class ClearInteractableTargetAction : IAction<GatheringState, AIContext<GatheringState>>
     {

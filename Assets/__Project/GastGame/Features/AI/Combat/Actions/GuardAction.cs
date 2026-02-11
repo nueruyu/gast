@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using System;
 
-namespace GastGame.AI.Combat.Actions
+namespace GastGame.Features.AI.Combat.Actions
 {
     [Serializable]
     public class GuardAction : IAction<CombatState, AIContext<CombatState>>

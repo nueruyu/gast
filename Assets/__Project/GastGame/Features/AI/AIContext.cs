@@ -3,7 +3,7 @@ using System.Threading;
 using Gast.Lib.AI;
 using GastGame.Domain.Characters;
 
-namespace GastGame.AI
+namespace GastGame.Features.AI
 {
     public readonly struct AIContext<TWorldState> : IContext<AIContext<TWorldState>, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()

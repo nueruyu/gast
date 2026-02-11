@@ -1,16 +1,16 @@
 using Gast.Core.DI;
 using Gast.Shared.DI;
-using GastGame.AI;
-using GastGame.AI.Combat;
-using GastGame.AI.Combat.Actions;
-using GastGame.AI.Gathering;
-using GastGame.AI.Gathering.Actions;
-using GastGame.AI.Strategic;
-using GastGame.AI.Strategic.Actions;
+using GastGame.Features.AI.Combat;
+using GastGame.Features.AI.Combat.Actions;
+using GastGame.Features.AI.Gathering;
+using GastGame.Features.AI.Gathering.Actions;
+using GastGame.Features.AI.Strategic.Actions;
 using UnityEngine;
 using GastGame.Infrastructure.AI;
 using GastGame.Infrastructure.Characters;
 using GastGame.Features.Players;
+using GastGame.Features.AI;
+using GastGame.Features.AI.Strategic;
 
 namespace GastGame
 {

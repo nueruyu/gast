@@ -1,7 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 
-namespace GastGame.AI.Combat.Actions
+namespace GastGame.Features.AI.Combat.Actions
 {
     public class IdleAction : IAction<CombatState, AIContext<CombatState>>
     {

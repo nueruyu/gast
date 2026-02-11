@@ -2,7 +2,7 @@ using Gast.Domain.AI;
 using Gast.Domain.Interactions;
 using GastGame.Domain.Characters;
 
-namespace GastGame.AI
+namespace GastGame.Features.AI
 {
     public class AIMemory
     {

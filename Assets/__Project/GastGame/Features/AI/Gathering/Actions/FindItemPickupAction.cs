@@ -6,7 +6,7 @@ using Gast.Domain.Pickups;
 using Gast.Lib.AI;
 using UnityEngine;
 
-namespace GastGame.AI.Gathering.Actions
+namespace GastGame.Features.AI.Gathering.Actions
 {
     public class FindItemPickupAction : IAction<GatheringState, AIContext<GatheringState>>
     {

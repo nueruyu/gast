@@ -3,7 +3,7 @@ using Gast.Application.Interactions;
 using Gast.Core.Commands;
 using Gast.Lib.AI;
 
-namespace GastGame.AI.Gathering.Actions
+namespace GastGame.Features.AI.Gathering.Actions
 {
     public class InteractWithTargetAction : IAction<GatheringState, AIContext<GatheringState>>
     {

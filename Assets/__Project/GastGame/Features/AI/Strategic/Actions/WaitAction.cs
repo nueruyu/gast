@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using System;
 
-namespace GastGame.AI.Strategic.Actions
+namespace GastGame.Features.AI.Strategic.Actions
 {
     public class WaitAction : IAction<StrategicState, AIContext<StrategicState>, float>
     {

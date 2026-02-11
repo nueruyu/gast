@@ -3,7 +3,7 @@ using Gast.Domain.Interactions;
 using Gast.Lib.AI;
 using UnityEngine;
 
-namespace GastGame.AI.Gathering
+namespace GastGame.Features.AI.Gathering
 {
     public class GatheringState : IWorldState<GatheringState>
     {

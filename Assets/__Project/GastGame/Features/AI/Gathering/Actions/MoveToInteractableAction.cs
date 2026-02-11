@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using UnityEngine;
 
-namespace GastGame.AI.Gathering.Actions
+namespace GastGame.Features.AI.Gathering.Actions
 {
     public class MoveToInteractableAction : IAction<GatheringState, AIContext<GatheringState>>
     {

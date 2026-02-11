@@ -3,16 +3,16 @@ using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Debugging;
-using GastGame.AI.Combat;
-using GastGame.AI.Gathering;
-using GastGame.AI.Strategic;
+using GastGame.Features.AI.Combat;
+using GastGame.Features.AI.Gathering;
 using GastGame.Domain.Characters;
+using GastGame.Features.AI.Strategic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
 
-namespace GastGame.AI
+namespace GastGame.Features.AI
 {
     public class AIBrain : ICharacterAIBrain
     {
@@ -61,7 +61,7 @@ namespace GastGame.AI
         {
             Debug.Log($"[AIBrain] OnAttached: {character.Id}");
 
-            this.actor = character.As<IGameCharacter>();
+            actor = character.As<IGameCharacter>();
 
             strategicContextKey = new(actor.Id, StrategicDomainName);
             combatContextKey = new(actor.Id, CombatDomainName);

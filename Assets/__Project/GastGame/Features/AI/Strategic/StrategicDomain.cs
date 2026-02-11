@@ -1,8 +1,8 @@
-using GastGame.AI.Strategic.Actions;
+using GastGame.Features.AI.Strategic.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 
-namespace GastGame.AI.Strategic
+namespace GastGame.Features.AI.Strategic
 {
     public class StrategicDomain
     {

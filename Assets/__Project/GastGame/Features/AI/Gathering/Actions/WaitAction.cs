@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using System;
 
-namespace GastGame.AI.Gathering.Actions
+namespace GastGame.Features.AI.Gathering.Actions
 {
     public class WaitAction : IAction<GatheringState, AIContext<GatheringState>, float>
     {

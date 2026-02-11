@@ -8,7 +8,7 @@ using Gast.Domain.Characters;
 using R3;
 using Gast.Domain.Economy;
 
-namespace GastGame.AI
+namespace GastGame.Features.AI
 {
     public class ObjectiveManager
     {

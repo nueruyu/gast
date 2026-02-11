@@ -9,7 +9,7 @@ using GastGame.Domain.Characters;
 using System.Linq;
 using UnityEngine;
 
-namespace GastGame.AI.Strategic.Actions
+namespace GastGame.Features.AI.Strategic.Actions
 {
     /// <summary>
     /// Selects the best objective to pursue based on a cost evaluation.
