@@ -1,16 +1,16 @@
 using Gast.Core.DI;
 using Gast.Shared.DI;
 using GastGame.AI;
-using GastGame.Factories;
 using GastGame.AI.Combat;
 using GastGame.AI.Combat.Actions;
 using GastGame.AI.Gathering;
 using GastGame.AI.Gathering.Actions;
 using GastGame.AI.Strategic;
 using GastGame.AI.Strategic.Actions;
-using GastGame.Adapters;
-using GastGame.Players;
 using UnityEngine;
+using GastGame.Infrastructure.AI;
+using GastGame.Infrastructure.Characters;
+using GastGame.Features.Players;
 
 namespace GastGame
 {
@@ -20,7 +20,7 @@ namespace GastGame
         public override void Install(IContainerBuilder builder)
         {
             // Aspects
-            builder.Register<ActorFactory>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<GameCharacterFactory>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // AI Brain
             builder.Register<ObjectiveManager>(Lifetime.Transient);

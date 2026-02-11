@@ -1,0 +1,51 @@
+using Gast.Features.Characters;
+using System;
+using UnityEngine;
+
+namespace GastGame.Features.CharacterActions
+{
+    public class JumpAction : ICharacterAction<JumpCommand>
+    {
+        readonly CharacterBody body;
+        readonly JumpActionSettings settings;
+
+        public Type CommandType => typeof(JumpCommand);
+        public int Priority => 3;
+
+        public JumpAction(CharacterContext character, JumpActionSettings settings)
+        {
+            body = character.Body;
+            this.settings = settings;
+        }
+
+        public bool CanExecute()
+        {
+            return body.IsGrounded;
+        }
+
+        public void Execute(in JumpCommand command)
+        {
+            body.ApplyJump(settings.Force);
+        }
+
+        public bool OnUpdate()
+        {
+            // Jump is an instant action.
+            return false;
+        }
+
+        public void Move(Vector3 direction, float speed)
+        {
+            // Allow air control by normal movement logic
+            if (direction.sqrMagnitude > 0.01f)
+            {
+                body.SetInputVelocity(direction * speed);
+                body.SetLookDirection(direction, settings.LookDirectionSpeed);
+            }
+        }
+
+        public void OnEnd()
+        {
+        }
+    }
+}
