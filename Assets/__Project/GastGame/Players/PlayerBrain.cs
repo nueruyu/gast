@@ -30,7 +30,7 @@ namespace GastGame.Players
                 throw new InvalidOperationException();
 
             cts = new();
-            var actor = new Actor(character);
+            var actor = character.As<IActor>();
             RunAsync(actor, cts.Token).Forget();
         }
 
@@ -40,7 +40,7 @@ namespace GastGame.Players
             cts = null;
         }
 
-        async UniTask RunAsync(Actor actor, CancellationToken cancellationToken)
+        async UniTask RunAsync(IActor actor, CancellationToken cancellationToken)
         {
             while (true)
             {

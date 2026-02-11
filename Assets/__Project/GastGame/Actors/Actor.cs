@@ -1,24 +1,20 @@
+using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
 using Gast.Domain.Stats;
+using Gast.Shared.Observables;
 using GastGame.Actions.Commands;
+using R3;
+using System;
 using UnityEngine;
 
 namespace GastGame.Actors
 {
-    public readonly struct Actor
+    public class Actor : IActor
     {
-        static readonly StatId HealthStatId = StatId.FromString("Health");
-        static readonly StatId MaxHealthStatId = StatId.FromString("MaxHealth");
-
         public ICharacter Character { get; }
-
-        public Actor(ICharacter character)
-        {
-            Character = character;
-        }
 
         public CharacterId Id => Character.Id;
         public CharacterTypeId TypeId => Character.TypeId;
@@ -28,29 +24,25 @@ namespace GastGame.Actors
         public IInteractionSensor InteractionSensor => Character.InteractionSensor;
         public INavigationProvider NavigationProvider => Character.NavigationProvider;
 
-        public float Health
+        public ILive<bool> IsAlive { get; }
+        public ILive<float> Health { get; }
+        public ILive<float> MaxHealth { get; }
+
+        public Actor(ICharacter character)
         {
-            get
-            {
-                Character.Status.TryGetStatValue(HealthStatId, out var value);
-                return value;
-            }
+            Character = character;
+
+            var healthStatId = StatId.FromString("Health");
+            var maxHealthStatId = StatId.FromString("MaxHealth");
+
+            Health = character.Status.GetStat(healthStatId);
+            MaxHealth = character.Status.GetStat(maxHealthStatId);
+            IsAlive = Health.Select(h => h > 0);
         }
 
-        public float MaxHealth
+        public bool IsThreatTo(IActor other)
         {
-            get
-            {
-                Character.Status.TryGetStatValue(MaxHealthStatId, out var value);
-                return value;
-            }
-        }
-
-        public bool IsAlive => Health > 0;
-
-        public bool IsThreatTo(Actor other)
-        {
-            if (!IsAlive)
+            if (!IsAlive.Value)
                 return false;
             if (Character.Faction == other.Character.Faction)
                 return false;

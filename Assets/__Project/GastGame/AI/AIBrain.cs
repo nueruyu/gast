@@ -26,7 +26,7 @@ namespace GastGame.AI
         readonly ObjectiveManager objectiveManager;
         readonly IContextRegistry contextRegistry;
 
-        Actor actor;
+        IActor actor;
         ContextKey strategicContextKey;
         ContextKey combatContextKey;
         ContextKey gatheringContextKey;
@@ -61,7 +61,7 @@ namespace GastGame.AI
         {
             Debug.Log($"[AIBrain] OnAttached: {character.Id}");
 
-            this.actor = new Actor(character);
+            this.actor = character.As<IActor>();
 
             strategicContextKey = new(actor.Id, StrategicDomainName);
             combatContextKey = new(actor.Id, CombatDomainName);
@@ -88,7 +88,7 @@ namespace GastGame.AI
 
         public void OnDetached()
         {
-            if (actor.Character == null)
+            if (actor == null)
                 return;
 
             DebugLogger.ClearContext(strategicContextKey);
@@ -102,7 +102,7 @@ namespace GastGame.AI
             cts?.Dispose();
             cts = null;
 
-            actor = default;
+            actor = null;
             strategicContextKey = default;
             combatContextKey = default;
             gatheringContextKey = default;
@@ -190,15 +190,15 @@ namespace GastGame.AI
                 .ToList();
 
             strategicState.IsThreatened = actor.VisionSensor.VisibleCharacters
-                .Select(c => new Actor(c))
+                .Select(c => c.As<IActor>())
                 .Any(otherActor => otherActor.IsThreatTo(actor));
         }
 
         void UpdateCombatWorldState()
         {
             var target = memory.CombatTarget;
-            var targetActor = target != null ? new Actor(target) : default;
-            var isTargetAlive = target != null && targetActor.IsAlive;
+            var targetActor = target?.As<IActor>();
+            var isTargetAlive = targetActor != null && targetActor.IsAlive.Value;
 
             if (isTargetAlive)
             {
@@ -215,8 +215,8 @@ namespace GastGame.AI
             combatState.IsReadyToAttack = actor.CanAttack();
             combatState.CanGuard = actor.CanGuard();
 
-            var currentHealth = actor.Health;
-            var maxHealth = actor.MaxHealth;
+            var currentHealth = actor.Health.Value;
+            var maxHealth = actor.MaxHealth.Value;
             if (maxHealth > 0)
             {
                 combatState.SelfHealthRatio = currentHealth / maxHealth;

@@ -63,6 +63,13 @@ namespace Gast.Domain.Characters
         INavigationProvider NavigationProvider { get; }
 
         /// <summary>
+        /// Gets a specific aspect of the character.
+        /// </summary>
+        /// <typeparam name="T">The type of the aspect to get, which must implement ICharacterAspect.</typeparam>
+        /// <returns>The requested aspect instance, or null if not available.</returns>
+        T As<T>() where T : class, ICharacterAspect;
+
+        /// <summary>
         /// Attach a brain to this character, detaching any existing brain first.
         /// </summary>
         void AttachBrain(ICharacterBrain newBrain);

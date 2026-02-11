@@ -64,7 +64,7 @@ namespace GastGame.AI.Strategic.Actions
             return UniTask.CompletedTask;
         }
 
-        private (float cost, ICharacter target) CalculateObjectiveCost(Actor self, IAIObjective objective)
+        private (float cost, ICharacter target) CalculateObjectiveCost(IActor self, IAIObjective objective)
         {
             switch (objective)
             {
@@ -87,17 +87,17 @@ namespace GastGame.AI.Strategic.Actions
             }
         }
 
-        private ICharacter FindClosestCharacterOfType(Actor self, CharacterTypeId typeId)
+        private ICharacter FindClosestCharacterOfType(IActor self, CharacterTypeId typeId)
         {
             return _characterRepository.GetAll()
-                .Select(c => new Actor(c))
-                .Where(a => a.TypeId == typeId && a.IsAlive && a.Faction != self.Faction)
+                .Select(c => c.As<IActor>())
+                .Where(a => a.TypeId == typeId && a.IsAlive.Value && a.Faction != self.Faction)
                 .OrderBy(a => Vector3.Distance(self.Body.Position, a.Body.Position))
                 .Select(a => a.Character)
                 .FirstOrDefault();
         }
 
-        private IPickup FindClosestPickupOfType(Actor self, ItemId itemId)
+        private IPickup FindClosestPickupOfType(IActor self, ItemId itemId)
         {
             return _pickupRepository.GetAll()
                 .Where(p => p.ItemId == itemId)

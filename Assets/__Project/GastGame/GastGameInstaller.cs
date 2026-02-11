@@ -1,6 +1,7 @@
 using Gast.Core.DI;
 using Gast.Shared.DI;
 using GastGame.AI;
+using GastGame.Factories;
 using GastGame.AI.Combat;
 using GastGame.AI.Combat.Actions;
 using GastGame.AI.Gathering;
@@ -18,6 +19,9 @@ namespace GastGame
     {
         public override void Install(IContainerBuilder builder)
         {
+            // Aspects
+            builder.Register<ActorFactory>(Lifetime.Singleton);
+
             // AI Brain
             builder.Register<ObjectiveManager>(Lifetime.Transient);
             builder.Register<AIBrain>(Lifetime.Transient);

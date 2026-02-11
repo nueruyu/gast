@@ -6,6 +6,7 @@ using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Gast.Features.Characters
@@ -18,6 +19,8 @@ namespace Gast.Features.Characters
     {
         ICharacterTypeDefinition typeDefinition;
         ICharacterBrain currentBrain;
+        IAspectFactoryRegistry aspectFactoryRegistry;
+        readonly Dictionary<Type, ICharacterAspect> aspectCache = new();
 
         CharacterActionController actionController;
         CharacterContext context;
@@ -83,7 +86,8 @@ namespace Gast.Features.Characters
             CharacterStatus status,
             Faction faction,
             Wallet wallet,
-            Inventory inventory)
+            Inventory inventory,
+            IAspectFactoryRegistry aspectFactoryRegistry)
         {
             this.context = context;
             this.typeDefinition = typeDefinition;
@@ -92,6 +96,22 @@ namespace Gast.Features.Characters
             Faction = faction;
             Wallet = wallet;
             Inventory = inventory;
+            this.aspectFactoryRegistry = aspectFactoryRegistry;
+        }
+
+        public T As<T>() where T : class, ICharacterAspect
+        {
+            if (aspectCache.TryGetValue(typeof(T), out var aspect))
+            {
+                return (T)aspect;
+            }
+
+            var factory = aspectFactoryRegistry.Get(typeof(T)) ??
+                throw new InvalidOperationException($"No aspect factory registered for type {typeof(T)}");
+
+            var newAspect = (T)factory.Create(this);
+            aspectCache[typeof(T)] = newAspect;
+            return newAspect;
         }
 
         /// <summary>

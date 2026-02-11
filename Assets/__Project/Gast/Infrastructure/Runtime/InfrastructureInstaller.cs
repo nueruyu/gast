@@ -41,6 +41,9 @@ namespace Gast.Infrastructure
                 builder.Register<AIPlanningService>().As<IAIPlanningService>();
             }
 
+            // Aspects
+            builder.Register<AspectFactoryRegistry>().AsImplementedInterfaces();
+
             // Character
             builder.Register<CharacterRepository>().AsImplementedInterfaces();
             builder.Register<CharacterActorRepository>().AsImplementedInterfaces();

@@ -8,7 +8,7 @@ namespace GastGame.AI
     public readonly struct AIContext<TWorldState> : IContext<AIContext<TWorldState>, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
     {
-        public Actor Actor { get; }
+        public IActor Actor { get; }
         public TWorldState WorldState { get; }
         public AIMemory Memory { get; }
         public CancellationToken CancellationToken { get; }
@@ -18,7 +18,7 @@ namespace GastGame.AI
 
         public AIContext(
             ContextKey contextKey,
-            Actor actor,
+            IActor actor,
             TWorldState worldState,
             AIMemory memory,
             Action worldStateUpdater,

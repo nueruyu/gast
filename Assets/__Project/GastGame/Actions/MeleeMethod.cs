@@ -108,10 +108,10 @@ namespace GastGame.Actions
 
             hit.Character.ActionController.ExecuteAction(new HitCommand(damageInfo));
 
-            var hitActor = new Actor(hit.Character);
-            if (hitActor.IsAlive)
+            var hitActor = hit.Character.As<IActor>();
+            if (hitActor.IsAlive.Value)
             {
-                var newHealth = Mathf.Max(hitActor.Health - damageInfo.Amount, 0);
+                var newHealth = Mathf.Max(hitActor.Health.Value - damageInfo.Amount, 0);
                 hit.Character.Status.SetStat(StatId.FromString("Health"), newHealth);
 
                 if (newHealth <= 0)

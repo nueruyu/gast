@@ -28,19 +28,22 @@ namespace Gast.Infrastructure.Factories
 
         readonly CombatFeedbackService feedbackService;
         readonly IDomainEventPublisher eventPublisher;
+        readonly IAspectFactoryRegistry aspectFactoryRegistry;
 
         public CharacterFactory(
             CharacterTypeRepository typeRepository,
             ICharacterActorRepository characterActorRepository,
             CharacterFootstepService footstepService,
             CombatFeedbackService feedbackService,
-            IDomainEventPublisher eventPublisher)
+            IDomainEventPublisher eventPublisher,
+            IAspectFactoryRegistry aspectFactoryRegistry)
         {
             this.typeRepository = typeRepository ?? throw new ArgumentNullException(nameof(typeRepository));
             this.characterActorRepository = characterActorRepository ?? throw new ArgumentNullException(nameof(characterActorRepository));
             this.footstepService = footstepService ?? throw new ArgumentNullException(nameof(footstepService));
             this.feedbackService = feedbackService;
             this.eventPublisher = eventPublisher;
+            this.aspectFactoryRegistry = aspectFactoryRegistry;
         }
 
         public ICharacter Create(CharacterTypeId typeId, Vector3 position, Quaternion rotation, Faction faction)
@@ -73,7 +76,8 @@ namespace Gast.Infrastructure.Factories
                 status,
                 faction,
                 wallet,
-                inventory);
+                inventory,
+                aspectFactoryRegistry);
 
             characterActorRepository.Register(character);
             footstepService.Register(context, definition.FootstepSettings);

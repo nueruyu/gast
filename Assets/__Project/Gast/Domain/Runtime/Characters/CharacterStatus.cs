@@ -21,6 +21,16 @@ namespace Gast.Domain.Characters
             }
         }
 
+        public ILive<float> GetStat(StatId statId)
+        {
+            if (!TryGetStat(statId, out var stat))
+            {
+                throw new KeyNotFoundException($"Stat '{statId}' not found in character status.");
+            }
+
+            return stat;
+        }
+
         /// <summary>
         /// Tries to get the observable Live object for a stat.
         /// </summary>
