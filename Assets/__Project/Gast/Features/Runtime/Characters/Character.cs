@@ -19,7 +19,7 @@ namespace Gast.Features.Characters
     {
         ICharacterTypeDefinition typeDefinition;
         ICharacterBrain currentBrain;
-        IAspectFactoryRegistry aspectFactoryRegistry;
+        ICharacterAspectFactoryRegistry aspectFactoryRegistry;
         readonly Dictionary<Type, ICharacterAspect> aspectCache = new();
 
         CharacterActionController actionController;
@@ -88,7 +88,7 @@ namespace Gast.Features.Characters
             Faction faction,
             Wallet wallet,
             Inventory inventory,
-            IAspectFactoryRegistry aspectFactoryRegistry)
+            ICharacterAspectFactoryRegistry aspectFactoryRegistry)
         {
             this.context = context;
             this.typeDefinition = typeDefinition;

@@ -4,22 +4,22 @@ using Gast.Domain.Characters;
 
 namespace Gast.Infrastructure.Characters
 {
-    public class AspectFactoryRegistry : IAspectFactoryRegistry
+    public class CharacterAspectFactoryRegistry : ICharacterAspectFactoryRegistry
     {
-        readonly Dictionary<Type, IAspectFactory> factories = new();
+        readonly Dictionary<Type, ICharacterAspectFactory> factories = new();
 
-        public AspectFactoryRegistry(IEnumerable<IAspectFactory> factories)
+        public CharacterAspectFactoryRegistry(IEnumerable<ICharacterAspectFactory> factories)
         {
             foreach (var factor in factories)
                 Register(factor);
         }
 
-        void Register(IAspectFactory factory)
+        void Register(ICharacterAspectFactory factory)
         {
             factories[factory.AspectType] = factory;
         }
 
-        public IAspectFactory Get(Type aspectType)
+        public ICharacterAspectFactory Get(Type aspectType)
         {
             factories.TryGetValue(aspectType, out var factory);
             return factory;

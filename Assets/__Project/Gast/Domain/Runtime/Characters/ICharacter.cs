@@ -49,6 +49,9 @@ namespace Gast.Domain.Characters
         /// </summary>
         ISignal<ICharacter> Destroyed { get; }
 
+        /// <summary>
+        /// Controller for managing the character's actions.
+        /// </summary>
         ICharacterActionController ActionController { get; }
 
         /// <summary>
@@ -66,13 +69,6 @@ namespace Gast.Domain.Characters
         IInteractionSensor InteractionSensor { get; }
 
         INavigationProvider NavigationProvider { get; }
-
-        /// <summary>
-        /// Gets a specific aspect of the character.
-        /// </summary>
-        /// <typeparam name="T">The type of the aspect to get, which must implement ICharacterAspect.</typeparam>
-        /// <returns>The requested aspect instance, or null if not available.</returns>
-        T As<T>() where T : class, ICharacterAspect;
 
         /// <summary>
         /// Attach a brain to this character, detaching any existing brain first.
@@ -93,5 +89,12 @@ namespace Gast.Domain.Characters
         /// Set whether the character is sprinting.
         /// </summary>
         void SetSprint(bool isSprinting);
+
+        /// <summary>
+        /// Gets a specific aspect of the character.
+        /// </summary>
+        /// <typeparam name="T">The type of the aspect to get, which must implement ICharacterAspect.</typeparam>
+        /// <returns>The requested aspect instance, or null if not available.</returns>
+        T As<T>() where T : class, ICharacterAspect;
     }
 }

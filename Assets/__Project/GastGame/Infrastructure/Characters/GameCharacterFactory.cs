@@ -4,7 +4,7 @@ using GastGame.Domain.Characters;
 
 namespace GastGame.Infrastructure.Characters
 {
-    public class GameCharacterFactory : IAspectFactory
+    public class GameCharacterFactory : ICharacterAspectFactory
     {
         public Type AspectType => typeof(IGameCharacter);
 

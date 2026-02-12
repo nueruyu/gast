@@ -23,7 +23,7 @@ namespace Gast.Infrastructure.Characters
 
         readonly CombatFeedbackService feedbackService;
         readonly IDomainEventPublisher eventPublisher;
-        readonly IAspectFactoryRegistry aspectFactoryRegistry;
+        readonly ICharacterAspectFactoryRegistry aspectFactoryRegistry;
 
         public CharacterFactory(
             CharacterTypeRepository typeRepository,
@@ -31,7 +31,7 @@ namespace Gast.Infrastructure.Characters
             CharacterFootstepService footstepService,
             CombatFeedbackService feedbackService,
             IDomainEventPublisher eventPublisher,
-            IAspectFactoryRegistry aspectFactoryRegistry)
+            ICharacterAspectFactoryRegistry aspectFactoryRegistry)
         {
             this.typeRepository = typeRepository ?? throw new ArgumentNullException(nameof(typeRepository));
             this.characterActorRepository = characterActorRepository ?? throw new ArgumentNullException(nameof(characterActorRepository));

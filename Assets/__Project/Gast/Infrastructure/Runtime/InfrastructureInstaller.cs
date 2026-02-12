@@ -42,7 +42,7 @@ namespace Gast.Infrastructure
             }
 
             // Aspects
-            builder.Register<AspectFactoryRegistry>().AsImplementedInterfaces();
+            builder.Register<CharacterAspectFactoryRegistry>().AsImplementedInterfaces();
 
             // Character
             builder.Register<CharacterRepository>().AsImplementedInterfaces();
