@@ -6,12 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Gast.Domain.Characters;
 
 namespace Gast.UI.Hud
 {
-    /// <summary>
-    /// ViewModel for the game HUD that processes character status data for UI presentation.
-    /// </summary>
     public class GameHudViewModel : IDisposable
     {
         readonly CompositeDisposable disposables = new();
@@ -31,14 +29,11 @@ namespace Gast.UI.Hud
         public GameHudViewModel(
             IPlayerManager playerManager,
             ItemStackViewModelFactory itemStackViewModelFactory,
-            AIObjectiveViewModelFactory objectiveViewModelFactory)
+            AIObjectiveViewModelFactory objectiveViewModelFactory,
+            ICharacterTypeRepository characterTypeRepository)
         {
             this.playerManager = playerManager;
 
-            var healthStatId = StatId.FromString("Health");
-            var maxHealthStatId = StatId.FromString("MaxHealth");
-
-            // Added: Monitor if an AI Brain is currently active
             IsAiControlActive = playerManager.CurrentAIBrain
                 .ToObservable()
                 .Select(brain => brain != null)
@@ -73,10 +68,13 @@ namespace Gast.UI.Hud
                     if (character == null)
                         return Observable.Return(0f);
 
-                    if (!character.Status.TryGetStat(healthStatId, out var health))
+                    var definition = characterTypeRepository.Get(character.TypeId);
+                    if (definition.StatSchema is not IBasicStatSchema schema)
                         return Observable.Return(0f);
 
-                    character.Status.TryGetStatValue(maxHealthStatId, out var maxHealth);
+                    var health = character.Status.GetStat<float>(schema.Health.Id);
+                    var maxHealth = character.Status.GetStat<float>(schema.MaxHealth.Id).Value;
+
                     return health.ToObservable()
                         .Select(current => maxHealth > 0 ? Mathf.Clamp01(current / maxHealth) : 0f);
                 })
@@ -90,10 +88,13 @@ namespace Gast.UI.Hud
                     if (character == null)
                         return Observable.Return(string.Empty);
 
-                    if (!character.Status.TryGetStat(healthStatId, out var health))
+                    var definition = characterTypeRepository.Get(character.TypeId);
+                    if (definition.StatSchema is not IBasicStatSchema schema)
                         return Observable.Return(string.Empty);
 
-                    character.Status.TryGetStatValue(maxHealthStatId, out var maxHealth);
+                    var health = character.Status.GetStat<float>(schema.Health.Id);
+                    var maxHealth = character.Status.GetStat<float>(schema.MaxHealth.Id).Value;
+
                     return health.ToObservable()
                         .Select(current => $"{Mathf.CeilToInt(current)} / {maxHealth}");
                 })

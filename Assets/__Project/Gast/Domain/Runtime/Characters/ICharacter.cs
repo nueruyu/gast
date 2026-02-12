@@ -35,6 +35,11 @@ namespace Gast.Domain.Characters
         Faction Faction { get; }
 
         /// <summary>
+        /// The character's type definition data.
+        /// </summary>
+        ICharacterTypeDefinition TypeDefinition { get; }
+
+        /// <summary>
         /// Read-only access to the character's physical state.
         /// </summary>
         ICharacterBody Body { get; }

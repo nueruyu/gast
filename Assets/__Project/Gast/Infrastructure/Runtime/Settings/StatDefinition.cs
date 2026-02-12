@@ -1,26 +1,19 @@
-using Gast.Domain.Stats;
+using System;
 using UnityEngine;
 
 namespace Gast.Infrastructure.Settings
 {
-    [CreateAssetMenu(fileName = "StatDefinition", menuName = "Gast/Stats/Stat Definition")]
-    public class StatDefinition : ScriptableObject, IStatDefinition
+    public abstract class StatDefinition<T> : StatDefinitionBase, Domain.Stats.IStatDefinition<T>
     {
         [SerializeField]
-        string id;
+        T defaultValue;
 
-        [SerializeField]
-        string displayName;
+        public T DefaultValue => defaultValue;
+        public override Type ValueType => typeof(T);
 
-        public StatId Id => StatId.FromString(id);
-        public string DisplayName => displayName;
-
-        void OnValidate()
+        public override object GetDefaultValueAsObject()
         {
-            if (!string.IsNullOrEmpty(name) && string.IsNullOrEmpty(id))
-            {
-                id = name.Replace(" ", "");
-            }
+            return DefaultValue;
         }
     }
 }

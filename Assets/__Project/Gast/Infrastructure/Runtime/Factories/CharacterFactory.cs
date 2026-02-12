@@ -17,9 +17,6 @@ using UnityEngine;
 
 namespace Gast.Infrastructure.Factories
 {
-    /// <summary>
-    /// Factory implementation for creating character instances.
-    /// </summary>
     public class CharacterFactory : ICharacterFactory
     {
         readonly CharacterTypeRepository typeRepository;
@@ -63,8 +60,7 @@ namespace Gast.Infrastructure.Factories
 
             var context = CreateContext(characterId, character.gameObject, definition, faction);
 
-            var initialStats = definition.InitialStats.Select(s => ((IStatDefinition)s.Definition, s.Value));
-            var status = new CharacterStatus(initialStats);
+            var status = new CharacterStatus(definition.StatSchema);
             var wallet = new Wallet(definition.InitialMoney);
             var inventory = new Inventory(definition.SlotCapacity);
 
@@ -109,6 +105,7 @@ namespace Gast.Infrastructure.Factories
                 id,
                 definition.TypeId,
                 faction,
+                definition.StatSchema,
                 body,
                 animator,
                 animationReceiver,

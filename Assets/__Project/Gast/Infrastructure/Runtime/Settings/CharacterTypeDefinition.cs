@@ -1,5 +1,6 @@
 using Gast.Domain.Characters;
 using Gast.Domain.Loot;
+using Gast.Domain.Stats;
 using Gast.Features.Characters;
 using Gast.Features.Combat;
 using System;
@@ -9,20 +10,9 @@ using UnityEngine;
 
 namespace Gast.Infrastructure.Settings
 {
-    /// <summary>
-    /// ScriptableObject implementation of ICharacterTypeDefinition.
-    /// Stores character type configuration data.
-    /// </summary>
     [CreateAssetMenu(fileName = "CharacterType", menuName = "Gast/Characters/Type Definition")]
     public class CharacterTypeDefinition : ScriptableObject, ICharacterTypeDefinition
     {
-        [Serializable]
-        public class InitialStat
-        {
-            public StatDefinition Definition;
-            public float Value;
-        }
-
         [SerializeField]
         CharacterTypeReference reference;
 
@@ -31,7 +21,7 @@ namespace Gast.Infrastructure.Settings
 
         [Header("Stats")]
         [SerializeField]
-        List<InitialStat> initialStats = new();
+        StatSchema statSchema;
 
         [Header("Movement")]
         [SerializeField]
@@ -94,7 +84,8 @@ namespace Gast.Infrastructure.Settings
         public float SensorViewAngle => sensorViewAngle;
         public Vector3 SensorEyeOffset => sensorEyeOffset;
         public float NavigationStoppingDistance => navigationStoppingDistance;
-        public List<InitialStat> InitialStats => initialStats;
+
+        public IStatSchema StatSchema => statSchema;
 
         ILootTable ICharacterTypeDefinition.LootTable => lootTable;
     }

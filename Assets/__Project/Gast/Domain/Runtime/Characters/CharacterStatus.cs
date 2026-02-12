@@ -4,39 +4,32 @@ using System.Collections.Generic;
 
 namespace Gast.Domain.Characters
 {
-    /// <summary>
-    /// Manages dynamic character stats.
-    /// Uses a dictionary of observable Live values for reactive state updates.
-    /// This is a generic container and holds no logic about specific stats like Health.
-    /// </summary>
-    public class CharacterStatus
+    public class CharacterStatus : IStatRegistrar
     {
-        readonly Dictionary<StatId, Live<float>> stats = new();
+        readonly Dictionary<StatId, object> stats = new();
 
-        public CharacterStatus(IEnumerable<(IStatDefinition def, float value)> initialStats)
+        public CharacterStatus(IStatSchema schema)
         {
-            foreach (var (def, value) in initialStats)
-            {
-                stats[def.Id] = new Live<float>(value);
-            }
+            schema.Initialize(this);
         }
 
-        public ILive<float> GetStat(StatId statId)
+        void IStatRegistrar.Register<T>(IStatDefinition<T> definition, T initialValue)
         {
-            if (!TryGetStat(statId, out var stat))
-            {
-                throw new KeyNotFoundException($"Stat '{statId}' not found in character status.");
-            }
+            stats[definition.Id] = new Live<T>(initialValue);
+        }
 
+        public ILive<T> GetStat<T>(StatId statId)
+        {
+            if (!TryGetStat<T>(statId, out var stat))
+            {
+                throw new KeyNotFoundException($"Stat '{statId}' of type '{typeof(T).Name}' not found in character status.");
+            }
             return stat;
         }
 
-        /// <summary>
-        /// Tries to get the observable Live object for a stat.
-        /// </summary>
-        public bool TryGetStat(StatId statId, out ILive<float> stat)
+        public bool TryGetStat<T>(StatId statId, out ILive<T> stat)
         {
-            if (stats.TryGetValue(statId, out var liveStat))
+            if (stats.TryGetValue(statId, out var liveObject) && liveObject is ILive<T> liveStat)
             {
                 stat = liveStat;
                 return true;
@@ -45,38 +38,29 @@ namespace Gast.Domain.Characters
             return false;
         }
 
-        /// <summary>
-        /// Tries to get the current value of a stat.
-        /// </summary>
-        public bool TryGetStatValue(StatId statId, out float value)
+        public bool TryGetStatValue<T>(StatId statId, out T value)
         {
-            if (stats.TryGetValue(statId, out var liveStat))
+            if (TryGetStat<T>(statId, out var stat))
             {
-                value = liveStat.Value;
+                value = stat.Value;
                 return true;
             }
-            value = 0;
+            value = default;
             return false;
         }
 
-        /// <summary>
-        /// Sets the value of a stat. If the stat doesn't exist, it will be added.
-        /// </summary>
-        public void SetStat(StatId statId, float value)
+        public void SetStat<T>(StatId statId, T value)
         {
-            if (stats.TryGetValue(statId, out var liveStat))
+            if (stats.TryGetValue(statId, out var liveObject) && liveObject is Live<T> liveStat)
             {
                 liveStat.Value = value;
             }
             else
             {
-                stats[statId] = new Live<float>(value);
+                stats[statId] = new Live<T>(value);
             }
         }
 
-        /// <summary>
-        /// Gets all stats as a read-only dictionary.
-        /// </summary>
-        public IReadOnlyDictionary<StatId, Live<float>> GetAllStats() => stats;
+        public IReadOnlyDictionary<StatId, object> GetAllStats() => stats;
     }
 }

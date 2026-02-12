@@ -37,6 +37,7 @@ namespace Gast.Features.Characters
         public Faction Faction { get; private set; }
         public Wallet Wallet { get; private set; }
         public Inventory Inventory { get; private set; }
+        public ICharacterTypeDefinition TypeDefinition => typeDefinition;
         public IVisionSensor VisionSensor => context.VisionSensor;
         public IInteractionSensor InteractionSensor => context.InteractionSensor;
         public INavigationProvider NavigationProvider => context.NavigationProvider;

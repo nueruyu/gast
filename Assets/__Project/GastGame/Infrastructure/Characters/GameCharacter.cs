@@ -1,6 +1,7 @@
 using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
+using Gast.Domain.Combat;
 using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
 using Gast.Domain.Stats;
@@ -15,6 +16,8 @@ namespace GastGame.Infrastructure.Characters
     public class GameCharacter : IGameCharacter
     {
         readonly ICharacter character;
+
+        ICharacterStatSchema GetStatSchema() => (ICharacterStatSchema)character.TypeDefinition.StatSchema;
 
         public CharacterId Id => character.Id;
         public CharacterTypeId TypeId => character.TypeId;
@@ -32,12 +35,18 @@ namespace GastGame.Infrastructure.Characters
         {
             this.character = character;
 
-            var healthStatId = StatId.FromString("Health");
-            var maxHealthStatId = StatId.FromString("MaxHealth");
-
-            Health = character.Status.GetStat(healthStatId);
-            MaxHealth = character.Status.GetStat(maxHealthStatId);
+            var schema = GetStatSchema();
+            Health = character.Status.GetStat<float>(schema.Health.Id);
+            MaxHealth = character.Status.GetStat<float>(schema.MaxHealth.Id);
             IsAlive = Health.Select(h => h > 0);
+        }
+
+        public void SetHealth(float newHealth)
+        {
+            newHealth = Mathf.Max(newHealth, 0);
+
+            var schema = GetStatSchema();
+            character.Status.SetStat(schema.Health.Id, newHealth);
         }
 
         public bool IsThreatTo(IGameCharacter other)
@@ -66,5 +75,9 @@ namespace GastGame.Infrastructure.Characters
         public void Dash(Vector3 direction) => character.ActionController.ExecuteAction(new DashCommand(direction));
 
         public void Jump() => character.ActionController.ExecuteAction(new JumpCommand());
+
+        public void Hit(DamageInfo damageInfo) => character.ActionController.ExecuteAction(new HitCommand(damageInfo));
+
+        public void Die() => character.ActionController.ExecuteAction(new DieCommand());
     }
 }

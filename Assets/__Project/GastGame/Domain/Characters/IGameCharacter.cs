@@ -1,6 +1,7 @@
 using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
+using Gast.Domain.Combat;
 using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
 using UnityEngine;
@@ -21,6 +22,8 @@ namespace GastGame.Domain.Characters
         ILive<float> Health { get; }
         ILive<float> MaxHealth { get; }
 
+        void SetHealth(float newHealth);
+
         bool IsThreatTo(IGameCharacter other);
 
         void Move(Vector3 direction);
@@ -40,5 +43,9 @@ namespace GastGame.Domain.Characters
         void Dash(Vector3 direction);
 
         void Jump();
+
+        void Hit(DamageInfo damageInfo);
+
+        void Die();
     }
 }

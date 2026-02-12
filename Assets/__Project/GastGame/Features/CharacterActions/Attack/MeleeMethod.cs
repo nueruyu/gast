@@ -13,9 +13,6 @@ using GastGame.Domain.Characters;
 
 namespace GastGame.Features.CharacterActions
 {
-    /// <summary>
-    /// Melee method implementation.
-    /// </summary>
     public class MeleeMethod
     {
         readonly MeleeMethodSettings settings;
@@ -105,17 +102,18 @@ namespace GastGame.Features.CharacterActions
                 hit.AttackerId
             );
 
-            hit.Character.ActionController.ExecuteAction(new HitCommand(damageInfo));
-
             var hitActor = hit.Character.As<IGameCharacter>();
+
+            hitActor.Hit(damageInfo);
+
             if (hitActor.IsAlive.Value)
             {
-                var newHealth = Mathf.Max(hitActor.Health.Value - damageInfo.Amount, 0);
-                hit.Character.Status.SetStat(StatId.FromString("Health"), newHealth);
+                hitActor.SetHealth(hitActor.Health.Value - damageInfo.Amount);
 
-                if (newHealth <= 0)
+                if (hitActor.Health.Value <= 0)
                 {
-                    hit.Character.ActionController.ExecuteAction(new DieCommand());
+                    hitActor.Die();
+
                     hit.Character.DetachBrain();
                     context.EventPublisher.Publish(new CharacterDefeatedEvent(hit.Character, damageInfo.AttackerId));
                     hit.Character.DespawnAfterDelay().Forget();
