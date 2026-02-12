@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
 using Gast.Domain.Combat;
-using Gast.Domain.Stats;
 using Gast.Features.Characters;
 using Gast.Features.Combat;
 using Gast.Shared.Observables;

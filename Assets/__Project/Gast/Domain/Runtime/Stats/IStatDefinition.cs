@@ -7,14 +7,9 @@ namespace Gast.Domain.Stats
         StatId Id { get; }
         string DisplayName { get; }
         Type ValueType { get; }
-
-        object GetDefaultValueAsObject();
-
-        object ParseValue(string value);
     }
 
     public interface IStatDefinition<T> : IStatDefinition
     {
-        T DefaultValue { get; }
     }
 }

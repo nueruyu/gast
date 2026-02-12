@@ -17,10 +17,6 @@ namespace Gast.Infrastructure.Stats
 
         public abstract Type ValueType { get; }
 
-        public abstract object GetDefaultValueAsObject();
-
-        public abstract object ParseValue(string value);
-
         protected virtual void OnValidate()
         {
             if (!string.IsNullOrEmpty(name) && string.IsNullOrEmpty(id))
