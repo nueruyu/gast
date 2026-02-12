@@ -27,7 +27,7 @@ namespace Gast.Domain.Characters
         /// <summary>
         /// Character's generic status container.
         /// </summary>
-        CharacterStatus Status { get; }
+        ICharacterStatus Status { get; }
 
         /// <summary>
         /// The character's faction affiliation.

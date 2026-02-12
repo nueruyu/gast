@@ -33,7 +33,7 @@ namespace Gast.Features.Characters
 
         public CharacterId Id => context.Id;
         public CharacterTypeId TypeId => context.TypeId;
-        public CharacterStatus Status { get; private set; }
+        public ICharacterStatus Status { get; private set; }
         public Faction Faction { get; private set; }
         public Wallet Wallet { get; private set; }
         public Inventory Inventory { get; private set; }
@@ -84,7 +84,7 @@ namespace Gast.Features.Characters
             CharacterContext context,
             ICharacterTypeDefinition typeDefinition,
             CharacterActionController actionController,
-            CharacterStatus status,
+            ICharacterStatus status,
             Faction faction,
             Wallet wallet,
             Inventory inventory,

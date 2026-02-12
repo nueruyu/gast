@@ -1,5 +1,5 @@
 using Gast.Domain.Stats;
-using Gast.Infrastructure.Settings;
+using Gast.Infrastructure.Stats;
 using GastGame.Domain.Characters;
 using UnityEngine;
 

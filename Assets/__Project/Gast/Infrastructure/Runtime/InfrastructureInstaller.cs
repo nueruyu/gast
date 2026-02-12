@@ -4,11 +4,11 @@ using Gast.Application.Economy;
 using Gast.Core.DI;
 using Gast.Features.Combat;
 using Gast.Infrastructure.AI;
-using Gast.Infrastructure.Factories;
+using Gast.Infrastructure.Characters;
+using Gast.Infrastructure.Items;
+using Gast.Infrastructure.Pickups;
 using Gast.Infrastructure.Remoting.AI;
-using Gast.Infrastructure.Repositories;
 using Gast.Infrastructure.Services;
-using Gast.Infrastructure.Settings;
 using Gast.Lib.AI.Debugging;
 using Gast.Lib.Gaia;
 
