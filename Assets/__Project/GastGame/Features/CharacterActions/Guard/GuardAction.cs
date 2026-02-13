@@ -1,4 +1,5 @@
 using Gast.Features.Characters;
+using GastGame.Features.Characters;
 using System;
 using UnityEngine;
 
@@ -10,17 +11,15 @@ namespace GastGame.Features.CharacterActions
     /// </summary>
     public class GuardAction : ICharacterAction<GuardCommand>
     {
-        readonly CharacterBody body;
-        readonly CharacterAnimator animator;
+        readonly CharacterActionContext context;
         readonly GuardActionSettings settings;
 
         public Type CommandType => typeof(GuardCommand);
         public int Priority => 2;
 
-        public GuardAction(CharacterContext character, GuardActionSettings settings)
+        public GuardAction(CharacterActionContext context, GuardActionSettings settings)
         {
-            body = character.Body;
-            animator = character.Animator;
+            this.context = context;
             this.settings = settings;
         }
 
@@ -28,7 +27,7 @@ namespace GastGame.Features.CharacterActions
 
         public void Execute(in GuardCommand command)
         {
-            animator?.SetGuard(true);
+            context.CharacterAnimator?.SetGuard(true);
         }
 
         public bool OnUpdate()
@@ -36,18 +35,19 @@ namespace GastGame.Features.CharacterActions
             return true;
         }
 
-        public void Move(Vector3 direction, float speed)
+        public void Move(Vector3 direction)
         {
             if (direction.sqrMagnitude > 0.01f)
             {
-                body.SetInputVelocity(direction * (speed * settings.MoveSpeedPenalty));
-                body.SetLookDirection(direction, settings.LookDirectionSpeed);
+                var speed = context.CharacterContext.TypeDefinition.WalkSpeed * settings.MoveSpeedPenalty;
+                context.CharacterContext.Body.SetInputVelocity(direction * speed);
+                context.CharacterContext.Body.SetLookDirection(direction, settings.LookDirectionSpeed);
             }
         }
 
         public void OnEnd()
         {
-            animator?.SetGuard(false);
+            context.CharacterAnimator?.SetGuard(false);
         }
     }
 }

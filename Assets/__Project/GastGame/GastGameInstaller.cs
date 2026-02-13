@@ -1,4 +1,5 @@
 using Gast.Core.DI;
+using Gast.Infrastructure.Characters;
 using Gast.Shared.DI;
 using GastGame.Features.AI.Combat;
 using GastGame.Features.AI.Combat.Actions;
@@ -19,6 +20,10 @@ namespace GastGame
     {
         public override void Install(IContainerBuilder builder)
         {
+            // Character
+            builder.Register<CharacterFactory>().AsImplementedInterfaces();
+            builder.Register<GameCharacterContextInitializer>().AsImplementedInterfaces();
+
             // Aspects
             builder.Register<GameCharacterFactory>(Lifetime.Singleton).AsImplementedInterfaces();
 

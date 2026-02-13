@@ -37,17 +37,9 @@ namespace Gast.Features.Characters
             router.Stop<TCommand>();
         }
 
-        public void Move(Vector3 direction, float speed)
+        public void Move(Vector3 direction)
         {
-            if (router.IsActionRunning)
-            {
-                router.CurrentAction?.Move(direction, speed);
-                return;
-            }
-
-            var body = character.Body;
-            body.SetInputVelocity(direction * speed);
-            body.SetLookDirection(direction, 10f);
+            router.CurrentAction?.Move(direction);
         }
 
         public void Update()

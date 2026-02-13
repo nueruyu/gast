@@ -1,4 +1,5 @@
 using Gast.Features.Characters;
+using GastGame.Features.Characters;
 using System;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace GastGame.Features.CharacterActions
     /// </summary>
     public class AttackAction : ICharacterAction<AttackCommand>
     {
-        readonly CharacterContext character;
+        readonly CharacterActionContext context;
         readonly MeleeMethod method;
         readonly AttackActionSettings settings;
 
@@ -21,13 +22,13 @@ namespace GastGame.Features.CharacterActions
         public int Priority => 5;
 
         public AttackAction(
-            CharacterContext character,
+            CharacterActionContext context,
             AttackActionSettings settings)
         {
-            this.character = character;
+            this.context = context;
             this.settings = settings;
-            method = new MeleeMethod(settings.MeleeMethodSettings, character);
-            method.BindEvents(character).AddTo(character.Body.destroyCancellationToken);
+            method = new MeleeMethod(settings.MeleeMethodSettings, context);
+            method.BindEvents(context.CharacterContext).AddTo(context.CharacterContext.Body.destroyCancellationToken);
         }
 
         public bool CanExecute()
@@ -40,7 +41,7 @@ namespace GastGame.Features.CharacterActions
             startTime = Time.time;
             lastAttackTime = startTime;
 
-            method.Attack(character);
+            method.Attack(context);
         }
 
         public bool OnUpdate()
@@ -48,13 +49,14 @@ namespace GastGame.Features.CharacterActions
             return Time.time < startTime + settings.Duration;
         }
 
-        public void Move(Vector3 direction, float speed)
+        public void Move(Vector3 direction)
         {
             // Allow movement while attacking
             if (direction.sqrMagnitude > 0.01f)
             {
-                character.Body.SetInputVelocity(direction * speed);
-                character.Body.SetLookDirection(direction, 10f);
+                var speed = context.CharacterContext.TypeDefinition.WalkSpeed;
+                context.CharacterContext.Body.SetInputVelocity(direction * speed);
+                context.CharacterContext.Body.SetLookDirection(direction, 10f);
             }
         }
 

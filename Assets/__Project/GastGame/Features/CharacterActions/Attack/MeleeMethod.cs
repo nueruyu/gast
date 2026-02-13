@@ -4,6 +4,7 @@ using Gast.Domain.Combat;
 using Gast.Features.Characters;
 using Gast.Features.Combat;
 using Gast.Shared.Observables;
+using GastGame.Features.Characters;
 using R3;
 using System;
 using System.Threading;
@@ -15,11 +16,11 @@ namespace GastGame.Features.CharacterActions
     public class MeleeMethod
     {
         readonly MeleeMethodSettings settings;
-        readonly CharacterContext context;
+        readonly CharacterActionContext context;
 
         public MeleeMethod(
             MeleeMethodSettings settings,
-            CharacterContext context)
+            CharacterActionContext context)
         {
             this.settings = settings != null ? settings : throw new ArgumentNullException(nameof(settings));
             this.context = context ?? throw new ArgumentNullException(nameof(context));
@@ -41,14 +42,14 @@ namespace GastGame.Features.CharacterActions
             return disposables;
         }
 
-        public void Attack(CharacterContext attacker)
+        public void Attack(CharacterActionContext attackerContext)
         {
-            ExecuteAttackAsync(attacker, attacker.Body.destroyCancellationToken).Forget();
+            ExecuteAttackAsync(attackerContext, attackerContext.CharacterContext.Body.destroyCancellationToken).Forget();
         }
 
-        async UniTaskVoid ExecuteAttackAsync(CharacterContext attacker, CancellationToken cancellationToken)
+        async UniTaskVoid ExecuteAttackAsync(CharacterActionContext attackerContext, CancellationToken cancellationToken)
         {
-            var animator = attacker.Animator;
+            var animator = attackerContext.CharacterAnimator;
             if (animator)
                 animator.PlayAttack();
 
@@ -56,7 +57,7 @@ namespace GastGame.Features.CharacterActions
                 TimeSpan.FromSeconds(settings.AnimationTriggerDelay),
                 cancellationToken: cancellationToken);
 
-            var attackerTransform = attacker.Body.transform;
+            var attackerTransform = attackerContext.CharacterContext.Body.transform;
 
             var forward = attackerTransform.forward;
             var spawnPosition = attackerTransform.position + settings.Offset + forward * settings.Range;
@@ -70,8 +71,8 @@ namespace GastGame.Features.CharacterActions
             damageArea.transform.localScale = settings.HitboxSize;
 
             damageArea.Initialize(
-                attacker.Id,
-                attacker.Faction,
+                attackerContext.CharacterContext.Id,
+                attackerContext.CharacterContext.Faction,
                 settings.Duration);
 
             damageArea.Hit
@@ -83,12 +84,12 @@ namespace GastGame.Features.CharacterActions
         {
             var point = hit.Point;
 
-            context.FeedbackService.PlayHitEffect(
+            context.CharacterContext.FeedbackService.PlayHitEffect(
                 point.position,
                 point.rotation,
                 settings.HitVfxPrefab);
 
-            context.FeedbackService.PlaySound(
+            context.CharacterContext.FeedbackService.PlaySound(
                 point.position,
                 settings.HitSfx,
                 settings.SfxVolume);
@@ -114,7 +115,7 @@ namespace GastGame.Features.CharacterActions
                     hitActor.Die();
 
                     hit.Character.DetachBrain();
-                    context.EventPublisher.Publish(new CharacterDefeatedEvent(hit.Character, damageInfo.AttackerId));
+                    context.CharacterContext.EventPublisher.Publish(new CharacterDefeatedEvent(hit.Character, damageInfo.AttackerId));
                     hit.Character.DespawnAfterDelay().Forget();
                 }
             }

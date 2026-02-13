@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Gast.Core.Events;
 using Gast.Domain.Characters;
@@ -24,6 +25,7 @@ namespace Gast.Infrastructure.Characters
         readonly CombatFeedbackService feedbackService;
         readonly IDomainEventPublisher eventPublisher;
         readonly ICharacterAspectFactoryRegistry aspectFactoryRegistry;
+        readonly IEnumerable<ICharacterContextInitializer> contextInitializers;
 
         public CharacterFactory(
             CharacterTypeRepository typeRepository,
@@ -31,7 +33,8 @@ namespace Gast.Infrastructure.Characters
             CharacterFootstepService footstepService,
             CombatFeedbackService feedbackService,
             IDomainEventPublisher eventPublisher,
-            ICharacterAspectFactoryRegistry aspectFactoryRegistry)
+            ICharacterAspectFactoryRegistry aspectFactoryRegistry,
+            IEnumerable<ICharacterContextInitializer> contextInitializers)
         {
             this.typeRepository = typeRepository ?? throw new ArgumentNullException(nameof(typeRepository));
             this.characterActorRepository = characterActorRepository ?? throw new ArgumentNullException(nameof(characterActorRepository));
@@ -39,6 +42,7 @@ namespace Gast.Infrastructure.Characters
             this.feedbackService = feedbackService;
             this.eventPublisher = eventPublisher;
             this.aspectFactoryRegistry = aspectFactoryRegistry;
+            this.contextInitializers = contextInitializers;
         }
 
         public ICharacter Create(CharacterTypeId typeId, Vector3 position, Quaternion rotation, Faction faction)
@@ -57,6 +61,9 @@ namespace Gast.Infrastructure.Characters
             visual.name = $"Visual ({definition.VisualPrefab.name})";
 
             var context = CreateContext(characterId, character.gameObject, definition, faction);
+
+            foreach (var initializer in contextInitializers)
+                initializer.Initialize(context);
 
             var status = new CharacterStatus();
             definition.StatSchema.Initialize(status);
@@ -88,7 +95,6 @@ namespace Gast.Infrastructure.Characters
             Faction faction)
         {
             var body = characterGo.RequireComponent<CharacterBody>();
-            var animator = characterGo.RequireComponentInChildren<CharacterAnimator>();
             var animationReceiver = characterGo.RequireComponentInChildren<CharacterAnimationReceiver>();
             var audio = characterGo.RequireComponentInChildren<CharacterAudio>();
 
@@ -104,10 +110,10 @@ namespace Gast.Infrastructure.Characters
             return new CharacterContext(
                 id,
                 definition.TypeId,
+                definition,
                 faction,
                 definition.StatSchema,
                 body,
-                animator,
                 animationReceiver,
                 audio,
                 visionSensor,
@@ -131,7 +137,8 @@ namespace Gast.Infrastructure.Characters
                         continue;
                     }
                     var action = settings.CreateAction(character);
-                    actionController.RegisterAction(action);
+                    if (action != null)
+                        actionController.RegisterAction(action);
                 }
             }
             else

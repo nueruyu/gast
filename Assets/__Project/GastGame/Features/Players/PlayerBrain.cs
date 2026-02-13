@@ -52,10 +52,7 @@ namespace GastGame.Features.Players
 
                 actor.SetSprint(inputProvider.Sprint);
 
-                if (moveDirection.magnitude > 0.1f)
-                {
-                    actor.Move(moveDirection);
-                }
+                actor.Move(moveDirection);
 
                 if (inputProvider.Jump)
                 {

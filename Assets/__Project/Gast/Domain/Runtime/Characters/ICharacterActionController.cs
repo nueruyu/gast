@@ -1,4 +1,6 @@
-﻿namespace Gast.Domain.Characters
+﻿using UnityEngine;
+
+namespace Gast.Domain.Characters
 {
     public interface ICharacterActionController
     {
@@ -11,5 +13,7 @@
         void StartAction<TCommand>(in TCommand command) where TCommand : struct, ICharacterStateCommand;
 
         void StopAction<TCommand>() where TCommand : struct, ICharacterStateCommand;
+
+        void Move(Vector3 direction);
     }
 }

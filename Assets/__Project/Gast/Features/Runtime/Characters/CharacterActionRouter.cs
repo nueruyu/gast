@@ -11,13 +11,15 @@ namespace Gast.Features.Characters
     public class CharacterActionRouter
     {
         readonly Dictionary<Type, ICharacterAction> registeredActions = new();
+        ICharacterAction defaultAction;
         ICharacterAction currentAction;
 
         public bool IsActionRunning => currentAction != null;
-        public ICharacterAction CurrentAction => currentAction;
+        public ICharacterAction CurrentAction => currentAction ?? defaultAction;
 
         /// <summary>
         /// Register an action for later execution.
+        /// Actions with null CommandType are treated as the default action.
         /// </summary>
         public void Register(ICharacterAction action)
         {
@@ -26,7 +28,10 @@ namespace Gast.Features.Characters
                 throw new ArgumentNullException(nameof(action));
             }
 
-            registeredActions[action.CommandType] = action;
+            if (action.CommandType != null)
+                registeredActions[action.CommandType] = action;
+            else
+                defaultAction = action;
         }
 
         /// <summary>
@@ -42,12 +47,13 @@ namespace Gast.Features.Characters
             if (!action.CanExecute())
                 return false;
 
-            if (currentAction != null)
+            var active = currentAction ?? defaultAction;
+            if (active != null)
             {
-                if (action.Priority <= currentAction.Priority)
+                if (action.Priority <= active.Priority)
                     return false;
 
-                currentAction.OnEnd();
+                active.OnEnd();
             }
 
             currentAction = action;

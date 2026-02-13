@@ -81,20 +81,15 @@ namespace Gast.Domain.Characters
         void DetachBrain();
 
         /// <summary>
-        /// Move the character in the specified direction (0-1 normalized).
-        /// </summary>
-        void Move(Vector3 direction);
-
-        /// <summary>
-        /// Set whether the character is sprinting.
-        /// </summary>
-        void SetSprint(bool isSprinting);
-
-        /// <summary>
         /// Gets a specific aspect of the character.
         /// </summary>
         /// <typeparam name="T">The type of the aspect to get, which must implement ICharacterAspect.</typeparam>
         /// <returns>The requested aspect instance, or null if not available.</returns>
         T As<T>() where T : class, ICharacterAspect;
+
+        /// <summary>
+        /// Resolves a service registered in this character's context container.
+        /// </summary>
+        T Resolve<T>() where T : class;
     }
 }

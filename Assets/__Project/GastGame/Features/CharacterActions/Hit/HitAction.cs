@@ -1,4 +1,5 @@
 using Gast.Features.Characters;
+using GastGame.Features.Characters;
 using System;
 using UnityEngine;
 
@@ -10,8 +11,7 @@ namespace GastGame.Features.CharacterActions
     /// </summary>
     public class HitAction : ICharacterAction<HitCommand>
     {
-        readonly CharacterBody body;
-        readonly CharacterAnimator animator;
+        readonly CharacterActionContext context;
         readonly HitActionSettings settings;
 
         float startTime;
@@ -24,10 +24,9 @@ namespace GastGame.Features.CharacterActions
         // This allows dash to avoid hits, but interrupts attacks and movement
         public int Priority => 8;
 
-        public HitAction(CharacterContext character, HitActionSettings settings)
+        public HitAction(CharacterActionContext context, HitActionSettings settings)
         {
-            body = character.Body;
-            animator = character.Animator;
+            this.context = context;
             this.settings = settings;
         }
 
@@ -39,7 +38,10 @@ namespace GastGame.Features.CharacterActions
 
             knockbackVelocity = command.DamageInfo.KnockbackForce;
 
+            var body = context.CharacterContext.Body;
+
             // Play hit animation
+            var animator = context.CharacterAnimator;
             if (animator)
                 animator.PlayHit();
 
@@ -59,17 +61,18 @@ namespace GastGame.Features.CharacterActions
 
             // Apply friction to knockback velocity
             knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, Time.deltaTime * settings.KnockbackFriction);
-            body.SetForcedVelocity(knockbackVelocity);
+            context.CharacterContext.Body.SetForcedVelocity(knockbackVelocity);
             return true;
         }
 
-        public void Move(Vector3 direction, float speed)
+        public void Move(Vector3 direction)
         {
             // Ignore movement input during hit reaction
         }
 
         public void OnEnd()
         {
+            var body = context.CharacterContext.Body;
             body.IsInputMovementEnabled = true; // Re-enable input
             body.SetForcedVelocity(Vector3.zero); // Clear knockback
         }

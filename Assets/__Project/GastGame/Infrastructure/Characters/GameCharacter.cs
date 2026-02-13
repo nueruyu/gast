@@ -7,6 +7,7 @@ using Gast.Domain.Sensors;
 using Gast.Domain.Stats;
 using GastGame.Domain.Characters;
 using GastGame.Features.CharacterActions;
+using GastGame.Features.Characters;
 using R3;
 using System;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace GastGame.Infrastructure.Characters
     public class GameCharacter : IGameCharacter
     {
         readonly ICharacter character;
+        readonly CharacterActionStateStore stateStore;
 
         ICharacterStatSchema GetStatSchema() => (ICharacterStatSchema)character.TypeDefinition.StatSchema;
 
@@ -31,9 +33,10 @@ namespace GastGame.Infrastructure.Characters
         public ILive<float> Health { get; }
         public ILive<float> MaxHealth { get; }
 
-        public GameCharacter(ICharacter character)
+        public GameCharacter(ICharacter character, CharacterActionStateStore stateStore)
         {
             this.character = character;
+            this.stateStore = stateStore;
 
             var schema = GetStatSchema();
             Health = character.Status.GetStat<float>(schema.Health.Id);
@@ -58,9 +61,9 @@ namespace GastGame.Infrastructure.Characters
             return true;
         }
 
-        public void Move(Vector3 direction) => character.Move(direction);
+        public void Move(Vector3 direction) => character.ActionController.Move(direction);
 
-        public void SetSprint(bool isSprinting) => character.SetSprint(isSprinting);
+        public void SetSprint(bool isSprinting) => stateStore.IsSprinting = isSprinting;
 
         public bool CanAttack() => character.ActionController.CanExecuteAction<AttackCommand>();
 

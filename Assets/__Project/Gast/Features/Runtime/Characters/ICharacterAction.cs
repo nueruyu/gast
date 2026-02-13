@@ -33,7 +33,7 @@ namespace Gast.Features.Characters
         /// <summary>
         /// Handle movement input while this action is active.
         /// </summary>
-        void Move(Vector3 direction, float speed);
+        void Move(Vector3 direction);
 
         /// <summary>
         /// Cleanup logic called when the action completes or is interrupted.

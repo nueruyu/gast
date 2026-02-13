@@ -27,8 +27,6 @@ namespace Gast.Features.Characters
 
         readonly Signal<ICharacter> destroyedSignal = new();
 
-        bool isSprinting;
-
         const float CorpseDespawnDelaySeconds = 5f;
 
         public CharacterId Id => context.Id;
@@ -48,32 +46,6 @@ namespace Gast.Features.Characters
         void Update()
         {
             actionController?.Update();
-        }
-
-        void LateUpdate()
-        {
-            UpdateAnimationMoveSpeed();
-        }
-
-        /// <summary>
-        /// Update the animation speed parameter based on current velocity.
-        /// </summary>
-        void UpdateAnimationMoveSpeed()
-        {
-            if (context == null)
-                return;
-
-            var body = context.Body;
-            var velocity = body.Velocity;
-            velocity.y = 0f;
-            if (!body.IsInputMovementEnabled)
-            {
-                velocity = Vector3.zero;
-            }
-
-            var currentSpeed = velocity.magnitude;
-            var normalizedSpeed = currentSpeed / typeDefinition.SprintSpeed;
-            context.Animator.SetMoveSpeed(normalizedSpeed);
         }
 
         /// <summary>
@@ -115,6 +87,8 @@ namespace Gast.Features.Characters
             return newAspect;
         }
 
+        public T Resolve<T>() where T : class => context.Resolve<T>();
+
         /// <summary>
         /// Attach a brain to this character, detaching any existing brain first.
         /// The brain's OnAttached method will be called after attachment.
@@ -135,24 +109,6 @@ namespace Gast.Features.Characters
         {
             currentBrain?.OnDetached();
             currentBrain = null;
-        }
-
-        /// <summary>
-        /// Move the character in the specified direction (0-1 normalized).
-        /// </summary>
-        public void Move(Vector3 direction)
-        {
-            var speed = isSprinting ? typeDefinition.SprintSpeed : typeDefinition.WalkSpeed;
-
-            actionController.Move(direction, speed);
-        }
-
-        /// <summary>
-        /// Set whether the character is sprinting.
-        /// </summary>
-        public void SetSprint(bool isSprinting)
-        {
-            this.isSprinting = isSprinting;
         }
 
         void OnDestroy()
