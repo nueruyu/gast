@@ -9,7 +9,7 @@ namespace GastGame.Features.CharacterActions
     /// <summary>
     /// Attack action that stops movement and executes the attack method.
     /// </summary>
-    public class AttackAction : ICharacterAction<AttackCommand>
+    public class AttackAction : ICharacterExecutableAction<AttackCommand>
     {
         readonly CharacterActionContext context;
         readonly MeleeMethod method;

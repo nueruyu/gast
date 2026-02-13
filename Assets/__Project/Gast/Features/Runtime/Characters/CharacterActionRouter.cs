@@ -10,28 +10,37 @@ namespace Gast.Features.Characters
     /// </summary>
     public class CharacterActionRouter
     {
-        readonly Dictionary<Type, ICharacterAction> registeredActions = new();
+        readonly Dictionary<Type, ICharacterExecutableAction> registeredActions = new();
         ICharacterAction defaultAction;
-        ICharacterAction currentAction;
+        ICharacterExecutableAction activeAction;
 
-        public bool IsActionRunning => currentAction != null;
-        public ICharacterAction CurrentAction => currentAction ?? defaultAction;
+        public ICharacterAction CurrentAction => activeAction ?? defaultAction;
 
-        /// <summary>
-        /// Register an action for later execution.
-        /// Actions with null CommandType are treated as the default action.
-        /// </summary>
-        public void Register(ICharacterAction action)
+        public void RegisterDefaultAction(ICharacterAction action)
         {
             if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            if (action.CommandType != null)
-                registeredActions[action.CommandType] = action;
-            else
-                defaultAction = action;
+            if (defaultAction is not null)
+                throw new InvalidOperationException();
+
+            defaultAction = action;
+        }
+
+        /// <summary>
+        /// Register an action for later execution.
+        /// Actions with null CommandType are treated as the default action.
+        /// </summary>
+        public void Register(ICharacterExecutableAction action)
+        {
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            registeredActions[action.CommandType] = action;
         }
 
         /// <summary>
@@ -47,7 +56,7 @@ namespace Gast.Features.Characters
             if (!action.CanExecute())
                 return false;
 
-            var active = currentAction ?? defaultAction;
+            var active = activeAction ?? defaultAction;
             if (active != null)
             {
                 if (action.Priority <= active.Priority)
@@ -56,7 +65,7 @@ namespace Gast.Features.Characters
                 active.OnEnd();
             }
 
-            currentAction = action;
+            activeAction = action;
             action.Execute(in command);
 
             return true;
@@ -67,7 +76,7 @@ namespace Gast.Features.Characters
         /// </summary>
         public void Stop<TCommand>() where TCommand : struct, ICharacterStateCommand
         {
-            if (currentAction?.CommandType == typeof(TCommand))
+            if (activeAction?.CommandType == typeof(TCommand))
             {
                 CancelCurrent();
             }
@@ -78,10 +87,10 @@ namespace Gast.Features.Characters
         /// </summary>
         public void CancelCurrent()
         {
-            if (currentAction != null)
+            if (activeAction != null)
             {
-                currentAction.OnEnd();
-                currentAction = null;
+                activeAction.OnEnd();
+                activeAction = null;
             }
         }
 
@@ -91,18 +100,18 @@ namespace Gast.Features.Characters
         /// </summary>
         public void Update()
         {
-            if (currentAction != null)
+            if (activeAction != null)
             {
-                if (!currentAction.OnUpdate())
+                if (!activeAction.OnUpdate())
                 {
                     // Action finished naturally
-                    currentAction.OnEnd();
-                    currentAction = null;
+                    activeAction.OnEnd();
+                    activeAction = null;
                 }
             }
         }
 
-        public bool TryGetAction<TCommand>(out ICharacterAction<TCommand> action)
+        public bool TryGetAction<TCommand>(out ICharacterExecutableAction<TCommand> action)
             where TCommand : struct, ICharacterActionCommand
         {
             action = default;
@@ -110,7 +119,7 @@ namespace Gast.Features.Characters
             if (!registeredActions.TryGetValue(typeof(TCommand), out var rawAction))
                 return false;
 
-            if (rawAction is not ICharacterAction<TCommand> typedAction)
+            if (rawAction is not ICharacterExecutableAction<TCommand> typedAction)
                 return false;
 
             action = typedAction;
@@ -119,7 +128,7 @@ namespace Gast.Features.Characters
 
         public bool IsActionActive<TCommand>() where TCommand : struct, ICharacterActionCommand
         {
-            return currentAction != null && currentAction.CommandType == typeof(TCommand);
+            return activeAction != null && activeAction.CommandType == typeof(TCommand);
         }
     }
 }

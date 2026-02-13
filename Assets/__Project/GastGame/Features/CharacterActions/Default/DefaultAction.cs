@@ -9,15 +9,12 @@ namespace GastGame.Features.CharacterActions.Default
     {
         readonly CharacterActionContext context;
 
-        public Type CommandType => null; // This action is not triggered by a command
         public int Priority => 0; // Lowest priority
 
         public DefaultAction(CharacterActionContext context)
         {
             this.context = context;
         }
-
-        public bool CanExecute() => true;
 
         public bool OnUpdate()
         {

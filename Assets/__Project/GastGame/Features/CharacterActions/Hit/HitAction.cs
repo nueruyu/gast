@@ -9,7 +9,7 @@ namespace GastGame.Features.CharacterActions
     /// Handles hit reaction: plays animation and applies knockback.
     /// High priority interrupts most other actions (except dash/invincibility actions).
     /// </summary>
-    public class HitAction : ICharacterAction<HitCommand>
+    public class HitAction : ICharacterExecutableAction<HitCommand>
     {
         readonly CharacterActionContext context;
         readonly HitActionSettings settings;

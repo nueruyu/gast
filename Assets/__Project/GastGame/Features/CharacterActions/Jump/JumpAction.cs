@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace GastGame.Features.CharacterActions
 {
-    public class JumpAction : ICharacterAction<JumpCommand>
+    public class JumpAction : ICharacterExecutableAction<JumpCommand>
     {
         readonly CharacterActionContext context;
         readonly JumpActionSettings settings;

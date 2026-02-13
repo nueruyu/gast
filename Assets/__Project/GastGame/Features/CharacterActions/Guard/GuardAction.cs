@@ -9,7 +9,7 @@ namespace GastGame.Features.CharacterActions
     /// Guard action that allows reduced-speed movement while guarding.
     /// Reads latest input from CharacterActionController and applies movement penalty.
     /// </summary>
-    public class GuardAction : ICharacterAction<GuardCommand>
+    public class GuardAction : ICharacterExecutableAction<GuardCommand>
     {
         readonly CharacterActionContext context;
         readonly GuardActionSettings settings;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace GastGame.Features.CharacterActions
 {
-    public class DieAction : ICharacterAction<DieCommand>
+    public class DieAction : ICharacterExecutableAction<DieCommand>
     {
         readonly CharacterActionContext context;
         readonly CharacterController controller;

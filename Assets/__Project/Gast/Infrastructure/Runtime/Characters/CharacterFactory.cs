@@ -125,20 +125,21 @@ namespace Gast.Infrastructure.Characters
 
         CharacterActionController CreateActionController(CharacterContext character, CharacterTypeDefinition definition)
         {
-            var actionController = new CharacterActionController(character);
+            var actionController = new CharacterActionController();
 
             if (definition.ActionSettings != null)
             {
                 foreach (var settings in definition.ActionSettings)
                 {
-                    if (settings == null)
-                    {
-                        Debug.LogWarning($"A null action setting was found in '{definition.name}'.");
-                        continue;
-                    }
                     var action = settings.CreateAction(character);
-                    if (action != null)
-                        actionController.RegisterAction(action);
+                    if (action is ICharacterExecutableAction executable)
+                    {
+                        actionController.RegisterAction(executable);
+                    }
+                    else
+                    {
+                        actionController.RegisterDefaultAction(action);
+                    }
                 }
             }
             else

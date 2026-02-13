@@ -10,14 +10,13 @@ namespace Gast.Features.Characters
     public class CharacterActionController : ICharacterActionController
     {
         readonly CharacterActionRouter router = new();
-        readonly CharacterContext character;
 
-        public CharacterActionController(CharacterContext character)
+        public void RegisterDefaultAction(ICharacterAction action)
         {
-            this.character = character;
+            router.RegisterDefaultAction(action);
         }
 
-        public void RegisterAction(ICharacterAction action)
+        public void RegisterAction(ICharacterExecutableAction action)
         {
             router.Register(action);
         }

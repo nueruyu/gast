@@ -9,7 +9,7 @@ namespace GastGame.Features.CharacterActions
     /// Dash action with curve-driven movement.
     /// Disables input movement and applies forced velocity based on animation curve.
     /// </summary>
-    public class DashAction : ICharacterAction<DashCommand>
+    public class DashAction : ICharacterExecutableAction<DashCommand>
     {
         readonly CharacterActionContext context;
         readonly DashActionSettings settings;

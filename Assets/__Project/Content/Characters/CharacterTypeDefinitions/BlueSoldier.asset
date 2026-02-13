@@ -18,6 +18,7 @@ MonoBehaviour:
   walkSpeed: 2
   sprintSpeed: 5
   actionSettings:
+  - {fileID: 11400000, guid: 937026f66d2b03e459f021892ffd5744, type: 2}
   - {fileID: 11400000, guid: 483a7dcaec60a744d8b94dc74af2728c, type: 2}
   - {fileID: 11400000, guid: 744704839dee8b344bb522c82fa0be24, type: 2}
   - {fileID: 11400000, guid: 4b340309f10e76c418d7902b318351ad, type: 2}

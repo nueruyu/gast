@@ -9,9 +9,8 @@ namespace GastGame.Features.CharacterActions.Default
     {
         public override ICharacterAction CreateAction(CharacterContext context)
         {
-            // This is a placeholder. The actual creation with the correct context happens in GameCharacterFactory.
-            // This method won't be called directly.
-            return null;
+            var actionContext = CharacterActionContextFactory.Create(context);
+            return new DefaultAction(actionContext);
         }
     }
 }
