@@ -4,26 +4,45 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Bundle Source",
+      "label": "repomix: Generate Markdown & Copy to Clipboard",
       "type": "shell",
-      "command": "bundle-md",
-      "args": ["Assets/__Project", "Builds/bundle-outputs/gast.md"]
-    },
+      // Run Windows PowerShell
+      "command": "powershell",
+      "args": [
+        // Recommended PowerShell options for script execution
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        // Script file to execute
+        "-File",
+        "${workspaceFolder}/.vscode/scripts/run-repomix.ps1",
+        // Argument passed to the script (path of the selected config file)
+        "${workspaceFolder}/.vscode/repomix/${input:repomixConfig}"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
     {
-      "label": "Bundle And Copy Source",
-      "type": "shell",
-      "dependsOn": "Bundle Source",
-      "problemMatcher": [],
-      "windows": {
-        "command": "Set-Clipboard -Path \"Builds/bundle-outputs/gast.md\""
-      },
-      "osx": {
-        "command": "osascript -e 'tell app \"Finder\" to set the clipboard to ( POSIX file \"Builds/bundle-outputs/gast.md\" )'"
-      },
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
+      "id": "repomixConfig",
+      "type": "pickString",
+      "description": "Select a repomix configuration profile to use",
+      "options": [
+        {
+          "label": "📄 Default Config",
+          "value": "default.config.json"
+        }
+      ],
+      "default": "default.config.json"
     }
   ]
 }
