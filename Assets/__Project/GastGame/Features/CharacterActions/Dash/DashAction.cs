@@ -5,14 +5,11 @@ using UnityEngine;
 
 namespace GastGame.Features.CharacterActions
 {
-    /// <summary>
-    /// Dash action with curve-driven movement.
-    /// Disables input movement and applies forced velocity based on animation curve.
-    /// </summary>
     public class DashAction : ICharacterExecutableAction<DashCommand>
     {
-        readonly CharacterActionContext context;
+        readonly CharacterContext context;
         readonly DashActionSettings settings;
+        readonly CharacterAnimator animator;
 
         float startTime;
         float lastDashTime = float.NegativeInfinity;
@@ -22,11 +19,12 @@ namespace GastGame.Features.CharacterActions
         public int Priority => 10;
 
         public DashAction(
-            CharacterActionContext context,
+            CharacterContext context,
             DashActionSettings settings)
         {
             this.context = context;
             this.settings = settings;
+            animator = context.Resolve<CharacterAnimator>();
         }
 
         public bool CanExecute()
@@ -39,12 +37,11 @@ namespace GastGame.Features.CharacterActions
             startTime = Time.time;
             lastDashTime = startTime;
 
-            var body = context.CharacterContext.Body;
+            var body = context.Body;
             body.IsInputMovementEnabled = false;
 
             dashDirection = body.Forward;
 
-            var animator = context.CharacterAnimator;
             if (animator)
                 animator.PlayDash();
         }
@@ -59,7 +56,7 @@ namespace GastGame.Features.CharacterActions
                 return false;
             }
 
-            var body = context.CharacterContext.Body;
+            var body = context.Body;
             float speedEval = settings.SpeedCurve.Evaluate(progress);
             body.SetForcedVelocity(dashDirection * (settings.MaxSpeed * speedEval));
             body.SetLookDirection(dashDirection, settings.LookDirectionSpeed);
@@ -69,12 +66,11 @@ namespace GastGame.Features.CharacterActions
 
         public void Move(Vector3 direction)
         {
-            // Dash controls movement completely - ignore input
         }
 
         public void OnEnd()
         {
-            context.CharacterContext.Body.IsInputMovementEnabled = true;
+            context.Body.IsInputMovementEnabled = true;
         }
     }
 }

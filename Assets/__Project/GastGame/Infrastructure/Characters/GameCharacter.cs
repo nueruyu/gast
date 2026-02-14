@@ -33,10 +33,10 @@ namespace GastGame.Infrastructure.Characters
         public ILive<float> Health { get; }
         public ILive<float> MaxHealth { get; }
 
-        public GameCharacter(ICharacter character, CharacterActionStateStore stateStore)
+        public GameCharacter(ICharacter character)
         {
             this.character = character;
-            this.stateStore = stateStore;
+            this.stateStore = character.Resolve<CharacterActionStateStore>();
 
             var schema = GetStatSchema();
             Health = character.Status.GetStat<float>(schema.Health.Id);

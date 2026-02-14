@@ -7,30 +7,31 @@ namespace GastGame.Features.CharacterActions
 {
     public class DieAction : ICharacterExecutableAction<DieCommand>
     {
-        readonly CharacterActionContext context;
+        readonly CharacterContext context;
         readonly CharacterController controller;
+        readonly CharacterAnimator animator;
 
         public Type CommandType => typeof(DieCommand);
         public int Priority => 99;
 
-        public DieAction(CharacterActionContext context)
+        public DieAction(CharacterContext context)
         {
             this.context = context;
-            controller = context.CharacterContext.Body.GetComponent<CharacterController>();
+            controller = context.Body.GetComponent<CharacterController>();
+            animator = context.Resolve<CharacterAnimator>();
         }
 
         public bool CanExecute() => true;
 
         public void Execute(in DieCommand command)
         {
-            var body = context.CharacterContext.Body;
+            var body = context.Body;
             body.IsInputMovementEnabled = false;
             body.SetForcedVelocity(Vector3.zero);
 
             if (controller != null)
                 controller.enabled = false;
 
-            var animator = context.CharacterAnimator;
             if (animator)
                 animator.SetDead(true);
         }
@@ -46,11 +47,10 @@ namespace GastGame.Features.CharacterActions
 
         public void OnEnd()
         {
-            var animator = context.CharacterAnimator;
             if (animator)
                 animator.SetDead(false);
 
-            context.CharacterContext.Body.IsInputMovementEnabled = true;
+            context.Body.IsInputMovementEnabled = true;
         }
     }
 }

@@ -45,6 +45,7 @@ namespace Gast.Infrastructure
             builder.Register<CharacterAspectFactoryRegistry>().AsImplementedInterfaces();
 
             // Character
+            builder.Register<CharacterFactory>().AsImplementedInterfaces();
             builder.Register<CharacterRepository>().AsImplementedInterfaces();
             builder.Register<CharacterActorRepository>().AsImplementedInterfaces();
             builder.Register<CharacterTypeRepository>().AsImplementedInterfaces().AsSelf();

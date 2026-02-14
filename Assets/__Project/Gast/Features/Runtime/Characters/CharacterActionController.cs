@@ -1,59 +1,132 @@
 using Gast.Domain.Characters;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Gast.Features.Characters
 {
-    /// <summary>
-    /// Manages character actions through an ActionRouter.
-    /// Provides command-based dispatch for action execution.
-    /// </summary>
     public class CharacterActionController : ICharacterActionController
     {
-        readonly CharacterActionRouter router = new();
+        readonly Dictionary<Type, ICharacterExecutableAction> registeredActions = new();
+        ICharacterAction defaultAction;
+        ICharacterExecutableAction activeAction;
+
+        public ICharacterAction CurrentAction => activeAction ?? defaultAction;
 
         public void RegisterDefaultAction(ICharacterAction action)
         {
-            router.RegisterDefaultAction(action);
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            if (defaultAction is not null)
+                throw new InvalidOperationException();
+
+            defaultAction = action;
         }
 
         public void RegisterAction(ICharacterExecutableAction action)
         {
-            router.Register(action);
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            registeredActions[action.CommandType] = action;
         }
 
         public void ExecuteAction<TCommand>(in TCommand command) where TCommand : struct, ICharacterTriggerCommand
         {
-            router.TryExecute(in command);
+            TryExecute(in command);
         }
 
         public void StartAction<TCommand>(in TCommand command) where TCommand : struct, ICharacterStateCommand
         {
-            router.TryExecute(in command);
+            TryExecute(in command);
+        }
+
+        public bool TryExecute<TCommand>(in TCommand command)
+            where TCommand : struct, ICharacterActionCommand
+        {
+            if (!TryGetAction<TCommand>(out var action))
+                return false;
+
+            if (!action.CanExecute())
+                return false;
+
+            var active = activeAction ?? defaultAction;
+            if (active != null)
+            {
+                if (action.Priority <= active.Priority)
+                    return false;
+
+                active.OnEnd();
+            }
+
+            activeAction = action;
+            action.Execute(in command);
+
+            return true;
         }
 
         public void StopAction<TCommand>() where TCommand : struct, ICharacterStateCommand
         {
-            router.Stop<TCommand>();
+            if (activeAction?.CommandType == typeof(TCommand))
+            {
+                CancelCurrent();
+            }
+        }
+
+        public void CancelCurrent()
+        {
+            if (activeAction != null)
+            {
+                activeAction.OnEnd();
+                activeAction = null;
+            }
         }
 
         public void Move(Vector3 direction)
         {
-            router.CurrentAction?.Move(direction);
+            CurrentAction?.Move(direction);
         }
 
         public void Update()
         {
-            router.Update();
+            if (activeAction != null)
+            {
+                if (!activeAction.OnUpdate())
+                {
+                    activeAction.OnEnd();
+                    activeAction = null;
+                }
+            }
         }
 
         public bool IsActionActive<TCommand>() where TCommand : struct, ICharacterActionCommand
         {
-            return router.IsActionActive<TCommand>();
+            return activeAction != null && activeAction.CommandType == typeof(TCommand);
         }
 
         public bool CanExecuteAction<TCommand>() where TCommand : struct, ICharacterActionCommand
         {
-            return router.TryGetAction<TCommand>(out var action) && action.CanExecute();
+            return TryGetAction<TCommand>(out var action) && action.CanExecute();
+        }
+
+        public bool TryGetAction<TCommand>(out ICharacterExecutableAction<TCommand> action)
+            where TCommand : struct, ICharacterActionCommand
+        {
+            action = default;
+
+            if (!registeredActions.TryGetValue(typeof(TCommand), out var rawAction))
+                return false;
+
+            if (rawAction is not ICharacterExecutableAction<TCommand> typedAction)
+                return false;
+
+            action = typedAction;
+            return true;
         }
     }
 }

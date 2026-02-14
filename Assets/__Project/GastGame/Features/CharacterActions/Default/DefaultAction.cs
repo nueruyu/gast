@@ -7,27 +7,28 @@ namespace GastGame.Features.CharacterActions.Default
 {
     public class DefaultAction : ICharacterAction
     {
-        readonly CharacterActionContext context;
+        readonly CharacterContext context;
+        readonly CharacterAnimator animator;
+        readonly CharacterActionStateStore stateStore;
 
-        public int Priority => 0; // Lowest priority
+        public int Priority => 0;
 
-        public DefaultAction(CharacterActionContext context)
+        public DefaultAction(CharacterContext context)
         {
             this.context = context;
+            animator = context.Resolve<CharacterAnimator>();
+            stateStore = context.Resolve<CharacterActionStateStore>();
         }
 
         public bool OnUpdate()
         {
-            // This action runs indefinitely until interrupted
             return true;
         }
 
         public void Move(Vector3 direction)
         {
-            var body = context.CharacterContext.Body;
-            var typeDef = context.CharacterContext.TypeDefinition;
-            var animator = context.CharacterAnimator;
-            var stateStore = context.StateStore;
+            var body = context.Body;
+            var typeDef = context.TypeDefinition;
 
             float targetSpeed;
             if (direction.sqrMagnitude > 0.01f)
@@ -43,13 +44,14 @@ namespace GastGame.Features.CharacterActions.Default
             }
 
             var normalizedSpeed = targetSpeed / typeDef.SprintSpeed;
-            animator.SetMoveSpeed(normalizedSpeed);
+            if (animator)
+                animator.SetMoveSpeed(normalizedSpeed);
         }
 
         public void OnEnd()
         {
-            // When interrupted, ensure move speed is reset in animator
-            context.CharacterAnimator.SetMoveSpeed(0);
+            if (animator)
+                animator.SetMoveSpeed(0);
         }
     }
 }

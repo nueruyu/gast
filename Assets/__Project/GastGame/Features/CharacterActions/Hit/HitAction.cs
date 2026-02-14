@@ -5,50 +5,38 @@ using UnityEngine;
 
 namespace GastGame.Features.CharacterActions
 {
-    /// <summary>
-    /// Handles hit reaction: plays animation and applies knockback.
-    /// High priority interrupts most other actions (except dash/invincibility actions).
-    /// </summary>
     public class HitAction : ICharacterExecutableAction<HitCommand>
     {
-        readonly CharacterActionContext context;
+        readonly CharacterContext context;
         readonly HitActionSettings settings;
+        readonly CharacterAnimator animator;
 
         float startTime;
-
         Vector3 knockbackVelocity;
 
         public Type CommandType => typeof(HitCommand);
-
-        // Priority 8: Higher than Attack(5), lower than Dash(10)
-        // This allows dash to avoid hits, but interrupts attacks and movement
         public int Priority => 8;
 
-        public HitAction(CharacterActionContext context, HitActionSettings settings)
+        public HitAction(CharacterContext context, HitActionSettings settings)
         {
             this.context = context;
             this.settings = settings;
+            animator = context.Resolve<CharacterAnimator>();
         }
 
-        public bool CanExecute() => true; // Can always execute when hit
+        public bool CanExecute() => true;
 
         public void Execute(in HitCommand command)
         {
             startTime = Time.time;
-
             knockbackVelocity = command.DamageInfo.KnockbackForce;
 
-            var body = context.CharacterContext.Body;
+            var body = context.Body;
 
-            // Play hit animation
-            var animator = context.CharacterAnimator;
             if (animator)
                 animator.PlayHit();
 
-            // Apply initial knockback velocity
             body.SetForcedVelocity(knockbackVelocity);
-
-            // Disable input movement (stun effect)
             body.IsInputMovementEnabled = false;
         }
 
@@ -59,22 +47,20 @@ namespace GastGame.Features.CharacterActions
                 return false;
             }
 
-            // Apply friction to knockback velocity
             knockbackVelocity = Vector3.Lerp(knockbackVelocity, Vector3.zero, Time.deltaTime * settings.KnockbackFriction);
-            context.CharacterContext.Body.SetForcedVelocity(knockbackVelocity);
+            context.Body.SetForcedVelocity(knockbackVelocity);
             return true;
         }
 
         public void Move(Vector3 direction)
         {
-            // Ignore movement input during hit reaction
         }
 
         public void OnEnd()
         {
-            var body = context.CharacterContext.Body;
-            body.IsInputMovementEnabled = true; // Re-enable input
-            body.SetForcedVelocity(Vector3.zero); // Clear knockback
+            var body = context.Body;
+            body.IsInputMovementEnabled = true;
+            body.SetForcedVelocity(Vector3.zero);
         }
     }
 }

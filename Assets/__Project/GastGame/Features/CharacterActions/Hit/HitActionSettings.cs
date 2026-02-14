@@ -1,5 +1,4 @@
 using Gast.Features.Characters;
-using GastGame.Features.Characters;
 using UnityEngine;
 
 namespace GastGame.Features.CharacterActions
@@ -18,8 +17,7 @@ namespace GastGame.Features.CharacterActions
 
         public override ICharacterAction CreateAction(CharacterContext context)
         {
-            var actionContext = CharacterActionContextFactory.Create(context);
-            return new HitAction(actionContext, this);
+            return new HitAction(context, this);
         }
     }
 }

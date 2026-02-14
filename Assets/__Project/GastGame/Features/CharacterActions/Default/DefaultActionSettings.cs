@@ -1,5 +1,4 @@
 using Gast.Features.Characters;
-using GastGame.Features.Characters;
 using UnityEngine;
 
 namespace GastGame.Features.CharacterActions.Default
@@ -9,8 +8,7 @@ namespace GastGame.Features.CharacterActions.Default
     {
         public override ICharacterAction CreateAction(CharacterContext context)
         {
-            var actionContext = CharacterActionContextFactory.Create(context);
-            return new DefaultAction(actionContext);
+            return new DefaultAction(context);
         }
     }
 }

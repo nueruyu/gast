@@ -1,19 +1,23 @@
+using Gast.Domain.Characters;
+using Gast.Domain.Combat;
 using Gast.Features.Characters;
+using Gast.Features.Combat;
+using GastGame.Domain.Characters;
 using GastGame.Features.Characters;
 using System;
-using UnityEngine;
+using System.Threading;
 using Cysharp.Threading.Tasks;
+using R3;
+using UnityEngine;
 
 namespace GastGame.Features.CharacterActions
 {
-    /// <summary>
-    /// Attack action that stops movement and executes the attack method.
-    /// </summary>
     public class AttackAction : ICharacterExecutableAction<AttackCommand>
     {
-        readonly CharacterActionContext context;
-        readonly MeleeMethod method;
+        readonly CharacterContext context;
         readonly AttackActionSettings settings;
+        readonly CharacterAnimator animator;
+        readonly MeleeAttackEffect effect;
 
         float startTime;
         float lastAttackTime = float.NegativeInfinity;
@@ -22,13 +26,18 @@ namespace GastGame.Features.CharacterActions
         public int Priority => 5;
 
         public AttackAction(
-            CharacterActionContext context,
+            CharacterContext context,
             AttackActionSettings settings)
         {
             this.context = context;
             this.settings = settings;
-            method = new MeleeMethod(settings.MeleeMethodSettings, context);
-            method.BindEvents(context.CharacterContext).AddTo(context.CharacterContext.Body.destroyCancellationToken);
+            animator = context.Resolve<CharacterAnimator>();
+
+            if (settings.EffectSettings != null)
+            {
+                effect = settings.EffectSettings.CreateEffect(context);
+                effect.BindEvents().AddTo(context.Body.destroyCancellationToken);
+            }
         }
 
         public bool CanExecute()
@@ -41,7 +50,70 @@ namespace GastGame.Features.CharacterActions
             startTime = Time.time;
             lastAttackTime = startTime;
 
-            method.Attack(context);
+            ExecuteAttackAsync(context.Body.destroyCancellationToken).Forget();
+        }
+
+        async UniTaskVoid ExecuteAttackAsync(CancellationToken cancellationToken)
+        {
+            animator.PlayAttack();
+
+            await UniTask.Delay(
+                TimeSpan.FromSeconds(settings.AnimationTriggerDelay),
+                cancellationToken: cancellationToken);
+
+            var attackerTransform = context.Body.transform;
+
+            var forward = attackerTransform.forward;
+            var spawnPosition = attackerTransform.position + settings.Offset + forward * settings.Range;
+            var spawnRotation = attackerTransform.rotation;
+
+            var damageArea = UnityEngine.Object.Instantiate(
+                settings.DamageAreaPrefab,
+                spawnPosition,
+                spawnRotation);
+
+            damageArea.transform.localScale = settings.HitboxSize;
+
+            damageArea.Initialize(
+                context.Id,
+                context.Faction,
+                settings.DamageAreaDuration);
+
+            damageArea.Hit
+                .Subscribe(OnAttackHit)
+                .AddTo(damageArea.destroyCancellationToken);
+        }
+
+        void OnAttackHit(DamageHitInfo hit)
+        {
+            effect?.OnHit(hit);
+
+            var point = hit.Point;
+
+            var knockbackDirection = point.rotation * Vector3.forward;
+            var damageInfo = new DamageInfo(
+                settings.Damage,
+                point,
+                settings.KnockbackForce * knockbackDirection,
+                hit.AttackerId
+            );
+
+            var hitActor = hit.Character.As<IGameCharacter>();
+
+            hitActor.Hit(damageInfo);
+
+            if (hitActor.IsAlive.Value)
+            {
+                hitActor.SetHealth(hitActor.Health.Value - damageInfo.Amount);
+
+                if (hitActor.Health.Value <= 0)
+                {
+                    hitActor.Die();
+                    hit.Character.DetachBrain();
+                    context.EventPublisher.Publish(new CharacterDefeatedEvent(hit.Character, damageInfo.AttackerId));
+                    hit.Character.DespawnAfterDelay().Forget();
+                }
+            }
         }
 
         public bool OnUpdate()
@@ -51,12 +123,11 @@ namespace GastGame.Features.CharacterActions
 
         public void Move(Vector3 direction)
         {
-            // Allow movement while attacking
             if (direction.sqrMagnitude > 0.01f)
             {
-                var speed = context.CharacterContext.TypeDefinition.WalkSpeed;
-                context.CharacterContext.Body.SetInputVelocity(direction * speed);
-                context.CharacterContext.Body.SetLookDirection(direction, 10f);
+                var speed = context.TypeDefinition.WalkSpeed;
+                context.Body.SetInputVelocity(direction * speed);
+                context.Body.SetLookDirection(direction, 10f);
             }
         }
 

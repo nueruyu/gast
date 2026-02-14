@@ -5,29 +5,27 @@ using UnityEngine;
 
 namespace GastGame.Features.CharacterActions
 {
-    /// <summary>
-    /// Guard action that allows reduced-speed movement while guarding.
-    /// Reads latest input from CharacterActionController and applies movement penalty.
-    /// </summary>
     public class GuardAction : ICharacterExecutableAction<GuardCommand>
     {
-        readonly CharacterActionContext context;
+        readonly CharacterContext context;
         readonly GuardActionSettings settings;
+        readonly CharacterAnimator animator;
 
         public Type CommandType => typeof(GuardCommand);
         public int Priority => 2;
 
-        public GuardAction(CharacterActionContext context, GuardActionSettings settings)
+        public GuardAction(CharacterContext context, GuardActionSettings settings)
         {
             this.context = context;
             this.settings = settings;
+            animator = context.Resolve<CharacterAnimator>();
         }
 
         public bool CanExecute() => true;
 
         public void Execute(in GuardCommand command)
         {
-            context.CharacterAnimator?.SetGuard(true);
+            animator?.SetGuard(true);
         }
 
         public bool OnUpdate()
@@ -39,15 +37,15 @@ namespace GastGame.Features.CharacterActions
         {
             if (direction.sqrMagnitude > 0.01f)
             {
-                var speed = context.CharacterContext.TypeDefinition.WalkSpeed * settings.MoveSpeedPenalty;
-                context.CharacterContext.Body.SetInputVelocity(direction * speed);
-                context.CharacterContext.Body.SetLookDirection(direction, settings.LookDirectionSpeed);
+                var speed = context.TypeDefinition.WalkSpeed * settings.MoveSpeedPenalty;
+                context.Body.SetInputVelocity(direction * speed);
+                context.Body.SetLookDirection(direction, settings.LookDirectionSpeed);
             }
         }
 
         public void OnEnd()
         {
-            context.CharacterAnimator?.SetGuard(false);
+            animator?.SetGuard(false);
         }
     }
 }
