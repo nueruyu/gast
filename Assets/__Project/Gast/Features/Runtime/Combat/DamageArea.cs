@@ -3,7 +3,6 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Observables;
 using Gast.Domain.Characters;
-using Gast.Domain.Combat;
 using Gast.Features.Characters;
 using UnityEngine;
 

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Gast.Domain.Characters;
-using Gast.Domain.Sensors;
 using Gast.Shared.UnityExtensions;
 using UnityEngine;
 

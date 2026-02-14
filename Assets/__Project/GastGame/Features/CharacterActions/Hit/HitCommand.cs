@@ -1,5 +1,5 @@
 using Gast.Domain.Characters;
-using Gast.Domain.Combat;
+using GastGame.Domain.Combat;
 
 namespace GastGame.Features.CharacterActions
 {

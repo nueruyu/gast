@@ -1,10 +1,9 @@
 using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
-using Gast.Domain.Combat;
 using Gast.Domain.Interactions;
-using Gast.Domain.Sensors;
 using GastGame.Domain.Characters;
+using GastGame.Domain.Combat;
 using GastGame.Features.CharacterActions;
 using GastGame.Features.Characters;
 using R3;

@@ -1,9 +1,8 @@
 using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
-using Gast.Domain.Combat;
 using Gast.Domain.Interactions;
-using Gast.Domain.Sensors;
+using GastGame.Domain.Combat;
 using UnityEngine;
 
 namespace GastGame.Domain.Characters

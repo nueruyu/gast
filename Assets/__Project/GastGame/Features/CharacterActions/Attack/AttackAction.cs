@@ -1,5 +1,4 @@
 using Gast.Domain.Characters;
-using Gast.Domain.Combat;
 using Gast.Features.Characters;
 using Gast.Features.Combat;
 using GastGame.Domain.Characters;
@@ -9,6 +8,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
+using GastGame.Domain.Combat;
 
 namespace GastGame.Features.CharacterActions
 {

@@ -2,7 +2,6 @@ using Gast.Core.Events;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
-using Gast.Domain.Sensors;
 using Gast.Domain.Stats;
 using Gast.Features.Combat;
 using System;

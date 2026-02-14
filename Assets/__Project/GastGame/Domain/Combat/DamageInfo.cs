@@ -1,7 +1,7 @@
 using UnityEngine;
 using Gast.Domain.Characters;
 
-namespace Gast.Domain.Combat
+namespace GastGame.Domain.Combat
 {
     /// <summary>
     /// Information about damage dealt to a character.
