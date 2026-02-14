@@ -38,8 +38,12 @@
       "description": "Select a repomix configuration profile to use",
       "options": [
         {
-          "label": "📄 Default Config",
+          "label": "Default",
           "value": "default.config.json"
+        },
+        {
+          "label": "Game",
+          "value": "game.config.json"
         }
       ],
       "default": "default.config.json"
