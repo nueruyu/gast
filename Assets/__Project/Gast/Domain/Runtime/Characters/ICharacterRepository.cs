@@ -32,11 +32,6 @@ namespace Gast.Domain.Characters
         IEnumerable<ICharacter> GetAll();
 
         /// <summary>
-        /// Get all characters belonging to a specific faction.
-        /// </summary>
-        IEnumerable<ICharacter> GetByFaction(Faction faction);
-
-        /// <summary>
         /// Signal emitted when a new character is registered.
         /// </summary>
         ISignal<ICharacter> Registered { get; }

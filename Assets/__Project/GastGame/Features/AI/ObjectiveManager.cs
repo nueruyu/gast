@@ -7,6 +7,7 @@ using Gast.Core.Events;
 using Gast.Domain.Characters;
 using R3;
 using Gast.Domain.Economy;
+using GastGame.Domain.Characters;
 
 namespace GastGame.Features.AI
 {

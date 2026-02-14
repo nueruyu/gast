@@ -46,10 +46,5 @@ namespace Gast.Infrastructure.Characters
         {
             return characters.Values;
         }
-
-        public IEnumerable<ICharacter> GetByFaction(Faction faction)
-        {
-            return characters.Values.Where(c => c.Faction == faction);
-        }
     }
 }

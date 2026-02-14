@@ -76,7 +76,6 @@ namespace GastGame.Features.CharacterActions
 
             damageArea.Initialize(
                 context.Id,
-                context.Faction,
                 settings.DamageAreaDuration);
 
             damageArea.Hit
@@ -88,6 +87,10 @@ namespace GastGame.Features.CharacterActions
         {
             effect?.OnHit(hit);
 
+            var hitActor = hit.Character.As<IGameCharacter>();
+            if (hitActor.Faction == context.Faction)
+                return;
+
             var point = hit.Point;
 
             var knockbackDirection = point.rotation * Vector3.forward;
@@ -97,8 +100,6 @@ namespace GastGame.Features.CharacterActions
                 settings.KnockbackForce * knockbackDirection,
                 hit.AttackerId
             );
-
-            var hitActor = hit.Character.As<IGameCharacter>();
 
             hitActor.Hit(damageInfo);
 
@@ -111,6 +112,10 @@ namespace GastGame.Features.CharacterActions
                     hitActor.Die();
                     hit.Character.DetachBrain();
                     context.EventPublisher.Publish(new CharacterDefeatedEvent(hit.Character, damageInfo.AttackerId));
+                    context.EventPublisher.Publish(
+                        new LootSpawnEvent(
+                            hit.Character.TypeDefinition.LootTable,
+                            hit.Character.Body.Position));
                     hit.Character.DespawnAfterDelay().Forget();
                 }
             }

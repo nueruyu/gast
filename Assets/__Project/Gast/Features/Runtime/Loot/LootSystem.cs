@@ -16,40 +16,34 @@ namespace Gast.Features.Loot
     {
         readonly IDomainEventSubscriber eventSubscriber;
         readonly ICommandDispatcher commandDispatcher;
-        readonly ICharacterTypeRepository characterTypeRepository;
 
         public LootSystem(
             IDomainEventSubscriber eventSubscriber,
-            ICommandDispatcher commandDispatcher,
-            ICharacterTypeRepository characterTypeRepository)
+            ICommandDispatcher commandDispatcher)
         {
             this.eventSubscriber = eventSubscriber;
             this.commandDispatcher = commandDispatcher;
-            this.characterTypeRepository = characterTypeRepository;
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
             eventSubscriber
-                .Subscribe<CharacterDefeatedEvent>(OnCharacterDefeated)
+                .Subscribe<LootSpawnEvent>(OnLootSpawn)
                 .AddTo(cancellationToken);
 
             await UniTask.WaitUntilCanceled(cancellationToken);
         }
 
-        void OnCharacterDefeated(CharacterDefeatedEvent e)
+        void OnLootSpawn(LootSpawnEvent e)
         {
-            var character = e.DefeatedCharacter;
-            var characterType = characterTypeRepository.Get(character.TypeId);
-
-            foreach (var entry in characterType.LootTable.Entries)
+            foreach (var entry in e.LootTable.Entries)
             {
                 if (Random.value > entry.DropRate)
                     continue;
 
                 const float RandomOffset = 0.3f;
 
-                var spawnPos = character.Body.Position +
+                var spawnPos = e.Position +
                     Vector3.up * RandomOffset +
                     Random.insideUnitSphere * RandomOffset;
 

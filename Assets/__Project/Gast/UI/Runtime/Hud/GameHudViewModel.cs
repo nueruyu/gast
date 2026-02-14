@@ -68,7 +68,7 @@ namespace Gast.UI.Hud
                     if (character == null)
                         return Observable.Return(0f);
 
-                    var definition = characterTypeRepository.Get(character.TypeId);
+                    var definition = character.TypeDefinition;
                     if (definition.StatSchema is not IBasicStatSchema schema)
                         return Observable.Return(0f);
 
@@ -88,7 +88,7 @@ namespace Gast.UI.Hud
                     if (character == null)
                         return Observable.Return(string.Empty);
 
-                    var definition = characterTypeRepository.Get(character.TypeId);
+                    var definition = character.TypeDefinition;
                     if (definition.StatSchema is not IBasicStatSchema schema)
                         return Observable.Return(string.Empty);
 

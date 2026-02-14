@@ -4,7 +4,6 @@ using Gast.Domain.Characters;
 using Gast.Domain.Combat;
 using Gast.Domain.Interactions;
 using Gast.Domain.Sensors;
-using Gast.Domain.Stats;
 using GastGame.Domain.Characters;
 using GastGame.Features.CharacterActions;
 using GastGame.Features.Characters;
