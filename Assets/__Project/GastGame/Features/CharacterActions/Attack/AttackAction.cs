@@ -18,6 +18,7 @@ namespace GastGame.Features.CharacterActions
         readonly AttackActionSettings settings;
         readonly CharacterAnimator animator;
         readonly MeleeAttackEffect effect;
+        readonly CharacterMovement movement;
 
         float startTime;
         float lastAttackTime = float.NegativeInfinity;
@@ -32,6 +33,7 @@ namespace GastGame.Features.CharacterActions
             this.context = context;
             this.settings = settings;
             animator = context.Resolve<CharacterAnimator>();
+            movement = context.Resolve<CharacterMovement>();
 
             if (settings.EffectSettings != null)
             {
@@ -128,12 +130,8 @@ namespace GastGame.Features.CharacterActions
 
         public void Move(Vector3 direction)
         {
-            if (direction.sqrMagnitude > 0.01f)
-            {
-                var speed = context.TypeDefinition.WalkSpeed;
-                context.Body.SetInputVelocity(direction * speed);
-                context.Body.SetLookDirection(direction, 10f);
-            }
+            var speed = context.TypeDefinition.WalkSpeed;
+            movement.Move(direction, speed);
         }
 
         public void OnEnd()

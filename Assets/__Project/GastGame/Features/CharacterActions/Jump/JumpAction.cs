@@ -1,4 +1,5 @@
 using Gast.Features.Characters;
+using GastGame.Features.Characters;
 using System;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace GastGame.Features.CharacterActions
     {
         readonly CharacterContext context;
         readonly JumpActionSettings settings;
+        readonly CharacterMovement movement;
 
         public Type CommandType => typeof(JumpCommand);
         public int Priority => 3;
@@ -16,6 +18,7 @@ namespace GastGame.Features.CharacterActions
         {
             this.context = context;
             this.settings = settings;
+            movement = context.Resolve<CharacterMovement>();
         }
 
         public bool CanExecute()
@@ -35,12 +38,8 @@ namespace GastGame.Features.CharacterActions
 
         public void Move(Vector3 direction)
         {
-            if (direction.sqrMagnitude > 0.01f)
-            {
-                var speed = context.TypeDefinition.WalkSpeed;
-                context.Body.SetInputVelocity(direction * speed);
-                context.Body.SetLookDirection(direction, settings.LookDirectionSpeed);
-            }
+            var speed = context.TypeDefinition.WalkSpeed;
+            movement.Move(direction, speed, settings.LookDirectionSpeed);
         }
 
         public void OnEnd()

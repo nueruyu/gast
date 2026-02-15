@@ -10,6 +10,7 @@ namespace GastGame.Features.CharacterActions
         readonly CharacterContext context;
         readonly GuardActionSettings settings;
         readonly CharacterAnimator animator;
+        readonly CharacterMovement movement;
 
         public Type CommandType => typeof(GuardCommand);
         public int Priority => 2;
@@ -19,6 +20,7 @@ namespace GastGame.Features.CharacterActions
             this.context = context;
             this.settings = settings;
             animator = context.Resolve<CharacterAnimator>();
+            movement = context.Resolve<CharacterMovement>();
         }
 
         public bool CanExecute() => true;
@@ -35,12 +37,8 @@ namespace GastGame.Features.CharacterActions
 
         public void Move(Vector3 direction)
         {
-            if (direction.sqrMagnitude > 0.01f)
-            {
-                var speed = context.TypeDefinition.WalkSpeed * settings.MoveSpeedPenalty;
-                context.Body.SetInputVelocity(direction * speed);
-                context.Body.SetLookDirection(direction, settings.LookDirectionSpeed);
-            }
+            var speed = context.TypeDefinition.WalkSpeed * settings.MoveSpeedPenalty;
+            movement.Move(direction, speed, settings.LookDirectionSpeed);
         }
 
         public void OnEnd()
