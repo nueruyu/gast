@@ -68,19 +68,36 @@ namespace Cryst.Modules.CharacterActions
             var spawnPosition = attackerTransform.position + settings.Offset + forward * settings.Range;
             var spawnRotation = attackerTransform.rotation;
 
+            GenerateDamageArea(
+                spawnPosition,
+                spawnRotation,
+                settings.HitboxSize,
+                settings.DamageAreaDuration,
+                context.Id,
+                OnAttackHit);
+        }
+
+        void GenerateDamageArea(
+            Vector3 position,
+            Quaternion rotation,
+            Vector3 size,
+            float duration,
+            CharacterId attackerId,
+            Action<DamageHitInfo> onHit)
+        {
             var damageArea = UnityEngine.Object.Instantiate(
                 settings.DamageAreaPrefab,
-                spawnPosition,
-                spawnRotation);
+                position,
+                rotation);
 
-            damageArea.transform.localScale = settings.HitboxSize;
+            damageArea.transform.localScale = size;
 
             damageArea.Initialize(
-                context.Id,
-                settings.DamageAreaDuration);
+                attackerId,
+                duration);
 
             damageArea.Hit
-                .Subscribe(OnAttackHit)
+                .Subscribe(onHit)
                 .AddTo(damageArea.destroyCancellationToken);
         }
 
@@ -111,15 +128,25 @@ namespace Cryst.Modules.CharacterActions
                 if (hitActor.Health.Value <= 0)
                 {
                     hitActor.Die();
-                    hit.Character.DetachBrain();
+
                     context.EventPublisher.Publish(new CharacterDefeatedEvent(hitActor, damageInfo.AttackerId));
                     context.EventPublisher.Publish(
                         new LootSpawnEvent(
                             hit.Character.TypeDefinition.LootTable,
                             hit.Character.Body.Position));
-                    hit.Character.DespawnAfterDelay().Forget();
+
+                    DestroyCharacterAfterDelay(hit.Character).Forget();
                 }
             }
+        }
+
+        async UniTaskVoid DestroyCharacterAfterDelay(ICharacter character)
+        {
+            await UniTask.Delay(
+                TimeSpan.FromSeconds(5),
+                cancellationToken: character.CancellationToken);
+
+            character.Destroy();
         }
 
         public bool OnUpdate()

@@ -6,6 +6,7 @@ using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 namespace Gast.Features.Characters
@@ -26,8 +27,6 @@ namespace Gast.Features.Characters
 
         readonly Signal<ICharacter> destroyedSignal = new();
 
-        const float CorpseDespawnDelaySeconds = 5f;
-
         public CharacterId Id => context.Id;
         public CharacterTypeId TypeId => context.TypeId;
         public ICharacterStatus Status { get; private set; }
@@ -41,6 +40,7 @@ namespace Gast.Features.Characters
         public ICharacterBody Body => context.Body;
         public ICharacterActionController ActionController => actionController;
         public ISignal<ICharacter> Destroyed => destroyedSignal;
+        public CancellationToken CancellationToken => destroyCancellationToken;
 
         void Update()
         {
@@ -110,22 +110,18 @@ namespace Gast.Features.Characters
             currentBrain = null;
         }
 
-        void OnDestroy()
+        public void Destroy()
         {
-            DetachBrain();
-            destroyedSignal.Publish(this);
-        }
-
-        public async UniTaskVoid DespawnAfterDelay()
-        {
-            await UniTask.Delay(
-                TimeSpan.FromSeconds(CorpseDespawnDelaySeconds),
-                cancellationToken: this.destroyCancellationToken);
-
             if (this != null && gameObject != null)
             {
                 Destroy(gameObject);
             }
+        }
+
+        void OnDestroy()
+        {
+            DetachBrain();
+            destroyedSignal.Publish(this);
         }
     }
 }

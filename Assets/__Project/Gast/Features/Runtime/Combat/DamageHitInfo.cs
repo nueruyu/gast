@@ -6,7 +6,7 @@ namespace Gast.Features.Combat
 {
     public readonly struct DamageHitInfo
     {
-        public DamageHitInfo(CharacterId attackerId, Character character, Pose point)
+        public DamageHitInfo(CharacterId attackerId, ICharacter character, Pose point)
         {
             AttackerId = attackerId;
             Character = character;
@@ -14,7 +14,7 @@ namespace Gast.Features.Combat
         }
 
         public CharacterId AttackerId { get; }
-        public Character Character { get; }
+        public ICharacter Character { get; }
         public Pose Point { get; }
     }
 }

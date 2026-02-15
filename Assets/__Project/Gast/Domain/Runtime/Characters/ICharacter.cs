@@ -2,6 +2,7 @@ using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
+using System.Threading;
 using UnityEngine;
 
 namespace Gast.Domain.Characters
@@ -47,6 +48,8 @@ namespace Gast.Domain.Characters
         /// </summary>
         ISignal<ICharacter> Destroyed { get; }
 
+        CancellationToken CancellationToken { get; }
+
         /// <summary>
         /// Controller for managing the character's actions.
         /// </summary>
@@ -77,6 +80,8 @@ namespace Gast.Domain.Characters
         /// Detach the current brain from this character.
         /// </summary>
         void DetachBrain();
+
+        void Destroy();
 
         /// <summary>
         /// Gets a specific aspect of the character.

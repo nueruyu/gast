@@ -77,6 +77,10 @@ namespace Cryst.Infrastructure.Characters
 
         public void Hit(DamageInfo damageInfo) => character.ActionController.ExecuteAction(new HitCommand(damageInfo));
 
-        public void Die() => character.ActionController.ExecuteAction(new DieCommand());
+        public void Die()
+        {
+            character.ActionController.ExecuteAction(new DieCommand());
+            character.DetachBrain();
+        }
     }
 }
