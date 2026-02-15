@@ -82,7 +82,7 @@ The project is divided into several assemblies, each representing a layer or a s
 - **Contents:** The `LifetimeScope` which initializes the DI container, registering all interfaces with their concrete implementations.
 - **Dependencies:** This is the only place in the project that has knowledge of all other assemblies. It brings all the layers together.
 
-### `GastGame`
+### `Cryst`
 
 - **Purpose:** This assembly contains the specific logic and implementations for the actual game being built, as opposed to the generic framework provided by the other `Gast.*` assemblies.
 - **Contents:** Game-specific character actions, AI behaviors (brains), stat definitions, and other logic that defines the unique rules and feel of this game.
