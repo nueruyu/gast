@@ -21,6 +21,8 @@ namespace Cryst.Modules.CharacterActions
         void Awake()
         {
             TryGetComponent(out animator);
+
+            SetMoveSpeed(0);
         }
 
         public void SetMoveSpeed(float normalizedSpeed)
