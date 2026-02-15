@@ -12,14 +12,23 @@ using Cryst.Modules.Players;
 using Cryst.Modules.CharacterAI;
 using Cryst.Modules.CharacterAI.Strategic;
 using Gast.Domain.Players;
+using Cryst.Application.Handlers;
+using Gast.Core.Tasks;
+using Cryst.Modules.CharacterActions;
 
 namespace Cryst.Composition
 {
     [CreateAssetMenu(fileName = "CrystInstaller", menuName = "Cryst/Installer")]
     public class CrystInstaller : InstallerAsset
     {
+        [SerializeField]
+        MeleeAttackEffectSettings meleeAttackEffectSettings;
+
         public override void Install(IContainerBuilder builder)
         {
+            // Settings
+            builder.RegisterInstance(meleeAttackEffectSettings);
+
             // Character
             builder.Register<CharacterContextInitializer>().AsImplementedInterfaces();
 
@@ -34,13 +43,18 @@ namespace Cryst.Composition
             // Player
             builder.Register<PlayerCharacterController>().As<IPlayerCharacterController>();
 
+            // Event Handlers
+            builder.Register<CharacterDamageFeedbackHandler>(Lifetime.Singleton).As<ILifecycleTask>();
+            builder.Register<DamageApplicationHandler>(Lifetime.Singleton).As<ILifecycleTask>();
+            builder.Register<CharacterDecompositionHandler>(Lifetime.Singleton).As<ILifecycleTask>();
+
             // Combat AI
             builder.Register<CombatDomain>(Lifetime.Transient);
             builder.Register<ChaseTargetAction>(Lifetime.Transient);
             builder.Register<MeleeAttackAction>(Lifetime.Transient);
             builder.Register<BackOffAction>(Lifetime.Transient);
             builder.Register<StrafeAction>(Lifetime.Transient);
-            builder.Register<GuardAction>(Lifetime.Transient);
+            builder.Register<Modules.CharacterAI.Combat.Actions.GuardAction>(Lifetime.Transient);
             builder.Register<StalkAction>(Lifetime.Transient);
             builder.Register<PostAttackManeuverAction>(Lifetime.Transient);
 

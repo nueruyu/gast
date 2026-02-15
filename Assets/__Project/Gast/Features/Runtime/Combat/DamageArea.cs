@@ -1,34 +1,30 @@
 using System;
-using System.Threading;
 using Cysharp.Threading.Tasks;
-using Gast.Core.Observables;
+using Gast.Core.Events;
 using Gast.Domain.Characters;
+using Gast.Domain.Combat;
 using Gast.Features.Characters;
 using UnityEngine;
 
 namespace Gast.Features.Combat
 {
-    /// <summary>
-    /// Temporary collision detection object for attacks.
-    /// </summary>
     [RequireComponent(typeof(Collider))]
     public class DamageArea : MonoBehaviour
     {
-        readonly Signal<DamageHitInfo> hit = new();
-
-        CharacterId ownerId;
+        AttackInfo attackInfo;
         float duration;
+        IDomainEventPublisher eventPublisher;
 
         bool initialized;
 
-        public ISignal<DamageHitInfo> Hit => hit;
-
         public void Initialize(
-            CharacterId ownerId,
-            float duration)
+            AttackInfo attackInfo,
+            float duration,
+            IDomainEventPublisher eventPublisher)
         {
-            this.ownerId = ownerId;
+            this.attackInfo = attackInfo;
             this.duration = duration;
+            this.eventPublisher = eventPublisher;
             initialized = true;
 
             DestroyAfterDelay().Forget();
@@ -42,13 +38,16 @@ namespace Gast.Features.Combat
             if (!other.TryGetComponent<Character>(out var character))
                 return;
 
+            if (character.Id == attackInfo.AttackerId)
+                return;
+
             var hitPosition = other.ClosestPoint(transform.position);
             var hitRotation = Quaternion.LookRotation(transform.forward);
             var hitPoint = new Pose(hitPosition, hitRotation);
 
-            hit.Publish(new(ownerId, character, hitPoint));
+            eventPublisher.Publish(new CharacterDamagedEvent(character, attackInfo, hitPoint));
 
-            Debug.Log($"[DamageArea] Hit: {character.Id} (Owner: {ownerId})");
+            Debug.Log($"[DamageArea] Hit: {character.Id} (Owner: {attackInfo.AttackerId})");
         }
 
         async UniTaskVoid DestroyAfterDelay()

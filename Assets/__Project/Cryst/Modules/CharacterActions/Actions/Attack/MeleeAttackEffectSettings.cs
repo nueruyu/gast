@@ -1,4 +1,3 @@
-using Gast.Features.Characters;
 using UnityEngine;
 
 namespace Cryst.Modules.CharacterActions
@@ -27,10 +26,5 @@ namespace Cryst.Modules.CharacterActions
         public GameObject HitVfxPrefab => hitVfxPrefab;
         public AudioClip HitSfx => hitSfx;
         public float SfxVolume => sfxVolume;
-
-        public MeleeAttackEffect CreateEffect(CharacterContext context)
-        {
-            return new MeleeAttackEffect(this, context);
-        }
     }
 }

@@ -1,13 +1,10 @@
-using Gast.Domain.Characters;
 using Gast.Features.Characters;
-using Gast.Features.Combat;
-using Cryst.Domain.Characters;
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using R3;
 using UnityEngine;
-using Cryst.Domain.Combat;
+using Gast.Domain.Combat;
+using Gast.Infrastructure.Combat;
 
 namespace Cryst.Modules.CharacterActions
 {
@@ -16,8 +13,8 @@ namespace Cryst.Modules.CharacterActions
         readonly CharacterContext context;
         readonly AttackActionSettings settings;
         readonly CharacterAnimator animator;
-        readonly MeleeAttackEffect effect;
         readonly CharacterMovement movement;
+        readonly DamageAreaFactory damageAreaFactory;
 
         float startTime;
         float lastAttackTime = float.NegativeInfinity;
@@ -33,12 +30,7 @@ namespace Cryst.Modules.CharacterActions
             this.settings = settings;
             animator = context.Resolve<CharacterAnimator>();
             movement = context.Resolve<CharacterMovement>();
-
-            if (settings.EffectSettings != null)
-            {
-                effect = settings.EffectSettings.CreateEffect(context);
-                effect.BindEvents().AddTo(context.Body.destroyCancellationToken);
-            }
+            damageAreaFactory = context.Resolve<DamageAreaFactory>();
         }
 
         public bool CanExecute()
@@ -63,90 +55,23 @@ namespace Cryst.Modules.CharacterActions
                 cancellationToken: cancellationToken);
 
             var attackerTransform = context.Body.transform;
-
             var forward = attackerTransform.forward;
             var spawnPosition = attackerTransform.position + settings.Offset + forward * settings.Range;
             var spawnRotation = attackerTransform.rotation;
+            var pose = new Pose(spawnPosition, spawnRotation);
 
-            GenerateDamageArea(
-                spawnPosition,
-                spawnRotation,
-                settings.HitboxSize,
-                settings.DamageAreaDuration,
+            var knockbackDirection = spawnRotation * Vector3.forward;
+            var attackInfo = new AttackInfo(
                 context.Id,
-                OnAttackHit);
-        }
-
-        void GenerateDamageArea(
-            Vector3 position,
-            Quaternion rotation,
-            Vector3 size,
-            float duration,
-            CharacterId attackerId,
-            Action<DamageHitInfo> onHit)
-        {
-            var damageArea = UnityEngine.Object.Instantiate(
-                settings.DamageAreaPrefab,
-                position,
-                rotation);
-
-            damageArea.transform.localScale = size;
-
-            damageArea.Initialize(
-                attackerId,
-                duration);
-
-            damageArea.Hit
-                .Subscribe(onHit)
-                .AddTo(damageArea.destroyCancellationToken);
-        }
-
-        void OnAttackHit(DamageHitInfo hit)
-        {
-            effect?.OnHit(hit);
-
-            var hitActor = hit.Character.As<ICrystCharacter>();
-            if (hitActor.Faction == context.Faction)
-                return;
-
-            var point = hit.Point;
-
-            var knockbackDirection = point.rotation * Vector3.forward;
-            var damageInfo = new DamageInfo(
                 settings.Damage,
-                point,
-                settings.KnockbackForce * knockbackDirection,
-                hit.AttackerId
+                settings.KnockbackForce * knockbackDirection
             );
 
-            hitActor.Hit(damageInfo);
-
-            if (hitActor.IsAlive.Value)
-            {
-                hitActor.SetHealth(hitActor.Health.Value - damageInfo.Amount);
-
-                if (hitActor.Health.Value <= 0)
-                {
-                    hitActor.Die();
-
-                    context.EventPublisher.Publish(new CharacterDefeatedEvent(hitActor, damageInfo.AttackerId));
-                    context.EventPublisher.Publish(
-                        new LootSpawnEvent(
-                            hit.Character.TypeDefinition.LootTable,
-                            hit.Character.Body.Position));
-
-                    DestroyCharacterAfterDelay(hit.Character).Forget();
-                }
-            }
-        }
-
-        async UniTaskVoid DestroyCharacterAfterDelay(ICharacter character)
-        {
-            await UniTask.Delay(
-                TimeSpan.FromSeconds(5),
-                cancellationToken: character.CancellationToken);
-
-            character.Destroy();
+            damageAreaFactory.Create(
+                pose,
+                settings.HitboxSize,
+                settings.DamageAreaDuration,
+                attackInfo);
         }
 
         public bool OnUpdate()

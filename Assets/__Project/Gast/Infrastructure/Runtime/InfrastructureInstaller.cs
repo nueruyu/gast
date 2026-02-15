@@ -10,6 +10,7 @@ using Gast.Infrastructure.Pickups;
 using Gast.Infrastructure.Remoting.AI;
 using Gast.Infrastructure.Services;
 using Gast.Lib.AI.Debugging;
+using Gast.Infrastructure.Combat;
 using Gast.Lib.Gaia;
 
 namespace Gast.Infrastructure
@@ -53,6 +54,7 @@ namespace Gast.Infrastructure
 
             // Combat
             builder.Register<CombatFeedbackService>();
+            builder.Register<DamageAreaFactory>(Lifetime.Singleton);
 
             // Economy
             builder.Register<ItemRepository>().AsImplementedInterfaces().AsSelf();

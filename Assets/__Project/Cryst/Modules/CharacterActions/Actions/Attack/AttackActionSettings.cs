@@ -1,5 +1,4 @@
 using Gast.Features.Characters;
-using Gast.Features.Combat;
 using UnityEngine;
 
 namespace Cryst.Modules.CharacterActions
@@ -15,9 +14,6 @@ namespace Cryst.Modules.CharacterActions
         float duration = 0.6f;
 
         [Header("Damage Area")]
-        [SerializeField]
-        DamageArea damageAreaPrefab;
-
         [SerializeField]
         float damageAreaDuration = 0.3f;
 
@@ -46,7 +42,6 @@ namespace Cryst.Modules.CharacterActions
 
         public float Cooldown => cooldown;
         public float Duration => duration;
-        public DamageArea DamageAreaPrefab => damageAreaPrefab;
         public float DamageAreaDuration => damageAreaDuration;
         public float Range => range;
         public Vector3 Offset => offset;
