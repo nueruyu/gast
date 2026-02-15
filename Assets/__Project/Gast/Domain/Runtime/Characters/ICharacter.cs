@@ -1,9 +1,7 @@
 using Gast.Core.Observables;
 using Gast.Domain.AI;
-using Gast.Domain.Combat;
 using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
-using Gast.Domain.Sensors;
 using UnityEngine;
 
 namespace Gast.Domain.Characters
@@ -25,9 +23,19 @@ namespace Gast.Domain.Characters
         CharacterTypeId TypeId { get; }
 
         /// <summary>
-        /// Character's health and status information.
+        /// Character's generic status container.
         /// </summary>
-        CharacterStatus Status { get; }
+        ICharacterStatus Status { get; }
+
+        /// <summary>
+        /// The character's faction affiliation.
+        /// </summary>
+        Faction Faction { get; }
+
+        /// <summary>
+        /// The character's type definition data.
+        /// </summary>
+        ICharacterTypeDefinition TypeDefinition { get; }
 
         /// <summary>
         /// Read-only access to the character's physical state.
@@ -35,34 +43,14 @@ namespace Gast.Domain.Characters
         ICharacterBody Body { get; }
 
         /// <summary>
-        /// Whether this character is currently alive.
-        /// </summary>
-        bool IsAlive { get; }
-
-        /// <summary>
-        /// Whether the character is ready to attack (e.g. not in cooldown).
-        /// </summary>
-        bool CanAttack { get; }
-
-        /// <summary>
-        /// Whether the character can start guarding.
-        /// </summary>
-        bool CanGuard { get; }
-
-        /// <summary>
-        /// Whether the character is currently guarding.
-        /// </summary>
-        bool IsGuarding { get; }
-
-        /// <summary>
-        /// Whether the character is currently dashing.
-        /// </summary>
-        bool IsDashing { get; }
-
-        /// <summary>
         /// Signal raised when this character is destroyed.
         /// </summary>
         ISignal<ICharacter> Destroyed { get; }
+
+        /// <summary>
+        /// Controller for managing the character's actions.
+        /// </summary>
+        ICharacterActionController ActionController { get; }
 
         /// <summary>
         /// Wallet managing the character's currency.
@@ -80,8 +68,6 @@ namespace Gast.Domain.Characters
 
         INavigationProvider NavigationProvider { get; }
 
-        // === Operation Methods ===
-
         /// <summary>
         /// Attach a brain to this character, detaching any existing brain first.
         /// </summary>
@@ -93,43 +79,15 @@ namespace Gast.Domain.Characters
         void DetachBrain();
 
         /// <summary>
-        /// Move the character in the specified direction (0-1 normalized).
+        /// Gets a specific aspect of the character.
         /// </summary>
-        void Move(Vector3 direction);
+        /// <typeparam name="T">The type of the aspect to get, which must implement ICharacterAspect.</typeparam>
+        /// <returns>The requested aspect instance, or null if not available.</returns>
+        T As<T>() where T : class, ICharacterAspect;
 
         /// <summary>
-        /// Set whether the character is sprinting.
+        /// Resolves a service registered in this character's context container.
         /// </summary>
-        void SetSprint(bool isSprinting);
-
-        /// <summary>
-        /// Make the character jump if grounded.
-        /// </summary>
-        void Jump();
-
-        /// <summary>
-        /// Execute an attack action.
-        /// </summary>
-        void Attack();
-
-        /// <summary>
-        /// Perform a dash action in the specified direction.
-        /// </summary>
-        void Dash(Vector3 direction);
-
-        /// <summary>
-        /// Set the guard state.
-        /// </summary>
-        void SetGuard(bool active);
-
-        /// <summary>
-        /// Apply damage and hit reaction to the character.
-        /// </summary>
-        void TakeDamage(DamageInfo info);
-
-        /// <summary>
-        /// Get the currently attached brain.
-        /// </summary>
-        ICharacterBrain GetBrain();
+        T Resolve<T>() where T : class;
     }
 }

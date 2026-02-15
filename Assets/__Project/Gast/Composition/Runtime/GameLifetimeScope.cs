@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Gast.Application;
 using Gast.Core.Exceptions;
 using Gast.Features;
@@ -10,12 +11,17 @@ using Gast.Features.SpawnSites;
 using Gast.Infrastructure;
 using Gast.Lib.Gaia;
 using Gast.Infrastructure.Services;
-using Gast.Infrastructure.Settings;
 using Gast.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
 using VContainer.Unity;
+using IContainerBuilder = VContainer.IContainerBuilder;
+using Gast.Shared.DI;
+using Gast.Infrastructure.Characters;
+using Gast.Infrastructure.Pickups;
+using Gast.Infrastructure.Items;
+using Gast.Infrastructure.Remoting.AI;
 
 namespace Gast.Composition
 {
@@ -49,6 +55,7 @@ namespace Gast.Composition
         [Header("Scene Components")]
         [SerializeField]
         CameraRegistry cameraRegistry;
+
         [SerializeField]
         UIDocument mainUIDocument;
 
@@ -64,6 +71,10 @@ namespace Gast.Composition
         [SerializeField]
         PlayerSpawnPoint playerSpawnPoint;
 
+        [Header("Extensions")]
+        [SerializeField]
+        List<InstallerAsset> additionalInstallers = new();
+
         protected override void Configure(IContainerBuilder builder)
         {
             var builderAdapter = new VContainerBuilder(builder);
@@ -76,6 +87,13 @@ namespace Gast.Composition
             new FeaturesInstaller().Install(builderAdapter);
             new InfrastructureInstaller(mockAIPlanningSettings).Install(builderAdapter);
             new UIInstaller().Install(builderAdapter);
+
+            // Install additional/override registrations from external assemblies
+            foreach (var installer in additionalInstallers)
+            {
+                if (installer != null)
+                    installer.Install(builderAdapter);
+            }
 
             // Register EntryPoints (VContainer specific)
             builder.RegisterEntryPoint<LifecycleTaskRunner>();

@@ -3,7 +3,6 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Observables;
 using Gast.Domain.Characters;
-using Gast.Domain.Combat;
 using Gast.Features.Characters;
 using UnityEngine;
 
@@ -18,7 +17,6 @@ namespace Gast.Features.Combat
         readonly Signal<DamageHitInfo> hit = new();
 
         CharacterId ownerId;
-        Faction ownerFaction;
         float duration;
 
         bool initialized;
@@ -27,11 +25,9 @@ namespace Gast.Features.Combat
 
         public void Initialize(
             CharacterId ownerId,
-            Faction ownerFaction,
             float duration)
         {
             this.ownerId = ownerId;
-            this.ownerFaction = ownerFaction;
             this.duration = duration;
             initialized = true;
 
@@ -44,9 +40,6 @@ namespace Gast.Features.Combat
                 return;
 
             if (!other.TryGetComponent<Character>(out var character))
-                return;
-
-            if (character.Status.Faction == ownerFaction)
                 return;
 
             var hitPosition = other.ClosestPoint(transform.position);

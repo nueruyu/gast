@@ -6,7 +6,6 @@ namespace Gast.Domain.Characters
     public enum Faction
     {
         None,
-        Player,
         Ally,
         Enemy,
         Neutral

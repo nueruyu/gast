@@ -1,0 +1,14 @@
+{
+  "include": [
+    "AGENTS.md",
+    "Assets/__Project/**/*.cs",
+    "Assets/__Project/**/*.asmdef"
+  ],
+  "ignore": {
+    "customPatterns": ["Assets/__Project/Gast/UI", "Assets/__Project/Lib"]
+  },
+  "output": {
+    "filePath": "./out/repomix/gast-game.md",
+    "style": "markdown"
+  }
+}

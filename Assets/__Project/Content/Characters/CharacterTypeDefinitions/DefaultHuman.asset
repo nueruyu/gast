@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: e9db19cfea39ace4fb8ba7c43866f726, type: 2}
   displayName: Default Human
-  maxHealth: 1000
+  statSchema: {fileID: 11400000, guid: 8416b10d29d6fd445b438e48fa040731, type: 2}
   walkSpeed: 4
   sprintSpeed: 7
   actionSettings:
+  - {fileID: 11400000, guid: 937026f66d2b03e459f021892ffd5744, type: 2}
   - {fileID: 11400000, guid: 483a7dcaec60a744d8b94dc74af2728c, type: 2}
   - {fileID: 11400000, guid: 744704839dee8b344bb522c82fa0be24, type: 2}
   - {fileID: 11400000, guid: 4b340309f10e76c418d7902b318351ad, type: 2}
@@ -28,7 +29,6 @@ MonoBehaviour:
   slotCapacity: 20
   characterPrefab: {fileID: 3056424131087975470, guid: 0b12064fcc816e540a373842a74f91ce, type: 3}
   visualPrefab: {fileID: 4611385902212945303, guid: 70834d1079c462649938635b9e93b508, type: 3}
-  combatMethodSettings: {fileID: 11400000, guid: a79320f9854584e4a95cbde0f3b5f073, type: 2}
   footstepSettings: {fileID: 11400000, guid: f0dc487c825578f4bbf87c21123919c2, type: 2}
   lootTable: {fileID: 11400000, guid: 0efcd1b216c7eac4b8e53f9beb6bfb77, type: 2}
   sensorViewRadius: 30

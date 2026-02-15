@@ -1,28 +1,18 @@
+using Gast.Domain.Characters;
 using System;
 using UnityEngine;
-using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters
 {
     /// <summary>
-    /// Base non-generic interface for all character actions.
+    /// Base interface for all character actions.
     /// </summary>
     public interface ICharacterAction
     {
         /// <summary>
-        /// The type of command that triggers this action.
-        /// </summary>
-        Type CommandType { get; }
-
-        /// <summary>
         /// Action priority for interruption handling.
         /// </summary>
         int Priority { get; }
-
-        /// <summary>
-        /// Check if this action can be executed right now.
-        /// </summary>
-        bool CanExecute();
 
         /// <summary>
         /// Update logic called every frame while the action is active.
@@ -33,7 +23,7 @@ namespace Gast.Features.Characters
         /// <summary>
         /// Handle movement input while this action is active.
         /// </summary>
-        void Move(Vector3 direction, float speed);
+        void Move(Vector3 direction);
 
         /// <summary>
         /// Cleanup logic called when the action completes or is interrupted.
@@ -42,13 +32,29 @@ namespace Gast.Features.Characters
     }
 
     /// <summary>
+    /// Base non-generic interface for all executable actions.
+    /// </summary>
+    public interface ICharacterExecutableAction : ICharacterAction
+    {
+        /// <summary>
+        /// The type of command that triggers this action.
+        /// </summary>
+        Type CommandType { get; }
+    }
+
+    /// <summary>
     /// Generic interface for character actions that are triggered by a specific command type.
     /// </summary>
-    public interface ICharacterAction<TCommand> : ICharacterAction where TCommand : struct, ICharacterActionCommand
+    public interface ICharacterExecutableAction<TCommand> : ICharacterExecutableAction where TCommand : struct, ICharacterActionCommand
     {
         /// <summary>
         /// Begin executing this action with a specific command.
         /// </summary>
         void Execute(in TCommand command);
+
+        /// <summary>
+        /// Check if this action can be executed right now.
+        /// </summary>
+        bool CanExecute();
     }
 }

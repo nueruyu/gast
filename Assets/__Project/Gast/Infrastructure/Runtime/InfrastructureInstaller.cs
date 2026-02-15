@@ -4,11 +4,11 @@ using Gast.Application.Economy;
 using Gast.Core.DI;
 using Gast.Features.Combat;
 using Gast.Infrastructure.AI;
-using Gast.Infrastructure.Factories;
+using Gast.Infrastructure.Characters;
+using Gast.Infrastructure.Items;
+using Gast.Infrastructure.Pickups;
 using Gast.Infrastructure.Remoting.AI;
-using Gast.Infrastructure.Repositories;
 using Gast.Infrastructure.Services;
-using Gast.Infrastructure.Settings;
 using Gast.Lib.AI.Debugging;
 using Gast.Lib.Gaia;
 
@@ -41,17 +41,18 @@ namespace Gast.Infrastructure
                 builder.Register<AIPlanningService>().As<IAIPlanningService>();
             }
 
+            // Aspects
+            builder.Register<CharacterAspectFactoryRegistry>().AsImplementedInterfaces();
+
             // Character
+            builder.Register<CharacterFactory>().AsImplementedInterfaces();
             builder.Register<CharacterRepository>().AsImplementedInterfaces();
             builder.Register<CharacterActorRepository>().AsImplementedInterfaces();
             builder.Register<CharacterTypeRepository>().AsImplementedInterfaces().AsSelf();
-            builder.Register<CharacterFactory>().AsImplementedInterfaces();
-            builder.Register<CharacterAIBrainFactory>().AsImplementedInterfaces();
             builder.Register<CharacterFootstepService>().AsImplementedInterfaces().AsSelf();
 
             // Combat
             builder.Register<CombatFeedbackService>();
-            builder.Register<CombatMethodFactory>().AsImplementedInterfaces();
 
             // Economy
             builder.Register<ItemRepository>().AsImplementedInterfaces().AsSelf();

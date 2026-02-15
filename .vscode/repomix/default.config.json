@@ -1,0 +1,15 @@
+{
+  "include": [
+    "AGENTS.md",
+    "Assets/__Project/**/*.cs",
+    "Assets/__Project/**/*.json",
+    "Assets/__Project/**/*.uss",
+    "Assets/__Project/**/*.tss",
+    "Assets/__Project/**/*.uxml",
+    "Assets/__Project/**/*.asmdef"
+  ],
+  "output": {
+    "filePath": "./out/repomix/gast.md",
+    "style": "markdown"
+  }
+}

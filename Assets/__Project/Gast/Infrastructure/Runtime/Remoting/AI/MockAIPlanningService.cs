@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Gast.Application.AIPlanning;
-using Gast.Infrastructure.Settings;
 using Gast.Lib.Gaia.Dto;
 
 namespace Gast.Infrastructure.Remoting.AI

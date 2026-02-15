@@ -1,70 +1,132 @@
+using Gast.Domain.Characters;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
-using Gast.Domain.Combat;
-using Gast.Features.Characters.Actions;
-using Gast.Features.Characters.Actions.Commands;
 
 namespace Gast.Features.Characters
 {
-    /// <summary>
-    /// Manages character actions through an ActionRouter.
-    /// Provides command-based dispatch for action execution.
-    /// </summary>
-    public class CharacterActionController
+    public class CharacterActionController : ICharacterActionController
     {
-        readonly CharacterActionRouter router = new();
-        readonly CharacterContext character;
+        readonly Dictionary<Type, ICharacterExecutableAction> registeredActions = new();
+        ICharacterAction defaultAction;
+        ICharacterExecutableAction activeAction;
 
-        public CharacterActionController(CharacterContext character)
-        {
-            this.character = character;
-        }
+        public ICharacterAction CurrentAction => activeAction ?? defaultAction;
 
-        public void RegisterAction(ICharacterAction action)
+        public void RegisterDefaultAction(ICharacterAction action)
         {
-            router.Register(action);
-        }
-
-        public void ExecuteAction<TCommand>(in TCommand command) where TCommand : struct, ITriggerActionCommand
-        {
-            router.TryExecute(in command);
-        }
-
-        public void StartAction<TCommand>(in TCommand command) where TCommand : struct, IStateActionCommand
-        {
-            router.TryExecute(in command);
-        }
-
-        public void StopAction<TCommand>() where TCommand : struct, IStateActionCommand
-        {
-            router.Stop<TCommand>();
-        }
-
-        public void Move(Vector3 direction, float speed)
-        {
-            if (router.IsActionRunning)
+            if (action is null)
             {
-                router.CurrentAction?.Move(direction, speed);
-                return;
+                throw new ArgumentNullException(nameof(action));
             }
 
-            var body = character.Body;
-            body.SetInputVelocity(direction * speed);
-            body.SetLookDirection(direction, 10f);
+            if (defaultAction is not null)
+                throw new InvalidOperationException();
+
+            defaultAction = action;
+        }
+
+        public void RegisterAction(ICharacterExecutableAction action)
+        {
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            registeredActions[action.CommandType] = action;
+        }
+
+        public void ExecuteAction<TCommand>(in TCommand command) where TCommand : struct, ICharacterTriggerCommand
+        {
+            TryExecute(in command);
+        }
+
+        public void StartAction<TCommand>(in TCommand command) where TCommand : struct, ICharacterStateCommand
+        {
+            TryExecute(in command);
+        }
+
+        public bool TryExecute<TCommand>(in TCommand command)
+            where TCommand : struct, ICharacterActionCommand
+        {
+            if (!TryGetAction<TCommand>(out var action))
+                return false;
+
+            if (!action.CanExecute())
+                return false;
+
+            var active = activeAction ?? defaultAction;
+            if (active != null)
+            {
+                if (action.Priority <= active.Priority)
+                    return false;
+
+                active.OnEnd();
+            }
+
+            activeAction = action;
+            action.Execute(in command);
+
+            return true;
+        }
+
+        public void StopAction<TCommand>() where TCommand : struct, ICharacterStateCommand
+        {
+            if (activeAction?.CommandType == typeof(TCommand))
+            {
+                CancelCurrent();
+            }
+        }
+
+        public void CancelCurrent()
+        {
+            if (activeAction != null)
+            {
+                activeAction.OnEnd();
+                activeAction = null;
+            }
+        }
+
+        public void Move(Vector3 direction)
+        {
+            CurrentAction?.Move(direction);
         }
 
         public void Update()
         {
-            router.Update();
+            if (activeAction != null)
+            {
+                if (!activeAction.OnUpdate())
+                {
+                    activeAction.OnEnd();
+                    activeAction = null;
+                }
+            }
         }
 
         public bool IsActionActive<TCommand>() where TCommand : struct, ICharacterActionCommand
         {
-            return router.IsActionActive<TCommand>();
+            return activeAction != null && activeAction.CommandType == typeof(TCommand);
         }
 
         public bool CanExecuteAction<TCommand>() where TCommand : struct, ICharacterActionCommand
         {
-            return router.TryGetAction<TCommand>(out var action) && action.CanExecute();
+            return TryGetAction<TCommand>(out var action) && action.CanExecute();
+        }
+
+        public bool TryGetAction<TCommand>(out ICharacterExecutableAction<TCommand> action)
+            where TCommand : struct, ICharacterActionCommand
+        {
+            action = default;
+
+            if (!registeredActions.TryGetValue(typeof(TCommand), out var rawAction))
+                return false;
+
+            if (rawAction is not ICharacterExecutableAction<TCommand> typedAction)
+                return false;
+
+            action = typedAction;
+            return true;
         }
     }
 }

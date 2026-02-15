@@ -13,3 +13,13 @@ MonoBehaviour:
   m_Name: AttackActionSettings
   m_EditorClassIdentifier: Gast.Features::Gast.Features.Characters.Actions.AttackActionSettings
   cooldown: 0.2
+  duration: 0.6
+  damageAreaPrefab: {fileID: 7280661990936345562, guid: 44b4c0a5d8f9aa247a47b8c41fbf1cc1, type: 3}
+  damageAreaDuration: 0.1
+  range: 1.5
+  offset: {x: 0, y: 0.5, z: 0}
+  hitboxSize: {x: 1, y: 0.2, z: 1}
+  animationTriggerDelay: 0.1
+  damage: 10
+  knockbackForce: 10
+  effectSettings: {fileID: 11400000, guid: cacf5e71257d1124798a395f17d77048, type: 2}

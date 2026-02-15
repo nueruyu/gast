@@ -25,7 +25,7 @@ namespace Gast.Application.Characters
                 command.TypeId,
                 command.Position,
                 command.Rotation,
-                Faction.Player);
+                Faction.Ally);
 
             playerManager.Possess(character.Id);
             return character;
