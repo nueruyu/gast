@@ -5,7 +5,7 @@ using Gast.Domain.Characters;
 using Gast.Domain.Players;
 using Gast.Domain.AI;
 
-namespace GastGame.Features.Players
+namespace Gast.Features.Players
 {
     /// <summary>
     /// Manages player possession of different characters.

@@ -11,6 +11,7 @@ using GastGame.Infrastructure.Characters;
 using GastGame.Features.Players;
 using GastGame.Features.AI;
 using GastGame.Features.AI.Strategic;
+using Gast.Domain.Players;
 
 namespace GastGame
 {
@@ -31,8 +32,7 @@ namespace GastGame
             builder.Register<CharacterAIBrainFactory>().AsImplementedInterfaces();
 
             // Player
-            builder.Register<PlayerBrain>();
-            builder.Register<PlayerManager>().AsImplementedInterfaces().AsSelf();
+            builder.Register<PlayerCharacterController>().As<IPlayerCharacterController>();
 
             // Combat AI
             builder.Register<CombatDomain>(Lifetime.Transient);
