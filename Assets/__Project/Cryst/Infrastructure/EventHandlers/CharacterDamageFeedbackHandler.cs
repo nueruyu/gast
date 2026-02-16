@@ -8,7 +8,7 @@ using Gast.Features.Combat;
 using Cryst.Modules.CharacterActions;
 using R3;
 
-namespace Cryst.Application.Handlers
+namespace Cryst.Application.EventHandlers
 {
     public class CharacterDamageFeedbackHandler : ILifecycleTask
     {

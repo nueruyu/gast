@@ -8,7 +8,7 @@ using Gast.Domain.Characters;
 using Cryst.Domain.Characters;
 using R3;
 
-namespace Cryst.Application.Handlers
+namespace Cryst.Application.EventHandlers
 {
     public class CharacterDecompositionHandler : ILifecycleTask
     {

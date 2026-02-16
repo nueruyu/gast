@@ -11,6 +11,7 @@ namespace Cryst.Domain.Characters
     {
         CharacterId Id { get; }
         CharacterTypeId TypeId { get; }
+        ICharacterTypeDefinition TypeDefinition { get; }
         Faction Faction { get; }
         ICharacterBody Body { get; }
         IVisionSensor VisionSensor { get; }
@@ -43,8 +44,6 @@ namespace Cryst.Domain.Characters
 
         void Jump();
 
-        void Hit(DamageInfo damageInfo);
-
-        void Die();
+        void Hit(ICrystCharacter attacker, DamageInfo damageInfo);
     }
 }

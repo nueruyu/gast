@@ -12,7 +12,7 @@ using Cryst.Modules.Players;
 using Cryst.Modules.CharacterAI;
 using Cryst.Modules.CharacterAI.Strategic;
 using Gast.Domain.Players;
-using Cryst.Application.Handlers;
+using Cryst.Application.EventHandlers;
 using Gast.Core.Tasks;
 using Cryst.Modules.CharacterActions;
 

@@ -1,15 +1,14 @@
 using Gast.Core.Events;
-using Gast.Domain.Loot;
 using UnityEngine;
 
-namespace Gast.Domain.Characters
+namespace Gast.Domain.Loot
 {
-    public readonly struct LootSpawnEvent : IDomainEvent
+    public readonly struct LootPotentialDropEvent : IDomainEvent
     {
         public ILootTable LootTable { get; }
         public Vector3 Position { get; }
 
-        public LootSpawnEvent(ILootTable lootTable, Vector3 position)
+        public LootPotentialDropEvent(ILootTable lootTable, Vector3 position)
         {
             LootTable = lootTable;
             Position = position;

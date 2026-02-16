@@ -1,10 +1,12 @@
+using Cryst.Domain.Characters;
+using Cryst.Domain.Combat;
+using Cryst.Modules.CharacterActions;
+using Gast.Core.Events;
 using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
-using Cryst.Domain.Characters;
-using Cryst.Domain.Combat;
-using Cryst.Modules.CharacterActions;
+using Gast.Domain.Loot;
 using R3;
 using UnityEngine;
 
@@ -14,11 +16,26 @@ namespace Cryst.Infrastructure.Characters
     {
         readonly ICharacter character;
         readonly CharacterActionStateStore stateStore;
+        readonly IDomainEventPublisher eventPublisher;
+
+        public CrystCharacter(ICharacter character, IDomainEventPublisher eventPublisher)
+        {
+            this.character = character;
+            stateStore = character.Resolve<CharacterActionStateStore>();
+
+            this.eventPublisher = eventPublisher;
+
+            var schema = GetStatSchema();
+            Health = character.Status.GetStat<float>(schema.Health.Id);
+            MaxHealth = character.Status.GetStat<float>(schema.MaxHealth.Id);
+            IsAlive = Health.Select(h => h > 0);
+        }
 
         CharacterStatSchema GetStatSchema() => (CharacterStatSchema)character.TypeDefinition.StatSchema;
 
         public CharacterId Id => character.Id;
         public CharacterTypeId TypeId => character.TypeId;
+        public ICharacterTypeDefinition TypeDefinition => character.TypeDefinition;
         public Faction Faction => character.Faction;
         public ICharacterBody Body => character.Body;
         public IVisionSensor VisionSensor => character.VisionSensor;
@@ -28,17 +45,6 @@ namespace Cryst.Infrastructure.Characters
         public ILive<bool> IsAlive { get; }
         public ILive<float> Health { get; }
         public ILive<float> MaxHealth { get; }
-
-        public CrystCharacter(ICharacter character)
-        {
-            this.character = character;
-            this.stateStore = character.Resolve<CharacterActionStateStore>();
-
-            var schema = GetStatSchema();
-            Health = character.Status.GetStat<float>(schema.Health.Id);
-            MaxHealth = character.Status.GetStat<float>(schema.MaxHealth.Id);
-            IsAlive = Health.Select(h => h > 0);
-        }
 
         public void SetHealth(float newHealth)
         {
@@ -75,9 +81,31 @@ namespace Cryst.Infrastructure.Characters
 
         public void Jump() => character.ActionController.ExecuteAction(new JumpCommand());
 
-        public void Hit(DamageInfo damageInfo) => character.ActionController.ExecuteAction(new HitCommand(damageInfo));
+        public void Hit(ICrystCharacter attacker, DamageInfo damageInfo)
+        {
+            if (Faction == attacker.Faction)
+                return;
 
-        public void Die()
+            if (!IsAlive.Value)
+                return;
+
+            character.ActionController.ExecuteAction(new HitCommand(damageInfo));
+
+            SetHealth(Health.Value - damageInfo.Amount);
+
+            if (Health.Value <= 0)
+            {
+                Die();
+
+                eventPublisher.Publish(new CharacterDefeatedEvent(this, damageInfo.AttackerId));
+                eventPublisher.Publish(
+                    new LootPotentialDropEvent(
+                        character.TypeDefinition.LootTable,
+                        Body.Position));
+            }
+        }
+
+        void Die()
         {
             character.ActionController.ExecuteAction(new DieCommand());
             character.DetachBrain();
