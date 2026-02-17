@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea00f4f2235e8f44c8bc56dde7d921a9, type: 3}
   m_Name: CrystInstaller
   m_EditorClassIdentifier: GastGame::GastGame.GastGameInstaller
+  meleeAttackEffectSettings: {fileID: 11400000, guid: cacf5e71257d1124798a395f17d77048, type: 2}

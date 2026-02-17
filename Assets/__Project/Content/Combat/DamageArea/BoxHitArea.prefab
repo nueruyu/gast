@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2412842522781255781}
   - component: {fileID: 7280661990936345562}
   m_Layer: 0
-  m_Name: MeleeDamageArea
+  m_Name: BoxHitArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

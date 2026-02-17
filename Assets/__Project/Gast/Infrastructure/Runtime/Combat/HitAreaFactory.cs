@@ -1,16 +1,18 @@
 using Gast.Core.Events;
 using Gast.Domain.Combat;
 using Gast.Features.Combat;
+using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Gast.Infrastructure.Combat
 {
-    public class DamageAreaFactory
+    public class HitAreaFactory : IHitAreaFactory
     {
-        readonly DamageAreaSettings settings;
+        readonly HitAreaSettings settings;
         readonly IDomainEventPublisher eventPublisher;
 
-        public DamageAreaFactory(DamageAreaSettings settings, IDomainEventPublisher eventPublisher)
+        public HitAreaFactory(HitAreaSettings settings, IDomainEventPublisher eventPublisher)
         {
             this.settings = settings;
             this.eventPublisher = eventPublisher;
@@ -20,17 +22,17 @@ namespace Gast.Infrastructure.Combat
             Pose pose,
             Vector3 size,
             float duration,
-            AttackInfo attackInfo)
+            IEffect effect)
         {
             var damageArea = Object.Instantiate(
-                settings.DamageAreaPrefab,
+                settings.HitAreaPrefab,
                 pose.position,
                 pose.rotation);
 
             damageArea.transform.localScale = size;
 
             damageArea.Initialize(
-                attackInfo,
+                effect,
                 duration,
                 eventPublisher);
         }

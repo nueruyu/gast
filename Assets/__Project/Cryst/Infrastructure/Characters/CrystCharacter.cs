@@ -81,11 +81,8 @@ namespace Cryst.Infrastructure.Characters
 
         public void Jump() => character.ActionController.ExecuteAction(new JumpCommand());
 
-        public void Hit(ICrystCharacter attacker, DamageInfo damageInfo)
+        public void TakeDamage(DamageInfo damageInfo)
         {
-            if (Faction == attacker.Faction)
-                return;
-
             if (!IsAlive.Value)
                 return;
 

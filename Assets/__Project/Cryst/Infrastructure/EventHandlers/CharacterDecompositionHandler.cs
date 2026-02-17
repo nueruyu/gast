@@ -8,7 +8,7 @@ using Gast.Domain.Characters;
 using Cryst.Domain.Characters;
 using R3;
 
-namespace Cryst.Application.EventHandlers
+namespace Cryst.Infrastructure.EventHandlers
 {
     public class CharacterDecompositionHandler : ILifecycleTask
     {
@@ -33,7 +33,8 @@ namespace Cryst.Application.EventHandlers
 
         async UniTaskVoid DestroyCharacterAfterDelay(ICharacter character)
         {
-            if (character == null) return;
+            if (character == null)
+                return;
 
             await UniTask.Delay(
                 TimeSpan.FromSeconds(5),

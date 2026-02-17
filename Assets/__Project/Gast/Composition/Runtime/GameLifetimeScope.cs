@@ -51,7 +51,7 @@ namespace Gast.Composition
         MockAIPlanningSettings mockAIPlanningSettings;
 
         [SerializeField]
-        DamageAreaSettings damageAreaSettings;
+        HitAreaSettings damageAreaSettings;
 
         [SerializeField]
         UIAssetSettings uiAssetSettings;

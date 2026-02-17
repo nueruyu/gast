@@ -54,7 +54,7 @@ namespace Gast.Infrastructure
 
             // Combat
             builder.Register<CombatFeedbackService>();
-            builder.Register<DamageAreaFactory>(Lifetime.Singleton);
+            builder.Register<HitAreaFactory>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // Economy
             builder.Register<ItemRepository>().AsImplementedInterfaces().AsSelf();

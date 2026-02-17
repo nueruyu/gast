@@ -36,9 +36,12 @@ namespace Cryst.Modules.CharacterActions
         [SerializeField]
         float knockbackForce = 5f;
 
-        [Header("Effects")]
+        [Header("Feedback")]
         [SerializeField]
-        MeleeAttackEffectSettings effectSettings;
+        AudioClip sfx;
+
+        [SerializeField]
+        float sfxVolume = 1.0f;
 
         public float Cooldown => cooldown;
         public float Duration => duration;
@@ -49,7 +52,8 @@ namespace Cryst.Modules.CharacterActions
         public float AnimationTriggerDelay => animationTriggerDelay;
         public float Damage => damage;
         public float KnockbackForce => knockbackForce;
-        public MeleeAttackEffectSettings EffectSettings => effectSettings;
+        public AudioClip Sfx => sfx;
+        public float SfxVolume => sfxVolume;
 
         public override ICharacterAction CreateAction(CharacterContext context)
         {

@@ -3,26 +3,25 @@ using Cysharp.Threading.Tasks;
 using Gast.Core.Events;
 using Gast.Domain.Characters;
 using Gast.Domain.Combat;
-using Gast.Features.Characters;
 using UnityEngine;
 
 namespace Gast.Features.Combat
 {
     [RequireComponent(typeof(Collider))]
-    public class DamageArea : MonoBehaviour
+    public class HitArea : MonoBehaviour
     {
-        AttackInfo attackInfo;
+        IEffect effect;
         float duration;
         IDomainEventPublisher eventPublisher;
 
         bool initialized;
 
         public void Initialize(
-            AttackInfo attackInfo,
+            IEffect effect,
             float duration,
             IDomainEventPublisher eventPublisher)
         {
-            this.attackInfo = attackInfo;
+            this.effect = effect;
             this.duration = duration;
             this.eventPublisher = eventPublisher;
             initialized = true;
@@ -35,19 +34,19 @@ namespace Gast.Features.Combat
             if (!initialized)
                 return;
 
-            if (!other.TryGetComponent<Character>(out var character))
+            if (!other.TryGetComponent<ICharacter>(out var character))
                 return;
 
-            if (character.Id == attackInfo.AttackerId)
+            if (!effect.CanApplyTo(character))
                 return;
 
             var hitPosition = other.ClosestPoint(transform.position);
             var hitRotation = Quaternion.LookRotation(transform.forward);
             var hitPoint = new Pose(hitPosition, hitRotation);
 
-            eventPublisher.Publish(new CharacterDamagedEvent(character, attackInfo, hitPoint));
+            eventPublisher.Publish(new CharacterHitEvent(character, hitPoint, effect));
 
-            Debug.Log($"[DamageArea] Hit: {character.Id} (Owner: {attackInfo.AttackerId})");
+            Debug.Log($"[HitArea] Hit: {character.Id}");
         }
 
         async UniTaskVoid DestroyAfterDelay()
@@ -57,6 +56,14 @@ namespace Gast.Features.Combat
                 cancellationToken: destroyCancellationToken);
 
             Destroy(gameObject);
+
+            var effect = this.effect;
+            this.effect = null;
+
+            if (effect is IDisposable disposableEffect)
+            {
+                disposableEffect.Dispose();
+            }
         }
     }
 }

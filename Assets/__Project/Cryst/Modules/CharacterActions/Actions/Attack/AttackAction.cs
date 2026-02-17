@@ -1,10 +1,12 @@
+using Cryst.Domain.Combat;
+using Cysharp.Threading.Tasks;
 using Gast.Features.Characters;
+using Gast.Features.Combat;
+using Gast.Shared.Observables;
+using R3;
 using System;
 using System.Threading;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
-using Gast.Domain.Combat;
-using Gast.Infrastructure.Combat;
 
 namespace Cryst.Modules.CharacterActions
 {
@@ -14,7 +16,8 @@ namespace Cryst.Modules.CharacterActions
         readonly AttackActionSettings settings;
         readonly CharacterAnimator animator;
         readonly CharacterMovement movement;
-        readonly DamageAreaFactory damageAreaFactory;
+        readonly IHitAreaFactory hitAreaFactory;
+        readonly IAttackEffectFactory attackEffectFactory;
 
         float startTime;
         float lastAttackTime = float.NegativeInfinity;
@@ -30,7 +33,20 @@ namespace Cryst.Modules.CharacterActions
             this.settings = settings;
             animator = context.Resolve<CharacterAnimator>();
             movement = context.Resolve<CharacterMovement>();
-            damageAreaFactory = context.Resolve<DamageAreaFactory>();
+            hitAreaFactory = context.Resolve<IHitAreaFactory>();
+            attackEffectFactory = context.Resolve<IAttackEffectFactory>();
+
+            context.AnimationReceiver.EventReceived
+               .ToObservable()
+               .Where(name => name == "WeaponSwing")
+               .Subscribe(_ => PlayWeaponSwing(context.Audio.AudioSource));
+        }
+
+        void PlayWeaponSwing(AudioSource audioSource)
+        {
+            audioSource.volume = settings.SfxVolume;
+            audioSource.pitch = 1.0f;
+            audioSource.PlayOneShot(settings.Sfx);
         }
 
         public bool CanExecute()
@@ -61,17 +77,17 @@ namespace Cryst.Modules.CharacterActions
             var pose = new Pose(spawnPosition, spawnRotation);
 
             var knockbackDirection = spawnRotation * Vector3.forward;
-            var attackInfo = new AttackInfo(
+
+            var effect = attackEffectFactory.Create(
                 context.Id,
                 settings.Damage,
-                settings.KnockbackForce * knockbackDirection
-            );
+                settings.KnockbackForce * knockbackDirection);
 
-            damageAreaFactory.Create(
+            hitAreaFactory.Create(
                 pose,
                 settings.HitboxSize,
                 settings.DamageAreaDuration,
-                attackInfo);
+                effect);
         }
 
         public bool OnUpdate()

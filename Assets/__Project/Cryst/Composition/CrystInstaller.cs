@@ -12,9 +12,10 @@ using Cryst.Modules.Players;
 using Cryst.Modules.CharacterAI;
 using Cryst.Modules.CharacterAI.Strategic;
 using Gast.Domain.Players;
-using Cryst.Application.EventHandlers;
 using Gast.Core.Tasks;
-using Cryst.Modules.CharacterActions;
+using Cryst.Infrastructure.Effects;
+using Cryst.Infrastructure.Feedbacks;
+using Cryst.Infrastructure.EventHandlers;
 
 namespace Cryst.Composition
 {
@@ -22,7 +23,7 @@ namespace Cryst.Composition
     public class CrystInstaller : InstallerAsset
     {
         [SerializeField]
-        MeleeAttackEffectSettings meleeAttackEffectSettings;
+        HitFeedbackSettings meleeAttackEffectSettings;
 
         public override void Install(IContainerBuilder builder)
         {
@@ -35,6 +36,9 @@ namespace Cryst.Composition
             // Aspects
             builder.Register<CrystCharacterFactory>(Lifetime.Singleton).AsImplementedInterfaces();
 
+            // Combat
+            builder.Register<AttackEffectFactory>(Lifetime.Singleton).AsImplementedInterfaces();
+
             // AI Brain
             builder.Register<ObjectiveManager>(Lifetime.Transient);
             builder.Register<AIBrain>(Lifetime.Transient);
@@ -44,8 +48,8 @@ namespace Cryst.Composition
             builder.Register<PlayerCharacterController>().As<IPlayerCharacterController>();
 
             // Event Handlers
-            builder.Register<CharacterDamageFeedbackHandler>(Lifetime.Singleton).As<ILifecycleTask>();
-            builder.Register<DamageApplicationHandler>(Lifetime.Singleton).As<ILifecycleTask>();
+            builder.Register<HitFeedbackHandler>(Lifetime.Singleton).As<ILifecycleTask>();
+            builder.Register<HitEffectHandler>(Lifetime.Singleton).As<ILifecycleTask>();
             builder.Register<CharacterDecompositionHandler>(Lifetime.Singleton).As<ILifecycleTask>();
 
             // Combat AI

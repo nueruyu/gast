@@ -9,14 +9,14 @@ using Cryst.Domain.Characters;
 using R3;
 using Cryst.Domain.Combat;
 
-namespace Cryst.Application.EventHandlers
+namespace Cryst.Infrastructure.EventHandlers
 {
-    public class DamageApplicationHandler : ILifecycleTask
+    public class HitEffectHandler : ILifecycleTask
     {
         readonly IDomainEventSubscriber eventSubscriber;
         readonly ICharacterRepository characterRepository;
 
-        public DamageApplicationHandler(
+        public HitEffectHandler(
             IDomainEventSubscriber eventSubscriber,
             ICharacterRepository characterRepository)
         {
@@ -26,24 +26,37 @@ namespace Cryst.Application.EventHandlers
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            eventSubscriber.Subscribe<CharacterDamagedEvent>(OnCharacterDamaged)
+            eventSubscriber.Subscribe<CharacterHitEvent>(OnCharacterHit)
                 .AddTo(cancellationToken);
             await UniTask.WaitUntilCanceled(cancellationToken);
         }
 
-        void OnCharacterDamaged(CharacterDamagedEvent e)
+        void OnCharacterHit(CharacterHitEvent e)
+        {
+            switch (e.Effect)
+            {
+                case IAttackEffect attackEffect:
+                    OnAttackHit(e, attackEffect);
+                    break;
+            }
+        }
+
+        void OnAttackHit(CharacterHitEvent e, IAttackEffect effect)
         {
             var hitActor = e.HitCharacter.As<ICrystCharacter>();
-            var attacker = characterRepository.Get(e.AttackInfo.AttackerId).As<ICrystCharacter>();
+            var attacker = characterRepository.Get(effect.SourceCharacterId).As<ICrystCharacter>();
+
+            if (hitActor.Faction == attacker.Faction)
+                return;
 
             var damageInfo = new DamageInfo(
-                e.AttackInfo.Damage,
+                effect.Damage,
                 e.HitPoint,
-                e.AttackInfo.KnockbackForce,
-                e.AttackInfo.AttackerId
+                effect.KnockbackForce,
+                effect.SourceCharacterId
             );
 
-            hitActor.Hit(attacker, damageInfo);
+            hitActor.TakeDamage(damageInfo);
         }
     }
 }

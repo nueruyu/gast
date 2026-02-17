@@ -4,16 +4,16 @@ using UnityEngine;
 
 namespace Gast.Domain.Combat
 {
-    public readonly struct CharacterDamagedEvent : IDomainEvent
+    public readonly struct CharacterHitEvent : IDomainEvent
     {
         public ICharacter HitCharacter { get; }
-        public AttackInfo AttackInfo { get; }
+        public IEffect Effect { get; }
         public Pose HitPoint { get; }
 
-        public CharacterDamagedEvent(ICharacter hitCharacter, AttackInfo attackInfo, Pose hitPoint)
+        public CharacterHitEvent(ICharacter hitCharacter, Pose hitPoint, IEffect effect)
         {
             HitCharacter = hitCharacter;
-            AttackInfo = attackInfo;
+            Effect = effect;
             HitPoint = hitPoint;
         }
     }
