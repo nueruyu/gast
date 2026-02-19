@@ -34,6 +34,7 @@ namespace Cryst.Composition
             // Character
             builder.Register<CharacterContextInitializer>().AsImplementedInterfaces();
             builder.Register<CharacterActionFactory>().As<ICharacterActionFactory>();
+            builder.Register<CrystCharacterFactory>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // Character Actions (Transient)
             builder.Register<AttackAction>(Lifetime.Transient);
@@ -43,9 +44,6 @@ namespace Cryst.Composition
             builder.Register<Modules.CharacterActions.GuardAction>(Lifetime.Transient);
             builder.Register<HitAction>(Lifetime.Transient);
             builder.Register<JumpAction>(Lifetime.Transient);
-
-            // Aspects
-            builder.Register<CrystCharacterFactory>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // AI Brain
             builder.Register<ObjectiveManager>(Lifetime.Transient);

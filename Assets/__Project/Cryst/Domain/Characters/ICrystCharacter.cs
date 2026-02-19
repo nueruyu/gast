@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Cryst.Domain.Characters
 {
-    public interface ICrystCharacter : ICharacterAspect
+    public interface ICrystCharacter : ICharacterFacet
     {
         CharacterId Id { get; }
         CharacterTypeId TypeId { get; }

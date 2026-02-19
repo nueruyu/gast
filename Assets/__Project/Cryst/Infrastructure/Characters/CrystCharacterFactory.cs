@@ -5,7 +5,7 @@ using Gast.Core.Events;
 
 namespace Cryst.Infrastructure.Characters
 {
-    public class CrystCharacterFactory : ICharacterAspectFactory
+    public class CrystCharacterFactory : ICharacterFacetFactory
     {
         readonly IDomainEventPublisher eventPublisher;
 
@@ -14,9 +14,9 @@ namespace Cryst.Infrastructure.Characters
             this.eventPublisher = eventPublisher;
         }
 
-        public Type AspectType => typeof(ICrystCharacter);
+        public Type FacetType => typeof(ICrystCharacter);
 
-        public ICharacterAspect Create(ICharacter character)
+        public ICharacterFacet Create(ICharacter character)
         {
             return new CrystCharacter(character, eventPublisher);
         }

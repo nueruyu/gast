@@ -24,7 +24,7 @@ namespace Gast.Infrastructure.Characters
 
         readonly CombatFeedbackService feedbackService;
         readonly IDomainEventPublisher eventPublisher;
-        readonly ICharacterAspectFactoryRegistry aspectFactoryRegistry;
+        readonly ICharacterFacetFactoryRegistry facetFactoryRegistry;
         readonly IEnumerable<ICharacterContextInitializer> contextInitializers;
         readonly ICharacterActionFactory actionFactory;
 
@@ -34,7 +34,7 @@ namespace Gast.Infrastructure.Characters
             CharacterFootstepService footstepService,
             CombatFeedbackService feedbackService,
             IDomainEventPublisher eventPublisher,
-            ICharacterAspectFactoryRegistry aspectFactoryRegistry,
+            ICharacterFacetFactoryRegistry facetFactoryRegistry,
             IEnumerable<ICharacterContextInitializer> contextInitializers,
             ICharacterActionFactory actionFactory)
         {
@@ -43,7 +43,7 @@ namespace Gast.Infrastructure.Characters
             this.footstepService = footstepService ?? throw new ArgumentNullException(nameof(footstepService));
             this.feedbackService = feedbackService;
             this.eventPublisher = eventPublisher;
-            this.aspectFactoryRegistry = aspectFactoryRegistry;
+            this.facetFactoryRegistry = facetFactoryRegistry;
             this.contextInitializers = contextInitializers;
             this.actionFactory = actionFactory;
         }
@@ -83,7 +83,7 @@ namespace Gast.Infrastructure.Characters
                 faction,
                 wallet,
                 inventory,
-                aspectFactoryRegistry);
+                facetFactoryRegistry);
 
             characterActorRepository.Register(character);
             footstepService.Register(context, definition.FootstepSettings);

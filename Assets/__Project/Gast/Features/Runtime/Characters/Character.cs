@@ -19,8 +19,8 @@ namespace Gast.Features.Characters
     {
         ICharacterTypeDefinition typeDefinition;
         ICharacterBrain currentBrain;
-        ICharacterAspectFactoryRegistry aspectFactoryRegistry;
-        readonly Dictionary<Type, ICharacterAspect> aspectCache = new();
+        ICharacterFacetFactoryRegistry facetFactoryRegistry;
+        readonly Dictionary<Type, ICharacterFacet> facetCache = new();
 
         CharacterActionController actionController;
         CharacterContext context;
@@ -59,7 +59,7 @@ namespace Gast.Features.Characters
             Faction faction,
             Wallet wallet,
             Inventory inventory,
-            ICharacterAspectFactoryRegistry aspectFactoryRegistry)
+            ICharacterFacetFactoryRegistry facetFactoryRegistry)
         {
             this.context = context;
             this.typeDefinition = typeDefinition;
@@ -68,22 +68,22 @@ namespace Gast.Features.Characters
             Faction = faction;
             Wallet = wallet;
             Inventory = inventory;
-            this.aspectFactoryRegistry = aspectFactoryRegistry;
+            this.facetFactoryRegistry = facetFactoryRegistry;
         }
 
-        public T As<T>() where T : class, ICharacterAspect
+        public T As<T>() where T : class, ICharacterFacet
         {
-            if (aspectCache.TryGetValue(typeof(T), out var aspect))
+            if (facetCache.TryGetValue(typeof(T), out var facet))
             {
-                return (T)aspect;
+                return (T)facet;
             }
 
-            var factory = aspectFactoryRegistry.Get(typeof(T)) ??
-                throw new InvalidOperationException($"No aspect factory registered for type {typeof(T)}");
+            var factory = facetFactoryRegistry.Get(typeof(T)) ??
+                throw new InvalidOperationException($"No facet factory registered for type {typeof(T)}");
 
-            var newAspect = (T)factory.Create(this);
-            aspectCache[typeof(T)] = newAspect;
-            return newAspect;
+            var newFacet = (T)factory.Create(this);
+            facetCache[typeof(T)] = newFacet;
+            return newFacet;
         }
 
         public T Resolve<T>() where T : class => context.Resolve<T>();

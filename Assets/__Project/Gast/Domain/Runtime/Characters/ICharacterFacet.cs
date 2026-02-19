@@ -1,6 +1,6 @@
 namespace Gast.Domain.Characters
 {
-    public interface ICharacterAspect
+    public interface ICharacterFacet
     {
     }
 }

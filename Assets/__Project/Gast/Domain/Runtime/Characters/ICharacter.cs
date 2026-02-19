@@ -84,11 +84,11 @@ namespace Gast.Domain.Characters
         void Destroy();
 
         /// <summary>
-        /// Gets a specific aspect of the character.
+        /// Gets a specific facet of the character.
         /// </summary>
-        /// <typeparam name="T">The type of the aspect to get, which must implement ICharacterAspect.</typeparam>
-        /// <returns>The requested aspect instance, or null if not available.</returns>
-        T As<T>() where T : class, ICharacterAspect;
+        /// <typeparam name="T">The type of the facet to get, which must implement ICharacterFacet.</typeparam>
+        /// <returns>The requested facet instance, or null if not available.</returns>
+        T As<T>() where T : class, ICharacterFacet;
 
         /// <summary>
         /// Resolves a service registered in this character's context container.
