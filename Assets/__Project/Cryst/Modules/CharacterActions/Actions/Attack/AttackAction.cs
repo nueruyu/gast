@@ -2,8 +2,6 @@ using Cryst.Domain.Combat;
 using Cysharp.Threading.Tasks;
 using Gast.Features.Characters;
 using Gast.Features.Combat;
-using Gast.Shared.Observables;
-using R3;
 using System;
 using System.Threading;
 using UnityEngine;
@@ -27,26 +25,31 @@ namespace Cryst.Modules.CharacterActions
 
         public AttackAction(
             CharacterContext context,
-            AttackActionSettings settings)
+            AttackActionSettings settings,
+            CharacterAnimator animator,
+            CharacterMovement movement,
+            IHitAreaFactory hitAreaFactory,
+            IAttackEffectFactory attackEffectFactory)
         {
             this.context = context;
             this.settings = settings;
-            animator = context.Resolve<CharacterAnimator>();
-            movement = context.Resolve<CharacterMovement>();
-            hitAreaFactory = context.Resolve<IHitAreaFactory>();
-            attackEffectFactory = context.Resolve<IAttackEffectFactory>();
+            this.animator = animator;
+            this.movement = movement;
+            this.hitAreaFactory = hitAreaFactory;
+            this.attackEffectFactory = attackEffectFactory;
 
-            context.AnimationReceiver.EventReceived
-               .ToObservable()
-               .Where(name => name == "WeaponSwing")
-               .Subscribe(_ => PlayWeaponSwing(context.Audio.AudioSource));
+            context.AnimationReceiver.EventReceived.Subscribe(OnAnimationEvent);
         }
 
-        void PlayWeaponSwing(AudioSource audioSource)
+        void OnAnimationEvent(string name)
         {
-            audioSource.volume = settings.SfxVolume;
-            audioSource.pitch = 1.0f;
-            audioSource.PlayOneShot(settings.Sfx);
+            if (name == "WeaponSwing")
+            {
+                var audioSource = context.Audio.AudioSource;
+                audioSource.volume = settings.SfxVolume;
+                audioSource.pitch = 1.0f;
+                audioSource.PlayOneShot(settings.Sfx);
+            }
         }
 
         public bool CanExecute()

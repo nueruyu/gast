@@ -6,6 +6,7 @@ using Gast.Domain.Stats;
 using Gast.Features.Combat;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Gast.Features.Characters
 {
@@ -22,7 +23,8 @@ namespace Gast.Features.Characters
         IInteractionSensor InteractionSensor,
         INavigationProvider NavigationProvider,
         CombatFeedbackService FeedbackService,
-        IDomainEventPublisher EventPublisher)
+        IDomainEventPublisher EventPublisher,
+        CancellationToken CancellationToken)
     {
         readonly Dictionary<Type, object> services = new();
 

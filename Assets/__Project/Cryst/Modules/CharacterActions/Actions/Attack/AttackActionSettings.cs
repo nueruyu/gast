@@ -54,10 +54,5 @@ namespace Cryst.Modules.CharacterActions
         public float KnockbackForce => knockbackForce;
         public AudioClip Sfx => sfx;
         public float SfxVolume => sfxVolume;
-
-        public override ICharacterAction CreateAction(CharacterContext context)
-        {
-            return new AttackAction(context, this);
-        }
     }
 }

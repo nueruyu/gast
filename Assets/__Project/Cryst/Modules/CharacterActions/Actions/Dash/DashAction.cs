@@ -19,11 +19,12 @@ namespace Cryst.Modules.CharacterActions
 
         public DashAction(
             CharacterContext context,
-            DashActionSettings settings)
+            DashActionSettings settings,
+            CharacterAnimator animator)
         {
             this.context = context;
             this.settings = settings;
-            animator = context.Resolve<CharacterAnimator>();
+            this.animator = animator;
         }
 
         public bool CanExecute()

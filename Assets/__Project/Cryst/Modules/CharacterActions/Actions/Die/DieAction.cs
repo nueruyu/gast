@@ -13,11 +13,11 @@ namespace Cryst.Modules.CharacterActions
         public Type CommandType => typeof(DieCommand);
         public int Priority => 99;
 
-        public DieAction(CharacterContext context)
+        public DieAction(CharacterContext context, CharacterAnimator animator)
         {
             this.context = context;
             controller = context.Body.GetComponent<CharacterController>();
-            animator = context.Resolve<CharacterAnimator>();
+            this.animator = animator;
         }
 
         public bool CanExecute() => true;

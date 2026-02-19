@@ -26,6 +26,7 @@ namespace Gast.Infrastructure.Characters
         readonly IDomainEventPublisher eventPublisher;
         readonly ICharacterAspectFactoryRegistry aspectFactoryRegistry;
         readonly IEnumerable<ICharacterContextInitializer> contextInitializers;
+        readonly ICharacterActionFactory actionFactory;
 
         public CharacterFactory(
             CharacterTypeRepository typeRepository,
@@ -34,7 +35,8 @@ namespace Gast.Infrastructure.Characters
             CombatFeedbackService feedbackService,
             IDomainEventPublisher eventPublisher,
             ICharacterAspectFactoryRegistry aspectFactoryRegistry,
-            IEnumerable<ICharacterContextInitializer> contextInitializers)
+            IEnumerable<ICharacterContextInitializer> contextInitializers,
+            ICharacterActionFactory actionFactory)
         {
             this.typeRepository = typeRepository ?? throw new ArgumentNullException(nameof(typeRepository));
             this.characterActorRepository = characterActorRepository ?? throw new ArgumentNullException(nameof(characterActorRepository));
@@ -43,6 +45,7 @@ namespace Gast.Infrastructure.Characters
             this.eventPublisher = eventPublisher;
             this.aspectFactoryRegistry = aspectFactoryRegistry;
             this.contextInitializers = contextInitializers;
+            this.actionFactory = actionFactory;
         }
 
         public ICharacter Create(CharacterTypeId typeId, Vector3 position, Quaternion rotation, Faction faction)
@@ -120,7 +123,8 @@ namespace Gast.Infrastructure.Characters
                 interactionSensor,
                 navigationProvider,
                 feedbackService,
-                eventPublisher);
+                eventPublisher,
+                body.destroyCancellationToken);
         }
 
         CharacterActionController CreateActionController(CharacterContext character, CharacterTypeDefinition definition)
@@ -131,7 +135,7 @@ namespace Gast.Infrastructure.Characters
             {
                 foreach (var settings in definition.ActionSettings)
                 {
-                    var action = settings.CreateAction(character);
+                    var action = actionFactory.Create(settings, character);
                     if (action is ICharacterExecutableAction executable)
                     {
                         actionController.RegisterAction(executable);

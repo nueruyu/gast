@@ -13,11 +13,14 @@ namespace Cryst.Modules.CharacterActions
         public Type CommandType => typeof(JumpCommand);
         public int Priority => 3;
 
-        public JumpAction(CharacterContext context, JumpActionSettings settings)
+        public JumpAction(
+            CharacterContext context,
+            JumpActionSettings settings,
+            CharacterMovement movement)
         {
             this.context = context;
             this.settings = settings;
-            movement = context.Resolve<CharacterMovement>();
+            this.movement = movement;
         }
 
         public bool CanExecute()

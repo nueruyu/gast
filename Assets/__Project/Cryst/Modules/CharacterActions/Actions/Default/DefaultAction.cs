@@ -12,11 +12,14 @@ namespace Cryst.Modules.CharacterActions.Default
 
         public int Priority => 0;
 
-        public DefaultAction(CharacterContext context)
+        public DefaultAction(
+            CharacterContext context,
+            CharacterActionStateStore stateStore,
+            CharacterMovement movement)
         {
             this.context = context;
-            stateStore = context.Resolve<CharacterActionStateStore>();
-            movement = context.Resolve<CharacterMovement>();
+            this.stateStore = stateStore;
+            this.movement = movement;
         }
 
         public bool OnUpdate()

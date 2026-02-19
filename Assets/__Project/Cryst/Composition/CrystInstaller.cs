@@ -16,6 +16,8 @@ using Gast.Core.Tasks;
 using Cryst.Infrastructure.Effects;
 using Cryst.Infrastructure.Feedbacks;
 using Cryst.Infrastructure.EventHandlers;
+using Gast.Features.Characters;
+using Cryst.Modules.CharacterActions;
 
 namespace Cryst.Composition
 {
@@ -32,6 +34,16 @@ namespace Cryst.Composition
 
             // Character
             builder.Register<CharacterContextInitializer>().AsImplementedInterfaces();
+            builder.Register<CharacterActionFactory>().As<ICharacterActionFactory>();
+
+            // Character Actions (Transient)
+            builder.Register<AttackAction>(Lifetime.Transient);
+            builder.Register<DashAction>(Lifetime.Transient);
+            builder.Register<Modules.CharacterActions.Default.DefaultAction>(Lifetime.Transient);
+            builder.Register<DieAction>(Lifetime.Transient);
+            builder.Register<Modules.CharacterActions.GuardAction>(Lifetime.Transient);
+            builder.Register<HitAction>(Lifetime.Transient);
+            builder.Register<JumpAction>(Lifetime.Transient);
 
             // Aspects
             builder.Register<CrystCharacterFactory>(Lifetime.Singleton).AsImplementedInterfaces();

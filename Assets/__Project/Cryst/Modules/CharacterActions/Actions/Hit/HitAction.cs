@@ -16,11 +16,14 @@ namespace Cryst.Modules.CharacterActions
         public Type CommandType => typeof(HitCommand);
         public int Priority => 8;
 
-        public HitAction(CharacterContext context, HitActionSettings settings)
+        public HitAction(
+            CharacterContext context,
+            HitActionSettings settings,
+            CharacterAnimator animator)
         {
             this.context = context;
             this.settings = settings;
-            animator = context.Resolve<CharacterAnimator>();
+            this.animator = animator;
         }
 
         public bool CanExecute() => true;

@@ -14,10 +14,5 @@ namespace Cryst.Modules.CharacterActions
 
         public float Force => force;
         public float LookDirectionSpeed => lookDirectionSpeed;
-
-        public override ICharacterAction CreateAction(CharacterContext context)
-        {
-            return new JumpAction(context, this);
-        }
     }
 }

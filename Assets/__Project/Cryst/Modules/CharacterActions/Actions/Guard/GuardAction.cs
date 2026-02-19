@@ -14,12 +14,16 @@ namespace Cryst.Modules.CharacterActions
         public Type CommandType => typeof(GuardCommand);
         public int Priority => 2;
 
-        public GuardAction(CharacterContext context, GuardActionSettings settings)
+        public GuardAction(
+            CharacterContext context,
+            GuardActionSettings settings,
+            CharacterAnimator animator,
+            CharacterMovement movement)
         {
             this.context = context;
             this.settings = settings;
-            animator = context.Resolve<CharacterAnimator>();
-            movement = context.Resolve<CharacterMovement>();
+            this.animator = animator;
+            this.movement = movement;
         }
 
         public bool CanExecute() => true;
