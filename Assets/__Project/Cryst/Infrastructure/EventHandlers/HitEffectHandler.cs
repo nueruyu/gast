@@ -8,6 +8,7 @@ using Gast.Domain.Combat;
 using Cryst.Domain.Characters;
 using R3;
 using Cryst.Domain.Combat;
+using Gast.Shared.Phantoms;
 
 namespace Cryst.Infrastructure.EventHandlers
 {
@@ -33,27 +34,26 @@ namespace Cryst.Infrastructure.EventHandlers
 
         void OnCharacterHit(CharacterHitEvent e)
         {
-            switch (e.Effect)
-            {
-                case IAttackEffect attackEffect:
-                    OnAttackHit(e, attackEffect);
-                    break;
-            }
-        }
+            if (e.Context is not Phantom context)
+                return;
 
-        void OnAttackHit(CharacterHitEvent e, IAttackEffect effect)
-        {
+            if (!context.TryGet(AttackContextKeys.SourceCharacterId, out var attackerId))
+                return;
+
             var hitActor = e.HitCharacter.As<ICrystCharacter>();
-            var attacker = characterRepository.Get(effect.SourceCharacterId).As<ICrystCharacter>();
+            var attacker = characterRepository.Get(attackerId).As<ICrystCharacter>();
 
             if (hitActor.Faction == attacker.Faction)
                 return;
 
+            var damage = context.Get(AttackContextKeys.Damage);
+            var knockback = context.Get(AttackContextKeys.KnockbackForce);
+
             var damageInfo = new DamageInfo(
-                effect.Damage,
+                damage,
                 e.HitPoint,
-                effect.KnockbackForce,
-                effect.SourceCharacterId
+                knockback,
+                attackerId
             );
 
             hitActor.TakeDamage(damageInfo);

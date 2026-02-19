@@ -5,8 +5,8 @@ using Gast.Core.Events;
 using Gast.Core.Tasks;
 using Gast.Domain.Combat;
 using Gast.Features.Combat;
+using Gast.Shared.Phantoms;
 using R3;
-using Cryst.Domain.Combat;
 using Cryst.Infrastructure.Feedbacks;
 
 namespace Cryst.Infrastructure.EventHandlers
@@ -36,22 +36,20 @@ namespace Cryst.Infrastructure.EventHandlers
 
         void OnCharacterHit(CharacterHitEvent e)
         {
+            if (e.Context is not Phantom)
+                return;
+
             var point = e.HitPoint;
 
-            switch (e.Effect)
-            {
-                case IAttackEffect:
-                    feedbackService.PlayHitEffect(
-                        point.position,
-                        point.rotation,
-                        settings.HitVfxPrefab);
+            feedbackService.PlayHitEffect(
+                point.position,
+                point.rotation,
+                settings.HitVfxPrefab);
 
-                    feedbackService.PlaySound(
-                        point.position,
-                        settings.HitSfx,
-                        settings.SfxVolume);
-                    break;
-            }
+            feedbackService.PlaySound(
+                point.position,
+                settings.HitSfx,
+                settings.SfxVolume);
         }
     }
 }

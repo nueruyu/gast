@@ -1,4 +1,3 @@
-using Cryst.Domain.Combat;
 using Cryst.Modules.CharacterActions;
 using Gast.Features.Characters;
 using Gast.Features.Combat;
@@ -7,14 +6,10 @@ namespace Cryst.Infrastructure.Characters
 {
     public class CharacterContextInitializer : ICharacterContextInitializer
     {
-        readonly IAttackEffectFactory attackEffectFactory;
         readonly IHitAreaFactory hitAreaFactory;
 
-        public CharacterContextInitializer(
-            IAttackEffectFactory attackEffectFactory,
-            IHitAreaFactory hitAreaFactory)
+        public CharacterContextInitializer(IHitAreaFactory hitAreaFactory)
         {
-            this.attackEffectFactory = attackEffectFactory;
             this.hitAreaFactory = hitAreaFactory;
         }
 
@@ -30,7 +25,6 @@ namespace Cryst.Infrastructure.Characters
             context.Register(animator);
             context.Register(stateStore);
             context.Register(movement);
-            context.Register(attackEffectFactory);
             context.Register(hitAreaFactory);
         }
     }

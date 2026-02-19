@@ -1,7 +1,5 @@
 using Gast.Core.Events;
-using Gast.Domain.Combat;
 using Gast.Features.Combat;
-using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -22,7 +20,7 @@ namespace Gast.Infrastructure.Combat
             Pose pose,
             Vector3 size,
             float duration,
-            IEffect effect)
+            object context)
         {
             var damageArea = Object.Instantiate(
                 settings.HitAreaPrefab,
@@ -32,7 +30,7 @@ namespace Gast.Infrastructure.Combat
             damageArea.transform.localScale = size;
 
             damageArea.Initialize(
-                effect,
+                context,
                 duration,
                 eventPublisher);
         }

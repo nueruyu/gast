@@ -13,7 +13,6 @@ using Cryst.Modules.CharacterAI;
 using Cryst.Modules.CharacterAI.Strategic;
 using Gast.Domain.Players;
 using Gast.Core.Tasks;
-using Cryst.Infrastructure.Effects;
 using Cryst.Infrastructure.Feedbacks;
 using Cryst.Infrastructure.EventHandlers;
 using Gast.Features.Characters;
@@ -47,9 +46,6 @@ namespace Cryst.Composition
 
             // Aspects
             builder.Register<CrystCharacterFactory>(Lifetime.Singleton).AsImplementedInterfaces();
-
-            // Combat
-            builder.Register<AttackEffectFactory>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // AI Brain
             builder.Register<ObjectiveManager>(Lifetime.Transient);

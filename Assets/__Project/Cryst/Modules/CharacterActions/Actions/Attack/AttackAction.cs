@@ -2,6 +2,7 @@ using Cryst.Domain.Combat;
 using Cysharp.Threading.Tasks;
 using Gast.Features.Characters;
 using Gast.Features.Combat;
+using Gast.Shared.Phantoms;
 using System;
 using System.Threading;
 using UnityEngine;
@@ -15,7 +16,6 @@ namespace Cryst.Modules.CharacterActions
         readonly CharacterAnimator animator;
         readonly CharacterMovement movement;
         readonly IHitAreaFactory hitAreaFactory;
-        readonly IAttackEffectFactory attackEffectFactory;
 
         float startTime;
         float lastAttackTime = float.NegativeInfinity;
@@ -28,15 +28,13 @@ namespace Cryst.Modules.CharacterActions
             AttackActionSettings settings,
             CharacterAnimator animator,
             CharacterMovement movement,
-            IHitAreaFactory hitAreaFactory,
-            IAttackEffectFactory attackEffectFactory)
+            IHitAreaFactory hitAreaFactory)
         {
             this.context = context;
             this.settings = settings;
             this.animator = animator;
             this.movement = movement;
             this.hitAreaFactory = hitAreaFactory;
-            this.attackEffectFactory = attackEffectFactory;
 
             context.AnimationReceiver.EventReceived.Subscribe(OnAnimationEvent);
         }
@@ -78,19 +76,18 @@ namespace Cryst.Modules.CharacterActions
             var spawnPosition = attackerTransform.position + settings.Offset + forward * settings.Range;
             var spawnRotation = attackerTransform.rotation;
             var pose = new Pose(spawnPosition, spawnRotation);
-
             var knockbackDirection = spawnRotation * Vector3.forward;
 
-            var effect = attackEffectFactory.Create(
-                context.Id,
-                settings.Damage,
-                settings.KnockbackForce * knockbackDirection);
+            var attackContext = Phantom.Create();
+            attackContext.Set(AttackContextKeys.SourceCharacterId, context.Id);
+            attackContext.Set(AttackContextKeys.Damage, settings.Damage);
+            attackContext.Set(AttackContextKeys.KnockbackForce, settings.KnockbackForce * knockbackDirection);
 
             hitAreaFactory.Create(
                 pose,
                 settings.HitboxSize,
                 settings.DamageAreaDuration,
-                effect);
+                attackContext);
         }
 
         public bool OnUpdate()

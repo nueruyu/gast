@@ -10,18 +10,18 @@ namespace Gast.Features.Combat
     [RequireComponent(typeof(Collider))]
     public class HitArea : MonoBehaviour
     {
-        IEffect effect;
+        object context;
         float duration;
         IDomainEventPublisher eventPublisher;
 
         bool initialized;
 
         public void Initialize(
-            IEffect effect,
+            object context,
             float duration,
             IDomainEventPublisher eventPublisher)
         {
-            this.effect = effect;
+            this.context = context;
             this.duration = duration;
             this.eventPublisher = eventPublisher;
             initialized = true;
@@ -37,14 +37,11 @@ namespace Gast.Features.Combat
             if (!other.TryGetComponent<ICharacter>(out var character))
                 return;
 
-            if (!effect.CanApplyTo(character))
-                return;
-
             var hitPosition = other.ClosestPoint(transform.position);
             var hitRotation = Quaternion.LookRotation(transform.forward);
             var hitPoint = new Pose(hitPosition, hitRotation);
 
-            eventPublisher.Publish(new CharacterHitEvent(character, hitPoint, effect));
+            eventPublisher.Publish(new CharacterHitEvent(character, hitPoint, context));
 
             Debug.Log($"[HitArea] Hit: {character.Id}");
         }
@@ -56,14 +53,15 @@ namespace Gast.Features.Combat
                 cancellationToken: destroyCancellationToken);
 
             Destroy(gameObject);
+        }
 
-            var effect = this.effect;
-            this.effect = null;
-
-            if (effect is IDisposable disposableEffect)
+        void OnDestroy()
+        {
+            if (context is IDisposable disposableContext)
             {
-                disposableEffect.Dispose();
+                disposableContext.Dispose();
             }
+            context = null;
         }
     }
 }

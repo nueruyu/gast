@@ -7,13 +7,13 @@ namespace Gast.Domain.Combat
     public readonly struct CharacterHitEvent : IDomainEvent
     {
         public ICharacter HitCharacter { get; }
-        public IEffect Effect { get; }
+        public object Context { get; }
         public Pose HitPoint { get; }
 
-        public CharacterHitEvent(ICharacter hitCharacter, Pose hitPoint, IEffect effect)
+        public CharacterHitEvent(ICharacter hitCharacter, Pose hitPoint, object context)
         {
             HitCharacter = hitCharacter;
-            Effect = effect;
+            Context = context;
             HitPoint = hitPoint;
         }
     }

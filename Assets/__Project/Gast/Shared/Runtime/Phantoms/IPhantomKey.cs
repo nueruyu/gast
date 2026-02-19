@@ -1,5 +1,3 @@
-using System;
-
 namespace Gast.Shared.Phantoms
 {
     /// <summary>
