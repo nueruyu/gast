@@ -28,14 +28,11 @@ namespace Cryst.Infrastructure.EventHandlers
 
         void OnCharacterDefeated(CharacterDefeatedEvent e)
         {
-            DestroyCharacterAfterDelay(e.DefeatedCharacter as ICharacter).Forget();
+            DestroyCharacterAfterDelay(e.DefeatedCharacter.Character).Forget();
         }
 
         async UniTaskVoid DestroyCharacterAfterDelay(ICharacter character)
         {
-            if (character == null)
-                return;
-
             await UniTask.Delay(
                 TimeSpan.FromSeconds(5),
                 cancellationToken: character.CancellationToken);

@@ -9,6 +9,7 @@ namespace Cryst.Domain.Characters
 {
     public interface ICrystCharacter : ICharacterFacet
     {
+        ICharacter Character { get; }
         CharacterId Id { get; }
         CharacterTypeId TypeId { get; }
         ICharacterTypeDefinition TypeDefinition { get; }

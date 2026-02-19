@@ -33,6 +33,7 @@ namespace Cryst.Infrastructure.Characters
 
         CharacterStatSchema GetStatSchema() => (CharacterStatSchema)character.TypeDefinition.StatSchema;
 
+        public ICharacter Character => character;
         public CharacterId Id => character.Id;
         public CharacterTypeId TypeId => character.TypeId;
         public ICharacterTypeDefinition TypeDefinition => character.TypeDefinition;
