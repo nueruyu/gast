@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Features.Characters;
-using Gast.Shared.UnityExtensions;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Gast.Infrastructure.Characters
@@ -12,7 +10,6 @@ namespace Gast.Infrastructure.Characters
     public class CharacterFactory : ICharacterFactory
     {
         readonly CharacterTypeRepository typeRepository;
-        readonly ICharacterActorRepository characterActorRepository;
 
         readonly ICharacterFacetFactoryRegistry facetFactoryRegistry;
         readonly IEnumerable<ICharacterContextInitializer> contextInitializers;
@@ -20,13 +17,11 @@ namespace Gast.Infrastructure.Characters
 
         public CharacterFactory(
             CharacterTypeRepository typeRepository,
-            ICharacterActorRepository characterActorRepository,
             ICharacterFacetFactoryRegistry facetFactoryRegistry,
             IEnumerable<ICharacterContextInitializer> contextInitializers,
             ICharacterActionFactory actionFactory)
         {
             this.typeRepository = typeRepository;
-            this.characterActorRepository = characterActorRepository;
             this.facetFactoryRegistry = facetFactoryRegistry;
             this.contextInitializers = contextInitializers;
             this.actionFactory = actionFactory;
@@ -37,8 +32,6 @@ namespace Gast.Infrastructure.Characters
             var definition = typeRepository.Get(typeId);
 
             var characterPrefab = definition.CharacterPrefab;
-            if (characterPrefab == null)
-                throw new InvalidOperationException($"Character type '{typeId}' has no prefab assigned.");
 
             var characterId = CharacterId.New();
             var character = UnityEngine.Object.Instantiate(characterPrefab, position, rotation);
@@ -47,7 +40,12 @@ namespace Gast.Infrastructure.Characters
             var visual = UnityEngine.Object.Instantiate(definition.VisualPrefab, character.transform);
             visual.name = $"Visual ({definition.VisualPrefab.name})";
 
-            var context = CreateContext(characterId, character.gameObject, definition);
+            var context = new CharacterContext(
+                characterId,
+                definition.TypeId,
+                definition,
+                character.gameObject,
+                character.destroyCancellationToken);
 
             foreach (var extension in definition.Extensions)
                 context.Register(extension.GetType(), extension);
@@ -72,22 +70,7 @@ namespace Gast.Infrastructure.Characters
                 inventory,
                 facetFactoryRegistry);
 
-            characterActorRepository.Register(character);
-
             return character;
-        }
-
-        CharacterContext CreateContext(
-            CharacterId id,
-            GameObject characterGo,
-            CharacterTypeDefinition definition)
-        {
-            return new CharacterContext(
-                id,
-                definition.TypeId,
-                definition,
-                characterGo,
-                characterGo.GetCancellationTokenOnDestroy());
         }
 
         CharacterActionController CreateActionController(CharacterContext character, CharacterTypeDefinition definition)

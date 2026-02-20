@@ -14,14 +14,14 @@ namespace Gast.Features.Interactions
     public class InteractionSystem : IInteractionSystem
     {
         readonly Dictionary<InteractableId, Interactable> registeredInteractables = new();
-        readonly ICharacterActorRepository characterActorRepository;
+        readonly ICharacterRepository characterRepository;
         readonly Signal<InteractionProgressEvent> progressChanged = new();
 
         public ISignal<InteractionProgressEvent> ProgressChanged => progressChanged;
 
-        public InteractionSystem(ICharacterActorRepository characterActorRepository)
+        public InteractionSystem(ICharacterRepository characterRepository)
         {
-            this.characterActorRepository = characterActorRepository;
+            this.characterRepository = characterRepository;
         }
 
         public void Register(Interactable interactable)
@@ -42,7 +42,7 @@ namespace Gast.Features.Interactions
             if (!registeredInteractables.TryGetValue(interactableId, out var interactable) || interactable == null)
                 return false;
 
-            var interactorCharacter = characterActorRepository.Get(interactorId);
+            var interactorCharacter = characterRepository.Get(interactorId);
             if (interactorCharacter == null)
                 return false;
 

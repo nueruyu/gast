@@ -1,4 +1,5 @@
 using Gast.Core.Observables;
+using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
 using Gast.Features.Characters;
 using UnityEngine;
@@ -13,9 +14,9 @@ namespace Gast.Features.Interactions
         [SerializeField]
         InteractionConfig config = new();
 
-        readonly Signal<Character> interacted = new();
-        readonly Signal<Character> interactionStarted = new();
-        readonly Signal<Character> interactionCancelled = new();
+        readonly Signal<ICharacter> interacted = new();
+        readonly Signal<ICharacter> interactionStarted = new();
+        readonly Signal<ICharacter> interactionCancelled = new();
         readonly Signal disabled = new();
 
         InteractionSystem interactionSystem;
@@ -31,9 +32,9 @@ namespace Gast.Features.Interactions
             set => canInteract = value;
         }
 
-        public ISignal<Character> Interacted => interacted;
-        public ISignal<Character> InteractionStarted => interactionStarted;
-        public ISignal<Character> InteractionCancelled => interactionCancelled;
+        public ISignal<ICharacter> Interacted => interacted;
+        public ISignal<ICharacter> InteractionStarted => interactionStarted;
+        public ISignal<ICharacter> InteractionCancelled => interactionCancelled;
         public ISignal Disabled => disabled;
 
         IInteractionConfig IInteractable.Config => Config;
@@ -66,17 +67,17 @@ namespace Gast.Features.Interactions
             activated = false;
         }
 
-        public void OnInteract(Character interactor)
+        public void OnInteract(ICharacter interactor)
         {
             interacted.Publish(interactor);
         }
 
-        public void OnInteractionStart(Character interactor)
+        public void OnInteractionStart(ICharacter interactor)
         {
             interactionStarted.Publish(interactor);
         }
 
-        public void OnInteractionCancelled(Character interactor)
+        public void OnInteractionCancelled(ICharacter interactor)
         {
             interactionCancelled.Publish(interactor);
         }

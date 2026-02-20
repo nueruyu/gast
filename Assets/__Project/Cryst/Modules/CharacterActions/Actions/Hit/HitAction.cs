@@ -6,7 +6,6 @@ namespace Cryst.Modules.CharacterActions
 {
     public class HitAction : ICharacterExecutableAction<HitCommand>
     {
-        readonly CharacterContext context;
         readonly HitActionSettings settings;
         readonly CharacterBody body;
         readonly CharacterAnimator animator;
@@ -18,12 +17,10 @@ namespace Cryst.Modules.CharacterActions
         public int Priority => 8;
 
         public HitAction(
-            CharacterContext context,
             HitActionSettings settings,
             CharacterBody body,
             CharacterAnimator animator)
         {
-            this.context = context;
             this.settings = settings;
             this.body = body;
             this.animator = animator;

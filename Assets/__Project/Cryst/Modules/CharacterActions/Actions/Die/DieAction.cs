@@ -6,7 +6,6 @@ namespace Cryst.Modules.CharacterActions
 {
     public class DieAction : ICharacterExecutableAction<DieCommand>
     {
-        readonly CharacterContext context;
         readonly CharacterBody body;
         readonly CharacterController controller;
         readonly CharacterAnimator animator;
@@ -14,9 +13,8 @@ namespace Cryst.Modules.CharacterActions
         public Type CommandType => typeof(DieCommand);
         public int Priority => 99;
 
-        public DieAction(CharacterContext context, CharacterBody body, CharacterAnimator animator)
+        public DieAction(CharacterBody body, CharacterAnimator animator)
         {
-            this.context = context;
             this.body = body;
             controller = body.GetComponent<CharacterController>();
             this.animator = animator;

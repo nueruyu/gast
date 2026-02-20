@@ -8,12 +8,12 @@ namespace Gast.Features.Cameras
     public class CameraService : ICameraService
     {
         readonly CameraRegistry cameraRegistry;
-        readonly ICharacterActorRepository characterActorRepository;
+        readonly ICharacterRepository characterRepository;
 
-        public CameraService(CameraRegistry cameraRegistry, ICharacterActorRepository characterActorRepository)
+        public CameraService(CameraRegistry cameraRegistry, ICharacterRepository characterRepository)
         {
             this.cameraRegistry = cameraRegistry;
-            this.characterActorRepository = characterActorRepository;
+            this.characterRepository = characterRepository;
 
             MainCamera = new CameraInfo(cameraRegistry.MainCamera);
         }
@@ -22,8 +22,9 @@ namespace Gast.Features.Cameras
 
         public void SetFollowTarget(CharacterId targetCharacterId)
         {
-            var character = characterActorRepository.Get(targetCharacterId);
-            cameraRegistry.CameraController.SetFollowTarget(character.transform);
+            var character = characterRepository.Get(targetCharacterId);
+            var focusTarget = character.Resolve<CameraFocusTarget>();
+            cameraRegistry.CameraController.SetFollowTarget(focusTarget.transform);
         }
 
         public void UnsetFollowTarget()

@@ -6,7 +6,6 @@ namespace Cryst.Modules.CharacterActions
 {
     public class DashAction : ICharacterExecutableAction<DashCommand>
     {
-        readonly CharacterContext context;
         readonly DashActionSettings settings;
         readonly CharacterBody body;
         readonly CharacterAnimator animator;
@@ -19,12 +18,10 @@ namespace Cryst.Modules.CharacterActions
         public int Priority => 10;
 
         public DashAction(
-            CharacterContext context,
             DashActionSettings settings,
             CharacterBody body,
             CharacterAnimator animator)
         {
-            this.context = context;
             this.settings = settings;
             this.body = body;
             this.animator = animator;

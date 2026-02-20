@@ -2,9 +2,8 @@ using Cryst.Modules.CharacterActions;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
+using Gast.Features.Cameras;
 using Gast.Features.Characters;
-using Gast.Features.Combat;
-using Gast.Features.Interactions;
 using Gast.Features.Navigations;
 using Gast.Features.Sensors;
 using Gast.Infrastructure.Characters;
@@ -14,13 +13,6 @@ namespace Cryst.Infrastructure.Characters
 {
     public class CharacterContextInitializer : ICharacterContextInitializer
     {
-        readonly IHitAreaFactory hitAreaFactory;
-
-        public CharacterContextInitializer(IHitAreaFactory hitAreaFactory)
-        {
-            this.hitAreaFactory = hitAreaFactory;
-        }
-
         public void Initialize(CharacterContext context)
         {
             var body = context.GameObject.RequireComponentInChildren<CharacterBody>();
@@ -30,6 +22,7 @@ namespace Cryst.Infrastructure.Characters
             var interactor = context.GameObject.RequireComponentInChildren<IInteractor>();
             var animator = context.GameObject.GetComponentInChildren<CharacterAnimator>();
             var audio = context.GameObject.RequireComponentInChildren<CharacterAudio>();
+            var cameraFocusTarget = context.GameObject.RequireComponentInChildren<CameraFocusTarget>();
 
             var visionSettings = context.Resolve<ConeVisionSensorSettings>();
             if (visionSettings != null)
@@ -50,6 +43,9 @@ namespace Cryst.Infrastructure.Characters
             context.Register(interactionSensor);
             context.Register(interactor);
             context.Register(body);
+            context.Register(animator);
+            context.Register(audio);
+            context.Register(cameraFocusTarget);
 
             var stateStore = new CharacterActionStateStore();
             var movement = new CharacterMovement(
@@ -57,11 +53,8 @@ namespace Cryst.Infrastructure.Characters
                 body,
                 context.TypeDefinition);
 
-            context.Register(animator);
-            context.Register(audio);
             context.Register(stateStore);
             context.Register(movement);
-            context.Register(hitAreaFactory);
 
             // Handlers
             var footstepSettings = context.Resolve<CharacterFootstepSettings>();

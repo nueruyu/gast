@@ -14,23 +14,22 @@ namespace Gast.Features.Players
     public class PlayerManager : IPlayerManager
     {
         readonly PlayerBrain playerBrain;
-        readonly ICharacterActorRepository characterActorRepository;
-        readonly Live<Character> currentCharacter = new(null);
+        readonly ICharacterRepository characterRepository;
+        readonly Live<ICharacter> currentCharacter = new(null);
         readonly Live<ICharacterAIBrain> currentAIBrain = new(null);
 
         public PlayerManager(
             PlayerBrain playerBrain,
-            ICharacterActorRepository characterActorRepository)
+            ICharacterRepository characterRepository)
         {
             this.playerBrain = playerBrain;
-            this.characterActorRepository = characterActorRepository;
-            CurrentCharacter = currentCharacter.Cast<Character, ICharacter>();
+            this.characterRepository = characterRepository;
         }
 
         /// <summary>
         /// Observable property for the character currently possessed by the player.
         /// </summary>
-        public ILive<ICharacter> CurrentCharacter { get; }
+        public ILive<ICharacter> CurrentCharacter => currentCharacter;
 
         public ILive<ICharacterAIBrain> CurrentAIBrain => currentAIBrain;
 
@@ -42,7 +41,7 @@ namespace Gast.Features.Players
         {
             Unpossess();
 
-            var character = characterActorRepository.Get(characterId);
+            var character = characterRepository.Get(characterId);
             character.AttachBrain(playerBrain);
             currentCharacter.Value = character;
 

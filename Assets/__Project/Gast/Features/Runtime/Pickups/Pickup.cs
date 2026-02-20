@@ -2,9 +2,9 @@ using Cysharp.Threading.Tasks;
 using Gast.Application.Economy;
 using Gast.Core.Commands;
 using Gast.Core.Observables;
+using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Domain.Pickups;
-using Gast.Features.Characters;
 using Gast.Features.Interactions;
 using System;
 using UnityEngine;
@@ -73,7 +73,7 @@ namespace Gast.Features.Pickups
             rb.AddTorque(0.1f * dropImpulse * Random.insideUnitSphere, ForceMode.Impulse);
         }
 
-        void OnInteract(Character interactor)
+        void OnInteract(ICharacter interactor)
         {
             if (commandDispatcher == null)
                 throw new InvalidOperationException(
