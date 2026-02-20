@@ -36,6 +36,7 @@ Transform:
   - {fileID: 1448590872584242864}
   - {fileID: 5930895285200414449}
   - {fileID: 1539993944322489600}
+  - {fileID: 4567379418983140700}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &1436732632290512544
@@ -134,6 +135,50 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gast.Features.Characters::Gast.Features.Characters.Audios.CharacterAudioController
   audioSource: {fileID: 8874509523021616004}
+--- !u!1 &3600657148974775455
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4567379418983140700}
+  - component: {fileID: 5421709771145843819}
+  m_Layer: 6
+  m_Name: Interactor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4567379418983140700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3600657148974775455}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7432586591768075266}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5421709771145843819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3600657148974775455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ed87706110c1064eba809fedf209a02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gast.Features::Gast.Features.Interactions.Interactor
 --- !u!1 &4172856136449196397
 GameObject:
   m_ObjectHideFlags: 0

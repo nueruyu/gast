@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Features.Characters;
@@ -81,14 +82,12 @@ namespace Gast.Infrastructure.Characters
             GameObject characterGo,
             CharacterTypeDefinition definition)
         {
-            var body = characterGo.RequireComponent<CharacterBody>();
-
             return new CharacterContext(
                 id,
                 definition.TypeId,
                 definition,
-                body,
-                body.destroyCancellationToken);
+                characterGo,
+                characterGo.GetCancellationTokenOnDestroy());
         }
 
         CharacterActionController CreateActionController(CharacterContext character, CharacterTypeDefinition definition)

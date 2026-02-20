@@ -8,6 +8,7 @@ namespace Cryst.Modules.CharacterActions
     {
         readonly CharacterContext context;
         readonly JumpActionSettings settings;
+        readonly CharacterBody body;
         readonly CharacterMovement movement;
 
         public Type CommandType => typeof(JumpCommand);
@@ -16,21 +17,23 @@ namespace Cryst.Modules.CharacterActions
         public JumpAction(
             CharacterContext context,
             JumpActionSettings settings,
+            CharacterBody body,
             CharacterMovement movement)
         {
             this.context = context;
             this.settings = settings;
+            this.body = body;
             this.movement = movement;
         }
 
         public bool CanExecute()
         {
-            return context.Body.IsGrounded;
+            return body.IsGrounded;
         }
 
         public void Execute(in JumpCommand command)
         {
-            context.Body.ApplyJump(settings.Force);
+            body.ApplyJump(settings.Force);
         }
 
         public bool OnUpdate()

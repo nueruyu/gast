@@ -7,6 +7,7 @@ using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
 using Gast.Domain.Loot;
+using Gast.Features.Characters;
 using R3;
 using UnityEngine;
 
@@ -38,7 +39,7 @@ namespace Cryst.Infrastructure.Characters
         public CharacterTypeId TypeId => character.TypeId;
         public ICharacterTypeDefinition TypeDefinition => character.TypeDefinition;
         public Faction Faction => character.Faction;
-        public ICharacterBody Body => character.Body;
+        public ICharacterBody Body => character.Resolve<CharacterBody>();
         public IVisionSensor VisionSensor => character.Resolve<IVisionSensor>();
         public IInteractionSensor InteractionSensor => character.Resolve<IInteractionSensor>();
         public INavigationProvider NavigationProvider => character.Resolve<INavigationProvider>();

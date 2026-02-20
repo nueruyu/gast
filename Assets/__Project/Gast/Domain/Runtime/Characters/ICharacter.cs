@@ -39,11 +39,6 @@ namespace Gast.Domain.Characters
         ICharacterTypeDefinition TypeDefinition { get; }
 
         /// <summary>
-        /// Read-only access to the character's physical state.
-        /// </summary>
-        ICharacterBody Body { get; }
-
-        /// <summary>
         /// Signal raised when this character is destroyed.
         /// </summary>
         ISignal<ICharacter> Destroyed { get; }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using UnityEngine;
 
 namespace Gast.Features.Characters
 {
@@ -10,7 +11,7 @@ namespace Gast.Features.Characters
         CharacterId CharacaterId,
         CharacterTypeId TypeId,
         ICharacterTypeDefinition TypeDefinition,
-        CharacterBody Body,
+        GameObject GameObject,
         CancellationToken CancellationToken)
     {
         readonly Dictionary<Type, object> services = new();

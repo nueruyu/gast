@@ -7,16 +7,18 @@ namespace Cryst.Modules.CharacterActions
     public class DieAction : ICharacterExecutableAction<DieCommand>
     {
         readonly CharacterContext context;
+        readonly CharacterBody body;
         readonly CharacterController controller;
         readonly CharacterAnimator animator;
 
         public Type CommandType => typeof(DieCommand);
         public int Priority => 99;
 
-        public DieAction(CharacterContext context, CharacterAnimator animator)
+        public DieAction(CharacterContext context, CharacterBody body, CharacterAnimator animator)
         {
             this.context = context;
-            controller = context.Body.GetComponent<CharacterController>();
+            this.body = body;
+            controller = body.GetComponent<CharacterController>();
             this.animator = animator;
         }
 
@@ -24,7 +26,6 @@ namespace Cryst.Modules.CharacterActions
 
         public void Execute(in DieCommand command)
         {
-            var body = context.Body;
             body.IsInputMovementEnabled = false;
             body.SetForcedVelocity(Vector3.zero);
 
@@ -49,7 +50,7 @@ namespace Cryst.Modules.CharacterActions
             if (animator)
                 animator.SetDead(false);
 
-            context.Body.IsInputMovementEnabled = true;
+            body.IsInputMovementEnabled = true;
         }
     }
 }

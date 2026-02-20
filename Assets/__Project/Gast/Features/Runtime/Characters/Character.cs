@@ -34,7 +34,6 @@ namespace Gast.Features.Characters
         public Wallet Wallet { get; private set; }
         public Inventory Inventory { get; private set; }
         public ICharacterTypeDefinition TypeDefinition => typeDefinition;
-        public ICharacterBody Body => context.Body;
         public ICharacterActionController ActionController => actionController;
         public ISignal<ICharacter> Destroyed => destroyedSignal;
         public CancellationToken CancellationToken => destroyCancellationToken;

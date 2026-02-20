@@ -23,25 +23,13 @@ namespace Cryst.Infrastructure.Characters
 
         public void Initialize(CharacterContext context)
         {
-            // Core Components
-            var animator = context.Body.GetComponentInChildren<CharacterAnimator>();
-            var audio = context.Body.RequireComponentInChildren<CharacterAudio>();
-            var stateStore = new CharacterActionStateStore();
-            var movement = new CharacterMovement(
-                animator,
-                context.Body,
-                context.TypeDefinition);
-
-            context.Register(animator);
-            context.Register(audio);
-            context.Register(stateStore);
-            context.Register(movement);
-            context.Register(hitAreaFactory);
-
-            // Sensors & Navigation
-            var visionSensor = context.Body.RequireComponentInChildren<ConeVisionSensor>();
-            var interactionSensor = context.Body.RequireComponentInChildren<InteractionSensor>();
-            var navigationProvider = context.Body.RequireComponentInChildren<NavMeshNavigator>();
+            var body = context.GameObject.RequireComponentInChildren<CharacterBody>();
+            var visionSensor = context.GameObject.RequireComponentInChildren<ConeVisionSensor>();
+            var navigationProvider = context.GameObject.RequireComponentInChildren<NavMeshNavigator>();
+            var interactionSensor = context.GameObject.RequireComponentInChildren<IInteractionSensor>();
+            var interactor = context.GameObject.RequireComponentInChildren<IInteractor>();
+            var animator = context.GameObject.GetComponentInChildren<CharacterAnimator>();
+            var audio = context.GameObject.RequireComponentInChildren<CharacterAudio>();
 
             var visionSettings = context.Resolve<ConeVisionSensorSettings>();
             if (visionSettings != null)
@@ -58,8 +46,22 @@ namespace Cryst.Infrastructure.Characters
             }
 
             context.Register<IVisionSensor>(visionSensor);
-            context.Register<IInteractionSensor>(interactionSensor);
             context.Register<INavigationProvider>(navigationProvider);
+            context.Register(interactionSensor);
+            context.Register(interactor);
+            context.Register(body);
+
+            var stateStore = new CharacterActionStateStore();
+            var movement = new CharacterMovement(
+                animator,
+                body,
+                context.TypeDefinition);
+
+            context.Register(animator);
+            context.Register(audio);
+            context.Register(stateStore);
+            context.Register(movement);
+            context.Register(hitAreaFactory);
 
             // Handlers
             var footstepSettings = context.Resolve<CharacterFootstepSettings>();

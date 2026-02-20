@@ -14,6 +14,7 @@ namespace Cryst.Modules.CharacterActions
     {
         readonly CharacterContext context;
         readonly AttackActionSettings settings;
+        readonly CharacterBody body;
         readonly CharacterAnimator animator;
         readonly CharacterAudio audio;
         readonly CharacterMovement movement;
@@ -28,6 +29,7 @@ namespace Cryst.Modules.CharacterActions
         public AttackAction(
             CharacterContext context,
             AttackActionSettings settings,
+            CharacterBody body,
             CharacterAnimator animator,
             CharacterAudio audio,
             CharacterMovement movement,
@@ -35,6 +37,7 @@ namespace Cryst.Modules.CharacterActions
         {
             this.context = context;
             this.settings = settings;
+            this.body = body;
             this.animator = animator;
             this.audio = audio;
             this.movement = movement;
@@ -78,7 +81,7 @@ namespace Cryst.Modules.CharacterActions
                 TimeSpan.FromSeconds(settings.AnimationTriggerDelay),
                 cancellationToken: cancellationToken);
 
-            var attackerTransform = context.Body.transform;
+            var attackerTransform = body.transform;
             var forward = attackerTransform.forward;
             var spawnPosition = attackerTransform.position + settings.Offset + forward * settings.Range;
             var spawnRotation = attackerTransform.rotation;
