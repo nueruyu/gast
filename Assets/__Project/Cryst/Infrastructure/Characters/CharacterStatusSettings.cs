@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace Cryst.Infrastructure.Characters
 {
-    [CreateAssetMenu(fileName = "CharacterStatSchema", menuName = "Cryst/Character Stat Schema")]
-    public class CharacterStatSchema : StatSchema, IBasicStatSchema
+    [CreateAssetMenu(fileName = "CharacterStatSchema", menuName = "Cryst/Character Status Settings")]
+    public class CharacterStatusSettings : StatSchema, IBasicStatSchema
     {
         [Header("Core Stats")]
         [SerializeField]
@@ -23,6 +23,8 @@ namespace Cryst.Infrastructure.Characters
 
         public IStatDefinition<float> Health => health;
         public IStatDefinition<float> MaxHealth => maxHealth;
+
+        public float InitialMaxHealth => initialMaxHealth;
 
         public override void Initialize(IStatRegistrar registrar)
         {

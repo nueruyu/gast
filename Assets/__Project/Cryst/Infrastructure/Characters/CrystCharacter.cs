@@ -7,7 +7,6 @@ using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
 using Gast.Domain.Loot;
-using Gast.Features.Characters;
 using R3;
 using UnityEngine;
 
@@ -18,6 +17,7 @@ namespace Cryst.Infrastructure.Characters
         readonly ICharacter character;
         readonly CharacterActionStateStore stateStore;
         readonly IDomainEventPublisher eventPublisher;
+        readonly CharacterStatus status;
 
         public CrystCharacter(ICharacter character, IDomainEventPublisher eventPublisher)
         {
@@ -26,34 +26,27 @@ namespace Cryst.Infrastructure.Characters
 
             this.eventPublisher = eventPublisher;
 
-            var schema = GetStatSchema();
-            Health = character.Status.GetStat<float>(schema.Health.Id);
-            MaxHealth = character.Status.GetStat<float>(schema.MaxHealth.Id);
-            IsAlive = Health.Select(h => h > 0);
+            status = character.Resolve<CharacterStatus>();
+            IsAlive = status.Health.Select(h => h > 0);
         }
-
-        CharacterStatSchema GetStatSchema() => (CharacterStatSchema)character.TypeDefinition.StatSchema;
 
         public ICharacter Character => character;
         public CharacterId Id => character.Id;
         public CharacterTypeId TypeId => character.TypeId;
         public ICharacterTypeDefinition TypeDefinition => character.TypeDefinition;
         public Faction Faction => character.Faction;
-        public ICharacterBody Body => character.Resolve<CharacterBody>();
+        public ICharacterBody Body => character.Resolve<ICharacterBody>();
         public IVisionSensor VisionSensor => character.Resolve<IVisionSensor>();
         public IInteractionSensor InteractionSensor => character.Resolve<IInteractionSensor>();
         public INavigationProvider NavigationProvider => character.Resolve<INavigationProvider>();
 
         public ILive<bool> IsAlive { get; }
-        public ILive<float> Health { get; }
-        public ILive<float> MaxHealth { get; }
+        public ILive<float> Health => status.Health;
+        public ILive<float> MaxHealth => status.MaxHealth;
 
         public void SetHealth(float newHealth)
         {
-            newHealth = Mathf.Max(newHealth, 0);
-
-            var schema = GetStatSchema();
-            character.Status.SetStat(schema.Health.Id, newHealth);
+            status.SetHealth(newHealth);
         }
 
         public bool IsThreatTo(ICrystCharacter other)

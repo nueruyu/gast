@@ -20,7 +20,7 @@ namespace Gast.Features.Characters
 
         public void Register<T>(T service) where T : class
         {
-            services[typeof(T)] = service;
+            Register(typeof(T), service);
         }
 
         public void Register(Type type, object service)

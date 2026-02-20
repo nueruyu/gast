@@ -1,3 +1,4 @@
+using Gast.Domain.Characters;
 using Gast.Domain.Players;
 using Gast.Domain.Stats;
 using Gast.Shared.Observables;
@@ -6,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Gast.Domain.Characters;
+using static Codice.CM.Common.CmCallContext;
 
 namespace Gast.UI.Hud
 {
@@ -68,15 +69,14 @@ namespace Gast.UI.Hud
                     if (character == null)
                         return Observable.Return(0f);
 
-                    var definition = character.TypeDefinition;
-                    if (definition.StatSchema is not IBasicStatSchema schema)
-                        return Observable.Return(0f);
+                    if (character.TryResolve(out IHasHealthStatus healthStatus))
+                    {
+                        return healthStatus.Health.ToObservable()
+                            .CombineLatest(healthStatus.MaxHealth.ToObservable(), (health, maxHealth) => (health, maxHealth))
+                            .Select(x => x.maxHealth > 0 ? Mathf.Clamp01(x.health / x.maxHealth) : 0f);
+                    }
 
-                    var health = character.Status.GetStat<float>(schema.Health.Id);
-                    var maxHealth = character.Status.GetStat<float>(schema.MaxHealth.Id).Value;
-
-                    return health.ToObservable()
-                        .Select(current => maxHealth > 0 ? Mathf.Clamp01(current / maxHealth) : 0f);
+                    return Observable.Return(0f);
                 })
                 .Switch()
                 .ToReadOnlyReactiveProperty()
@@ -88,15 +88,14 @@ namespace Gast.UI.Hud
                     if (character == null)
                         return Observable.Return(string.Empty);
 
-                    var definition = character.TypeDefinition;
-                    if (definition.StatSchema is not IBasicStatSchema schema)
-                        return Observable.Return(string.Empty);
+                    if (character.TryResolve(out IHasHealthStatus healthStatus))
+                    {
+                        return healthStatus.Health.ToObservable()
+                            .CombineLatest(healthStatus.MaxHealth.ToObservable(), (health, maxHealth) => (health, maxHealth))
+                            .Select(x => $"{Mathf.CeilToInt(x.health)} / {x.maxHealth}");
+                    }
 
-                    var health = character.Status.GetStat<float>(schema.Health.Id);
-                    var maxHealth = character.Status.GetStat<float>(schema.MaxHealth.Id).Value;
-
-                    return health.ToObservable()
-                        .Select(current => $"{Mathf.CeilToInt(current)} / {maxHealth}");
+                    return Observable.Return(string.Empty);
                 })
                 .Switch()
                 .ToReadOnlyReactiveProperty()

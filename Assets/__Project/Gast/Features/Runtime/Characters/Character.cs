@@ -11,10 +11,6 @@ using UnityEngine;
 
 namespace Gast.Features.Characters
 {
-    /// <summary>
-    /// Composition root that connects a brain (decision-making) with a body (physics execution).
-    /// </summary>
-    [RequireComponent(typeof(CharacterBody))]
     public class Character : MonoBehaviour, ICharacter
     {
         ICharacterTypeDefinition typeDefinition;
@@ -29,7 +25,6 @@ namespace Gast.Features.Characters
 
         public CharacterId Id => context.CharacaterId;
         public CharacterTypeId TypeId => context.TypeId;
-        public ICharacterStatus Status { get; private set; }
         public Faction Faction { get; private set; }
         public Wallet Wallet { get; private set; }
         public Inventory Inventory { get; private set; }
@@ -51,7 +46,6 @@ namespace Gast.Features.Characters
             CharacterContext context,
             ICharacterTypeDefinition typeDefinition,
             CharacterActionController actionController,
-            ICharacterStatus status,
             Faction faction,
             Wallet wallet,
             Inventory inventory,
@@ -60,7 +54,6 @@ namespace Gast.Features.Characters
             this.context = context;
             this.typeDefinition = typeDefinition;
             this.actionController = actionController;
-            Status = status;
             Faction = faction;
             Wallet = wallet;
             Inventory = inventory;

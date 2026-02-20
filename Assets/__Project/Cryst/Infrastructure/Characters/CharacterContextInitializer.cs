@@ -8,6 +8,8 @@ using Gast.Features.Navigations;
 using Gast.Features.Sensors;
 using Gast.Infrastructure.Characters;
 using Gast.Shared.UnityExtensions;
+using Cryst.Domain.Characters;
+using CharacterStatus = Cryst.Domain.Characters.CharacterStatus;
 
 namespace Cryst.Infrastructure.Characters
 {
@@ -38,11 +40,17 @@ namespace Cryst.Infrastructure.Characters
                 navigationProvider.StoppingDistance = navSettings.StoppingDistance;
             }
 
+            var statusSettings = context.Resolve<CharacterStatusSettings>();
+            var status = new CharacterStatus(statusSettings.InitialMaxHealth);
+            context.Register(status);
+            context.Register(typeof(IHasHealthStatus), status);
+
             context.Register<IVisionSensor>(visionSensor);
             context.Register<INavigationProvider>(navigationProvider);
             context.Register(interactionSensor);
             context.Register(interactor);
             context.Register(body);
+            context.Register(typeof(ICharacterBody), body);
             context.Register(animator);
             context.Register(audio);
             context.Register(cameraFocusTarget);

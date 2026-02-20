@@ -24,11 +24,6 @@ namespace Gast.Domain.Characters
         CharacterTypeId TypeId { get; }
 
         /// <summary>
-        /// Character's generic status container.
-        /// </summary>
-        ICharacterStatus Status { get; }
-
-        /// <summary>
         /// The character's faction affiliation.
         /// </summary>
         Faction Faction { get; }

@@ -4,6 +4,7 @@ using Gast.Features.Characters;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using VContainer;
 
 namespace Gast.Infrastructure.Characters
 {
@@ -14,17 +15,20 @@ namespace Gast.Infrastructure.Characters
         readonly ICharacterFacetFactoryRegistry facetFactoryRegistry;
         readonly IEnumerable<ICharacterContextInitializer> contextInitializers;
         readonly ICharacterActionFactory actionFactory;
+        readonly IObjectResolver resolver;
 
         public CharacterFactory(
             CharacterTypeRepository typeRepository,
             ICharacterFacetFactoryRegistry facetFactoryRegistry,
             IEnumerable<ICharacterContextInitializer> contextInitializers,
-            ICharacterActionFactory actionFactory)
+            ICharacterActionFactory actionFactory,
+            IObjectResolver resolver)
         {
             this.typeRepository = typeRepository;
             this.facetFactoryRegistry = facetFactoryRegistry;
             this.contextInitializers = contextInitializers;
             this.actionFactory = actionFactory;
+            this.resolver = resolver;
         }
 
         public ICharacter Create(CharacterTypeId typeId, Vector3 position, Quaternion rotation, Faction faction)
@@ -53,9 +57,6 @@ namespace Gast.Infrastructure.Characters
             foreach (var initializer in contextInitializers)
                 initializer.Initialize(context);
 
-            var status = new CharacterStatus();
-            definition.StatSchema.Initialize(status);
-
             var wallet = new Wallet(definition.InitialMoney);
             var inventory = new Inventory(definition.SlotCapacity);
 
@@ -64,7 +65,6 @@ namespace Gast.Infrastructure.Characters
                 context,
                 definition,
                 actionController,
-                status,
                 faction,
                 wallet,
                 inventory,
