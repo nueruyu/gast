@@ -49,10 +49,6 @@ namespace Gast.Infrastructure.Characters
         [SerializeField]
         GameObject visualPrefab;
 
-        [Header("Audio")]
-        [SerializeField]
-        CharacterFootstepSettings footstepSettings;
-
         [Header("Loot")]
         [SerializeField]
         LootTable lootTable;
@@ -71,6 +67,10 @@ namespace Gast.Infrastructure.Characters
         [SerializeField]
         float navigationStoppingDistance = 0.5f;
 
+        [Header("Extensions")]
+        [SerializeField]
+        UnityEngine.Object[] extensions = { };
+
         public CharacterTypeId TypeId => reference.Id;
         public string DisplayName => displayName;
         public float WalkSpeed => walkSpeed;
@@ -80,7 +80,6 @@ namespace Gast.Infrastructure.Characters
         public int SlotCapacity => slotCapacity;
         public Character CharacterPrefab => characterPrefab;
         public GameObject VisualPrefab => visualPrefab;
-        public CharacterFootstepSettings FootstepSettings => footstepSettings;
         public float SensorViewRadius => sensorViewRadius;
         public float SensorViewAngle => sensorViewAngle;
         public Vector3 SensorEyeOffset => sensorEyeOffset;
@@ -89,5 +88,12 @@ namespace Gast.Infrastructure.Characters
         public IStatSchema StatSchema => statSchema;
 
         ILootTable ICharacterTypeDefinition.LootTable => lootTable;
+
+        public T GetExtension<T>()
+        {
+            return extensions.OfType<T>().FirstOrDefault();
+        }
+
+        public IReadOnlyList<UnityEngine.Object> Extensions => extensions;
     }
 }

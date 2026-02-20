@@ -23,17 +23,10 @@ namespace Cryst.Infrastructure.Characters
                 builder.RegisterInstance(context);
                 builder.RegisterInstance(settings, settings.GetType());
 
-                var animator = context.Resolve<CharacterAnimator>();
-                if (animator != null)
-                    builder.RegisterInstance(animator);
-
-                var movement = context.Resolve<CharacterMovement>();
-                if (movement != null)
-                    builder.RegisterInstance(movement);
-
-                var stateStore = context.Resolve<CharacterActionStateStore>();
-                if (stateStore != null)
-                    builder.RegisterInstance(stateStore);
+                foreach (var (type, module) in context.GetModules())
+                {
+                    builder.RegisterInstance(module, type);
+                }
             });
 
             scope.AddTo(context.CancellationToken);

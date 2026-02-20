@@ -1,16 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Gast.Core.Events;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
-using Gast.Domain.Stats;
 using Gast.Features.Characters;
-using Gast.Features.Combat;
 using Gast.Features.Navigations;
 using Gast.Features.Sensors;
-using Gast.Infrastructure.Services;
 using Gast.Shared.UnityExtensions;
 using UnityEngine;
 
@@ -20,10 +15,7 @@ namespace Gast.Infrastructure.Characters
     {
         readonly CharacterTypeRepository typeRepository;
         readonly ICharacterActorRepository characterActorRepository;
-        readonly CharacterFootstepService footstepService;
 
-        readonly CombatFeedbackService feedbackService;
-        readonly IDomainEventPublisher eventPublisher;
         readonly ICharacterFacetFactoryRegistry facetFactoryRegistry;
         readonly IEnumerable<ICharacterContextInitializer> contextInitializers;
         readonly ICharacterActionFactory actionFactory;
@@ -31,18 +23,12 @@ namespace Gast.Infrastructure.Characters
         public CharacterFactory(
             CharacterTypeRepository typeRepository,
             ICharacterActorRepository characterActorRepository,
-            CharacterFootstepService footstepService,
-            CombatFeedbackService feedbackService,
-            IDomainEventPublisher eventPublisher,
             ICharacterFacetFactoryRegistry facetFactoryRegistry,
             IEnumerable<ICharacterContextInitializer> contextInitializers,
             ICharacterActionFactory actionFactory)
         {
-            this.typeRepository = typeRepository ?? throw new ArgumentNullException(nameof(typeRepository));
-            this.characterActorRepository = characterActorRepository ?? throw new ArgumentNullException(nameof(characterActorRepository));
-            this.footstepService = footstepService ?? throw new ArgumentNullException(nameof(footstepService));
-            this.feedbackService = feedbackService;
-            this.eventPublisher = eventPublisher;
+            this.typeRepository = typeRepository;
+            this.characterActorRepository = characterActorRepository;
             this.facetFactoryRegistry = facetFactoryRegistry;
             this.contextInitializers = contextInitializers;
             this.actionFactory = actionFactory;
@@ -63,7 +49,10 @@ namespace Gast.Infrastructure.Characters
             var visual = UnityEngine.Object.Instantiate(definition.VisualPrefab, character.transform);
             visual.name = $"Visual ({definition.VisualPrefab.name})";
 
-            var context = CreateContext(characterId, character.gameObject, definition, faction);
+            var context = CreateContext(characterId, character.gameObject, definition);
+
+            foreach (var extension in definition.Extensions)
+                context.Register(extension.GetType(), extension);
 
             foreach (var initializer in contextInitializers)
                 initializer.Initialize(context);
@@ -86,7 +75,6 @@ namespace Gast.Infrastructure.Characters
                 facetFactoryRegistry);
 
             characterActorRepository.Register(character);
-            footstepService.Register(context, definition.FootstepSettings);
 
             return character;
         }
@@ -94,12 +82,9 @@ namespace Gast.Infrastructure.Characters
         CharacterContext CreateContext(
             CharacterId id,
             GameObject characterGo,
-            CharacterTypeDefinition definition,
-            Faction faction)
+            CharacterTypeDefinition definition)
         {
             var body = characterGo.RequireComponent<CharacterBody>();
-            var animationReceiver = characterGo.RequireComponentInChildren<CharacterAnimationReceiver>();
-            var audio = characterGo.RequireComponentInChildren<CharacterAudio>();
 
             var visionSensor = characterGo.RequireComponentInChildren<ConeVisionSensor>();
             visionSensor.ViewAngle = definition.SensorViewAngle;
@@ -114,16 +99,10 @@ namespace Gast.Infrastructure.Characters
                 id,
                 definition.TypeId,
                 definition,
-                faction,
-                definition.StatSchema,
                 body,
-                animationReceiver,
-                audio,
                 visionSensor,
                 interactionSensor,
                 navigationProvider,
-                feedbackService,
-                eventPublisher,
                 body.destroyCancellationToken);
         }
 
@@ -131,24 +110,17 @@ namespace Gast.Infrastructure.Characters
         {
             var actionController = new CharacterActionController();
 
-            if (definition.ActionSettings != null)
+            foreach (var settings in definition.ActionSettings)
             {
-                foreach (var settings in definition.ActionSettings)
+                var action = actionFactory.Create(settings, character);
+                if (action is ICharacterExecutableAction executable)
                 {
-                    var action = actionFactory.Create(settings, character);
-                    if (action is ICharacterExecutableAction executable)
-                    {
-                        actionController.RegisterAction(executable);
-                    }
-                    else
-                    {
-                        actionController.RegisterDefaultAction(action);
-                    }
+                    actionController.RegisterAction(executable);
                 }
-            }
-            else
-            {
-                Debug.LogWarning($"CharacterTypeDefinition '{definition.name}' has no ActionSettings assigned.");
+                else
+                {
+                    actionController.RegisterDefaultAction(action);
+                }
             }
 
             return actionController;

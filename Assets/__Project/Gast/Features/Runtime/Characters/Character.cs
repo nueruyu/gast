@@ -27,7 +27,7 @@ namespace Gast.Features.Characters
 
         readonly Signal<ICharacter> destroyedSignal = new();
 
-        public CharacterId Id => context.Id;
+        public CharacterId Id => context.CharacaterId;
         public CharacterTypeId TypeId => context.TypeId;
         public ICharacterStatus Status { get; private set; }
         public Faction Faction { get; private set; }

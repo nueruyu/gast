@@ -1,3 +1,4 @@
+using Gast.Shared.Animations;
 using UnityEngine;
 
 namespace Cryst.Modules.CharacterActions
@@ -18,9 +19,14 @@ namespace Cryst.Modules.CharacterActions
         readonly int hitHash = Animator.StringToHash("Hit");
         readonly int deadHash = Animator.StringToHash("IsDead");
 
+        AnimationEventReceiver animationEventReceiver;
+
+        public AnimationEventReceiver AnimationEventReceiver => animationEventReceiver;
+
         void Awake()
         {
             TryGetComponent(out animator);
+            TryGetComponent(out animationEventReceiver);
 
             SetMoveSpeed(0);
         }

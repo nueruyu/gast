@@ -2,6 +2,7 @@ using Cryst.Domain.Combat;
 using Cysharp.Threading.Tasks;
 using Gast.Features.Characters;
 using Gast.Features.Combat;
+using Gast.Shared.Animations;
 using Gast.Shared.Phantoms;
 using System;
 using System.Threading;
@@ -14,6 +15,7 @@ namespace Cryst.Modules.CharacterActions
         readonly CharacterContext context;
         readonly AttackActionSettings settings;
         readonly CharacterAnimator animator;
+        readonly CharacterAudio audio;
         readonly CharacterMovement movement;
         readonly IHitAreaFactory hitAreaFactory;
 
@@ -27,23 +29,28 @@ namespace Cryst.Modules.CharacterActions
             CharacterContext context,
             AttackActionSettings settings,
             CharacterAnimator animator,
+            CharacterAudio audio,
             CharacterMovement movement,
             IHitAreaFactory hitAreaFactory)
         {
             this.context = context;
             this.settings = settings;
             this.animator = animator;
+            this.audio = audio;
             this.movement = movement;
             this.hitAreaFactory = hitAreaFactory;
 
-            context.AnimationReceiver.EventReceived.Subscribe(OnAnimationEvent);
+            if (animator)
+            {
+                animator.AnimationEventReceiver.EventReceived.Subscribe(OnAnimationEvent);
+            }
         }
 
         void OnAnimationEvent(string name)
         {
             if (name == "WeaponSwing")
             {
-                var audioSource = context.Audio.AudioSource;
+                var audioSource = audio.AudioSource;
                 audioSource.volume = settings.SfxVolume;
                 audioSource.pitch = 1.0f;
                 audioSource.PlayOneShot(settings.Sfx);
@@ -60,7 +67,7 @@ namespace Cryst.Modules.CharacterActions
             startTime = Time.time;
             lastAttackTime = startTime;
 
-            ExecuteAttackAsync(context.Body.destroyCancellationToken).Forget();
+            ExecuteAttackAsync(context.CancellationToken).Forget();
         }
 
         async UniTaskVoid ExecuteAttackAsync(CancellationToken cancellationToken)
@@ -79,7 +86,7 @@ namespace Cryst.Modules.CharacterActions
             var knockbackDirection = spawnRotation * Vector3.forward;
 
             var attackContext = Phantom.Create();
-            attackContext.Set(AttackContextKeys.SourceCharacterId, context.Id);
+            attackContext.Set(AttackContextKeys.SourceCharacterId, context.CharacaterId);
             attackContext.Set(AttackContextKeys.Damage, settings.Damage);
             attackContext.Set(AttackContextKeys.KnockbackForce, settings.KnockbackForce * knockbackDirection);
 

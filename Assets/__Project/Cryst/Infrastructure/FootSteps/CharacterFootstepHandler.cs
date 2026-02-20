@@ -7,19 +7,23 @@ using System;
 using DisposableBag = Gast.Core.Observables.DisposableBag;
 using Random = UnityEngine.Random;
 using Gast.Features.Characters;
+using Cryst.Modules.CharacterActions;
 
 namespace Gast.Infrastructure.Characters
 {
-    public class CharacterFootstepService : IDisposable
+    public class CharacterFootstepHandler : IDisposable
     {
         readonly DisposableBag disposableBag = new();
 
-        public void Register(CharacterContext character, CharacterFootstepSettings settings)
+        public CharacterFootstepHandler(
+            CharacterAnimator animator,
+            CharacterAudio audio,
+            CharacterFootstepSettings settings)
         {
-            character.AnimationReceiver.EventReceived
+            animator.AnimationEventReceiver.EventReceived
                 .ToObservable()
                 .Where(name => name == "Footstep")
-                .Subscribe(_ => PlayFootstep(character, settings))
+                .Subscribe(_ => PlayFootstep(audio, settings))
                 .AddTo(disposableBag);
         }
 
@@ -28,13 +32,9 @@ namespace Gast.Infrastructure.Characters
             disposableBag.Dispose();
         }
 
-        /// <summary>
-        /// Plays a random footstep sound with volume and pitch variation.
-        /// Retrieves sound settings from CharacterAudioSettings.
-        /// </summary>
-        void PlayFootstep(CharacterContext character, CharacterFootstepSettings settings)
+        void PlayFootstep(CharacterAudio audio, CharacterFootstepSettings settings)
         {
-            var audioSource = character.Audio.AudioSource;
+            var audioSource = audio.AudioSource;
 
             // Select random footstep clip
             var clip = settings.FootstepClips[Random.Range(0, settings.FootstepClips.Length)];

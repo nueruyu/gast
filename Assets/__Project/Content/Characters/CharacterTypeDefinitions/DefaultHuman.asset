@@ -29,9 +29,10 @@ MonoBehaviour:
   slotCapacity: 20
   characterPrefab: {fileID: 3056424131087975470, guid: 0b12064fcc816e540a373842a74f91ce, type: 3}
   visualPrefab: {fileID: 4611385902212945303, guid: 70834d1079c462649938635b9e93b508, type: 3}
-  footstepSettings: {fileID: 11400000, guid: f0dc487c825578f4bbf87c21123919c2, type: 2}
   lootTable: {fileID: 11400000, guid: 0efcd1b216c7eac4b8e53f9beb6bfb77, type: 2}
   sensorViewRadius: 30
   sensorViewAngle: 360
   sensorEyeOffset: {x: 0, y: 1.5, z: 0}
   navigationStoppingDistance: 0.5
+  extensions:
+  - {fileID: 11400000, guid: f0dc487c825578f4bbf87c21123919c2, type: 2}

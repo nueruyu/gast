@@ -1,16 +1,15 @@
 using System;
 using UnityEngine;
 using Gast.Core.Observables;
-using Gast.Shared.Animations;
 
-namespace Gast.Features.Characters
+namespace Gast.Shared.Animations
 {
     /// <summary>
     /// Receives animation events from StateMachineBehaviours and exposes them as C# events.
     /// This component bridges the animation system with gameplay logic for characters.
     /// </summary>
     [RequireComponent(typeof(Animator))]
-    public class CharacterAnimationReceiver : MonoBehaviour, IAnimationEventReceiver
+    public class AnimationEventReceiver : MonoBehaviour, IAnimationEventReceiver
     {
         readonly Signal<string> eventReceived = new();
 

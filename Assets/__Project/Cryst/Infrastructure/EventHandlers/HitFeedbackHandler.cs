@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Events;
 using Gast.Core.Tasks;
-using Gast.Domain.Combat;
+using Gast.Domain.Characters;
 using Gast.Features.Combat;
 using Gast.Shared.Phantoms;
 using R3;

@@ -4,7 +4,6 @@ using Cysharp.Threading.Tasks;
 using Gast.Core.Events;
 using Gast.Core.Tasks;
 using Gast.Domain.Characters;
-using Gast.Domain.Combat;
 using Cryst.Domain.Characters;
 using R3;
 using Cryst.Domain.Combat;
