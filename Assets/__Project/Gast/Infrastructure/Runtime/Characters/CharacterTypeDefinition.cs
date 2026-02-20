@@ -53,20 +53,6 @@ namespace Gast.Infrastructure.Characters
         [SerializeField]
         LootTable lootTable;
 
-        [Header("Sensor")]
-        [SerializeField]
-        float sensorViewRadius = 30f;
-
-        [SerializeField]
-        float sensorViewAngle = 180f;
-
-        [SerializeField]
-        Vector3 sensorEyeOffset = new(0, 1.5f, 0);
-
-        [Header("Navigation")]
-        [SerializeField]
-        float navigationStoppingDistance = 0.5f;
-
         [Header("Extensions")]
         [SerializeField]
         UnityEngine.Object[] extensions = { };
@@ -80,10 +66,6 @@ namespace Gast.Infrastructure.Characters
         public int SlotCapacity => slotCapacity;
         public Character CharacterPrefab => characterPrefab;
         public GameObject VisualPrefab => visualPrefab;
-        public float SensorViewRadius => sensorViewRadius;
-        public float SensorViewAngle => sensorViewAngle;
-        public Vector3 SensorEyeOffset => sensorEyeOffset;
-        public float NavigationStoppingDistance => navigationStoppingDistance;
 
         public IStatSchema StatSchema => statSchema;
 

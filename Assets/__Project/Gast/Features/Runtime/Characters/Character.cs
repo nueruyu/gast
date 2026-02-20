@@ -34,9 +34,9 @@ namespace Gast.Features.Characters
         public Wallet Wallet { get; private set; }
         public Inventory Inventory { get; private set; }
         public ICharacterTypeDefinition TypeDefinition => typeDefinition;
-        public IVisionSensor VisionSensor => context.VisionSensor;
-        public IInteractionSensor InteractionSensor => context.InteractionSensor;
-        public INavigationProvider NavigationProvider => context.NavigationProvider;
+        public IVisionSensor VisionSensor => Resolve<IVisionSensor>();
+        public IInteractionSensor InteractionSensor => Resolve<IInteractionSensor>();
+        public INavigationProvider NavigationProvider => Resolve<INavigationProvider>();
         public ICharacterBody Body => context.Body;
         public ICharacterActionController ActionController => actionController;
         public ISignal<ICharacter> Destroyed => destroyedSignal;

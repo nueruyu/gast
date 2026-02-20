@@ -2,10 +2,7 @@ using System;
 using System.Collections.Generic;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
-using Gast.Domain.Interactions;
 using Gast.Features.Characters;
-using Gast.Features.Navigations;
-using Gast.Features.Sensors;
 using Gast.Shared.UnityExtensions;
 using UnityEngine;
 
@@ -86,23 +83,11 @@ namespace Gast.Infrastructure.Characters
         {
             var body = characterGo.RequireComponent<CharacterBody>();
 
-            var visionSensor = characterGo.RequireComponentInChildren<ConeVisionSensor>();
-            visionSensor.ViewAngle = definition.SensorViewAngle;
-            visionSensor.ViewRadius = definition.SensorViewRadius;
-            visionSensor.EyeOffset = definition.SensorEyeOffset;
-
-            var interactionSensor = characterGo.RequireComponentInChildren<IInteractionSensor>();
-            var navigationProvider = characterGo.RequireComponentInChildren<NavMeshNavigator>();
-            navigationProvider.StoppingDistance = definition.NavigationStoppingDistance;
-
             return new CharacterContext(
                 id,
                 definition.TypeId,
                 definition,
                 body,
-                visionSensor,
-                interactionSensor,
-                navigationProvider,
                 body.destroyCancellationToken);
         }
 

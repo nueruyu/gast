@@ -1,6 +1,4 @@
-using Gast.Domain.AI;
 using Gast.Domain.Characters;
-using Gast.Domain.Interactions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +11,6 @@ namespace Gast.Features.Characters
         CharacterTypeId TypeId,
         ICharacterTypeDefinition TypeDefinition,
         CharacterBody Body,
-        IVisionSensor VisionSensor,
-        IInteractionSensor InteractionSensor,
-        INavigationProvider NavigationProvider,
         CancellationToken CancellationToken)
     {
         readonly Dictionary<Type, object> services = new();
