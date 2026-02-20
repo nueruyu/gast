@@ -1,9 +1,7 @@
 using Gast.Domain.Characters;
 using Gast.Domain.Loot;
-using Gast.Domain.Stats;
 using Gast.Features.Characters;
 using Gast.Infrastructure.Pickups;
-using Gast.Infrastructure.Stats;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +17,6 @@ namespace Gast.Infrastructure.Characters
 
         [SerializeField]
         string displayName;
-
-        [Header("Stats")]
-        [SerializeField]
-        StatSchema statSchema;
 
         [Header("Movement")]
         [SerializeField]
@@ -66,8 +60,6 @@ namespace Gast.Infrastructure.Characters
         public int SlotCapacity => slotCapacity;
         public Character CharacterPrefab => characterPrefab;
         public GameObject VisualPrefab => visualPrefab;
-
-        public IStatSchema StatSchema => statSchema;
 
         ILootTable ICharacterTypeDefinition.LootTable => lootTable;
 

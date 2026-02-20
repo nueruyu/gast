@@ -1,6 +1,5 @@
 using Gast.Domain.Characters;
 using Gast.Domain.Players;
-using Gast.Domain.Stats;
 using Gast.Shared.Observables;
 using R3;
 using System;

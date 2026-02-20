@@ -1,5 +1,4 @@
 using Gast.Domain.Loot;
-using Gast.Domain.Stats;
 
 namespace Gast.Domain.Characters
 {
@@ -9,8 +8,6 @@ namespace Gast.Domain.Characters
         string DisplayName { get; }
         float WalkSpeed { get; }
         float SprintSpeed { get; }
-
-        IStatSchema StatSchema { get; }
 
         ILootTable LootTable { get; }
     }
