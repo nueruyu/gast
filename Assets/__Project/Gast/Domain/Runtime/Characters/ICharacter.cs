@@ -65,12 +65,6 @@ namespace Gast.Domain.Characters
         /// </summary>
         Inventory Inventory { get; }
 
-        IVisionSensor VisionSensor { get; }
-
-        IInteractionSensor InteractionSensor { get; }
-
-        INavigationProvider NavigationProvider { get; }
-
         /// <summary>
         /// Attach a brain to this character, detaching any existing brain first.
         /// </summary>
@@ -94,5 +88,7 @@ namespace Gast.Domain.Characters
         /// Resolves a service registered in this character's context container.
         /// </summary>
         T Resolve<T>() where T : class;
+
+        bool TryResolve<T>(out T module) where T : class;
     }
 }

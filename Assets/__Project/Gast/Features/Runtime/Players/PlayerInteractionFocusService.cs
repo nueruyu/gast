@@ -31,7 +31,7 @@ namespace Gast.Features.Players
             while (!cancellationToken.IsCancellationRequested)
             {
                 var player = playerManager.CurrentCharacter.Value;
-                if (player != null && player.InteractionSensor != null)
+                if (player != null)
                 {
                     UpdateFocus(player);
                 }
@@ -46,7 +46,12 @@ namespace Gast.Features.Players
 
         void UpdateFocus(ICharacter player)
         {
-            var sensor = player.InteractionSensor;
+            if (!player.TryResolve<IInteractionSensor>(out var sensor))
+            {
+                focusedInteractable.Value = null;
+                return;
+            }
+
             var candidates = sensor.DetectableInteractables;
 
             if (candidates.Count == 0)

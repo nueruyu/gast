@@ -46,7 +46,10 @@ namespace Gast.Features.Interactions
             if (interactorCharacter == null)
                 return false;
 
-            if (!interactorCharacter.InteractionSensor.IsDetectable(interactableId) ||
+            if (!interactorCharacter.TryResolve(out IInteractionSensor interactionSensor))
+                return false;
+
+            if (!interactionSensor.IsDetectable(interactableId) ||
                 !interactable.CanInteract)
                 return false;
 
@@ -80,7 +83,7 @@ namespace Gast.Features.Interactions
                         await UniTask.Yield(PlayerLoopTiming.Update, linkedCts.Token);
 
                         var loopDistance = Vector3.Distance(interactorCharacter.Body.Position, interactable.Position);
-                        if (!interactorCharacter.InteractionSensor.IsDetectable(interactableId))
+                        if (!interactionSensor.IsDetectable(interactableId))
                         {
                             interactable.OnInteractionCancelled(interactorCharacter);
                             NotifyProgress(interactorId, interactableId, 0);

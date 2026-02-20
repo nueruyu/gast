@@ -27,9 +27,23 @@ namespace Gast.Features.Characters
             services[type] = service;
         }
 
+        public bool TryResolve<T>(out T service) where T : class
+        {
+            if (services.TryGetValue(typeof(T), out var serviceObj))
+            {
+                service = (T)serviceObj;
+                return true;
+            }
+
+            service = null;
+            return false;
+        }
+
         public T Resolve<T>() where T : class
         {
-            return services.TryGetValue(typeof(T), out var service) ? (T)service : null;
+            return services.TryGetValue(typeof(T), out var service) ?
+                (T)service :
+                throw new KeyNotFoundException($"Key '{typeof(T)}' not found");
         }
     }
 }
