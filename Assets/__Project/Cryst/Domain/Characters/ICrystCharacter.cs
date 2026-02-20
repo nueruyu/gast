@@ -12,11 +12,9 @@ namespace Cryst.Domain.Characters
         ICharacter Character { get; }
         CharacterId Id { get; }
         CharacterTypeId TypeId { get; }
-        ICharacterTypeDefinition TypeDefinition { get; }
         Faction Faction { get; }
         ICharacterBody Body { get; }
         IVisionSensor VisionSensor { get; }
-        IInteractionSensor InteractionSensor { get; }
         INavigationProvider NavigationProvider { get; }
 
         ILive<bool> IsAlive { get; }

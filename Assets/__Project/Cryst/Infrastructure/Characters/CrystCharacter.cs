@@ -33,11 +33,9 @@ namespace Cryst.Infrastructure.Characters
         public ICharacter Character => character;
         public CharacterId Id => character.Id;
         public CharacterTypeId TypeId => character.TypeId;
-        public ICharacterTypeDefinition TypeDefinition => character.TypeDefinition;
         public Faction Faction => character.Faction;
         public ICharacterBody Body => character.Resolve<ICharacterBody>();
         public IVisionSensor VisionSensor => character.Resolve<IVisionSensor>();
-        public IInteractionSensor InteractionSensor => character.Resolve<IInteractionSensor>();
         public INavigationProvider NavigationProvider => character.Resolve<INavigationProvider>();
 
         public ILive<bool> IsAlive { get; }
