@@ -125,7 +125,8 @@ namespace Gast.UI.Hud
                     aiObjectivesList.Clear();
                     foreach (var objectiveVm in objectives)
                     {
-                        var objectiveView = objectiveVm.CreateView(assetSettings);
+                        var objectiveView = new AIObjectiveView(assetSettings.AIObjectiveView);
+                        objectiveView.Bind(objectiveVm);
                         aiObjectivesList.Add(objectiveView);
                     }
                 })

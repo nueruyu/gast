@@ -1,11 +1,14 @@
 using R3;
-using UnityEngine.UIElements;
+using UnityEngine;
 
 namespace Gast.UI.Hud
 {
     public interface IAIObjectiveViewModel
     {
         ReadOnlyReactiveProperty<bool> IsCompleted { get; }
-        VisualElement CreateView(UIAssetSettings assetSettings);
+        ReadOnlyReactiveProperty<float> ProgressRatio { get; }
+        ReadOnlyReactiveProperty<string> ProgressText { get; }
+        string Description { get; }
+        Sprite ItemIcon { get; }
     }
 }

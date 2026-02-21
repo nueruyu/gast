@@ -1,9 +1,9 @@
+using Gast.Application.Economy;
 using Gast.Domain.AI.Objectives;
 using Gast.Domain.Economy;
 using Gast.Shared.Observables;
 using R3;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Gast.UI.Hud
 {
@@ -18,7 +18,7 @@ namespace Gast.UI.Hud
         public AcquireItemObjectiveViewModel(
             AcquireItemObjective objective,
             IItemRepository itemRepository,
-            Sprite itemIcon)
+            IItemAssetService itemAssetService)
         {
             var itemDefinition = itemRepository.Get(objective.TargetItemId);
 
@@ -26,7 +26,7 @@ namespace Gast.UI.Hud
                 ? $"Acquire {itemDefinition.Name}"
                 : "Acquire Item";
 
-            ItemIcon = itemIcon;
+            ItemIcon = itemAssetService.GetItemIcon(objective.TargetItemId);
 
             IsCompleted = objective.IsCompleted.ToObservable().ToReadOnlyReactiveProperty();
 
@@ -37,13 +37,6 @@ namespace Gast.UI.Hud
             ProgressText = objective.CurrentQuantity.ToObservable()
                 .Select(current => $"{current} / {objective.TargetQuantity}")
                 .ToReadOnlyReactiveProperty();
-        }
-
-        public VisualElement CreateView(UIAssetSettings assetSettings)
-        {
-            var view = new AcquireItemObjectiveView(assetSettings.AcquireItemObjectiveView);
-            view.Bind(this);
-            return view;
         }
     }
 }

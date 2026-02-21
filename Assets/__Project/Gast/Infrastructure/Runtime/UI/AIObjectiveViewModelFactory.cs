@@ -1,0 +1,33 @@
+using Gast.Domain.AI;
+using Gast.Domain.AI.Objectives;
+using Gast.UI.Hud;
+using System;
+using VContainer;
+
+namespace Gast.Infrastructure.UI
+{
+    public class AIObjectiveViewModelFactory : IAIObjectiveViewModelFactory
+    {
+        readonly IObjectResolver resolver;
+
+        public AIObjectiveViewModelFactory(IObjectResolver resolver)
+        {
+            this.resolver = resolver;
+        }
+
+        public IAIObjectiveViewModel Create(IAIObjective objective)
+        {
+            using var scope = resolver.CreateScope(builder =>
+            {
+                builder.RegisterInstance(objective).AsSelf();
+            });
+
+            return objective switch
+            {
+                AcquireItemObjective => scope.Resolve<AcquireItemObjectiveViewModel>(),
+                DefeatCharacterObjective => scope.Resolve<DefeatCharacterObjectiveViewModel>(),
+                _ => throw new ArgumentException(),
+            };
+        }
+    }
+}

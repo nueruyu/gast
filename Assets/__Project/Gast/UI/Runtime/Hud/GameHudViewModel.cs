@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Codice.CM.Common.CmCallContext;
 
 namespace Gast.UI.Hud
 {
@@ -29,7 +28,7 @@ namespace Gast.UI.Hud
         public GameHudViewModel(
             IPlayerManager playerManager,
             ItemStackViewModelFactory itemStackViewModelFactory,
-            AIObjectiveViewModelFactory objectiveViewModelFactory,
+            IAIObjectiveViewModelFactory objectiveViewModelFactory,
             ICharacterTypeRepository characterTypeRepository)
         {
             this.playerManager = playerManager;

@@ -2,7 +2,7 @@ using Gast.Domain.AI.Objectives;
 using Gast.Domain.Characters;
 using Gast.Shared.Observables;
 using R3;
-using UnityEngine.UIElements;
+using UnityEngine;
 
 namespace Gast.UI.Hud
 {
@@ -15,6 +15,7 @@ namespace Gast.UI.Hud
         public ReadOnlyReactiveProperty<float> ProgressRatio { get; }
         public ReadOnlyReactiveProperty<string> ProgressText { get; }
         public string Description { get; }
+        public Sprite ItemIcon => null;
 
         public DefeatCharacterObjectiveViewModel(DefeatCharacterObjective objective, ICharacterTypeRepository characterTypeRepository)
         {
@@ -40,13 +41,6 @@ namespace Gast.UI.Hud
             ProgressText = objective.CurrentQuantity.ToObservable()
                 .Select(current => $"{current} / {objective.TargetQuantity}")
                 .ToReadOnlyReactiveProperty();
-        }
-
-        public VisualElement CreateView(UIAssetSettings assetSettings)
-        {
-            var view = new DefeatCharacterObjectiveView(assetSettings.DefeatCharacterObjectiveView);
-            view.Bind(this);
-            return view;
         }
     }
 }

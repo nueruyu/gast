@@ -21,6 +21,7 @@
     margin-right: 8px;
     background-color: #333;
     border-radius: 4px;
+    -unity-background-scale-mode: scale-and-crop;
 }
 
 .objective-item__details {

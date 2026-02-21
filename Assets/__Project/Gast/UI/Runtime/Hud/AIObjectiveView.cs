@@ -4,9 +4,9 @@ using UnityEngine.UIElements;
 
 namespace Gast.UI.Hud
 {
-    public class DefeatCharacterObjectiveView : VisualElement
+    public class AIObjectiveView : VisualElement
     {
-        const string TargetIconName = "TargetIcon";
+        const string ItemIconName = "ItemIcon";
         const string DescriptionName = "Description";
         const string ProgressBarFillName = "ProgressBarFill";
         const string ProgressTextName = "ProgressText";
@@ -17,20 +17,25 @@ namespace Gast.UI.Hud
         readonly VisualElement progressBarFill;
         readonly Label progressText;
 
-        public DefeatCharacterObjectiveView(VisualTreeAsset asset)
+        public AIObjectiveView(VisualTreeAsset asset)
         {
             asset.CloneTree(this);
-            icon = this.Q<VisualElement>(TargetIconName);
+            icon = this.Q<VisualElement>(ItemIconName);
             description = this.Q<Label>(DescriptionName);
             progressBarFill = this.Q<VisualElement>(ProgressBarFillName);
             progressText = this.Q<Label>(ProgressTextName);
         }
 
-        public IDisposable Bind(DefeatCharacterObjectiveViewModel viewModel)
+        public IDisposable Bind(IAIObjectiveViewModel viewModel)
         {
             var disposables = new CompositeDisposable();
 
             description.text = viewModel.Description;
+
+            icon.style.backgroundImage = viewModel.ItemIcon != null
+                ? new StyleBackground(viewModel.ItemIcon)
+                : null;
+            icon.style.display = viewModel.ItemIcon != null ? DisplayStyle.Flex : DisplayStyle.None;
 
             viewModel.ProgressRatio
                 .Subscribe(ratio => progressBarFill.style.width = Length.Percent(ratio * 100f))

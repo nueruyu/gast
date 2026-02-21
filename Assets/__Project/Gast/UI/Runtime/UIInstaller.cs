@@ -28,7 +28,9 @@ namespace Gast.UI
             builder.Register<CommandViewFactory>();
 
             builder.Register<ItemStackViewModelFactory>();
-            builder.Register<AIObjectiveViewModelFactory>();
+
+            builder.Register<AcquireItemObjectiveViewModel>(Lifetime.Transient);
+            builder.Register<DefeatCharacterObjectiveViewModel>(Lifetime.Transient);
 
             builder.Register<CursorController>().As<ILifecycleTask>();
         }

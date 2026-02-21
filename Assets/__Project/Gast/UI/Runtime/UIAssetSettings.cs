@@ -38,13 +38,8 @@ namespace Gast.UI
 
         [Header("HUD Objectives")]
         [SerializeField]
-        VisualTreeAsset acquireItemObjectiveView;
+        VisualTreeAsset aiObjectiveView;
 
-        public VisualTreeAsset AcquireItemObjectiveView => acquireItemObjectiveView;
-
-        [SerializeField]
-        VisualTreeAsset defeatCharacterObjectiveView;
-
-        public VisualTreeAsset DefeatCharacterObjectiveView => defeatCharacterObjectiveView;
+        public VisualTreeAsset AIObjectiveView => aiObjectiveView;
     }
 }
