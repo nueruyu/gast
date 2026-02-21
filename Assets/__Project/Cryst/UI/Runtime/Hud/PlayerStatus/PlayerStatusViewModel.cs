@@ -1,5 +1,5 @@
 using System;
-using Gast.Domain.Characters;
+using Cryst.Domain.Characters;
 using Gast.Domain.Players;
 using Gast.Shared.Observables;
 using R3;
@@ -17,38 +17,44 @@ namespace Cryst.UI.Hud.Status
 
         public PlayerStatusViewModel(IPlayerManager playerManager)
         {
-            var currentCharacter = playerManager.CurrentCharacter.ToObservable();
+            var currentCharacter = playerManager.CurrentCharacter
+                .ToObservable()
+                .Where(x => x != null);
 
-            HpRatio = currentCharacter
+            var healthInfo = currentCharacter
                 .Select(character =>
                 {
-                    if (character == null) return Observable.Return(0f);
-                    if (!character.TryResolve(out IHasHealthStatus healthStatus)) return Observable.Return(0f);
-
-                    return healthStatus.Health.ToObservable()
-                        .CombineLatest(healthStatus.MaxHealth.ToObservable(),
-                            (health, maxHealth) => maxHealth > 0 ? Mathf.Clamp01(health / maxHealth) : 0f);
+                    var status = character.Resolve<CharacterStatus>();
+                    return status.Health.ToObservable()
+                        .CombineLatest(status.MaxHealth.ToObservable(),
+                            (health, maxHealth) => (health, maxHealth));
                 })
                 .Switch()
+                .Share();
+
+            HpRatio = healthInfo
+                .Select(info =>
+                {
+                    var (health, maxHealth) = info;
+                    return maxHealth > 0 ? Mathf.Clamp01(health / maxHealth) : 0f;
+                })
                 .ToReadOnlyReactiveProperty()
                 .AddTo(disposables);
 
-            HpText = currentCharacter
-                .Select(character =>
+            HpText = healthInfo
+                .Select(info =>
                 {
-                    if (character == null) return Observable.Return(string.Empty);
-                    if (!character.TryResolve(out IHasHealthStatus healthStatus)) return Observable.Return(string.Empty);
-
-                    return healthStatus.Health.ToObservable()
-                        .CombineLatest(healthStatus.MaxHealth.ToObservable(),
-                            (health, maxHealth) => $"{Mathf.CeilToInt(health)} / {maxHealth}");
+                    var (health, maxHealth) = info;
+                    return $"{Mathf.CeilToInt(health)} / {maxHealth}";
                 })
-                .Switch()
                 .ToReadOnlyReactiveProperty()
                 .AddTo(disposables);
 
             CurrentMoney = currentCharacter
-                .Select(character => character?.Wallet?.Amount.ToObservable() ?? Observable.Return(0))
+                .Select(character =>
+                {
+                    return character.Wallet.Amount.ToObservable();
+                })
                 .Switch()
                 .ToReadOnlyReactiveProperty()
                 .AddTo(disposables);

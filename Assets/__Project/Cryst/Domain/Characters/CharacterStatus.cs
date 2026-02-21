@@ -1,10 +1,9 @@
 using Gast.Core.Observables;
-using Gast.Domain.Characters;
 using UnityEngine;
 
 namespace Cryst.Domain.Characters
 {
-    public class CharacterStatus : IHasHealthStatus
+    public class CharacterStatus
     {
         readonly Live<float> health;
         readonly Live<float> maxHealth;

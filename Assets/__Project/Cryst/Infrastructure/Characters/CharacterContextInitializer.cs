@@ -43,7 +43,6 @@ namespace Cryst.Infrastructure.Characters
             var statusSettings = context.Resolve<CharacterStatusSettings>();
             var status = new CharacterStatus(statusSettings.InitialMaxHealth);
             context.Register(status);
-            context.Register(typeof(IHasHealthStatus), status);
 
             context.Register<IVisionSensor>(visionSensor);
             context.Register<INavigationProvider>(navigationProvider);

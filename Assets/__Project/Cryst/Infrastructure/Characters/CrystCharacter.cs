@@ -5,7 +5,6 @@ using Gast.Core.Events;
 using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
-using Gast.Domain.Interactions;
 using Gast.Domain.Loot;
 using R3;
 using UnityEngine;
