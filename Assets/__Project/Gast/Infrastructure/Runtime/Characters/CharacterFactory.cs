@@ -46,7 +46,6 @@ namespace Gast.Infrastructure.Characters
 
             var context = new CharacterContext(
                 characterId,
-                definition.TypeId,
                 definition,
                 character.gameObject,
                 character.destroyCancellationToken);

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef5cac9447281b445a52929e8e291b78, type: 3}
-  m_Name: PlayerStatSchema
+  m_Name: PlayerStatusSettings
   m_EditorClassIdentifier: GastGame::GastGame.Infrastructure.Characters.CharacterStatSchema
   health: {fileID: 11400000, guid: c98a8cf8882e21047a0b6ca4564758f6, type: 2}
   initialHealth: 1000

@@ -19,11 +19,6 @@ namespace Gast.Domain.Characters
         CharacterId Id { get; }
 
         /// <summary>
-        /// Identifier for this character's type definition.
-        /// </summary>
-        CharacterTypeId TypeId { get; }
-
-        /// <summary>
         /// The character's faction affiliation.
         /// </summary>
         Faction Faction { get; }

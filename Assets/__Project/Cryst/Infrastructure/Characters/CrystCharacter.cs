@@ -31,7 +31,7 @@ namespace Cryst.Infrastructure.Characters
 
         public ICharacter Character => character;
         public CharacterId Id => character.Id;
-        public CharacterTypeId TypeId => character.TypeId;
+        public CharacterTypeId TypeId => character.TypeDefinition.TypeId;
         public Faction Faction => character.Faction;
         public ICharacterBody Body => character.Resolve<ICharacterBody>();
         public IVisionSensor VisionSensor => character.Resolve<IVisionSensor>();
