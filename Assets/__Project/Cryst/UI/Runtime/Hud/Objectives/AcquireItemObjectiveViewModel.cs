@@ -1,36 +1,33 @@
+using Gast.Application.Economy;
 using Gast.Domain.AI.Objectives;
-using Gast.Domain.Characters;
+using Gast.Domain.Economy;
 using Gast.Shared.Observables;
+using Gast.UI.Hud.Objectives;
 using R3;
 using UnityEngine;
 
-namespace Gast.UI.Hud.Objectives
+namespace Cryst.UI.Hud.Objectives
 {
-    public class DefeatCharacterObjectiveViewModel : IAIObjectiveViewModel
+    public class AcquireItemObjectiveViewModel : IAIObjectiveViewModel
     {
-        readonly DefeatCharacterObjective objective;
-        readonly ICharacterTypeDefinition targetType;
-
         public ReadOnlyReactiveProperty<bool> IsCompleted { get; }
         public ReadOnlyReactiveProperty<float> ProgressRatio { get; }
         public ReadOnlyReactiveProperty<string> ProgressText { get; }
+        public Sprite ItemIcon { get; }
         public string Description { get; }
-        public Sprite ItemIcon => null;
 
-        public DefeatCharacterObjectiveViewModel(DefeatCharacterObjective objective, ICharacterTypeRepository characterTypeRepository)
+        public AcquireItemObjectiveViewModel(
+            AcquireItemObjective objective,
+            IItemRepository itemRepository,
+            IItemAssetService itemAssetService)
         {
-            this.objective = objective;
+            var itemDefinition = itemRepository.Get(objective.TargetItemId);
 
-            try
-            {
-                this.targetType = characterTypeRepository.Get(objective.TargetTypeId);
-                Description = $"Defeat {targetType.DisplayName}";
-            }
-            catch
-            {
-                this.targetType = null;
-                Description = "Defeat Enemy";
-            }
+            Description = itemDefinition != null
+                ? $"Acquire {itemDefinition.Name}"
+                : "Acquire Item";
+
+            ItemIcon = itemAssetService.GetItemIcon(objective.TargetItemId);
 
             IsCompleted = objective.IsCompleted.ToObservable().ToReadOnlyReactiveProperty();
 

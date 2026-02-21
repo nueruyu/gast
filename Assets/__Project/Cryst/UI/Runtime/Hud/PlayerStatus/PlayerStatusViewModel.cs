@@ -5,7 +5,7 @@ using Gast.Shared.Observables;
 using R3;
 using UnityEngine;
 
-namespace Gast.UI.Hud.Status
+namespace Cryst.UI.Hud.Status
 {
     public class PlayerStatusViewModel : IDisposable
     {

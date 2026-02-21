@@ -3,8 +3,9 @@ using Gast.Domain.AI.Objectives;
 using Gast.UI.Hud.Objectives;
 using System;
 using VContainer;
+using Cryst.UI.Hud.Objectives;
 
-namespace Gast.Infrastructure.UI
+namespace Cryst.Infrastructure.UI
 {
     public class AIObjectiveViewModelFactory : IAIObjectiveViewModelFactory
     {

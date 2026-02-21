@@ -3,7 +3,6 @@ using Gast.Core.Tasks;
 using Gast.UI.Command;
 using Gast.UI.Hud;
 using Gast.UI.Hud.Objectives;
-using Gast.UI.Hud.Status;
 using Gast.UI.Interactions;
 using Gast.UI.Menu;
 using Gast.UI.System;
@@ -23,8 +22,6 @@ namespace Gast.UI
             builder.Register<GameHudViewFactory>();
 
             // HUD Children
-            builder.Register<PlayerStatusViewModel>();
-            builder.Register<PlayerStatusViewFactory>();
             builder.Register<InventoryViewModel>();
             builder.Register<InventoryViewFactory>();
             builder.Register<AIStatusViewModel>();
@@ -46,8 +43,6 @@ namespace Gast.UI
 
             // ViewModels
             builder.Register<ItemStackViewModelFactory>();
-            builder.Register<AcquireItemObjectiveViewModel>(Lifetime.Transient);
-            builder.Register<DefeatCharacterObjectiveViewModel>(Lifetime.Transient);
         }
     }
 }

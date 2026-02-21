@@ -17,6 +17,11 @@ using Cryst.Infrastructure.Feedbacks;
 using Cryst.Infrastructure.EventHandlers;
 using Gast.Features.Characters;
 using Cryst.Modules.CharacterActions;
+using Gast.UI.Hud.Status;
+using Cryst.UI.Hud.Status;
+using Gast.UI.Hud.Objectives;
+using Cryst.UI.Hud.Objectives;
+using Cryst.Infrastructure.UI;
 
 namespace Cryst.Composition
 {
@@ -49,6 +54,13 @@ namespace Cryst.Composition
             builder.Register<ObjectiveManager>(Lifetime.Transient);
             builder.Register<AIBrain>(Lifetime.Transient);
             builder.Register<CharacterAIBrainFactory>().AsImplementedInterfaces();
+
+            // UI
+            builder.Register<PlayerStatusViewModel>(Lifetime.Singleton);
+            builder.Register<PlayerStatusViewFactory>(Lifetime.Singleton).As<IPlayerStatusViewFactory>();
+            builder.Register<AcquireItemObjectiveViewModel>(Lifetime.Transient);
+            builder.Register<DefeatCharacterObjectiveViewModel>(Lifetime.Transient);
+            builder.Register<AIObjectiveViewModelFactory>(Lifetime.Singleton).As<IAIObjectiveViewModelFactory>();
 
             // Player
             builder.Register<PlayerCharacterController>().As<IPlayerCharacterController>();

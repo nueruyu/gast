@@ -12,9 +12,6 @@ using Gast.Infrastructure.Services;
 using Gast.Lib.AI.Debugging;
 using Gast.Infrastructure.Combat;
 using Gast.Lib.Gaia;
-using Gast.UI.Hud;
-using Gast.Infrastructure.UI;
-using Gast.UI.Hud.Objectives;
 
 namespace Gast.Infrastructure
 {
@@ -75,7 +72,6 @@ namespace Gast.Infrastructure
             builder.Register<ReflectionObjectiveRegistry>().As<IObjectiveRegistry>();
             builder.Register<GoalInstantiator>();
             builder.Register<PlanConverter>();
-            builder.Register<AIObjectiveViewModelFactory>().As<IAIObjectiveViewModelFactory>();
         }
     }
 }

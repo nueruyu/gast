@@ -1,9 +1,12 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gast.UI;
+using Gast.UI.Hud.Status;
+using UnityEngine.UIElements;
 
-namespace Gast.UI.Hud.Status
+namespace Cryst.UI.Hud.Status
 {
-    public class PlayerStatusViewFactory
+    public class PlayerStatusViewFactory : IPlayerStatusViewFactory
     {
         readonly PlayerStatusViewModel viewModel;
         readonly UIAssetSettings assetSettings;
@@ -14,7 +17,7 @@ namespace Gast.UI.Hud.Status
             this.assetSettings = assetSettings;
         }
 
-        public PlayerStatusView Create(CancellationToken cancellationToken)
+        public VisualElement Create(CancellationToken cancellationToken)
         {
             var view = new PlayerStatusView(assetSettings.PlayerStatusView);
             view.Bind(viewModel).AddTo(cancellationToken);

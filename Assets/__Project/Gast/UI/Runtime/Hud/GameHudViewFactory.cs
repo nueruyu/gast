@@ -9,7 +9,7 @@ namespace Gast.UI.Hud
     {
         readonly GameHudViewModel hudViewModel;
         readonly UIAssetSettings assetSettings;
-        readonly PlayerStatusViewFactory playerStatusViewFactory;
+        readonly IPlayerStatusViewFactory playerStatusViewFactory;
         readonly InventoryViewFactory inventoryViewFactory;
         readonly AIStatusViewFactory aiStatusViewFactory;
         readonly AIObjectivesViewFactory aiObjectivesViewFactory;
@@ -17,7 +17,7 @@ namespace Gast.UI.Hud
         public GameHudViewFactory(
             GameHudViewModel hudViewModel,
             UIAssetSettings assetSettings,
-            PlayerStatusViewFactory playerStatusViewFactory,
+            IPlayerStatusViewFactory playerStatusViewFactory,
             InventoryViewFactory inventoryViewFactory,
             AIStatusViewFactory aiStatusViewFactory,
             AIObjectivesViewFactory aiObjectivesViewFactory)

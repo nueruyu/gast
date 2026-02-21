@@ -3,7 +3,7 @@ using Gast.UI.Controls;
 using R3;
 using UnityEngine.UIElements;
 
-namespace Gast.UI.Hud.Status
+namespace Cryst.UI.Hud.Status
 {
     public class PlayerStatusView : VisualElement
     {

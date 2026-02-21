@@ -11,7 +11,7 @@ namespace Gast.UI.Hud
     {
         public GameHudView(
             VisualTreeAsset asset,
-            PlayerStatusView playerStatusView,
+            VisualElement playerStatusView,
             InventoryView inventoryView,
             AIStatusView aiStatusView,
             AIObjectivesView aiObjectivesView)
