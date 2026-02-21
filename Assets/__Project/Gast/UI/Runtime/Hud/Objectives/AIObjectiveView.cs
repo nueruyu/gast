@@ -1,29 +1,36 @@
 using System;
+using Gast.UI.Controls;
 using R3;
 using UnityEngine.UIElements;
 
-namespace Gast.UI.Hud
+namespace Gast.UI.Hud.Objectives
 {
     public class AIObjectiveView : VisualElement
     {
         const string ItemIconName = "ItemIcon";
         const string DescriptionName = "Description";
-        const string ProgressBarFillName = "ProgressBarFill";
         const string ProgressTextName = "ProgressText";
         const string CompletedUssClassName = "objective-item--completed";
 
         readonly VisualElement icon;
         readonly Label description;
-        readonly VisualElement progressBarFill;
         readonly Label progressText;
+        readonly GaugeView progressGauge;
 
         public AIObjectiveView(VisualTreeAsset asset)
         {
             asset.CloneTree(this);
             icon = this.Q<VisualElement>(ItemIconName);
             description = this.Q<Label>(DescriptionName);
-            progressBarFill = this.Q<VisualElement>(ProgressBarFillName);
             progressText = this.Q<Label>(ProgressTextName);
+
+            var progressContainer = this.Q<VisualElement>("ProgressBarContainer");
+            if (progressContainer != null)
+            {
+                progressGauge = new GaugeView();
+                progressGauge.LabelText = "";
+                progressContainer.Add(progressGauge);
+            }
         }
 
         public IDisposable Bind(IAIObjectiveViewModel viewModel)
@@ -37,9 +44,12 @@ namespace Gast.UI.Hud
                 : null;
             icon.style.display = viewModel.ItemIcon != null ? DisplayStyle.Flex : DisplayStyle.None;
 
-            viewModel.ProgressRatio
-                .Subscribe(ratio => progressBarFill.style.width = Length.Percent(ratio * 100f))
-                .AddTo(disposables);
+            if (progressGauge != null)
+            {
+                viewModel.ProgressRatio
+                    .Subscribe(ratio => progressGauge.Value = ratio * progressGauge.MaxValue)
+                    .AddTo(disposables);
+            }
 
             viewModel.ProgressText
                 .Subscribe(text => progressText.text = text)

@@ -1,4 +1,3 @@
-// Assets/__Project/Gast/UI/Runtime/Hud/InventoryView.cs
 using System;
 using R3;
 using UnityEngine.UIElements;

@@ -3,14 +3,14 @@ using Gast.Shared.UnityExtensions;
 using R3;
 using UnityEngine.UIElements;
 
-namespace Gast.UI.Hud
+namespace Gast.UI.Hud.Objectives
 {
     public class AIObjectivesView : VisualElement
     {
-        private readonly VisualElement objectivesList;
-        private readonly Button minimizeButton;
-        private readonly ScrollView objectivesScrollView;
-        private readonly UIAssetSettings assetSettings;
+        readonly VisualElement objectivesList;
+        readonly Button minimizeButton;
+        readonly ScrollView objectivesScrollView;
+        readonly UIAssetSettings assetSettings;
 
         public AIObjectivesView(VisualTreeAsset asset, UIAssetSettings assetSettings)
         {

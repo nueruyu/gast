@@ -1,4 +1,3 @@
-// Assets/__Project/Gast/UI/Runtime/Hud/AIStatusViewFactory.cs
 using System.Threading;
 using Cysharp.Threading.Tasks;
 

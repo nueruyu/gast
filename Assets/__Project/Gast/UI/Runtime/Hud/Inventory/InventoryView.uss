@@ -1,4 +1,3 @@
-/* Assets/__Project/Gast/UI/Runtime/Hud/InventoryView.uss */
 .inventory {
     flex-direction: column;
     align-items: flex-start;

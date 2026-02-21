@@ -14,6 +14,7 @@ using Gast.Infrastructure.Combat;
 using Gast.Lib.Gaia;
 using Gast.UI.Hud;
 using Gast.Infrastructure.UI;
+using Gast.UI.Hud.Objectives;
 
 namespace Gast.Infrastructure
 {

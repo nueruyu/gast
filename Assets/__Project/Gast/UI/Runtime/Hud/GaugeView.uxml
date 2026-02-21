@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ui:UXML xmlns:ui="UnityEngine.UIElements" class="gauge">
-    <Style src="GaugeView.uss" />
-    <ui:VisualElement name="Fill" class="gauge__fill" />
-    <ui:Label name="Label" class="gauge__label" />
-</ui:UXML>

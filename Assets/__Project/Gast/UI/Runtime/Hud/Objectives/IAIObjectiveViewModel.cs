@@ -1,7 +1,7 @@
 using R3;
 using UnityEngine;
 
-namespace Gast.UI.Hud
+namespace Gast.UI.Hud.Objectives
 {
     public interface IAIObjectiveViewModel
     {

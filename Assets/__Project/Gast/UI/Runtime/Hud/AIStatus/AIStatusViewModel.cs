@@ -1,4 +1,3 @@
-// Assets/__Project/Gast/UI/Runtime/Hud/AIStatusViewModel.cs
 using System;
 using Gast.Domain.Players;
 using Gast.Shared.Observables;

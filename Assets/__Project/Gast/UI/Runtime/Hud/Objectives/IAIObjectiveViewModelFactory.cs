@@ -1,6 +1,6 @@
 using Gast.Domain.AI;
 
-namespace Gast.UI.Hud
+namespace Gast.UI.Hud.Objectives
 {
     public interface IAIObjectiveViewModelFactory
     {

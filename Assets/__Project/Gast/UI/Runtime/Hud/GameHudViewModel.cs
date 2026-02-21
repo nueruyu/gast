@@ -1,4 +1,3 @@
-// Assets/__Project/Gast/UI/Runtime/Hud/GameHudViewModel.cs
 using Gast.Domain.Players;
 using Gast.Shared.Observables;
 using R3;

@@ -1,4 +1,3 @@
-/* Assets/__Project/Gast/UI/Runtime/Hud/AIObjectivesView.uss */
 .ai-objectives {
     position: absolute;
     top: 20px;

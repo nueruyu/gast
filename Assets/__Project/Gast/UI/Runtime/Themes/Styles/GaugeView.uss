@@ -1,5 +1,4 @@
-/* Assets/__Project/Gast/UI/Runtime/Hud/GaugeView.uss */
-.gauge {
+.gauge-view {
     background-color: rgb(40, 40, 40);
     width: 100%;
     height: 24px;
@@ -8,7 +7,7 @@
     justify-content: center;
 }
 
-.gauge__fill {
+.gauge-view__progress-bar {
     position: absolute;
     left: 0;
     top: 0;
@@ -20,7 +19,7 @@
     transition-timing-function: ease-out;
 }
 
-.gauge__label {
+.gauge-view__label {
     color: rgb(255, 255, 255);
     font-size: 14px;
     -unity-font-style: bold;

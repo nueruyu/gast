@@ -1,4 +1,3 @@
-// Assets/__Project/Gast/UI/Runtime/Hud/AIStatusView.cs
 using System;
 using Gast.Shared.UnityExtensions;
 using R3;

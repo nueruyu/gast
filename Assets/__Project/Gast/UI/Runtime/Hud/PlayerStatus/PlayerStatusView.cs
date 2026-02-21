@@ -1,22 +1,21 @@
-// Assets/__Project/Gast/UI/Runtime/Hud/PlayerStatusView.cs
 using System;
-using Gast.Shared.UnityExtensions;
+using Gast.UI.Controls;
 using R3;
 using UnityEngine.UIElements;
 
-namespace Gast.UI.Hud
+namespace Gast.UI.Hud.Status
 {
     public class PlayerStatusView : VisualElement
     {
         readonly Label moneyLabel;
         readonly GaugeView hpGauge;
 
-        public PlayerStatusView(VisualTreeAsset asset, UIAssetSettings assetSettings)
+        public PlayerStatusView(VisualTreeAsset asset)
         {
             asset.CloneTree(this);
             moneyLabel = this.Q<Label>("MoneyLabel");
 
-            hpGauge = new GaugeView(assetSettings.GaugeView);
+            hpGauge = new GaugeView();
             this.Q("HpContainer").Add(hpGauge);
         }
 
@@ -24,7 +23,13 @@ namespace Gast.UI.Hud
         {
             var d = new CompositeDisposable();
 
-            hpGauge.Bind(viewModel.HpRatio, viewModel.HpText).AddTo(d);
+            viewModel.HpRatio
+                .Subscribe(ratio => hpGauge.Value = ratio * hpGauge.MaxValue)
+                .AddTo(d);
+
+            viewModel.HpText
+                .Subscribe(text => hpGauge.LabelText = text)
+                .AddTo(d);
 
             viewModel.CurrentMoney
                 .Subscribe(amount => moneyLabel.text = $"{amount:N0} G")

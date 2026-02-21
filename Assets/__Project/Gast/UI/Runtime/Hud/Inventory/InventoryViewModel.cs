@@ -1,4 +1,3 @@
-// Assets/__Project/Gast/UI/Runtime/Hud/InventoryViewModel.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;

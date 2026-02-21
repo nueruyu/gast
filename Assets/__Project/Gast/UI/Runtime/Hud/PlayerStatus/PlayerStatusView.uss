@@ -1,4 +1,3 @@
-/* Assets/__Project/Gast/UI/Runtime/Hud/PlayerStatusView.uss */
 .player-status {
     background-color: rgba(0, 0, 0, 0.6);
     border-radius: 8px;

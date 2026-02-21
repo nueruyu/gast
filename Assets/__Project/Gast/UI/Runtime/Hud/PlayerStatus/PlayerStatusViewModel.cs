@@ -1,4 +1,3 @@
-// Assets/__Project/Gast/UI/Runtime/Hud/PlayerStatusViewModel.cs
 using System;
 using Gast.Domain.Characters;
 using Gast.Domain.Players;
@@ -6,11 +5,11 @@ using Gast.Shared.Observables;
 using R3;
 using UnityEngine;
 
-namespace Gast.UI.Hud
+namespace Gast.UI.Hud.Status
 {
     public class PlayerStatusViewModel : IDisposable
     {
-        private readonly CompositeDisposable disposables = new();
+        readonly CompositeDisposable disposables = new();
 
         public ReadOnlyReactiveProperty<float> HpRatio { get; }
         public ReadOnlyReactiveProperty<string> HpText { get; }

@@ -1,4 +1,3 @@
-/* Assets/__Project/Gast/UI/Runtime/Hud/GameHudView.uss */
 .game-hud {
     position: absolute;
     top: 0;

@@ -1,6 +1,6 @@
 using Gast.Domain.AI;
 using Gast.Domain.AI.Objectives;
-using Gast.UI.Hud;
+using Gast.UI.Hud.Objectives;
 using System;
 using VContainer;
 

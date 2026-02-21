@@ -4,7 +4,7 @@ using Gast.Shared.Observables;
 using R3;
 using UnityEngine;
 
-namespace Gast.UI.Hud
+namespace Gast.UI.Hud.Objectives
 {
     public class DefeatCharacterObjectiveViewModel : IAIObjectiveViewModel
     {

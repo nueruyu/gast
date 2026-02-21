@@ -5,11 +5,11 @@ using Gast.Domain.Players;
 using Gast.Shared.Observables;
 using R3;
 
-namespace Gast.UI.Hud
+namespace Gast.UI.Hud.Objectives
 {
     public class AIObjectivesViewModel : IDisposable
     {
-        private readonly CompositeDisposable disposables = new();
+        readonly CompositeDisposable disposables = new();
 
         public ReadOnlyReactiveProperty<bool> IsAiControlActive { get; }
         public ReadOnlyReactiveProperty<IReadOnlyList<IAIObjectiveViewModel>> AiObjectives { get; }

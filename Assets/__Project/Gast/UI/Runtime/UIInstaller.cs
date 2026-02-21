@@ -1,8 +1,9 @@
-// Assets/__Project/Gast/UI/Runtime/UIInstaller.cs
 using Gast.Core.DI;
 using Gast.Core.Tasks;
 using Gast.UI.Command;
 using Gast.UI.Hud;
+using Gast.UI.Hud.Objectives;
+using Gast.UI.Hud.Status;
 using Gast.UI.Interactions;
 using Gast.UI.Menu;
 using Gast.UI.System;
