@@ -8,15 +8,14 @@ namespace Cryst.UI.Hud.Status
     public class PlayerStatusView : VisualElement
     {
         readonly Label moneyLabel;
-        readonly GaugeView hpGauge;
+        readonly Gauge hpGauge;
 
         public PlayerStatusView(VisualTreeAsset asset)
         {
             asset.CloneTree(this);
-            moneyLabel = this.Q<Label>("MoneyLabel");
 
-            hpGauge = new GaugeView();
-            this.Q("HpContainer").Add(hpGauge);
+            hpGauge = this.Q<Gauge>("HpGauge");
+            moneyLabel = this.Q<Label>("MoneyLabel");
         }
 
         public IDisposable Bind(PlayerStatusViewModel viewModel)

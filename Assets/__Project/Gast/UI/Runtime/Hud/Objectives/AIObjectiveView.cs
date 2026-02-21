@@ -15,7 +15,7 @@ namespace Gast.UI.Hud.Objectives
         readonly VisualElement icon;
         readonly Label description;
         readonly Label progressText;
-        readonly GaugeView progressGauge;
+        readonly Gauge progressGauge;
 
         public AIObjectiveView(VisualTreeAsset asset)
         {
@@ -27,7 +27,7 @@ namespace Gast.UI.Hud.Objectives
             var progressContainer = this.Q<VisualElement>("ProgressBarContainer");
             if (progressContainer != null)
             {
-                progressGauge = new GaugeView();
+                progressGauge = new Gauge();
                 progressGauge.LabelText = "";
                 progressContainer.Add(progressGauge);
             }

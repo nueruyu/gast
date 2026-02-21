@@ -3,8 +3,12 @@ using UnityEngine.UIElements;
 namespace Gast.UI.Controls
 {
     [UxmlElement]
-    public partial class GaugeView : VisualElement
+    public partial class Gauge : VisualElement
     {
+        static readonly string UssClassName = "gauge";
+        static readonly string ProgressBarUssClassName = UssClassName + "__progress-bar";
+        static readonly string LabelUssClassName = UssClassName + "__label";
+
         readonly VisualElement progressBar;
         readonly Label label;
 
@@ -40,16 +44,16 @@ namespace Gast.UI.Controls
             set => label.text = value;
         }
 
-        public GaugeView()
+        public Gauge()
         {
-            AddToClassList("gauge-view");
+            AddToClassList(UssClassName);
 
             progressBar = new VisualElement();
-            progressBar.AddToClassList("gauge-view__progress-bar");
+            progressBar.AddToClassList(ProgressBarUssClassName);
             Add(progressBar);
 
             label = new Label();
-            label.AddToClassList("gauge-view__label");
+            label.AddToClassList(LabelUssClassName);
             Add(label);
 
             Value = 100f;

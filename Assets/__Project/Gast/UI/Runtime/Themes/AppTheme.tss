@@ -1,6 +1,6 @@
 @import url("unity-theme://default");
 
-@import url("Styles/GaugeView.uss");
+@import url("Styles/Gauge.uss");
 
 
 
