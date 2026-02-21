@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" class="player-status">
+    <Style src="PlayerStatusView.uss" />
+    <ui:VisualElement name="HpContainer" class="player-status__hp-container" />
+    <ui:Label name="MoneyLabel" class="player-status__money-label" />
+</ui:UXML>

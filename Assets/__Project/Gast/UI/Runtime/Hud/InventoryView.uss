@@ -1,0 +1,24 @@
+/* Assets/__Project/Gast/UI/Runtime/Hud/InventoryView.uss */
+.inventory {
+    flex-direction: column;
+    align-items: flex-start;
+    max-height: 400px;
+    width: 250px;
+}
+
+.inventory__item-slot {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    padding: 8px;
+    margin-top: 4px;
+    flex-direction: row;
+    width: 100%;
+    border-left-width: 4px;
+    border-left-color: rgb(100, 149, 237);
+}
+
+.inventory__item-text {
+    color: white;
+    font-size: 14px;
+    white-space: nowrap;
+}

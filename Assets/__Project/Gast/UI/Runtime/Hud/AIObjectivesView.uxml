@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" class="ai-objectives">
+    <Style src="AIObjectivesView.uss" />
+    <ui:VisualElement class="ai-objectives__header">
+        <ui:Label text="AI OBJECTIVES" class="ai-objectives__title"/>
+        <ui:Button name="MinimizeButton" text="-" class="ai-objectives__minimize-button" picking-mode="Position"/>
+    </ui:VisualElement>
+    <ui:ScrollView name="AiObjectivesScrollView" class="ai-objectives__scrollview">
+        <ui:VisualElement name="AiObjectivesList" class="ai-objectives__list"/>
+    </ui:ScrollView>
+</ui:UXML>

@@ -1,0 +1,50 @@
+/* Assets/__Project/Gast/UI/Runtime/Hud/AIObjectivesView.uss */
+.ai-objectives {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 320px;
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 8px;
+    padding: 8px;
+    transition: height 0.2s ease-out;
+}
+
+.ai-objectives__header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px 4px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+    margin-bottom: 4px;
+}
+
+.ai-objectives__title {
+    color: white;
+    font-size: 16px;
+    -unity-font-style: bold;
+}
+
+.ai-objectives__minimize-button {
+    width: 24px;
+    height: 24px;
+    font-size: 20px;
+    -unity-font-style: bold;
+    background-color: transparent;
+    border-width: 0;
+    color: #ccc;
+}
+
+.ai-objectives__minimize-button:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.ai-objectives__scrollview {
+    max-height: 300px;
+}
+
+.ai-objectives__list {
+    width: 100%;
+}

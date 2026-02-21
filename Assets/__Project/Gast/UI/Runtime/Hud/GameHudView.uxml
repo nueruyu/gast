@@ -1,38 +1,11 @@
-<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xmlns:ui="UnityEngine.UIElements" 
-    noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" 
-    editor-extension-mode="False"
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
     class="game-hud"
-    picking-mode="Ignore"
->
+    picking-mode="Ignore">
     <Style src="GameHudView.uss"/>
-    
-    <!-- Existing StatusGroup -->
-    <ui:VisualElement name="StatusGroup" class="game-hud__status-group">
-        <ui:VisualElement name="HpContainer" class="game-hud__hp-container">
-            <ui:VisualElement name="HpFill" class="game-hud__hp-fill"/>
-            <ui:Label name="HpLabel" text="100/100" class="game-hud__hp-label"/>
-        </ui:VisualElement>
-        <ui:Label name="MoneyLabel" text="100G" class="game-hud__money-label"/>
-    </ui:VisualElement>
 
-    <!-- NEW: AI Control Status -->
-    <ui:VisualElement name="AiStatusGroup" class="game-hud__ai-container">
-        <ui:Label text="AI ACTIVE" class="game-hud__ai-label"/>
-        <ui:Button name="StopAiButton" text="STOP AI" class="game-hud__ai-stop-button" picking-mode="Position"/>
-    </ui:VisualElement>
-
-    <!-- NEW: AI Objectives -->
-    <ui:VisualElement name="AiObjectivesGroup" class="game-hud__objectives-container">
-        <ui:VisualElement class="game-hud__objectives-header">
-            <ui:Label text="AI OBJECTIVES" class="game-hud__objectives-title"/>
-            <ui:Button name="MinimizeButton" text="-" class="game-hud__objectives-minimize-button" picking-mode="Position"/>
-        </ui:VisualElement>
-        <ui:ScrollView name="AiObjectivesScrollView" class="game-hud__objectives-scrollview">
-            <ui:VisualElement name="AiObjectivesList" class="game-hud__objectives-list"/>
-        </ui:ScrollView>
-    </ui:VisualElement>
-
-    <!-- Existing InventoryContainer -->
-    <ui:VisualElement name="InventoryContainer" class="game-hud__inventory-container"/>
+    <ui:VisualElement name="PlayerStatusContainer" class="game-hud__player-status-container" />
+    <ui:VisualElement name="AIStatusContainer" class="game-hud__ai-status-container" />
+    <ui:VisualElement name="AIObjectivesContainer" class="game-hud__ai-objectives-container" />
+    <ui:VisualElement name="InventoryContainer" class="game-hud__inventory-container" />
 </ui:UXML>

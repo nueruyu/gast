@@ -1,0 +1,42 @@
+/* Assets/__Project/Gast/UI/Runtime/Hud/AIStatusView.uss */
+.ai-status {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    translate: -50% 0;
+    flex-direction: row;
+    background-color: rgba(20, 20, 20, 0.85);
+    border-radius: 20px;
+    padding: 8px 16px;
+    align-items: center;
+    border-width: 1px;
+    border-color: rgba(100, 149, 237, 0.5);
+}
+
+.ai-status__label {
+    color: rgb(100, 149, 237);
+    -unity-font-style: bold;
+    font-size: 16px;
+    margin-right: 12px;
+}
+
+.ai-status__stop-button {
+    background-color: rgb(200, 60, 60);
+    color: white;
+    border-width: 0;
+    border-radius: 4px;
+    font-size: 14px;
+    padding: 4px 12px;
+    height: 28px;
+    transition-duration: 0.1s;
+}
+
+.ai-status__stop-button:hover {
+    background-color: rgb(230, 80, 80);
+    scale: 1.05;
+}
+
+.ai-status__stop-button:active {
+    background-color: rgb(160, 40, 40);
+    scale: 0.95;
+}
