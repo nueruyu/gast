@@ -3,7 +3,6 @@ using Gast.Application.Characters;
 using Gast.Core.Commands;
 using Gast.Core.Observables;
 using Gast.Domain.Characters;
-using Gast.Features.Characters;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -62,10 +61,9 @@ namespace Gast.Features.SpawnSites
                 var worldRotation = transform.rotation * entry.LocalRotation;
 
                 var character = commandDispatcher.Dispatch<CreateNpcCommand, ICharacter>(new(
-                    entry.TypeId,
+                    entry.CreationParameters,
                     worldPosition,
-                    worldRotation,
-                    entry.Faction));
+                    worldRotation));
 
                 activeCharacters.Add(character);
 
@@ -115,7 +113,7 @@ namespace Gast.Features.SpawnSites
         class SpawnSiteEntry
         {
             [SerializeField]
-            CharacterTypeReference characterTypeReference;
+            ScriptableObject creationParameters;
 
             [SerializeField]
             Vector3 localPosition;
@@ -123,13 +121,9 @@ namespace Gast.Features.SpawnSites
             [SerializeField]
             Vector3 localRotationEuler;
 
-            [SerializeField]
-            Faction faction = Faction.Enemy;
-
-            public CharacterTypeId TypeId => characterTypeReference.Id;
+            public ICharacterCreationParameters CreationParameters => creationParameters as ICharacterCreationParameters;
             public Vector3 LocalPosition => localPosition;
             public Quaternion LocalRotation => Quaternion.Euler(localRotationEuler);
-            public Faction Faction => faction;
         }
     }
 }

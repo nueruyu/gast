@@ -11,6 +11,7 @@ using Cryst.Infrastructure.Characters;
 using Cryst.Modules.Players;
 using Cryst.Modules.CharacterAI;
 using Cryst.Modules.CharacterAI.Strategic;
+using Gast.Domain.Characters;
 using Gast.Domain.Players;
 using Gast.Core.Tasks;
 using Cryst.Infrastructure.Feedbacks;
@@ -39,7 +40,8 @@ namespace Cryst.Composition
             // Character
             builder.Register<CharacterContextInitializer>().AsImplementedInterfaces();
             builder.Register<CharacterActionFactory>().As<ICharacterActionFactory>();
-            builder.Register<CrystCharacterFactory>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<CrystCharacterFactory>(Lifetime.Singleton).As<ICharacterFactory>();
+            builder.Register<CrystCharacterFacetFactory>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // Character Actions (Transient)
             builder.Register<AttackAction>(Lifetime.Transient);

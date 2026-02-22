@@ -11,29 +11,29 @@ namespace Gast.Application.Characters
     /// </summary>
     public class SpawnCharacterUseCase
     {
-        readonly ICharacterFactory factory;
+        readonly ICharacterFactoryRegistry factoryRegistry;
         readonly ICharacterRepository repository;
         readonly DisposableBag subscriptions = new DisposableBag();
 
         public SpawnCharacterUseCase(
-            ICharacterFactory factory,
+            ICharacterFactoryRegistry factoryRegistry,
             ICharacterRepository repository)
         {
-            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            this.factoryRegistry = factoryRegistry ?? throw new ArgumentNullException(nameof(factoryRegistry));
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
         /// <summary>
         /// Execute the spawn character use case.
         /// </summary>
-        /// <param name="typeId">Character type identifier.</param>
         /// <param name="position">World position to spawn at.</param>
         /// <param name="rotation">World rotation to spawn with.</param>
-        /// <param name="faction">Optional faction override.</param>
+        /// <param name="parameters">Parameters for character creation.</param>
         /// <returns>The spawned character instance.</returns>
-        public ICharacter Execute(CharacterTypeId typeId, Vector3 position, Quaternion rotation, Faction faction)
+        public ICharacter Execute(Vector3 position, Quaternion rotation, ICharacterCreationParameters parameters)
         {
-            var character = factory.Create(typeId, position, rotation, faction);
+            var factory = factoryRegistry.Get(parameters.GetType());
+            var character = factory.Create(position, rotation, parameters);
 
             repository.Register(character);
 

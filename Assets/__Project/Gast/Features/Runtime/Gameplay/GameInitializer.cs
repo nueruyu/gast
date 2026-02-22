@@ -44,17 +44,17 @@ namespace Gast.Features.Gameplay
                 Debug.LogWarning("GameInitializer: No PlayerSpawnPoint found, spawning at origin");
             }
 
-            // Get player type ID from settings
-            var playerTypeId = settings.PlayerCharacterTypeId;
+            // Get player creation parameters from settings
+            var playerParams = settings.PlayerCreationParameters;
 
             // Create and possess the player character
             commandDispatcher.Dispatch<CreatePlayerCommand, ICharacter>(new(
-                playerTypeId,
+                playerParams,
                 position,
                 rotation
             ));
 
-            Debug.Log($"GameInitializer: Player '{playerTypeId}' spawned at {position}");
+            Debug.Log($"GameInitializer: Player spawned at {position}");
 
             return Task.CompletedTask;
         }

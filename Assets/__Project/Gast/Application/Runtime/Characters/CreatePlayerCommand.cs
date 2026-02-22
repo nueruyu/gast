@@ -8,13 +8,13 @@ namespace Gast.Application.Characters
     [Serializable]
     public readonly struct CreatePlayerCommand : ICommand<ICharacter>
     {
-        public CharacterTypeId TypeId { get; }
+        public ICharacterCreationParameters Parameters { get; }
         public Vector3 Position { get; }
         public Quaternion Rotation { get; }
 
-        public CreatePlayerCommand(CharacterTypeId typeId, Vector3 position, Quaternion rotation)
+        public CreatePlayerCommand(ICharacterCreationParameters parameters, Vector3 position, Quaternion rotation)
         {
-            TypeId = typeId;
+            Parameters = parameters;
             Position = position;
             Rotation = rotation;
         }

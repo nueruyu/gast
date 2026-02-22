@@ -1,5 +1,4 @@
 using Gast.Domain.Characters;
-using Gast.Features.Characters;
 using UnityEngine;
 
 namespace Gast.Features.Gameplay
@@ -12,8 +11,8 @@ namespace Gast.Features.Gameplay
     public class GameInitializationSettings : ScriptableObject
     {
         [SerializeField]
-        CharacterTypeReference playerCharacterTypeReference;
+        ScriptableObject playerCreationParameters;
 
-        public CharacterTypeId PlayerCharacterTypeId => playerCharacterTypeReference.Id;
+        public ICharacterCreationParameters PlayerCreationParameters => playerCreationParameters as ICharacterCreationParameters;
     }
 }

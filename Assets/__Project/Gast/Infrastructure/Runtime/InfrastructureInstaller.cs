@@ -2,6 +2,7 @@ using Gast.Application.AI;
 using Gast.Application.AIPlanning;
 using Gast.Application.Economy;
 using Gast.Core.DI;
+using Gast.Domain.Characters;
 using Gast.Features.Combat;
 using Gast.Infrastructure.AI;
 using Gast.Infrastructure.Characters;
@@ -46,7 +47,7 @@ namespace Gast.Infrastructure
             builder.Register<CharacterFacetFactoryRegistry>().AsImplementedInterfaces();
 
             // Character
-            builder.Register<CharacterFactory>().AsImplementedInterfaces();
+            builder.Register<CharacterFactoryRegistry>().As<ICharacterFactoryRegistry>();
             builder.Register<CharacterRepository>().AsImplementedInterfaces();
             builder.Register<CharacterTypeRepository>().AsImplementedInterfaces().AsSelf();
 

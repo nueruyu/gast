@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Gast.Domain.Characters
@@ -8,13 +9,17 @@ namespace Gast.Domain.Characters
     public interface ICharacterFactory
     {
         /// <summary>
-        /// Create a new character instance from a character type ID.
+        /// The type of parameters this factory can handle.
         /// </summary>
-        /// <param name="typeId">The character type identifier.</param>
+        Type ParametersType { get; }
+
+        /// <summary>
+        /// Create a new character instance.
+        /// </summary>
         /// <param name="position">World position for the character.</param>
         /// <param name="rotation">World rotation for the character.</param>
-        /// <param name="faction">Optional faction override. If null, uses definition's default faction.</param>
+        /// <param name="parameters">Parameters required for character creation.</param>
         /// <returns>The created character instance.</returns>
-        ICharacter Create(CharacterTypeId typeId, Vector3 position, Quaternion rotation, Faction faction);
+        ICharacter Create(Vector3 position, Quaternion rotation, ICharacterCreationParameters parameters);
     }
 }

@@ -2577,18 +2577,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gast.Systems.SpawnSites::Gast.Systems.SpawnSites.SpawnSiteAnchor
   entries:
-  - characterTypeReference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
+  - creationParameters: {fileID: 11400000, guid: 33b3ad5f8d4cf6d4b986721acebcd23e, type: 2}
     localPosition: {x: 1.98, y: 0, z: 1}
     localRotationEuler: {x: 0, y: 0, z: 0}
-    faction: 3
-  - characterTypeReference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
+  - creationParameters: {fileID: 11400000, guid: 29952189894572044bb56b71092c11e4, type: 2}
     localPosition: {x: 1.12, y: 0, z: -1.64}
     localRotationEuler: {x: 0, y: 0, z: 0}
-    faction: 3
-  - characterTypeReference: {fileID: 11400000, guid: d84ffdeb244f09244a7266fba056d347, type: 2}
+  - creationParameters: {fileID: 11400000, guid: 29952189894572044bb56b71092c11e4, type: 2}
     localPosition: {x: -1.8, y: 0, z: 1}
     localRotationEuler: {x: 0, y: 0, z: 0}
-    faction: 3
   respawnCooldown: 10
 --- !u!1 &2080562600
 GameObject:
@@ -2747,10 +2744,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gast.Systems.SpawnSites::Gast.Systems.SpawnSites.SpawnSiteAnchor
   entries:
-  - characterTypeReference: {fileID: 11400000, guid: d84ffdeb244f09244a7266fba056d347, type: 2}
+  - creationParameters: {fileID: 11400000, guid: 33b3ad5f8d4cf6d4b986721acebcd23e, type: 2}
     localPosition: {x: 1.98, y: 0, z: 1}
     localRotationEuler: {x: 0, y: 0, z: 0}
-    faction: 3
   respawnCooldown: 10
 --- !u!4 &2084794415
 Transform:

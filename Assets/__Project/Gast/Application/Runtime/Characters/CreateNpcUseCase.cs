@@ -27,10 +27,9 @@ namespace Gast.Application.Characters
         public ICharacter Execute(in CreateNpcCommand command)
         {
             var character = spawnCharacterUseCase.Execute(
-                command.TypeId,
                 command.Position,
                 command.Rotation,
-                command.Faction);
+                command.Parameters);
 
             var brain = brainFactory.Create();
             brainManager.AttachBrain(character.Id, brain);
