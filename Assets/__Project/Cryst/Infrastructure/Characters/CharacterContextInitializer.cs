@@ -1,3 +1,4 @@
+using Cryst.Domain.Characters;
 using Cryst.Modules.CharacterActions;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
@@ -8,8 +9,6 @@ using Gast.Features.Navigations;
 using Gast.Features.Sensors;
 using Gast.Infrastructure.Characters;
 using Gast.Shared.UnityExtensions;
-using Cryst.Domain.Characters;
-using CharacterStatus = Cryst.Domain.Characters.CharacterStatus;
 
 namespace Cryst.Infrastructure.Characters
 {
