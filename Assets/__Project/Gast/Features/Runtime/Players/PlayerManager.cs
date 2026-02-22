@@ -15,15 +15,18 @@ namespace Gast.Features.Players
     {
         readonly PlayerBrain playerBrain;
         readonly ICharacterRepository characterRepository;
+        readonly ICharacterBrainManager brainManager;
         readonly Live<ICharacter> currentCharacter = new(null);
         readonly Live<ICharacterAIBrain> currentAIBrain = new(null);
 
         public PlayerManager(
             PlayerBrain playerBrain,
-            ICharacterRepository characterRepository)
+            ICharacterRepository characterRepository,
+            ICharacterBrainManager brainManager)
         {
             this.playerBrain = playerBrain;
             this.characterRepository = characterRepository;
+            this.brainManager = brainManager;
         }
 
         /// <summary>
@@ -42,7 +45,7 @@ namespace Gast.Features.Players
             Unpossess();
 
             var character = characterRepository.Get(characterId);
-            character.AttachBrain(playerBrain);
+            brainManager.AttachBrain(character.Id, playerBrain);
             currentCharacter.Value = character;
 
             Debug.Log($"PlayerManager: Possessed {character}");
@@ -55,7 +58,7 @@ namespace Gast.Features.Players
         {
             if (currentCharacter.Value != null)
             {
-                currentCharacter.Value.DetachBrain();
+                brainManager.DetachBrain(currentCharacter.Value.Id);
                 currentCharacter.Value = null;
             }
 
@@ -74,7 +77,7 @@ namespace Gast.Features.Players
                 return false;
             }
 
-            currentCharacter.Value.AttachBrain(aiBrain);
+            brainManager.AttachBrain(currentCharacter.Value.Id, aiBrain);
             currentAIBrain.Value = aiBrain;
 
             Debug.Log($"PlayerManager: AI took over control of {currentCharacter.Value}");
@@ -92,7 +95,7 @@ namespace Gast.Features.Players
                 return false;
             }
 
-            currentCharacter.Value.AttachBrain(playerBrain);
+            brainManager.AttachBrain(currentCharacter.Value.Id, playerBrain);
             currentAIBrain.Value = null;
 
             Debug.Log($"PlayerManager: Restored player control of {currentCharacter.Value}");

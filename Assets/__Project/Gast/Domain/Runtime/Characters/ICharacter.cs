@@ -1,5 +1,4 @@
 using Gast.Core.Observables;
-using Gast.Domain.AI;
 using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
 using System.Threading;
@@ -49,16 +48,6 @@ namespace Gast.Domain.Characters
         /// Inventory managing the character's items.
         /// </summary>
         Inventory Inventory { get; }
-
-        /// <summary>
-        /// Attach a brain to this character, detaching any existing brain first.
-        /// </summary>
-        void AttachBrain(ICharacterBrain newBrain);
-
-        /// <summary>
-        /// Detach the current brain from this character.
-        /// </summary>
-        void DetachBrain();
 
         void Destroy();
 

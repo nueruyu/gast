@@ -16,14 +16,19 @@ namespace Cryst.Infrastructure.Characters
         readonly ICharacter character;
         readonly CharacterActionStateStore stateStore;
         readonly IDomainEventPublisher eventPublisher;
+        readonly ICharacterBrainManager brainManager;
         readonly CharacterStatus status;
 
-        public CrystCharacter(ICharacter character, IDomainEventPublisher eventPublisher)
+        public CrystCharacter(
+            ICharacter character,
+            IDomainEventPublisher eventPublisher,
+            ICharacterBrainManager brainManager)
         {
             this.character = character;
             stateStore = character.Resolve<CharacterActionStateStore>();
 
             this.eventPublisher = eventPublisher;
+            this.brainManager = brainManager;
 
             status = character.Resolve<CharacterStatus>();
             IsAlive = status.Health.Select(h => h > 0);
@@ -97,7 +102,7 @@ namespace Cryst.Infrastructure.Characters
         void Die()
         {
             character.ActionController.ExecuteAction(new DieCommand());
-            character.DetachBrain();
+            brainManager.DetachBrain(Id);
         }
     }
 }

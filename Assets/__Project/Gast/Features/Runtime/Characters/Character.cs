@@ -1,6 +1,4 @@
-using Cysharp.Threading.Tasks;
 using Gast.Core.Observables;
-using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
@@ -14,7 +12,6 @@ namespace Gast.Features.Characters
     public class Character : MonoBehaviour, ICharacter
     {
         ICharacterTypeDefinition typeDefinition;
-        ICharacterBrain currentBrain;
         ICharacterFacetFactoryRegistry facetFactoryRegistry;
         readonly Dictionary<Type, ICharacterFacet> facetCache = new();
 
@@ -78,28 +75,6 @@ namespace Gast.Features.Characters
 
         public bool TryResolve<T>(out T module) where T : class => context.TryResolve(out module);
 
-        /// <summary>
-        /// Attach a brain to this character, detaching any existing brain first.
-        /// The brain's OnAttached method will be called after attachment.
-        /// </summary>
-        public void AttachBrain(ICharacterBrain newBrain)
-        {
-            currentBrain?.OnDetached();
-
-            currentBrain = newBrain;
-            currentBrain?.OnAttached(this);
-        }
-
-        /// <summary>
-        /// Detach the current brain from this character.
-        /// The brain's OnDetached method will be called.
-        /// </summary>
-        public void DetachBrain()
-        {
-            currentBrain?.OnDetached();
-            currentBrain = null;
-        }
-
         public void Destroy()
         {
             if (this != null && gameObject != null)
@@ -110,7 +85,6 @@ namespace Gast.Features.Characters
 
         void OnDestroy()
         {
-            DetachBrain();
             destroyedSignal.Publish(this);
         }
     }
