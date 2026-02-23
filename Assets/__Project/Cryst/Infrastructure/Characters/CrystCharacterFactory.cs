@@ -2,20 +2,17 @@ using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Features.Characters;
 using Gast.Infrastructure.Characters;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cryst.Infrastructure.Characters
 {
-    public class CrystCharacterFactory : ICharacterFactory
+    public class CrystCharacterFactory : ICharacterFactory<CharacterCreationParameters>
     {
         readonly CharacterTypeRepository typeRepository;
         readonly ICharacterFacetFactoryRegistry facetFactoryRegistry;
         readonly IEnumerable<ICharacterContextInitializer> contextInitializers;
         readonly ICharacterActionFactory actionFactory;
-
-        public Type ParametersType => typeof(CharacterCreationParameters);
 
         public CrystCharacterFactory(
             CharacterTypeRepository typeRepository,
@@ -29,14 +26,9 @@ namespace Cryst.Infrastructure.Characters
             this.actionFactory = actionFactory;
         }
 
-        public ICharacter Create(Vector3 position, Quaternion rotation, ICharacterCreationParameters parameters)
+        public ICharacter Create(Vector3 position, Quaternion rotation, CharacterCreationParameters parameters)
         {
-            if (parameters is not CharacterCreationParameters creationParams)
-            {
-                throw new ArgumentException($"Invalid parameter type. Expected {nameof(CharacterCreationParameters)}.", nameof(parameters));
-            }
-
-            var definition = typeRepository.Get(creationParams.TypeId);
+            var definition = typeRepository.Get(parameters.TypeId);
             var characterPrefab = definition.CharacterPrefab;
 
             var characterId = CharacterId.New();
@@ -66,7 +58,7 @@ namespace Cryst.Infrastructure.Characters
                 context,
                 definition,
                 actionController,
-                creationParams.Faction,
+                parameters.Faction,
                 wallet,
                 inventory,
                 facetFactoryRegistry);
