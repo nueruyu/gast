@@ -13,7 +13,6 @@ namespace Cryst.Infrastructure.Characters
 {
     public class CrystCharacter : ICrystCharacter
     {
-        readonly ICharacter character;
         readonly CharacterId id;
         readonly ICharacterTypeDefinition typeDefinition;
         readonly Faction faction;
@@ -23,11 +22,8 @@ namespace Cryst.Infrastructure.Characters
         readonly ICharacterBody body;
         readonly IVisionSensor visionSensor;
         readonly INavigationProvider navigationProvider;
-        readonly IDomainEventPublisher eventPublisher;
-        readonly ICharacterBrainManager brainManager;
 
         public CrystCharacter(
-            ICharacter character,
             CharacterId id,
             ICharacterTypeDefinition typeDefinition,
             Faction faction,
@@ -36,11 +32,8 @@ namespace Cryst.Infrastructure.Characters
             CharacterActionStateStore stateStore,
             ICharacterBody body,
             IVisionSensor visionSensor,
-            INavigationProvider navigationProvider,
-            IDomainEventPublisher eventPublisher,
-            ICharacterBrainManager brainManager)
+            INavigationProvider navigationProvider)
         {
-            this.character = character;
             this.id = id;
             this.typeDefinition = typeDefinition;
             this.faction = faction;
@@ -50,8 +43,6 @@ namespace Cryst.Infrastructure.Characters
             this.body = body;
             this.visionSensor = visionSensor;
             this.navigationProvider = navigationProvider;
-            this.eventPublisher = eventPublisher;
-            this.brainManager = brainManager;
 
             IsAlive = status.Health.Select(h => h > 0);
         }
@@ -99,10 +90,10 @@ namespace Cryst.Infrastructure.Characters
 
         public void Jump() => actionController.ExecuteAction(new JumpCommand());
 
-        public void TakeDamage(DamageInfo damageInfo)
+        public TakeDamageResult TakeDamage(DamageInfo damageInfo)
         {
             if (!IsAlive.Value)
-                return;
+                return TakeDamageResult.NoDamage;
 
             Hit(damageInfo);
 
@@ -111,15 +102,10 @@ namespace Cryst.Infrastructure.Characters
             if (Health.Value <= 0)
             {
                 Die();
-
-                brainManager.DetachBrain(Id);
-
-                eventPublisher.Publish(new CharacterDefeatedEvent(character, damageInfo.AttackerId));
-                eventPublisher.Publish(
-                    new LootPotentialDropEvent(
-                        typeDefinition.LootTable,
-                        Body.Position));
+                return TakeDamageResult.Defeated;
             }
+
+            return TakeDamageResult.Alive;
         }
 
         void Hit(DamageInfo damageInfo) => actionController.ExecuteAction(new HitCommand(damageInfo));

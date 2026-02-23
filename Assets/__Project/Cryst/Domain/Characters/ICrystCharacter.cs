@@ -41,6 +41,6 @@ namespace Cryst.Domain.Characters
 
         void Jump();
 
-        void TakeDamage(DamageInfo damageInfo);
+        TakeDamageResult TakeDamage(DamageInfo damageInfo);
     }
 }

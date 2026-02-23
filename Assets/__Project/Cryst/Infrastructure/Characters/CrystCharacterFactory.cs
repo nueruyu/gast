@@ -1,7 +1,9 @@
 using Cryst.Domain.Characters;
 using Cryst.Infrastructure.Economy;
 using Cryst.Modules.CharacterActions;
+using Cysharp.Threading.Tasks;
 using Gast.Core.Events;
+using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
@@ -15,7 +17,6 @@ using Gast.Shared.UnityExtensions;
 using R3;
 using R3.Triggers;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cryst.Infrastructure.Characters
@@ -44,13 +45,12 @@ namespace Cryst.Infrastructure.Characters
                 var visual = UnityEngine.Object.Instantiate(definition.VisualPrefab, characterGo.transform);
                 visual.name = $"Visual ({definition.VisualPrefab.name})";
 
-                var character = new Character(characterGo);
-
+                var destroyCancellationToken = characterGo.GetCancellationTokenOnDestroy();
                 var context = new CharacterContext(
                     characterId,
                     definition,
                     characterGo,
-                    character.CancellationToken);
+                    destroyCancellationToken);
 
                 InitializeContext(context, definition);
 
@@ -58,10 +58,7 @@ namespace Cryst.Infrastructure.Characters
 
                 characterGo.UpdateAsObservable().Subscribe(_ => actionController.Update());
 
-                character.Initialize(context);
-
                 var crystCharacter = new CrystCharacter(
-                    character,
                     characterId,
                     definition,
                     parameters.Faction,
@@ -70,14 +67,13 @@ namespace Cryst.Infrastructure.Characters
                     context.Resolve<CharacterActionStateStore>(),
                     context.Resolve<ICharacterBody>(),
                     context.Resolve<IVisionSensor>(),
-                    context.Resolve<INavigationProvider>(),
-                    eventPublisher,
-                    brainManager);
+                    context.Resolve<INavigationProvider>());
 
                 var wallet = new Wallet(definition.InitialMoney);
                 var inventory = new Inventory(definition.SlotCapacity);
 
-                character.RegisterFacets(
+                var character = new Character(
+                    context,
                     new()
                     {
                         { typeof(ICrystCharacter), crystCharacter },
@@ -128,22 +124,22 @@ namespace Cryst.Infrastructure.Characters
                 var movement = new CharacterMovement(
                     animator,
                     body,
-                    context.TypeDefinition);
+                    typeDefinition);
 
                 context.Register(stateStore);
                 context.Register(movement);
 
                 var footstepSettings = typeDefinition.GetExtension<CharacterFootstepSettings>();
-                new CharacterFootstepHandler(animator, audio, footstepSettings);
+                new CharacterFootstepHandler(animator, audio, footstepSettings).AddTo(context.GameObject);
             }
 
-            CharacterActionController CreateActionController(CharacterContext character, CharacterTypeDefinition definition)
+            CharacterActionController CreateActionController(CharacterContext context, CharacterTypeDefinition definition)
             {
                 var actionController = new CharacterActionController();
 
                 foreach (var settings in definition.ActionSettings)
                 {
-                    var action = actionFactory.Create(settings, character);
+                    var action = actionFactory.Create(settings, context);
                     if (action is ICharacterExecutableAction executable)
                     {
                         actionController.RegisterAction(executable);

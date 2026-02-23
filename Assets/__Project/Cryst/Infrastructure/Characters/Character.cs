@@ -1,48 +1,36 @@
+using Cysharp.Threading.Tasks;
 using Gast.Core.Observables;
 using Gast.Domain.Characters;
 using Gast.Features.Characters;
+using R3;
 using R3.Triggers;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using R3;
-using Cysharp.Threading.Tasks;
 
 namespace Cryst.Infrastructure.Characters
 {
     public class Character : ICharacter
     {
+        readonly CharacterContext context;
+        readonly Dictionary<Type, ICharacterFacet> facets;
+        readonly Signal<ICharacter> destroyedSignal = new();
         GameObject gameObject;
-        readonly CancellationToken destroyCancellationToken;
 
-        public Character(GameObject gameObject)
-        {
-            this.gameObject = gameObject;
-            destroyCancellationToken = gameObject.GetCancellationTokenOnDestroy();
-            destroyCancellationToken.Register(OnDestroy);
-        }
-
-        public void Initialize(
-            CharacterContext context)
-        {
-            this.context = context;
-        }
-
-        public void RegisterFacets(
+        public Character(
+            CharacterContext context,
             Dictionary<Type, ICharacterFacet> facets)
         {
+            this.context = context;
             this.facets = facets;
+            gameObject = context.GameObject;
+            gameObject.OnDestroyAsObservable().Subscribe(_ => OnDestroy());
         }
-
-        Dictionary<Type, ICharacterFacet> facets;
-        CharacterContext context;
-
-        readonly Signal<ICharacter> destroyedSignal = new();
 
         public CharacterId Id => context.CharacaterId;
         public ISignal<ICharacter> Destroyed => destroyedSignal;
-        public CancellationToken CancellationToken => destroyCancellationToken;
+        public CancellationToken CancellationToken => context.CancellationToken;
 
         public bool Is<T>(out T facet) where T : class, ICharacterFacet
         {
