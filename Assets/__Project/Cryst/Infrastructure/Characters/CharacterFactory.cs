@@ -1,6 +1,7 @@
 using Cryst.Domain.Characters;
 using Cryst.Infrastructure.Cameras;
 using Cryst.Infrastructure.Economy;
+using Cryst.Infrastructure.Footsteps;
 using Cryst.Modules.CharacterActions;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Observables;
