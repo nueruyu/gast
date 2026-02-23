@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Gast.Application.AI;
 using Gast.Domain.AI;
 using Gast.Domain.AI.Attributes;
+using Gast.Infrastructure.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

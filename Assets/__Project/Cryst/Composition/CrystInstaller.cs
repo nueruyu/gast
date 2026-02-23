@@ -23,8 +23,8 @@ using Cryst.UI.Hud.Status;
 using Gast.UI.Hud.Objectives;
 using Cryst.UI.Hud.Objectives;
 using Cryst.Infrastructure.UI;
-using Gast.Application.AI;
 using Cryst.Infrastructure.Reflection;
+using Gast.Infrastructure.Reflection;
 
 namespace Cryst.Composition
 {

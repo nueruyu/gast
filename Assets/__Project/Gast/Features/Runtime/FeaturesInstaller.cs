@@ -4,7 +4,6 @@ using Gast.Features.Gameplay;
 using Gast.Features.Gathering;
 using Gast.Features.Inputs;
 using Gast.Features.Interactions;
-using Gast.Features.Characters;
 using Gast.Features.Loot;
 using Gast.Features.Players;
 using Gast.Features.SpawnSites;
@@ -22,7 +21,6 @@ namespace Gast.Features
             // Player
             builder.Register<PlayerAIControlMonitorService>();
             builder.Register<PlayerInteractionFocusService>().AsImplementedInterfaces().AsSelf();
-            builder.Register<CharacterBrainManager>().AsImplementedInterfaces();
             builder.Register<PlayerBrain>();
             builder.Register<PlayerManager>().AsImplementedInterfaces().AsSelf();
 

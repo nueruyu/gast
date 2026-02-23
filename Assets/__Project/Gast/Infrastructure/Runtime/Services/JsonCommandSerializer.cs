@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Gast.Application.AI;
 using Gast.Core.Commands;
+using Gast.Infrastructure.Reflection;
 using Newtonsoft.Json;
 
 namespace Gast.Infrastructure.Services

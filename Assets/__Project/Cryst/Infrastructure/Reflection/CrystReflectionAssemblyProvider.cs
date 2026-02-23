@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
-using Gast.Application.AI;
+using Gast.Infrastructure.Reflection;
 
 namespace Cryst.Infrastructure.Reflection
 {

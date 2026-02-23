@@ -4,13 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Tasks;
-using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using R3;
 
-namespace Gast.Features.Characters
+namespace Gast.Infrastructure.Characters
 {
-    public class CharacterBrainManager : ICharacterBrainManager, ILifecycleTask
+    class CharacterBrainManager : ICharacterBrainManager, ILifecycleTask
     {
         readonly ICharacterRepository characterRepository;
         readonly Dictionary<CharacterId, ICharacterBrain> activeBrains = new();

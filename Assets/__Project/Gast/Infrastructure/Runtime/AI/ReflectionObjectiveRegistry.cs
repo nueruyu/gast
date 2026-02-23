@@ -4,6 +4,7 @@ using System.Reflection;
 using Gast.Application.AI;
 using Gast.Domain.AI;
 using Gast.Domain.AI.Attributes;
+using Gast.Infrastructure.Reflection;
 
 namespace Gast.Infrastructure.AI
 {
