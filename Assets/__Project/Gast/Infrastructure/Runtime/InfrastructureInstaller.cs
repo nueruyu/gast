@@ -29,7 +29,7 @@ namespace Gast.Infrastructure
         {
             // Command & Event System
             builder.Register<CommandDispatcher>().AsImplementedInterfaces();
-            builder.Register<JsonCommandSerializer>().AsImplementedInterfaces();
+            builder.Register<JsonCommandSerializer>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<DomainEventPublisher>().AsImplementedInterfaces();
 
             // AI Server Client / Mock
@@ -66,10 +66,10 @@ namespace Gast.Infrastructure
             builder.Register<AIDebugInitializer>().AsImplementedInterfaces();
 
             // AI Tools & Objectives
-            builder.Register<ReflectionToolRegistry>().As<IToolRegistry>();
-            builder.Register<ReflectionObjectiveRegistry>().As<IObjectiveRegistry>();
-            builder.Register<GoalInstantiator>();
-            builder.Register<PlanConverter>();
+            builder.Register<ReflectionToolRegistry>(Lifetime.Singleton).As<IToolRegistry>();
+            builder.Register<ReflectionObjectiveRegistry>(Lifetime.Singleton).As<IObjectiveRegistry>();
+            builder.Register<GoalInstantiator>(Lifetime.Singleton);
+            builder.Register<PlanConverter>(Lifetime.Singleton);
         }
     }
 }

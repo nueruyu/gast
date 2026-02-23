@@ -23,6 +23,8 @@ using Cryst.UI.Hud.Status;
 using Gast.UI.Hud.Objectives;
 using Cryst.UI.Hud.Objectives;
 using Cryst.Infrastructure.UI;
+using Gast.Application.AI;
+using Cryst.Infrastructure.Reflection;
 
 namespace Cryst.Composition
 {
@@ -36,6 +38,9 @@ namespace Cryst.Composition
         {
             // Settings
             builder.RegisterInstance(meleeAttackEffectSettings);
+
+            // Reflection
+            builder.Register<CrystReflectionAssemblyProvider>().As<IReflectionAssemblyProvider>();
 
             // Character
             builder.Register<CharacterActionFactory>().As<ICharacterActionFactory>();
