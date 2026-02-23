@@ -1,5 +1,7 @@
 using System;
 using Cryst.Domain.Characters;
+using Gast.Domain.Characters;
+using Gast.Domain.Economy;
 using Gast.Domain.Players;
 using Gast.Shared.Observables;
 using R3;
@@ -53,7 +55,8 @@ namespace Cryst.UI.Hud.Status
             CurrentMoney = currentCharacter
                 .Select(character =>
                 {
-                    return character.Wallet.Amount.ToObservable();
+                    var walletHost = character.As<IWalletHost>();
+                    return walletHost.Wallet.Amount.ToObservable();
                 })
                 .Switch()
                 .ToReadOnlyReactiveProperty()

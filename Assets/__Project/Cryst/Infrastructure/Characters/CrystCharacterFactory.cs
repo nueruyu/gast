@@ -1,4 +1,5 @@
 using Cryst.Domain.Characters;
+using Cryst.Infrastructure.Economy;
 using Cryst.Modules.CharacterActions;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Events;
@@ -13,6 +14,7 @@ using Gast.Features.Sensors;
 using Gast.Infrastructure.Characters;
 using Gast.Shared.UnityExtensions;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cryst.Infrastructure.Characters
@@ -51,27 +53,27 @@ namespace Cryst.Infrastructure.Characters
 
                 InitializeContext(context, definition);
 
-                var wallet = new Wallet(definition.InitialMoney);
-                var inventory = new Inventory(definition.SlotCapacity);
-
                 var actionController = CreateActionController(context, definition);
                 character.Initialize(
                     context,
                     definition,
                     actionController,
-                    parameters.Faction,
-                    wallet,
-                    inventory);
+                    parameters.Faction);
 
                 var crystCharacter = new CrystCharacter(
                     character,
                     eventPublisher,
                     brainManager);
 
+                var wallet = new Wallet(definition.InitialMoney);
+                var inventory = new Inventory(definition.SlotCapacity);
+
                 character.RegisterFacets(
                     new()
                     {
-                        { typeof(ICrystCharacter), crystCharacter }
+                        { typeof(ICrystCharacter), crystCharacter },
+                        { typeof(IWalletHost), new WalletHost(wallet) },
+                        { typeof(IInventoryHost), new InventoryHost(inventory) }
                     });
 
                 var host = characterGo.AddComponent<CharacterHost>();

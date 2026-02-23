@@ -1,8 +1,6 @@
 using Gast.Core.Observables;
-using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
 using System.Threading;
-using UnityEngine;
 
 namespace Gast.Domain.Characters
 {
@@ -39,24 +37,15 @@ namespace Gast.Domain.Characters
         /// </summary>
         ICharacterActionController ActionController { get; }
 
-        /// <summary>
-        /// Wallet managing the character's currency.
-        /// </summary>
-        Wallet Wallet { get; }
-
-        /// <summary>
-        /// Inventory managing the character's items.
-        /// </summary>
-        Inventory Inventory { get; }
-
         void Destroy();
 
         /// <summary>
-        /// Gets a specific facet of the character.
+        /// Tries to get a specific facet of the character.
         /// </summary>
         /// <typeparam name="T">The type of the facet to get, which must implement ICharacterFacet.</typeparam>
-        /// <returns>The requested facet instance, or null if not available.</returns>
-        T As<T>() where T : class, ICharacterFacet;
+        /// <param name="facet">The output facet instance if found, otherwise null.</param>
+        /// <returns>True if the facet was found, otherwise false.</returns>
+        bool Is<T>(out T facet) where T : class, ICharacterFacet;
 
         /// <summary>
         /// Resolves a service registered in this character's context container.

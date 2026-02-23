@@ -1,7 +1,5 @@
-using Cysharp.Threading.Tasks;
 using Gast.Core.Observables;
 using Gast.Domain.Characters;
-using Gast.Domain.Economy;
 using Gast.Features.Characters;
 using R3.Triggers;
 using System;
@@ -9,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using R3;
+using Cysharp.Threading.Tasks;
 
 namespace Cryst.Infrastructure.Characters
 {
@@ -30,16 +29,12 @@ namespace Cryst.Infrastructure.Characters
             CharacterContext context,
             ICharacterTypeDefinition typeDefinition,
             CharacterActionController actionController,
-            Faction faction,
-            Wallet wallet,
-            Inventory inventory)
+            Faction faction)
         {
             this.context = context;
             this.typeDefinition = typeDefinition;
             this.actionController = actionController;
             Faction = faction;
-            Wallet = wallet;
-            Inventory = inventory;
         }
 
         public void RegisterFacets(
@@ -58,8 +53,6 @@ namespace Cryst.Infrastructure.Characters
 
         public CharacterId Id => context.CharacaterId;
         public Faction Faction { get; private set; }
-        public Wallet Wallet { get; private set; }
-        public Inventory Inventory { get; private set; }
         public ICharacterTypeDefinition TypeDefinition => typeDefinition;
         public ICharacterActionController ActionController => actionController;
         public ISignal<ICharacter> Destroyed => destroyedSignal;
@@ -70,14 +63,16 @@ namespace Cryst.Infrastructure.Characters
             actionController?.Update();
         }
 
-        public T As<T>() where T : class, ICharacterFacet
+        public bool Is<T>(out T facet) where T : class, ICharacterFacet
         {
-            if (facets.TryGetValue(typeof(T), out var facet))
+            if (facets.TryGetValue(typeof(T), out var untypedFacet))
             {
-                return (T)facet;
+                facet = (T)untypedFacet;
+                return true;
             }
 
-            throw new InvalidOperationException($"No facet registered for type {typeof(T)}");
+            facet = null;
+            return false;
         }
 
         public T Resolve<T>() where T : class => context.Resolve<T>();

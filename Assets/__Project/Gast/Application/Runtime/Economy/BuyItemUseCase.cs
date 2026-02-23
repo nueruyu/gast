@@ -1,6 +1,7 @@
 using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
+using System;
 
 namespace Gast.Application.Economy
 {
@@ -23,8 +24,13 @@ namespace Gast.Application.Economy
             var character = characterRepository.Get(command.BuyerId);
             var itemDefinition = itemRepository.Get(command.ItemId);
 
-            var wallet = character.Wallet;
-            var inventory = character.Inventory;
+            if (!character.Is(out IWalletHost walletHost) || !character.Is(out IInventoryHost inventoryHost))
+            {
+                throw new InvalidOperationException($"Character '{character.Id}' does not support economic actions.");
+            }
+
+            var wallet = walletHost.Wallet;
+            var inventory = inventoryHost.Inventory;
 
             if (!wallet.TrySpend(itemDefinition.Price))
             {
