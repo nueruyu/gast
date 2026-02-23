@@ -50,7 +50,7 @@ namespace Cryst.Infrastructure.Characters
                     characterGo,
                     destroyCancellationToken);
 
-                InitializeContext(context, definition);
+                InitializeContext(context, characterGo, definition);
 
                 var actionController = CreateActionController(context, definition);
 
@@ -69,7 +69,7 @@ namespace Cryst.Infrastructure.Characters
 
                 var wallet = new Wallet(definition.InitialMoney);
                 var inventory = new Inventory(definition.SlotCapacity);
-                var interactor = context.GameObject.RequireComponentInChildren<IInteractor>();
+                var interactor = characterGo.RequireComponentInChildren<IInteractor>();
 
                 var character = new Character(
                     context,
@@ -88,13 +88,13 @@ namespace Cryst.Infrastructure.Characters
                 return character;
             }
 
-            void InitializeContext(CharacterContext context, CharacterTypeDefinition typeDefinition)
+            void InitializeContext(CharacterContext context, GameObject gameObject, CharacterTypeDefinition typeDefinition)
             {
-                var body = context.GameObject.RequireComponentInChildren<CharacterBody>();
-                var visionSensor = context.GameObject.RequireComponentInChildren<ConeVisionSensor>();
-                var navigationProvider = context.GameObject.RequireComponentInChildren<NavMeshNavigator>();
-                var animator = context.GameObject.GetComponentInChildren<CharacterAnimator>();
-                var audio = context.GameObject.RequireComponentInChildren<CharacterAudio>();
+                var body = gameObject.RequireComponentInChildren<CharacterBody>();
+                var visionSensor = gameObject.RequireComponentInChildren<ConeVisionSensor>();
+                var navigationProvider = gameObject.RequireComponentInChildren<NavMeshNavigator>();
+                var animator = gameObject.GetComponentInChildren<CharacterAnimator>();
+                var audio = gameObject.RequireComponentInChildren<CharacterAudio>();
 
                 var visionSettings = typeDefinition.GetExtension<ConeVisionSensorSettings>();
                 visionSensor.ViewAngle = visionSettings.ViewAngle;
@@ -125,7 +125,7 @@ namespace Cryst.Infrastructure.Characters
                 context.Register(movement);
 
                 var footstepSettings = typeDefinition.GetExtension<CharacterFootstepSettings>();
-                new CharacterFootstepHandler(animator, audio, footstepSettings).AddTo(context.GameObject);
+                new CharacterFootstepHandler(animator, audio, footstepSettings).AddTo(gameObject);
             }
 
             CharacterActionController CreateActionController(CharacterContext context, CharacterTypeDefinition definition)

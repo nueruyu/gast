@@ -1,12 +1,9 @@
 using Gast.Core.Observables;
 using Gast.Domain.Characters;
 using Gast.Features.Characters;
-using R3;
-using R3.Triggers;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using UnityEngine;
 
 namespace Cryst.Infrastructure.Characters
 {
@@ -15,7 +12,7 @@ namespace Cryst.Infrastructure.Characters
         readonly CharacterContext context;
         readonly Dictionary<Type, ICharacterFacet> facets;
         readonly Signal<ICharacter> destroyedSignal = new();
-        GameObject gameObject;
+        bool isDestroyed;
 
         public Character(
             CharacterContext context,
@@ -23,8 +20,7 @@ namespace Cryst.Infrastructure.Characters
         {
             this.context = context;
             this.facets = facets;
-            gameObject = context.GameObject;
-            gameObject.OnDestroyAsObservable().Subscribe(_ => OnDestroy());
+            context.CancellationToken.Register(OnDestroy);
         }
 
         public CharacterId Id => context.CharacaterId;
@@ -45,15 +41,14 @@ namespace Cryst.Infrastructure.Characters
 
         public void Destroy()
         {
-            if (gameObject != null)
-            {
-                UnityEngine.Object.Destroy(gameObject);
-                gameObject = null;
-            }
+            if (isDestroyed) return;
+
+            UnityEngine.Object.Destroy(context.GameObject);
         }
 
         void OnDestroy()
         {
+            isDestroyed = true;
             destroyedSignal.Publish(this);
         }
     }
