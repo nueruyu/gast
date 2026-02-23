@@ -1,7 +1,6 @@
 using Cryst.Domain.Characters;
 using Cryst.Infrastructure.Economy;
 using Cryst.Modules.CharacterActions;
-using Cysharp.Threading.Tasks;
 using Gast.Core.Events;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
@@ -13,6 +12,8 @@ using Gast.Features.Navigations;
 using Gast.Features.Sensors;
 using Gast.Infrastructure.Characters;
 using Gast.Shared.UnityExtensions;
+using R3;
+using R3.Triggers;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -54,14 +55,22 @@ namespace Cryst.Infrastructure.Characters
                 InitializeContext(context, definition);
 
                 var actionController = CreateActionController(context, definition);
-                character.Initialize(
-                    context,
-                    definition,
-                    actionController,
-                    parameters.Faction);
+
+                characterGo.UpdateAsObservable().Subscribe(_ => actionController.Update());
+
+                character.Initialize(context);
 
                 var crystCharacter = new CrystCharacter(
                     character,
+                    characterId,
+                    definition,
+                    parameters.Faction,
+                    actionController,
+                    context.Resolve<CharacterStatus>(),
+                    context.Resolve<CharacterActionStateStore>(),
+                    context.Resolve<ICharacterBody>(),
+                    context.Resolve<IVisionSensor>(),
+                    context.Resolve<INavigationProvider>(),
                     eventPublisher,
                     brainManager);
 

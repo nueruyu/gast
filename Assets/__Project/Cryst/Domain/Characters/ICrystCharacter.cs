@@ -1,7 +1,6 @@
 using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
-using Gast.Domain.Interactions;
 using Cryst.Domain.Combat;
 using UnityEngine;
 
@@ -9,7 +8,6 @@ namespace Cryst.Domain.Characters
 {
     public interface ICrystCharacter : ICharacterFacet
     {
-        ICharacter Character { get; }
         CharacterId Id { get; }
         CharacterTypeId TypeId { get; }
         Faction Faction { get; }

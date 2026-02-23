@@ -21,20 +21,12 @@ namespace Cryst.Infrastructure.Characters
             this.gameObject = gameObject;
             destroyCancellationToken = gameObject.GetCancellationTokenOnDestroy();
             destroyCancellationToken.Register(OnDestroy);
-
-            gameObject.UpdateAsObservable().Subscribe(_ => Update());
         }
 
         public void Initialize(
-            CharacterContext context,
-            ICharacterTypeDefinition typeDefinition,
-            CharacterActionController actionController,
-            Faction faction)
+            CharacterContext context)
         {
             this.context = context;
-            this.typeDefinition = typeDefinition;
-            this.actionController = actionController;
-            Faction = faction;
         }
 
         public void RegisterFacets(
@@ -43,25 +35,14 @@ namespace Cryst.Infrastructure.Characters
             this.facets = facets;
         }
 
-        ICharacterTypeDefinition typeDefinition;
         Dictionary<Type, ICharacterFacet> facets;
-
-        CharacterActionController actionController;
         CharacterContext context;
 
         readonly Signal<ICharacter> destroyedSignal = new();
 
         public CharacterId Id => context.CharacaterId;
-        public Faction Faction { get; private set; }
-        public ICharacterTypeDefinition TypeDefinition => typeDefinition;
-        public ICharacterActionController ActionController => actionController;
         public ISignal<ICharacter> Destroyed => destroyedSignal;
         public CancellationToken CancellationToken => destroyCancellationToken;
-
-        void Update()
-        {
-            actionController?.Update();
-        }
 
         public bool Is<T>(out T facet) where T : class, ICharacterFacet
         {

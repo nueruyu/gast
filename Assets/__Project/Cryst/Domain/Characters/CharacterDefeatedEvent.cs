@@ -5,10 +5,10 @@ namespace Cryst.Domain.Characters
 {
     public readonly struct CharacterDefeatedEvent : IDomainEvent
     {
-        public ICrystCharacter DefeatedCharacter { get; }
+        public ICharacter DefeatedCharacter { get; }
         public CharacterId? AttackerId { get; }
 
-        public CharacterDefeatedEvent(ICrystCharacter defeatedCharacter, CharacterId? attackerId)
+        public CharacterDefeatedEvent(ICharacter defeatedCharacter, CharacterId? attackerId)
         {
             DefeatedCharacter = defeatedCharacter;
             AttackerId = attackerId;

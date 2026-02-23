@@ -1,5 +1,4 @@
 using Gast.Core.Observables;
-using Gast.Domain.Interactions;
 using System.Threading;
 
 namespace Gast.Domain.Characters
@@ -16,26 +15,11 @@ namespace Gast.Domain.Characters
         CharacterId Id { get; }
 
         /// <summary>
-        /// The character's faction affiliation.
-        /// </summary>
-        Faction Faction { get; }
-
-        /// <summary>
-        /// The character's type definition data.
-        /// </summary>
-        ICharacterTypeDefinition TypeDefinition { get; }
-
-        /// <summary>
         /// Signal raised when this character is destroyed.
         /// </summary>
         ISignal<ICharacter> Destroyed { get; }
 
         CancellationToken CancellationToken { get; }
-
-        /// <summary>
-        /// Controller for managing the character's actions.
-        /// </summary>
-        ICharacterActionController ActionController { get; }
 
         void Destroy();
 

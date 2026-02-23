@@ -28,7 +28,7 @@ namespace Cryst.Infrastructure.EventHandlers
 
         void OnCharacterDefeated(CharacterDefeatedEvent e)
         {
-            DestroyCharacterAfterDelay(e.DefeatedCharacter.Character).Forget();
+            DestroyCharacterAfterDelay(e.DefeatedCharacter).Forget();
         }
 
         async UniTaskVoid DestroyCharacterAfterDelay(ICharacter character)
