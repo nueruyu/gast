@@ -38,10 +38,8 @@ namespace Cryst.Composition
             builder.RegisterInstance(meleeAttackEffectSettings);
 
             // Character
-            builder.Register<CharacterContextInitializer>().AsImplementedInterfaces();
             builder.Register<CharacterActionFactory>().As<ICharacterActionFactory>();
             builder.Register<CrystCharacterFactory>(Lifetime.Singleton).As<ICharacterFactory>();
-            builder.Register<CrystCharacterFacetFactory>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // Character Actions (Transient)
             builder.Register<AttackAction>(Lifetime.Transient);

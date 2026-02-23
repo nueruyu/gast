@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
   displayName: Blue Soldier
-  statSchema: {fileID: 11400000, guid: d13f3d488c514f0419560625a24e698b, type: 2}
   walkSpeed: 2
   sprintSpeed: 5
   actionSettings:
@@ -27,7 +26,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c716adfd088046244b0b717060e21c3f, type: 2}
   initialMoney: 100
   slotCapacity: 20
-  characterPrefab: {fileID: 3056424131087975470, guid: 0b12064fcc816e540a373842a74f91ce, type: 3}
+  characterPrefab: {fileID: 2658092247619174625, guid: 0b12064fcc816e540a373842a74f91ce, type: 3}
   visualPrefab: {fileID: 673440619213686731, guid: 828f6a163659d8446bf3b75aff6ae945, type: 3}
   lootTable: {fileID: 11400000, guid: 8c7afb30caebeed4f8aebc453db88697, type: 2}
   extensions:

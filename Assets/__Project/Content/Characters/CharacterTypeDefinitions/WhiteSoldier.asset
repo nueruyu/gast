@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: d84ffdeb244f09244a7266fba056d347, type: 2}
   displayName: White Soldier
-  statSchema: {fileID: 11400000, guid: d13f3d488c514f0419560625a24e698b, type: 2}
   walkSpeed: 5
   sprintSpeed: 8
   actionSettings:
@@ -27,7 +26,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c716adfd088046244b0b717060e21c3f, type: 2}
   initialMoney: 100
   slotCapacity: 20
-  characterPrefab: {fileID: 3056424131087975470, guid: 0b12064fcc816e540a373842a74f91ce, type: 3}
+  characterPrefab: {fileID: 2658092247619174625, guid: 0b12064fcc816e540a373842a74f91ce, type: 3}
   visualPrefab: {fileID: 673440619213686731, guid: aaae330b43778ea49ae6c58d0240ba9e, type: 3}
   lootTable: {fileID: 11400000, guid: fc6cc90b2a9c8104b951d1b95e27d22b, type: 2}
   extensions:

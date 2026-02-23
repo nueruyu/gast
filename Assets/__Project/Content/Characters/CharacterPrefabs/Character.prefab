@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7432586591768075266}
   - component: {fileID: 1436732632290512544}
   - component: {fileID: 4710326808882376611}
-  - component: {fileID: 3056424131087975470}
   m_Layer: 6
   m_Name: Character
   m_TagString: Untagged
@@ -78,18 +77,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterBody
   gravity: -50
---- !u!114 &3056424131087975470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2658092247619174625}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad95e424b541b3d43932df06d024b1db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.Character
 --- !u!1 &2859229745262432229
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: 74743be7f3db9d647b1ca2d8167fc767, type: 2}
   displayName: Default Bot
-  statSchema: {fileID: 11400000, guid: d13f3d488c514f0419560625a24e698b, type: 2}
   walkSpeed: 4
   sprintSpeed: 7
   actionSettings:
@@ -27,7 +26,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c716adfd088046244b0b717060e21c3f, type: 2}
   initialMoney: 100
   slotCapacity: 20
-  characterPrefab: {fileID: 3056424131087975470, guid: 0b12064fcc816e540a373842a74f91ce, type: 3}
+  characterPrefab: {fileID: 2658092247619174625, guid: 0b12064fcc816e540a373842a74f91ce, type: 3}
   visualPrefab: {fileID: 4611385902212945303, guid: 83a0f84d8da1cd94aaa2b845714f3889, type: 3}
   lootTable: {fileID: 11400000, guid: 0efcd1b216c7eac4b8e53f9beb6bfb77, type: 2}
   extensions:

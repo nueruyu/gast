@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Events;
 using Gast.Domain.Characters;
+using Gast.Features.Characters;
 using UnityEngine;
 
 namespace Gast.Features.Combat
@@ -33,8 +34,10 @@ namespace Gast.Features.Combat
             if (!initialized)
                 return;
 
-            if (!other.TryGetComponent<ICharacter>(out var character))
+            if (!other.TryGetComponent<CharacterHost>(out var characterHost))
                 return;
+
+            var character = characterHost.Character;
 
             var hitPosition = other.ClosestPoint(transform.position);
             var hitRotation = Quaternion.LookRotation(transform.forward);

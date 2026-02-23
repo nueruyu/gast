@@ -38,7 +38,7 @@ namespace Gast.Infrastructure.Characters
 
         [Header("Prefabs")]
         [SerializeField]
-        Character characterPrefab;
+        GameObject characterPrefab;
 
         [SerializeField]
         GameObject visualPrefab;
@@ -58,7 +58,7 @@ namespace Gast.Infrastructure.Characters
         public IReadOnlyList<CharacterActionSettings> ActionSettings => actionSettings;
         public int InitialMoney => initialMoney;
         public int SlotCapacity => slotCapacity;
-        public Character CharacterPrefab => characterPrefab;
+        public GameObject CharacterPrefab => characterPrefab;
         public GameObject VisualPrefab => visualPrefab;
 
         ILootTable ICharacterTypeDefinition.LootTable => lootTable;
