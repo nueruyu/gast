@@ -11,11 +11,14 @@ namespace Cryst.Domain.Characters
         public ILive<float> Health => health;
 
         public ILive<float> MaxHealth => maxHealth;
+        public ILive<bool> IsAlive { get; }
 
         public CharacterStatus(float maxHealth)
         {
             health = new Live<float>(maxHealth);
             this.maxHealth = new Live<float>(maxHealth);
+
+            IsAlive = health.Select(h => h > 0);
         }
 
         public void SetHealth(float newHealth)

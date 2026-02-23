@@ -26,7 +26,7 @@ namespace Cryst.UI.Hud.Status
             var healthInfo = currentCharacter
                 .Select(character =>
                 {
-                    var status = character.Resolve<CharacterStatus>();
+                    var status = character.As<ICrystCharacter>().Status;
                     return status.Health.ToObservable()
                         .CombineLatest(status.MaxHealth.ToObservable(),
                             (health, maxHealth) => (health, maxHealth));

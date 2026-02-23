@@ -14,12 +14,7 @@ namespace Cryst.Domain.Characters
         ICharacterBody Body { get; }
         IVisionSensor VisionSensor { get; }
         INavigationProvider NavigationProvider { get; }
-
-        ILive<bool> IsAlive { get; }
-        ILive<float> Health { get; }
-        ILive<float> MaxHealth { get; }
-
-        void SetHealth(float newHealth);
+        CharacterStatus Status { get; }
 
         bool IsThreatTo(ICrystCharacter other);
 

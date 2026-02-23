@@ -27,9 +27,7 @@ namespace Cryst.Infrastructure.Characters
 
         public CrystCharacterFactory(
             CharacterTypeRepository typeRepository,
-            ICharacterActionFactory actionFactory,
-            IDomainEventPublisher eventPublisher,
-            ICharacterBrainManager brainManager)
+            ICharacterActionFactory actionFactory)
         {
             factory = Create;
 

@@ -5,7 +5,6 @@ using Gast.Core.Events;
 using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
-using Gast.Domain.Loot;
 using R3;
 using UnityEngine;
 
@@ -43,8 +42,6 @@ namespace Cryst.Infrastructure.Characters
             this.body = body;
             this.visionSensor = visionSensor;
             this.navigationProvider = navigationProvider;
-
-            IsAlive = status.Health.Select(h => h > 0);
         }
 
         public CharacterId Id => id;
@@ -54,18 +51,11 @@ namespace Cryst.Infrastructure.Characters
         public IVisionSensor VisionSensor => visionSensor;
         public INavigationProvider NavigationProvider => navigationProvider;
 
-        public ILive<bool> IsAlive { get; }
-        public ILive<float> Health => status.Health;
-        public ILive<float> MaxHealth => status.MaxHealth;
-
-        public void SetHealth(float newHealth)
-        {
-            status.SetHealth(newHealth);
-        }
+        public CharacterStatus Status => status;
 
         public bool IsThreatTo(ICrystCharacter other)
         {
-            if (!IsAlive.Value)
+            if (!Status.IsAlive.Value)
                 return false;
             if (Faction == other.Faction)
                 return false;
@@ -92,14 +82,14 @@ namespace Cryst.Infrastructure.Characters
 
         public TakeDamageResult TakeDamage(DamageInfo damageInfo)
         {
-            if (!IsAlive.Value)
+            if (!Status.IsAlive.Value)
                 return TakeDamageResult.NoDamage;
 
             Hit(damageInfo);
 
-            SetHealth(Health.Value - damageInfo.Amount);
+            Status.SetHealth(Status.Health.Value - damageInfo.Amount);
 
-            if (Health.Value <= 0)
+            if (Status.Health.Value <= 0)
             {
                 Die();
                 return TakeDamageResult.Defeated;

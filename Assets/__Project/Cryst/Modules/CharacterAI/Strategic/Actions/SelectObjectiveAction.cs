@@ -91,7 +91,7 @@ namespace Cryst.Modules.CharacterAI.Strategic.Actions
         {
             return _characterRepository.GetAll()
                 .Select(c => c.As<ICrystCharacter>())
-                .Where(a => a.TypeId == typeId && a.IsAlive.Value && a.Faction != self.Faction)
+                .Where(a => a.TypeId == typeId && a.Status.IsAlive.Value && a.Faction != self.Faction)
                 .OrderBy(a => Vector3.Distance(self.Body.Position, a.Body.Position))
                 .FirstOrDefault();
         }
