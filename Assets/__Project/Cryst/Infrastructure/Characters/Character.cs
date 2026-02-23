@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using Gast.Core.Observables;
 using Gast.Domain.Characters;
 using Gast.Features.Characters;
@@ -43,10 +42,6 @@ namespace Cryst.Infrastructure.Characters
             facet = null;
             return false;
         }
-
-        public T Resolve<T>() where T : class => context.Resolve<T>();
-
-        public bool TryResolve<T>(out T module) where T : class => context.TryResolve(out module);
 
         public void Destroy()
         {

@@ -30,12 +30,5 @@ namespace Gast.Domain.Characters
         /// <param name="facet">The output facet instance if found, otherwise null.</param>
         /// <returns>True if the facet was found, otherwise false.</returns>
         bool Is<T>(out T facet) where T : class, ICharacterFacet;
-
-        /// <summary>
-        /// Resolves a service registered in this character's context container.
-        /// </summary>
-        T Resolve<T>() where T : class;
-
-        bool TryResolve<T>(out T module) where T : class;
     }
 }

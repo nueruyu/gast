@@ -34,8 +34,8 @@ Transform:
   - {fileID: 2876798242343952380}
   - {fileID: 1448590872584242864}
   - {fileID: 5930895285200414449}
-  - {fileID: 1539993944322489600}
   - {fileID: 4567379418983140700}
+  - {fileID: 1539993944322489600}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &1436732632290512544
@@ -166,6 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ed87706110c1064eba809fedf209a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Gast.Features::Gast.Features.Interactions.Interactor
+  sensor: {fileID: 9041531262141281704}
 --- !u!1 &4172856136449196397
 GameObject:
   m_ObjectHideFlags: 0

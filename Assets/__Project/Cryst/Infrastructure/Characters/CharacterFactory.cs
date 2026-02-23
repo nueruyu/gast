@@ -69,6 +69,7 @@ namespace Cryst.Infrastructure.Characters
 
                 var wallet = new Wallet(definition.InitialMoney);
                 var inventory = new Inventory(definition.SlotCapacity);
+                var interactor = context.GameObject.RequireComponentInChildren<IInteractor>();
 
                 var character = new Character(
                     context,
@@ -78,6 +79,7 @@ namespace Cryst.Infrastructure.Characters
                         { typeof(IWalletHost), new WalletHost(wallet) },
                         { typeof(IInventoryHost), new InventoryHost(inventory) },
                         { typeof(ICameraFocusTarget), new CameraFocusTarget(characterGo.transform) },
+                        { typeof(IInteractor), interactor }
                     });
 
                 var host = characterGo.AddComponent<CharacterHost>();
@@ -91,8 +93,6 @@ namespace Cryst.Infrastructure.Characters
                 var body = context.GameObject.RequireComponentInChildren<CharacterBody>();
                 var visionSensor = context.GameObject.RequireComponentInChildren<ConeVisionSensor>();
                 var navigationProvider = context.GameObject.RequireComponentInChildren<NavMeshNavigator>();
-                var interactionSensor = context.GameObject.RequireComponentInChildren<IInteractionSensor>();
-                var interactor = context.GameObject.RequireComponentInChildren<IInteractor>();
                 var animator = context.GameObject.GetComponentInChildren<CharacterAnimator>();
                 var audio = context.GameObject.RequireComponentInChildren<CharacterAudio>();
 
@@ -110,8 +110,6 @@ namespace Cryst.Infrastructure.Characters
 
                 context.Register<IVisionSensor>(visionSensor);
                 context.Register<INavigationProvider>(navigationProvider);
-                context.Register(interactionSensor);
-                context.Register(interactor);
                 context.Register(body);
                 context.Register(typeof(ICharacterBody), body);
                 context.Register(animator);

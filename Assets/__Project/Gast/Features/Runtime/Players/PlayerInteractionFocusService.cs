@@ -46,13 +46,13 @@ namespace Gast.Features.Players
 
         void UpdateFocus(ICharacter player)
         {
-            if (!player.TryResolve<IInteractionSensor>(out var sensor))
+            if (!player.Is(out IInteractor interactor))
             {
                 focusedInteractable.Value = null;
                 return;
             }
 
-            var candidates = sensor.DetectableInteractables;
+            var candidates = interactor.Sensor.DetectableInteractables;
 
             if (candidates.Count == 0)
             {
