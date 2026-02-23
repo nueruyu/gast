@@ -71,12 +71,12 @@ namespace Cryst.Infrastructure.EventHandlers
             {
                 brainManager.DetachBrain(hitActor.Id);
 
-                var typeDef = typeRepository.Get(hitActor.TypeId);
+                var typeDefinition = typeRepository.Get(hitActor.TypeId);
 
                 eventPublisher.Publish(
                     new CharacterDefeatedEvent(e.HitCharacter, damageInfo.AttackerId));
                 eventPublisher.Publish(
-                    new LootPotentialDropEvent(typeDef.LootTable, hitActor.Body.Position));
+                    new LootPotentialDropEvent(typeDefinition.LootTable, hitActor.Body.Position));
             }
         }
     }

@@ -46,7 +46,6 @@ namespace Cryst.Infrastructure.Characters
                 var destroyCancellationToken = characterGo.GetCancellationTokenOnDestroy();
                 var context = new CharacterContext(
                     characterId,
-                    definition,
                     characterGo,
                     destroyCancellationToken);
 
@@ -108,6 +107,7 @@ namespace Cryst.Infrastructure.Characters
                 var status = new CharacterStatus(statusSettings.InitialMaxHealth);
                 context.Register(status);
 
+                context.Register<ICharacterTypeDefinition>(typeDefinition);
                 context.Register<IVisionSensor>(visionSensor);
                 context.Register<INavigationProvider>(navigationProvider);
                 context.Register(body);

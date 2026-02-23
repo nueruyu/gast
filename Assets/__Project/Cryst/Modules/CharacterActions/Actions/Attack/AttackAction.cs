@@ -1,5 +1,6 @@
 using Cryst.Domain.Combat;
 using Cysharp.Threading.Tasks;
+using Gast.Domain.Characters;
 using Gast.Features.Characters;
 using Gast.Features.Combat;
 using Gast.Shared.Animations;
@@ -18,6 +19,7 @@ namespace Cryst.Modules.CharacterActions
         readonly CharacterAnimator animator;
         readonly CharacterAudio audio;
         readonly CharacterMovement movement;
+        readonly ICharacterTypeDefinition typeDefinition;
         readonly IHitAreaFactory hitAreaFactory;
 
         float startTime;
@@ -33,6 +35,7 @@ namespace Cryst.Modules.CharacterActions
             CharacterAnimator animator,
             CharacterAudio audio,
             CharacterMovement movement,
+            ICharacterTypeDefinition typeDefinition,
             IHitAreaFactory hitAreaFactory)
         {
             this.context = context;
@@ -41,6 +44,7 @@ namespace Cryst.Modules.CharacterActions
             this.animator = animator;
             this.audio = audio;
             this.movement = movement;
+            this.typeDefinition = typeDefinition;
             this.hitAreaFactory = hitAreaFactory;
 
             if (animator)
@@ -107,7 +111,7 @@ namespace Cryst.Modules.CharacterActions
 
         public void Move(Vector3 direction)
         {
-            var speed = context.TypeDefinition.WalkSpeed;
+            var speed = typeDefinition.WalkSpeed;
             movement.Move(direction, speed);
         }
 

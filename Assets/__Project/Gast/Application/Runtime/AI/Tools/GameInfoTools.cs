@@ -33,7 +33,7 @@ namespace Gast.Application.AI.Tools
                 {
                     Id = def.TypeId.ToString(),
                     Name = def.DisplayName,
-                    Loot = def.LootTable?.Entries.Select(entry =>
+                    Loot = def.LootTable.Entries.Select(entry =>
                     {
                         var itemDef = itemRepository.Get(entry.ItemId);
                         return new

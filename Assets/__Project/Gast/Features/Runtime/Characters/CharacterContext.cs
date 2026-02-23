@@ -9,7 +9,6 @@ namespace Gast.Features.Characters
 {
     public record CharacterContext(
         CharacterId CharacaterId,
-        ICharacterTypeDefinition TypeDefinition,
         GameObject GameObject,
         CancellationToken CancellationToken)
     {

@@ -1,3 +1,4 @@
+using Gast.Domain.Characters;
 using Gast.Features.Characters;
 using System;
 using UnityEngine;
@@ -6,24 +7,24 @@ namespace Cryst.Modules.CharacterActions
 {
     public class JumpAction : ICharacterExecutableAction<JumpCommand>
     {
-        readonly CharacterContext context;
         readonly JumpActionSettings settings;
         readonly CharacterBody body;
         readonly CharacterMovement movement;
+        readonly ICharacterTypeDefinition typeDefinition;
 
         public Type CommandType => typeof(JumpCommand);
         public int Priority => 3;
 
         public JumpAction(
-            CharacterContext context,
             JumpActionSettings settings,
             CharacterBody body,
-            CharacterMovement movement)
+            CharacterMovement movement,
+            ICharacterTypeDefinition typeDefinition)
         {
-            this.context = context;
             this.settings = settings;
             this.body = body;
             this.movement = movement;
+            this.typeDefinition = typeDefinition;
         }
 
         public bool CanExecute()
@@ -43,7 +44,7 @@ namespace Cryst.Modules.CharacterActions
 
         public void Move(Vector3 direction)
         {
-            var speed = context.TypeDefinition.WalkSpeed;
+            var speed = typeDefinition.WalkSpeed;
             movement.Move(direction, speed, settings.LookDirectionSpeed);
         }
 

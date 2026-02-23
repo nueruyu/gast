@@ -1,3 +1,4 @@
+using Gast.Domain.Characters;
 using Gast.Features.Characters;
 using System;
 using UnityEngine;
@@ -6,20 +7,20 @@ namespace Cryst.Modules.CharacterActions.Default
 {
     public class DefaultAction : ICharacterAction
     {
-        readonly CharacterContext context;
         readonly CharacterActionStateStore stateStore;
         readonly CharacterMovement movement;
+        readonly ICharacterTypeDefinition typeDefinition;
 
         public int Priority => 0;
 
         public DefaultAction(
-            CharacterContext context,
             CharacterActionStateStore stateStore,
-            CharacterMovement movement)
+            CharacterMovement movement,
+            ICharacterTypeDefinition typeDefinition)
         {
-            this.context = context;
             this.stateStore = stateStore;
             this.movement = movement;
+            this.typeDefinition = typeDefinition;
         }
 
         public bool OnUpdate()
@@ -29,12 +30,10 @@ namespace Cryst.Modules.CharacterActions.Default
 
         public void Move(Vector3 direction)
         {
-            var typeDef = context.TypeDefinition;
-
             float targetSpeed;
             if (direction.sqrMagnitude > 0.01f)
             {
-                targetSpeed = stateStore.IsSprinting ? typeDef.SprintSpeed : typeDef.WalkSpeed;
+                targetSpeed = stateStore.IsSprinting ? typeDefinition.SprintSpeed : typeDefinition.WalkSpeed;
             }
             else
             {
