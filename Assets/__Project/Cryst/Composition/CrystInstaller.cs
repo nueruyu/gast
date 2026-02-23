@@ -39,7 +39,7 @@ namespace Cryst.Composition
 
             // Character
             builder.Register<CharacterActionFactory>().As<ICharacterActionFactory>();
-            builder.Register<CrystCharacterFactory>(Lifetime.Singleton).As<ICharacterFactory>();
+            builder.Register<CharacterFactory>(Lifetime.Singleton).As<ICharacterFactory>();
 
             // Character Actions (Transient)
             builder.Register<AttackAction>(Lifetime.Transient);

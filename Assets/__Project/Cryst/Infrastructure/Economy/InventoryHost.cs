@@ -2,7 +2,7 @@ using Gast.Domain.Economy;
 
 namespace Cryst.Infrastructure.Economy
 {
-    public class InventoryHost : IInventoryHost
+    class InventoryHost : IInventoryHost
     {
         public Inventory Inventory { get; }
 

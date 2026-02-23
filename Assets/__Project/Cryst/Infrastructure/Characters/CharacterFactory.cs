@@ -1,8 +1,8 @@
 using Cryst.Domain.Characters;
+using Cryst.Infrastructure.Cameras;
 using Cryst.Infrastructure.Economy;
 using Cryst.Modules.CharacterActions;
 using Cysharp.Threading.Tasks;
-using Gast.Core.Events;
 using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
@@ -21,11 +21,11 @@ using UnityEngine;
 
 namespace Cryst.Infrastructure.Characters
 {
-    public class CrystCharacterFactory : ICharacterFactory<CharacterCreationParameters>
+    public class CharacterFactory : ICharacterFactory<CharacterCreationParameters>
     {
         readonly Func<Vector3, Quaternion, CharacterCreationParameters, ICharacter> factory;
 
-        public CrystCharacterFactory(
+        public CharacterFactory(
             CharacterTypeRepository typeRepository,
             ICharacterActionFactory actionFactory)
         {
@@ -76,7 +76,8 @@ namespace Cryst.Infrastructure.Characters
                     {
                         { typeof(ICrystCharacter), crystCharacter },
                         { typeof(IWalletHost), new WalletHost(wallet) },
-                        { typeof(IInventoryHost), new InventoryHost(inventory) }
+                        { typeof(IInventoryHost), new InventoryHost(inventory) },
+                        { typeof(ICameraFocusTarget), new CameraFocusTarget(characterGo.transform) },
                     });
 
                 var host = characterGo.AddComponent<CharacterHost>();
@@ -94,7 +95,6 @@ namespace Cryst.Infrastructure.Characters
                 var interactor = context.GameObject.RequireComponentInChildren<IInteractor>();
                 var animator = context.GameObject.GetComponentInChildren<CharacterAnimator>();
                 var audio = context.GameObject.RequireComponentInChildren<CharacterAudio>();
-                var cameraFocusTarget = context.GameObject.RequireComponentInChildren<CameraFocusTarget>();
 
                 var visionSettings = typeDefinition.GetExtension<ConeVisionSensorSettings>();
                 visionSensor.ViewAngle = visionSettings.ViewAngle;
@@ -116,7 +116,6 @@ namespace Cryst.Infrastructure.Characters
                 context.Register(typeof(ICharacterBody), body);
                 context.Register(animator);
                 context.Register(audio);
-                context.Register(cameraFocusTarget);
 
                 var stateStore = new CharacterActionStateStore();
                 var movement = new CharacterMovement(

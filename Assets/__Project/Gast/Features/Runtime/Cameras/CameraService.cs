@@ -1,6 +1,5 @@
 using Gast.Domain.Cameras;
 using Gast.Domain.Characters;
-using Gast.Features.Characters;
 using UnityEngine;
 
 namespace Gast.Features.Cameras
@@ -23,8 +22,8 @@ namespace Gast.Features.Cameras
         public void SetFollowTarget(CharacterId targetCharacterId)
         {
             var character = characterRepository.Get(targetCharacterId);
-            var focusTarget = character.Resolve<CameraFocusTarget>();
-            cameraRegistry.CameraController.SetFollowTarget(focusTarget.transform);
+            var focusTarget = character.As<ICameraFocusTarget>();
+            cameraRegistry.CameraController.SetFollowTarget(focusTarget.FocusTransform);
         }
 
         public void UnsetFollowTarget()

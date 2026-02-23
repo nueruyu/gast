@@ -36,7 +36,6 @@ Transform:
   - {fileID: 5930895285200414449}
   - {fileID: 1539993944322489600}
   - {fileID: 4567379418983140700}
-  - {fileID: 8898747349595584678}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &1436732632290512544
@@ -220,50 +219,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 55
   eyeOffset: {x: 0, y: 1.5, z: 0}
---- !u!1 &4522330325317136574
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8898747349595584678}
-  - component: {fileID: 3793202174442142637}
-  m_Layer: 6
-  m_Name: CameraFocusTarget
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8898747349595584678
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4522330325317136574}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7432586591768075266}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3793202174442142637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4522330325317136574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9c9ed38cb9a275428a948aba8fae870, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Gast.Features::Gast.Features.Cameras.CameraFocusTarget
 --- !u!1 &5072707240867164953
 GameObject:
   m_ObjectHideFlags: 0

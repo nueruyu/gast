@@ -1,4 +1,4 @@
-namespace Gast.Domain.Characters
+namespace Cryst.Domain.Characters
 {
     /// <summary>
     /// Represents a character's faction affiliation.
