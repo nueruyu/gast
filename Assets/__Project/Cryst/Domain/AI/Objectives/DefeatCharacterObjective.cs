@@ -1,8 +1,9 @@
 using Gast.Core.Observables;
+using Gast.Domain.AI;
 using Gast.Domain.AI.Attributes;
 using Gast.Domain.Characters;
 
-namespace Gast.Domain.AI.Objectives
+namespace Cryst.Domain.AI.Objectives
 {
     [AIObjective("DefeatCharacter", "Defeat a specific number of characters of a certain type.")]
     public class DefeatCharacterObjective : IAIObjective

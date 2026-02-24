@@ -25,6 +25,8 @@ using Cryst.UI.Hud.Objectives;
 using Cryst.Infrastructure.UI;
 using Cryst.Infrastructure.Reflection;
 using Gast.Infrastructure.Reflection;
+using Cryst.Infrastructure.AI.Tools;
+using Gast.Application.AI;
 
 namespace Cryst.Composition
 {
@@ -41,6 +43,9 @@ namespace Cryst.Composition
 
             // Reflection
             builder.Register<CrystReflectionAssemblyProvider>().As<IReflectionAssemblyProvider>();
+
+            // AI Tools
+            builder.Register<GameInfoTools>(Lifetime.Singleton).As<IToolSet>();
 
             // Character
             builder.Register<CharacterActionFactory>().As<ICharacterActionFactory>();

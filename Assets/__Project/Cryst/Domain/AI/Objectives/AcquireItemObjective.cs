@@ -1,8 +1,9 @@
 using Gast.Core.Observables;
+using Gast.Domain.AI;
 using Gast.Domain.AI.Attributes;
 using Gast.Domain.Economy;
 
-namespace Gast.Domain.AI.Objectives
+namespace Cryst.Domain.AI.Objectives
 {
     [AIObjective("AcquireItem", "Collect a specific number of items.")]
     public class AcquireItemObjective : IAIObjective

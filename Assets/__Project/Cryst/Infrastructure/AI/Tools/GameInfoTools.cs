@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using Gast.Application.AI;
 using Gast.Application.AI.Attributes;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Domain.Pickups;
 
-namespace Gast.Application.AI.Tools
+namespace Cryst.Infrastructure.AI.Tools
 {
-    public class GameInfoTools
+    public class GameInfoTools : IToolSet
     {
         readonly ICharacterTypeRepository characterTypeRepository;
         readonly IItemRepository itemRepository;

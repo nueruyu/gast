@@ -1,5 +1,5 @@
 using Gast.Application.Economy;
-using Gast.Domain.AI.Objectives;
+using Cryst.Domain.AI.Objectives;
 using Gast.Domain.Economy;
 using Gast.Shared.Observables;
 using Gast.UI.Hud.Objectives;
