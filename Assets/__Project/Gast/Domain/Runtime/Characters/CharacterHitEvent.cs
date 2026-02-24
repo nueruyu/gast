@@ -3,17 +3,17 @@ using UnityEngine;
 
 namespace Gast.Domain.Characters
 {
-    public readonly struct CharacterHitEvent : IDomainEvent
+    public readonly struct CharacterHitEvent<TContext> : IDomainEvent
     {
         public ICharacter HitCharacter { get; }
         public Pose HitPoint { get; }
-        public object Context { get; }
+        public TContext Context { get; }
 
-        public CharacterHitEvent(ICharacter hitCharacter, Pose hitPoint, object context)
+        public CharacterHitEvent(ICharacter hitCharacter, Pose hitPoint, TContext context)
         {
             HitCharacter = hitCharacter;
-            Context = context;
             HitPoint = hitPoint;
+            Context = context;
         }
     }
 }

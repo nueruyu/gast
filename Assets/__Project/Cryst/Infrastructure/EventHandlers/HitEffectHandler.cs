@@ -7,7 +7,6 @@ using Cryst.Domain.Characters;
 using R3;
 using Gast.Domain.Loot;
 using Cryst.Domain.Combat;
-using Gast.Shared.Phantoms;
 using System.Threading;
 
 namespace Cryst.Infrastructure.EventHandlers
@@ -36,33 +35,26 @@ namespace Cryst.Infrastructure.EventHandlers
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            eventSubscriber.Subscribe<CharacterHitEvent>(OnCharacterHit)
+            eventSubscriber.Subscribe<CharacterHitEvent<AttackInfo>>(OnCharacterHit)
                 .AddTo(cancellationToken);
             await UniTask.WaitUntilCanceled(cancellationToken);
         }
 
-        void OnCharacterHit(CharacterHitEvent e)
+        void OnCharacterHit(CharacterHitEvent<AttackInfo> e)
         {
-            if (e.Context is not Phantom context)
-                return;
-
-            if (!context.TryGet(AttackContextKeys.SourceCharacterId, out var attackerId))
-                return;
+            var attackInfo = e.Context;
 
             var hitActor = e.HitCharacter.As<ICrystCharacter>();
-            var attacker = characterRepository.Get(attackerId).As<ICrystCharacter>();
+            var attacker = characterRepository.Get(attackInfo.SourceCharacterId).As<ICrystCharacter>();
 
             if (hitActor.Faction == attacker.Faction)
                 return;
 
-            var damage = context.Get(AttackContextKeys.Damage);
-            var knockback = context.Get(AttackContextKeys.KnockbackForce);
-
             var damageInfo = new DamageInfo(
-                damage,
+                attackInfo.Damage,
                 e.HitPoint,
-                knockback,
-                attackerId
+                attackInfo.KnockbackForce,
+                attackInfo.SourceCharacterId
             );
 
             var result = hitActor.TakeDamage(damageInfo);

@@ -1,6 +1,5 @@
 using System;
 using Cysharp.Threading.Tasks;
-using Gast.Core.Events;
 using Gast.Domain.Characters;
 using Gast.Features.Characters;
 using UnityEngine;
@@ -10,20 +9,17 @@ namespace Gast.Features.HitDetection
     [RequireComponent(typeof(Collider))]
     public class HitArea : MonoBehaviour
     {
-        object context;
         float duration;
-        IDomainEventPublisher eventPublisher;
+        Action<ICharacter, Pose> onHit;
 
         bool initialized;
 
         public void Initialize(
-            object context,
             float duration,
-            IDomainEventPublisher eventPublisher)
+            Action<ICharacter, Pose> onHit)
         {
-            this.context = context;
             this.duration = duration;
-            this.eventPublisher = eventPublisher;
+            this.onHit = onHit;
             initialized = true;
 
             DestroyAfterDelay().Forget();
@@ -43,7 +39,7 @@ namespace Gast.Features.HitDetection
             var hitRotation = Quaternion.LookRotation(transform.forward);
             var hitPoint = new Pose(hitPosition, hitRotation);
 
-            eventPublisher.Publish(new CharacterHitEvent(character, hitPoint, context));
+            onHit?.Invoke(character, hitPoint);
 
             Debug.Log($"[HitArea] Hit: {character.Id}");
         }
@@ -59,11 +55,7 @@ namespace Gast.Features.HitDetection
 
         void OnDestroy()
         {
-            if (context is IDisposable disposableContext)
-            {
-                disposableContext.Dispose();
-            }
-            context = null;
+            onHit = null;
         }
     }
 }

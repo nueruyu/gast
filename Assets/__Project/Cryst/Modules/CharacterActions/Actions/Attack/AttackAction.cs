@@ -4,7 +4,6 @@ using Gast.Domain.Characters;
 using Gast.Features.Characters;
 using Gast.Features.HitDetection;
 using Gast.Shared.Animations;
-using Gast.Shared.Phantoms;
 using System;
 using System.Threading;
 using UnityEngine;
@@ -92,16 +91,16 @@ namespace Cryst.Modules.CharacterActions
             var pose = new Pose(spawnPosition, spawnRotation);
             var knockbackDirection = spawnRotation * Vector3.forward;
 
-            var attackContext = Phantom.Create();
-            attackContext.Set(AttackContextKeys.SourceCharacterId, context.CharacaterId);
-            attackContext.Set(AttackContextKeys.Damage, settings.Damage);
-            attackContext.Set(AttackContextKeys.KnockbackForce, settings.KnockbackForce * knockbackDirection);
+            var attackInfo = new AttackInfo(
+                context.CharacaterId,
+                settings.Damage,
+                settings.KnockbackForce * knockbackDirection);
 
             hitAreaFactory.Create(
                 pose,
                 settings.HitboxSize,
                 settings.DamageAreaDuration,
-                attackContext);
+                attackInfo);
         }
 
         public bool OnUpdate()

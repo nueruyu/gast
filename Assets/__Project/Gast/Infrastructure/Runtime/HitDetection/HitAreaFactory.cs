@@ -1,4 +1,5 @@
 using Gast.Core.Events;
+using Gast.Domain.Characters;
 using Gast.Features.HitDetection;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -16,11 +17,11 @@ namespace Gast.Infrastructure.HitDetection
             this.eventPublisher = eventPublisher;
         }
 
-        public void Create(
+        public void Create<TContext>(
             Pose pose,
             Vector3 size,
             float duration,
-            object context)
+            TContext context)
         {
             var damageArea = Object.Instantiate(
                 settings.HitAreaPrefab,
@@ -30,9 +31,11 @@ namespace Gast.Infrastructure.HitDetection
             damageArea.transform.localScale = size;
 
             damageArea.Initialize(
-                context,
                 duration,
-                eventPublisher);
+                (character, hitPoint) =>
+                {
+                    eventPublisher.Publish(new CharacterHitEvent<TContext>(character, hitPoint, context));
+                });
         }
     }
 }

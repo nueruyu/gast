@@ -4,8 +4,8 @@ using Cysharp.Threading.Tasks;
 using Gast.Core.Events;
 using Gast.Core.Tasks;
 using Gast.Domain.Characters;
-using Gast.Shared.Phantoms;
 using R3;
+using Cryst.Domain.Combat;
 using Cryst.Infrastructure.Feedbacks;
 
 namespace Cryst.Infrastructure.EventHandlers
@@ -28,16 +28,13 @@ namespace Cryst.Infrastructure.EventHandlers
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            eventSubscriber.Subscribe<CharacterHitEvent>(OnCharacterHit)
+            eventSubscriber.Subscribe<CharacterHitEvent<AttackInfo>>(OnCharacterHit)
                 .AddTo(cancellationToken);
             await UniTask.WaitUntilCanceled(cancellationToken);
         }
 
-        void OnCharacterHit(CharacterHitEvent e)
+        void OnCharacterHit(CharacterHitEvent<AttackInfo> e)
         {
-            if (e.Context is not Phantom)
-                return;
-
             var point = e.HitPoint;
 
             feedbackService.PlayHitEffect(
