@@ -3,7 +3,7 @@ using Gast.Application.AIPlanning;
 using Gast.Application.Economy;
 using Gast.Core.DI;
 using Gast.Domain.Characters;
-using Gast.Features.Combat;
+using Gast.Features.HitDetection;
 using Gast.Infrastructure.AI;
 using Gast.Infrastructure.Characters;
 using Gast.Infrastructure.Items;
@@ -11,7 +11,7 @@ using Gast.Infrastructure.Pickups;
 using Gast.Infrastructure.Remoting.AI;
 using Gast.Infrastructure.Services;
 using Gast.Lib.AI.Debugging;
-using Gast.Infrastructure.Combat;
+using Gast.Infrastructure.HitDetection;
 using Gast.Lib.Gaia;
 
 namespace Gast.Infrastructure
@@ -50,7 +50,6 @@ namespace Gast.Infrastructure
             builder.Register<CharacterBrainManager>().AsImplementedInterfaces();
 
             // Combat
-            builder.Register<CombatFeedbackService>();
             builder.Register<HitAreaFactory>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // Economy

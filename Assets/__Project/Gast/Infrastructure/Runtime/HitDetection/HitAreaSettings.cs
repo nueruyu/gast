@@ -1,9 +1,9 @@
-using Gast.Features.Combat;
+using Gast.Features.HitDetection;
 using UnityEngine;
 
-namespace Gast.Infrastructure.Combat
+namespace Gast.Infrastructure.HitDetection
 {
-    [CreateAssetMenu(fileName = "HitAreaSettings", menuName = "Gast/Combat/Hit Area Settings")]
+    [CreateAssetMenu(fileName = "HitAreaSettings", menuName = "Gast/HitDetection/Hit Area Settings")]
     public class HitAreaSettings : ScriptableObject
     {
         [SerializeField]

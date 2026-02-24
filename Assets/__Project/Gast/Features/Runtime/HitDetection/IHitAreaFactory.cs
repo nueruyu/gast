@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gast.Features.Combat
+namespace Gast.Features.HitDetection
 {
     public interface IHitAreaFactory
     {

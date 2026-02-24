@@ -22,7 +22,7 @@ using Gast.Infrastructure.Characters;
 using Gast.Infrastructure.Pickups;
 using Gast.Infrastructure.Items;
 using Gast.Infrastructure.Remoting.AI;
-using Gast.Infrastructure.Combat;
+using Gast.Infrastructure.HitDetection;
 
 namespace Gast.Composition
 {

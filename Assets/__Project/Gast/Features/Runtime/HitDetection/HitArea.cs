@@ -5,7 +5,7 @@ using Gast.Domain.Characters;
 using Gast.Features.Characters;
 using UnityEngine;
 
-namespace Gast.Features.Combat
+namespace Gast.Features.HitDetection
 {
     [RequireComponent(typeof(Collider))]
     public class HitArea : MonoBehaviour

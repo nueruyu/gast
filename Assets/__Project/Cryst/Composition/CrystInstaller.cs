@@ -70,6 +70,9 @@ namespace Cryst.Composition
             // Player
             builder.Register<PlayerCharacterController>().As<IPlayerCharacterController>();
 
+            // Feedbacks
+            builder.Register<CombatFeedbackService>(Lifetime.Singleton);
+
             // Event Handlers
             builder.Register<HitFeedbackHandler>(Lifetime.Singleton).As<ILifecycleTask>();
             builder.Register<HitEffectHandler>(Lifetime.Singleton).As<ILifecycleTask>();

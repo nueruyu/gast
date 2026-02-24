@@ -1,9 +1,9 @@
 using Gast.Core.Events;
-using Gast.Features.Combat;
+using Gast.Features.HitDetection;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Gast.Infrastructure.Combat
+namespace Gast.Infrastructure.HitDetection
 {
     public class HitAreaFactory : IHitAreaFactory
     {

@@ -2,7 +2,7 @@ using Cryst.Domain.Combat;
 using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
 using Gast.Features.Characters;
-using Gast.Features.Combat;
+using Gast.Features.HitDetection;
 using Gast.Shared.Animations;
 using Gast.Shared.Phantoms;
 using System;
