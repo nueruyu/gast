@@ -1,5 +1,4 @@
 using System;
-using Gast.UI.Controls;
 using R3;
 using UnityEngine.UIElements;
 
@@ -10,12 +9,13 @@ namespace Gast.UI.Hud.Objectives
         const string ItemIconName = "ItemIcon";
         const string DescriptionName = "Description";
         const string ProgressTextName = "ProgressText";
+        const string ProgressBarFillName = "ProgressBarFill";
         const string CompletedUssClassName = "objective-item--completed";
 
         readonly VisualElement icon;
         readonly Label description;
         readonly Label progressText;
-        readonly Gauge progressGauge;
+        readonly VisualElement progressBarFill;
 
         public AIObjectiveView(VisualTreeAsset asset)
         {
@@ -23,14 +23,7 @@ namespace Gast.UI.Hud.Objectives
             icon = this.Q<VisualElement>(ItemIconName);
             description = this.Q<Label>(DescriptionName);
             progressText = this.Q<Label>(ProgressTextName);
-
-            var progressContainer = this.Q<VisualElement>("ProgressBarContainer");
-            if (progressContainer != null)
-            {
-                progressGauge = new Gauge();
-                progressGauge.LabelText = "";
-                progressContainer.Add(progressGauge);
-            }
+            progressBarFill = this.Q<VisualElement>(ProgressBarFillName);
         }
 
         public IDisposable Bind(IAIObjectiveViewModel viewModel)
@@ -44,10 +37,10 @@ namespace Gast.UI.Hud.Objectives
                 : null;
             icon.style.display = viewModel.ItemIcon != null ? DisplayStyle.Flex : DisplayStyle.None;
 
-            if (progressGauge != null)
+            if (progressBarFill != null)
             {
                 viewModel.ProgressRatio
-                    .Subscribe(ratio => progressGauge.Value = ratio * progressGauge.MaxValue)
+                    .Subscribe(ratio => progressBarFill.style.width = Length.Percent(ratio * 100f))
                     .AddTo(disposables);
             }
 
