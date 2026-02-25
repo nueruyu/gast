@@ -1,39 +1,25 @@
-using System.Threading;
-using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
 using Gast.Core.Events;
-using Gast.Core.Tasks;
 using Gast.Domain.Characters;
-using R3;
 using Cryst.Domain.Combat;
 using Cryst.Infrastructure.Feedbacks;
+using Cryst.Modules.Characters.Feedbacks;
 
-namespace Cryst.Infrastructure.EventHandlers
+namespace Cryst.Modules.Characters.EventHandlers
 {
-    public class HitFeedbackHandler : ILifecycleTask
+    public class HitFeedbackHandler
     {
-        readonly IDomainEventSubscriber eventSubscriber;
         readonly CombatFeedbackService feedbackService;
         readonly HitFeedbackSettings settings;
 
         public HitFeedbackHandler(
-            IDomainEventSubscriber eventSubscriber,
             CombatFeedbackService feedbackService,
             HitFeedbackSettings settings)
         {
-            this.eventSubscriber = eventSubscriber;
             this.feedbackService = feedbackService;
             this.settings = settings;
         }
 
-        public async Task RunAsync(CancellationToken cancellationToken)
-        {
-            eventSubscriber.Subscribe<CharacterHitEvent<AttackInfo>>(OnCharacterHit)
-                .AddTo(cancellationToken);
-            await UniTask.WaitUntilCanceled(cancellationToken);
-        }
-
-        void OnCharacterHit(CharacterHitEvent<AttackInfo> e)
+        public void Handle(CharacterHitEvent<AttackInfo> e)
         {
             var point = e.HitPoint;
 

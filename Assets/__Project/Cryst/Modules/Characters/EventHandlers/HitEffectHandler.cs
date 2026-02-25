@@ -1,46 +1,31 @@
-using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
-using Gast.Core.Events;
-using Gast.Core.Tasks;
 using Gast.Domain.Characters;
 using Cryst.Domain.Characters;
-using R3;
 using Gast.Domain.Loot;
 using Cryst.Domain.Combat;
-using System.Threading;
+using Gast.Core.Events;
 
-namespace Cryst.Infrastructure.EventHandlers
+namespace Cryst.Modules.Characters.EventHandlers
 {
-    public class HitEffectHandler : ILifecycleTask
+    public class HitEffectHandler
     {
-        readonly IDomainEventSubscriber eventSubscriber;
         readonly IDomainEventPublisher eventPublisher;
         readonly ICharacterRepository characterRepository;
         readonly ICharacterTypeRepository typeRepository;
         readonly ICharacterBrainManager brainManager;
 
         public HitEffectHandler(
-            IDomainEventSubscriber eventSubscriber,
             IDomainEventPublisher eventPublisher,
             ICharacterRepository characterRepository,
             ICharacterTypeRepository typeRepository,
             ICharacterBrainManager brainManager)
         {
-            this.eventSubscriber = eventSubscriber;
             this.eventPublisher = eventPublisher;
             this.characterRepository = characterRepository;
             this.typeRepository = typeRepository;
             this.brainManager = brainManager;
         }
 
-        public async Task RunAsync(CancellationToken cancellationToken)
-        {
-            eventSubscriber.Subscribe<CharacterHitEvent<AttackInfo>>(OnCharacterHit)
-                .AddTo(cancellationToken);
-            await UniTask.WaitUntilCanceled(cancellationToken);
-        }
-
-        void OnCharacterHit(CharacterHitEvent<AttackInfo> e)
+        public void Handle(CharacterHitEvent<AttackInfo> e)
         {
             var attackInfo = e.Context;
 

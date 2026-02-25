@@ -14,8 +14,8 @@ using Cryst.Modules.CharacterAI.Strategic;
 using Gast.Domain.Characters;
 using Gast.Domain.Players;
 using Gast.Core.Tasks;
-using Cryst.Infrastructure.Feedbacks;
-using Cryst.Infrastructure.EventHandlers;
+using Cryst.Modules.Characters.Feedbacks;
+using Cryst.Modules.Characters.EventHandlers;
 using Gast.Features.Characters;
 using Cryst.Modules.CharacterActions;
 using Gast.UI.Hud.Status;
@@ -27,6 +27,8 @@ using Cryst.Infrastructure.Reflection;
 using Gast.Infrastructure.Reflection;
 using Cryst.Infrastructure.AI.Tools;
 using Gast.Application.AI;
+using Cryst.Infrastructure;
+using Cryst.Infrastructure.Feedbacks;
 
 namespace Cryst.Composition
 {
@@ -78,10 +80,11 @@ namespace Cryst.Composition
             // Feedbacks
             builder.Register<CombatFeedbackService>(Lifetime.Singleton);
 
-            // Event Handlers
-            builder.Register<HitFeedbackHandler>(Lifetime.Singleton).As<ILifecycleTask>();
-            builder.Register<HitEffectHandler>(Lifetime.Singleton).As<ILifecycleTask>();
-            builder.Register<CharacterDecompositionHandler>(Lifetime.Singleton).As<ILifecycleTask>();
+            // Event Handling
+            builder.Register<EventBindingRunner>(Lifetime.Singleton).As<ILifecycleTask>();
+            builder.Register<HitFeedbackHandler>(Lifetime.Singleton);
+            builder.Register<HitEffectHandler>(Lifetime.Singleton);
+            builder.Register<CharacterDecompositionHandler>(Lifetime.Singleton);
 
             // Combat AI
             builder.Register<CombatDomain>(Lifetime.Transient);

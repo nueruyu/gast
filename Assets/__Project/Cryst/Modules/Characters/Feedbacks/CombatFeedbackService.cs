@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Cryst.Infrastructure.Feedbacks
+namespace Cryst.Modules.Characters.Feedbacks
 {
     public class CombatFeedbackService
     {
