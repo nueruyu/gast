@@ -1,13 +1,12 @@
+using Cryst.Domain.Combat;
+using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
 using Gast.Features.Characters;
-using Gast.Features.Combat;
-using Cryst.Domain.Characters;
+using Gast.Features.HitDetection;
+using Gast.Shared.Animations;
 using System;
 using System.Threading;
-using Cysharp.Threading.Tasks;
-using R3;
 using UnityEngine;
-using Cryst.Domain.Combat;
 
 namespace Cryst.Modules.CharacterActions
 {
@@ -15,9 +14,12 @@ namespace Cryst.Modules.CharacterActions
     {
         readonly CharacterContext context;
         readonly AttackActionSettings settings;
+        readonly CharacterBody body;
         readonly CharacterAnimator animator;
-        readonly MeleeAttackEffect effect;
+        readonly CharacterAudio audio;
         readonly CharacterMovement movement;
+        readonly ICharacterTypeDefinition typeDefinition;
+        readonly IHitAreaFactory hitAreaFactory;
 
         float startTime;
         float lastAttackTime = float.NegativeInfinity;
@@ -27,17 +29,37 @@ namespace Cryst.Modules.CharacterActions
 
         public AttackAction(
             CharacterContext context,
-            AttackActionSettings settings)
+            AttackActionSettings settings,
+            CharacterBody body,
+            CharacterAnimator animator,
+            CharacterAudio audio,
+            CharacterMovement movement,
+            ICharacterTypeDefinition typeDefinition,
+            IHitAreaFactory hitAreaFactory)
         {
             this.context = context;
             this.settings = settings;
-            animator = context.Resolve<CharacterAnimator>();
-            movement = context.Resolve<CharacterMovement>();
+            this.body = body;
+            this.animator = animator;
+            this.audio = audio;
+            this.movement = movement;
+            this.typeDefinition = typeDefinition;
+            this.hitAreaFactory = hitAreaFactory;
 
-            if (settings.EffectSettings != null)
+            if (animator)
             {
-                effect = settings.EffectSettings.CreateEffect(context);
-                effect.BindEvents().AddTo(context.Body.destroyCancellationToken);
+                animator.AnimationEventReceiver.EventReceived.Subscribe(OnAnimationEvent);
+            }
+        }
+
+        void OnAnimationEvent(string name)
+        {
+            if (name == "WeaponSwing")
+            {
+                var audioSource = audio.AudioSource;
+                audioSource.volume = settings.SfxVolume;
+                audioSource.pitch = 1.0f;
+                audioSource.PlayOneShot(settings.Sfx);
             }
         }
 
@@ -51,7 +73,7 @@ namespace Cryst.Modules.CharacterActions
             startTime = Time.time;
             lastAttackTime = startTime;
 
-            ExecuteAttackAsync(context.Body.destroyCancellationToken).Forget();
+            ExecuteAttackAsync(context.CancellationToken).Forget();
         }
 
         async UniTaskVoid ExecuteAttackAsync(CancellationToken cancellationToken)
@@ -62,64 +84,23 @@ namespace Cryst.Modules.CharacterActions
                 TimeSpan.FromSeconds(settings.AnimationTriggerDelay),
                 cancellationToken: cancellationToken);
 
-            var attackerTransform = context.Body.transform;
-
+            var attackerTransform = body.transform;
             var forward = attackerTransform.forward;
             var spawnPosition = attackerTransform.position + settings.Offset + forward * settings.Range;
             var spawnRotation = attackerTransform.rotation;
+            var pose = new Pose(spawnPosition, spawnRotation);
+            var knockbackDirection = spawnRotation * Vector3.forward;
 
-            var damageArea = UnityEngine.Object.Instantiate(
-                settings.DamageAreaPrefab,
-                spawnPosition,
-                spawnRotation);
-
-            damageArea.transform.localScale = settings.HitboxSize;
-
-            damageArea.Initialize(
-                context.Id,
-                settings.DamageAreaDuration);
-
-            damageArea.Hit
-                .Subscribe(OnAttackHit)
-                .AddTo(damageArea.destroyCancellationToken);
-        }
-
-        void OnAttackHit(DamageHitInfo hit)
-        {
-            effect?.OnHit(hit);
-
-            var hitActor = hit.Character.As<ICrystCharacter>();
-            if (hitActor.Faction == context.Faction)
-                return;
-
-            var point = hit.Point;
-
-            var knockbackDirection = point.rotation * Vector3.forward;
-            var damageInfo = new DamageInfo(
+            var attackInfo = new AttackInfo(
+                context.CharacaterId,
                 settings.Damage,
-                point,
-                settings.KnockbackForce * knockbackDirection,
-                hit.AttackerId
-            );
+                settings.KnockbackForce * knockbackDirection);
 
-            hitActor.Hit(damageInfo);
-
-            if (hitActor.IsAlive.Value)
-            {
-                hitActor.SetHealth(hitActor.Health.Value - damageInfo.Amount);
-
-                if (hitActor.Health.Value <= 0)
-                {
-                    hitActor.Die();
-                    hit.Character.DetachBrain();
-                    context.EventPublisher.Publish(new CharacterDefeatedEvent(hitActor, damageInfo.AttackerId));
-                    context.EventPublisher.Publish(
-                        new LootSpawnEvent(
-                            hit.Character.TypeDefinition.LootTable,
-                            hit.Character.Body.Position));
-                    hit.Character.DespawnAfterDelay().Forget();
-                }
-            }
+            hitAreaFactory.Create(
+                pose,
+                settings.HitboxSize,
+                settings.DamageAreaDuration,
+                attackInfo);
         }
 
         public bool OnUpdate()
@@ -129,7 +110,7 @@ namespace Cryst.Modules.CharacterActions
 
         public void Move(Vector3 direction)
         {
-            var speed = context.TypeDefinition.WalkSpeed;
+            var speed = typeDefinition.WalkSpeed;
             movement.Move(direction, speed);
         }
 

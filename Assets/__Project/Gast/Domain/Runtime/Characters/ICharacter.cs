@@ -1,8 +1,5 @@
 using Gast.Core.Observables;
-using Gast.Domain.AI;
-using Gast.Domain.Economy;
-using Gast.Domain.Interactions;
-using UnityEngine;
+using System.Threading;
 
 namespace Gast.Domain.Characters
 {
@@ -18,76 +15,20 @@ namespace Gast.Domain.Characters
         CharacterId Id { get; }
 
         /// <summary>
-        /// Identifier for this character's type definition.
-        /// </summary>
-        CharacterTypeId TypeId { get; }
-
-        /// <summary>
-        /// Character's generic status container.
-        /// </summary>
-        ICharacterStatus Status { get; }
-
-        /// <summary>
-        /// The character's faction affiliation.
-        /// </summary>
-        Faction Faction { get; }
-
-        /// <summary>
-        /// The character's type definition data.
-        /// </summary>
-        ICharacterTypeDefinition TypeDefinition { get; }
-
-        /// <summary>
-        /// Read-only access to the character's physical state.
-        /// </summary>
-        ICharacterBody Body { get; }
-
-        /// <summary>
         /// Signal raised when this character is destroyed.
         /// </summary>
         ISignal<ICharacter> Destroyed { get; }
 
-        /// <summary>
-        /// Controller for managing the character's actions.
-        /// </summary>
-        ICharacterActionController ActionController { get; }
+        CancellationToken CancellationToken { get; }
+
+        void Destroy();
 
         /// <summary>
-        /// Wallet managing the character's currency.
+        /// Tries to get a specific facet of the character.
         /// </summary>
-        Wallet Wallet { get; }
-
-        /// <summary>
-        /// Inventory managing the character's items.
-        /// </summary>
-        Inventory Inventory { get; }
-
-        IVisionSensor VisionSensor { get; }
-
-        IInteractionSensor InteractionSensor { get; }
-
-        INavigationProvider NavigationProvider { get; }
-
-        /// <summary>
-        /// Attach a brain to this character, detaching any existing brain first.
-        /// </summary>
-        void AttachBrain(ICharacterBrain newBrain);
-
-        /// <summary>
-        /// Detach the current brain from this character.
-        /// </summary>
-        void DetachBrain();
-
-        /// <summary>
-        /// Gets a specific aspect of the character.
-        /// </summary>
-        /// <typeparam name="T">The type of the aspect to get, which must implement ICharacterAspect.</typeparam>
-        /// <returns>The requested aspect instance, or null if not available.</returns>
-        T As<T>() where T : class, ICharacterAspect;
-
-        /// <summary>
-        /// Resolves a service registered in this character's context container.
-        /// </summary>
-        T Resolve<T>() where T : class;
+        /// <typeparam name="T">The type of the facet to get, which must implement ICharacterFacet.</typeparam>
+        /// <param name="facet">The output facet instance if found, otherwise null.</param>
+        /// <returns>True if the facet was found, otherwise false.</returns>
+        bool Is<T>(out T facet) where T : class, ICharacterFacet;
     }
 }

@@ -26,10 +26,5 @@ namespace Cryst.Modules.CharacterActions
         public float MaxSpeed => maxSpeed;
         public AnimationCurve SpeedCurve => speedCurve;
         public float LookDirectionSpeed => lookDirectionSpeed;
-
-        public override ICharacterAction CreateAction(CharacterContext context)
-        {
-            return new DashAction(context, this);
-        }
     }
 }

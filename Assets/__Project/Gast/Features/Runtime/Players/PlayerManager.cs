@@ -14,23 +14,25 @@ namespace Gast.Features.Players
     public class PlayerManager : IPlayerManager
     {
         readonly PlayerBrain playerBrain;
-        readonly ICharacterActorRepository characterActorRepository;
-        readonly Live<Character> currentCharacter = new(null);
+        readonly ICharacterRepository characterRepository;
+        readonly ICharacterBrainManager brainManager;
+        readonly Live<ICharacter> currentCharacter = new(null);
         readonly Live<ICharacterAIBrain> currentAIBrain = new(null);
 
         public PlayerManager(
             PlayerBrain playerBrain,
-            ICharacterActorRepository characterActorRepository)
+            ICharacterRepository characterRepository,
+            ICharacterBrainManager brainManager)
         {
             this.playerBrain = playerBrain;
-            this.characterActorRepository = characterActorRepository;
-            CurrentCharacter = currentCharacter.Cast<Character, ICharacter>();
+            this.characterRepository = characterRepository;
+            this.brainManager = brainManager;
         }
 
         /// <summary>
         /// Observable property for the character currently possessed by the player.
         /// </summary>
-        public ILive<ICharacter> CurrentCharacter { get; }
+        public ILive<ICharacter> CurrentCharacter => currentCharacter;
 
         public ILive<ICharacterAIBrain> CurrentAIBrain => currentAIBrain;
 
@@ -42,8 +44,8 @@ namespace Gast.Features.Players
         {
             Unpossess();
 
-            var character = characterActorRepository.Get(characterId);
-            character.AttachBrain(playerBrain);
+            var character = characterRepository.Get(characterId);
+            brainManager.AttachBrain(character.Id, playerBrain);
             currentCharacter.Value = character;
 
             Debug.Log($"PlayerManager: Possessed {character}");
@@ -56,7 +58,7 @@ namespace Gast.Features.Players
         {
             if (currentCharacter.Value != null)
             {
-                currentCharacter.Value.DetachBrain();
+                brainManager.DetachBrain(currentCharacter.Value.Id);
                 currentCharacter.Value = null;
             }
 
@@ -75,7 +77,7 @@ namespace Gast.Features.Players
                 return false;
             }
 
-            currentCharacter.Value.AttachBrain(aiBrain);
+            brainManager.AttachBrain(currentCharacter.Value.Id, aiBrain);
             currentAIBrain.Value = aiBrain;
 
             Debug.Log($"PlayerManager: AI took over control of {currentCharacter.Value}");
@@ -93,7 +95,7 @@ namespace Gast.Features.Players
                 return false;
             }
 
-            currentCharacter.Value.AttachBrain(playerBrain);
+            brainManager.AttachBrain(currentCharacter.Value.Id, playerBrain);
             currentAIBrain.Value = null;
 
             Debug.Log($"PlayerManager: Restored player control of {currentCharacter.Value}");

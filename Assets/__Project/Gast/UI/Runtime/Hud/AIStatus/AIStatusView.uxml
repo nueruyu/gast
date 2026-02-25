@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" class="ai-status">
+    <Style src="AIStatusView.uss"/>
+    <ui:Label text="AI ACTIVE" class="ai-status__label"/>
+    <ui:Button name="StopAiButton" text="STOP AI" class="ai-status__stop-button" picking-mode="Position"/>
+</ui:UXML>

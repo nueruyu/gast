@@ -1,5 +1,4 @@
 using Gast.Features.Characters;
-using Gast.Features.Combat;
 using UnityEngine;
 
 namespace Cryst.Modules.CharacterActions
@@ -15,9 +14,6 @@ namespace Cryst.Modules.CharacterActions
         float duration = 0.6f;
 
         [Header("Damage Area")]
-        [SerializeField]
-        DamageArea damageAreaPrefab;
-
         [SerializeField]
         float damageAreaDuration = 0.3f;
 
@@ -40,13 +36,15 @@ namespace Cryst.Modules.CharacterActions
         [SerializeField]
         float knockbackForce = 5f;
 
-        [Header("Effects")]
+        [Header("Feedback")]
         [SerializeField]
-        MeleeAttackEffectSettings effectSettings;
+        AudioClip sfx;
+
+        [SerializeField]
+        float sfxVolume = 1.0f;
 
         public float Cooldown => cooldown;
         public float Duration => duration;
-        public DamageArea DamageAreaPrefab => damageAreaPrefab;
         public float DamageAreaDuration => damageAreaDuration;
         public float Range => range;
         public Vector3 Offset => offset;
@@ -54,11 +52,7 @@ namespace Cryst.Modules.CharacterActions
         public float AnimationTriggerDelay => animationTriggerDelay;
         public float Damage => damage;
         public float KnockbackForce => knockbackForce;
-        public MeleeAttackEffectSettings EffectSettings => effectSettings;
-
-        public override ICharacterAction CreateAction(CharacterContext context)
-        {
-            return new AttackAction(context, this);
-        }
+        public AudioClip Sfx => sfx;
+        public float SfxVolume => sfxVolume;
     }
 }

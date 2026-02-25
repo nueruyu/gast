@@ -8,17 +8,15 @@ namespace Gast.Application.Characters
     [Serializable]
     public readonly struct CreateNpcCommand : ICommand<ICharacter>
     {
-        public CharacterTypeId TypeId { get; }
+        public ICharacterCreationParameters Parameters { get; }
         public Vector3 Position { get; }
         public Quaternion Rotation { get; }
-        public Faction Faction { get; }
 
-        public CreateNpcCommand(CharacterTypeId typeId, Vector3 position, Quaternion rotation, Faction faction)
+        public CreateNpcCommand(ICharacterCreationParameters parameters, Vector3 position, Quaternion rotation)
         {
-            TypeId = typeId;
+            Parameters = parameters;
             Position = position;
             Rotation = rotation;
-            Faction = faction;
         }
     }
 }

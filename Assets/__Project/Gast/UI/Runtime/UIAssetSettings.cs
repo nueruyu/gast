@@ -18,6 +18,26 @@ namespace Gast.UI
 
         public VisualTreeAsset GameHudView => gameHudView;
 
+        [SerializeField]
+        VisualTreeAsset playerStatusView;
+
+        public VisualTreeAsset PlayerStatusView => playerStatusView;
+
+        [SerializeField]
+        VisualTreeAsset inventoryView;
+
+        public VisualTreeAsset InventoryView => inventoryView;
+
+        [SerializeField]
+        VisualTreeAsset aiStatusView;
+
+        public VisualTreeAsset AIStatusView => aiStatusView;
+
+        [SerializeField]
+        VisualTreeAsset aiObjectivesView;
+
+        public VisualTreeAsset AIObjectivesView => aiObjectivesView;
+
         [Header("Menu")]
         [SerializeField]
         VisualTreeAsset menuView;
@@ -38,13 +58,14 @@ namespace Gast.UI
 
         [Header("HUD Objectives")]
         [SerializeField]
-        VisualTreeAsset acquireItemObjectiveView;
+        VisualTreeAsset aiObjectiveView;
 
-        public VisualTreeAsset AcquireItemObjectiveView => acquireItemObjectiveView;
+        public VisualTreeAsset AIObjectiveView => aiObjectiveView;
 
+        [Header("Theme")]
         [SerializeField]
-        VisualTreeAsset defeatCharacterObjectiveView;
+        ThemeStyleSheet themeStyleSheet;
 
-        public VisualTreeAsset DefeatCharacterObjectiveView => defeatCharacterObjectiveView;
+        public ThemeStyleSheet ThemeStyleSheet => themeStyleSheet;
     }
 }

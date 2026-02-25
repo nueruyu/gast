@@ -1,27 +1,20 @@
 using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
-using Gast.Domain.Interactions;
 using Cryst.Domain.Combat;
 using UnityEngine;
 
 namespace Cryst.Domain.Characters
 {
-    public interface ICrystCharacter : ICharacterAspect
+    public interface ICrystCharacter : ICharacterFacet
     {
         CharacterId Id { get; }
         CharacterTypeId TypeId { get; }
         Faction Faction { get; }
         ICharacterBody Body { get; }
         IVisionSensor VisionSensor { get; }
-        IInteractionSensor InteractionSensor { get; }
         INavigationProvider NavigationProvider { get; }
-
-        ILive<bool> IsAlive { get; }
-        ILive<float> Health { get; }
-        ILive<float> MaxHealth { get; }
-
-        void SetHealth(float newHealth);
+        CharacterStatus Status { get; }
 
         bool IsThreatTo(ICrystCharacter other);
 
@@ -43,8 +36,6 @@ namespace Cryst.Domain.Characters
 
         void Jump();
 
-        void Hit(DamageInfo damageInfo);
-
-        void Die();
+        TakeDamageResult TakeDamage(DamageInfo damageInfo);
     }
 }

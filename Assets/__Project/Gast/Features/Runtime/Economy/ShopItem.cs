@@ -37,7 +37,7 @@ namespace Gast.Features.Economy
             interactable.Config.Prompt = interactionPrompt;
         }
 
-        void OnInteract(Character interactor)
+        void OnInteract(ICharacter interactor)
         {
             buy.Publish(interactor.Id);
         }

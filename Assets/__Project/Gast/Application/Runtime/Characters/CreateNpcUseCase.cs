@@ -12,23 +12,27 @@ namespace Gast.Application.Characters
     {
         readonly SpawnCharacterUseCase spawnCharacterUseCase;
         readonly ICharacterAIBrainFactory brainFactory;
+        readonly ICharacterBrainManager brainManager;
 
-        public CreateNpcUseCase(SpawnCharacterUseCase spawnCharacterUseCase, ICharacterAIBrainFactory brainFactory)
+        public CreateNpcUseCase(
+            SpawnCharacterUseCase spawnCharacterUseCase,
+            ICharacterAIBrainFactory brainFactory,
+            ICharacterBrainManager brainManager)
         {
             this.spawnCharacterUseCase = spawnCharacterUseCase;
             this.brainFactory = brainFactory;
+            this.brainManager = brainManager;
         }
 
         public ICharacter Execute(in CreateNpcCommand command)
         {
             var character = spawnCharacterUseCase.Execute(
-                command.TypeId,
                 command.Position,
                 command.Rotation,
-                command.Faction);
+                command.Parameters);
 
             var brain = brainFactory.Create();
-            character.AttachBrain(brain);
+            brainManager.AttachBrain(character.Id, brain);
             return character;
         }
     }

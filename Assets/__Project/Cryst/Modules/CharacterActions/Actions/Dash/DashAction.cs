@@ -6,8 +6,8 @@ namespace Cryst.Modules.CharacterActions
 {
     public class DashAction : ICharacterExecutableAction<DashCommand>
     {
-        readonly CharacterContext context;
         readonly DashActionSettings settings;
+        readonly CharacterBody body;
         readonly CharacterAnimator animator;
 
         float startTime;
@@ -18,12 +18,13 @@ namespace Cryst.Modules.CharacterActions
         public int Priority => 10;
 
         public DashAction(
-            CharacterContext context,
-            DashActionSettings settings)
+            DashActionSettings settings,
+            CharacterBody body,
+            CharacterAnimator animator)
         {
-            this.context = context;
             this.settings = settings;
-            animator = context.Resolve<CharacterAnimator>();
+            this.body = body;
+            this.animator = animator;
         }
 
         public bool CanExecute()
@@ -36,7 +37,6 @@ namespace Cryst.Modules.CharacterActions
             startTime = Time.time;
             lastDashTime = startTime;
 
-            var body = context.Body;
             body.IsInputMovementEnabled = false;
 
             dashDirection = body.Forward;
@@ -55,7 +55,6 @@ namespace Cryst.Modules.CharacterActions
                 return false;
             }
 
-            var body = context.Body;
             float speedEval = settings.SpeedCurve.Evaluate(progress);
             body.SetForcedVelocity(dashDirection * (settings.MaxSpeed * speedEval));
             body.SetLookDirection(dashDirection, settings.LookDirectionSpeed);
@@ -69,7 +68,7 @@ namespace Cryst.Modules.CharacterActions
 
         public void OnEnd()
         {
-            context.Body.IsInputMovementEnabled = true;
+            body.IsInputMovementEnabled = true;
         }
     }
 }

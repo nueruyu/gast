@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" class="objective-item">
+    <Style src="AIObjectiveView.uss" />
+    <ui:VisualElement class="objective-item__content">
+        <ui:VisualElement name="ItemIcon" class="objective-item__icon" />
+        <ui:VisualElement class="objective-item__details">
+            <ui:Label name="Description" class="objective-item__description" text="Objective Description"/>
+            <ui:VisualElement class="objective-item__progress-bar">
+                <ui:VisualElement name="ProgressBarFill" class="objective-item__progress-bar-fill" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Label name="ProgressText" class="objective-item__progress-text" text="0 / 5"/>
+    </ui:VisualElement>
+</ui:UXML>

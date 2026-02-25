@@ -14,10 +14,5 @@ namespace Cryst.Modules.CharacterActions
 
         public float Duration => duration;
         public float KnockbackFriction => knockbackFriction;
-
-        public override ICharacterAction CreateAction(CharacterContext context)
-        {
-            return new HitAction(context, this);
-        }
     }
 }

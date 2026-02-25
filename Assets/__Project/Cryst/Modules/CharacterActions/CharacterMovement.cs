@@ -12,13 +12,13 @@ namespace Cryst.Modules.CharacterActions
     {
         readonly CharacterAnimator animator;
         readonly CharacterBody body;
-        readonly ICharacterTypeDefinition typeDef;
+        readonly ICharacterTypeDefinition typeDefinition;
 
-        public CharacterMovement(CharacterAnimator animator, CharacterBody body, ICharacterTypeDefinition typeDef)
+        public CharacterMovement(CharacterAnimator animator, CharacterBody body, ICharacterTypeDefinition typeDefinition)
         {
             this.animator = animator;
             this.body = body;
-            this.typeDef = typeDef;
+            this.typeDefinition = typeDefinition;
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Cryst.Modules.CharacterActions
                 body.SetInputVelocity(Vector3.zero);
             }
 
-            var normalizedSpeed = targetSpeed / typeDef.SprintSpeed;
+            var normalizedSpeed = targetSpeed / typeDefinition.SprintSpeed;
             if (animator)
             {
                 animator.SetMoveSpeed(normalizedSpeed);

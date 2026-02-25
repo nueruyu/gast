@@ -22,10 +22,9 @@ namespace Gast.Application.Characters
         public ICharacter Execute(in CreatePlayerCommand command)
         {
             var character = spawnCharacterUseCase.Execute(
-                command.TypeId,
                 command.Position,
                 command.Rotation,
-                Faction.Ally);
+                command.Parameters);
 
             playerManager.Possess(character.Id);
             return character;

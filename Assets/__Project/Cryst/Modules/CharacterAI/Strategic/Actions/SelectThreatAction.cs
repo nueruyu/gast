@@ -4,6 +4,7 @@ using Cryst.Domain.Characters;
 using System;
 using System.Linq;
 using UnityEngine;
+using Gast.Domain.Characters;
 
 namespace Cryst.Modules.CharacterAI.Strategic.Actions
 {

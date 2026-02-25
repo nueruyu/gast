@@ -2577,18 +2577,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gast.Systems.SpawnSites::Gast.Systems.SpawnSites.SpawnSiteAnchor
   entries:
-  - characterTypeReference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
+  - creationParameters: {fileID: 11400000, guid: 33b3ad5f8d4cf6d4b986721acebcd23e, type: 2}
     localPosition: {x: 1.98, y: 0, z: 1}
     localRotationEuler: {x: 0, y: 0, z: 0}
-    faction: 3
-  - characterTypeReference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
+  - creationParameters: {fileID: 11400000, guid: 29952189894572044bb56b71092c11e4, type: 2}
     localPosition: {x: 1.12, y: 0, z: -1.64}
     localRotationEuler: {x: 0, y: 0, z: 0}
-    faction: 3
-  - characterTypeReference: {fileID: 11400000, guid: d84ffdeb244f09244a7266fba056d347, type: 2}
+  - creationParameters: {fileID: 11400000, guid: 29952189894572044bb56b71092c11e4, type: 2}
     localPosition: {x: -1.8, y: 0, z: 1}
     localRotationEuler: {x: 0, y: 0, z: 0}
-    faction: 3
   respawnCooldown: 10
 --- !u!1 &2080562600
 GameObject:
@@ -2630,6 +2627,7 @@ MonoBehaviour:
   itemDatabase: {fileID: 11400000, guid: a794ce9d766cf5743b1888538e212679, type: 2}
   gaiaServerSettings: {fileID: 11400000, guid: 223e8fcea14aac9429172af88416417c, type: 2}
   mockAIPlanningSettings: {fileID: 11400000, guid: 089904e82d149c6459e8caf3bbf99939, type: 2}
+  damageAreaSettings: {fileID: 11400000, guid: 2ab693018a44543469d9edba50b140ce, type: 2}
   uiAssetSettings: {fileID: 11400000, guid: 61e925689a3c27344b0af979a9ee3ccd, type: 2}
   cameraRegistry: {fileID: 313278518}
   mainUIDocument: {fileID: 1838398461}
@@ -2746,10 +2744,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gast.Systems.SpawnSites::Gast.Systems.SpawnSites.SpawnSiteAnchor
   entries:
-  - characterTypeReference: {fileID: 11400000, guid: d84ffdeb244f09244a7266fba056d347, type: 2}
+  - creationParameters: {fileID: 11400000, guid: 33b3ad5f8d4cf6d4b986721acebcd23e, type: 2}
     localPosition: {x: 1.98, y: 0, z: 1}
     localRotationEuler: {x: 0, y: 0, z: 0}
-    faction: 3
   respawnCooldown: 10
 --- !u!4 &2084794415
 Transform:

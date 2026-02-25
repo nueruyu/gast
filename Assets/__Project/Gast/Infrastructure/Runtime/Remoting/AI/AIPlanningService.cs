@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Gast.Application.AI;
-using Gast.Application.AI.Tools;
 using Gast.Application.AIPlanning;
 using Gast.Lib.Gaia;
 using Gast.Lib.Gaia.Dto;
@@ -22,15 +21,12 @@ namespace Gast.Infrastructure.Remoting.AI
             IGaiaPlanningClient gaiaClient,
             IToolRegistry toolRegistry,
             IObjectiveRegistry objectiveRegistry,
-            GameInfoTools gameInfoTools,
             PlanConverter planConverter)
         {
             this.gaiaClient = gaiaClient;
             this.toolRegistry = toolRegistry;
             this.objectiveRegistry = objectiveRegistry;
             this.planConverter = planConverter;
-
-            this.toolRegistry.RegisterToolSet(gameInfoTools);
         }
 
         public async Task<AIPlanningResult> GetObjectivesAsync(string instruction, CancellationToken cancellationToken)

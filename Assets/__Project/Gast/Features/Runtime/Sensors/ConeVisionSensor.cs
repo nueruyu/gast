@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Gast.Domain.Characters;
+using Gast.Features.Characters;
 using Gast.Shared.UnityExtensions;
 using UnityEngine;
 
@@ -25,7 +26,7 @@ namespace Gast.Features.Sensors
         readonly List<ICharacter> visibleCharacters = new();
         readonly Collider[] overlapBuffer = new Collider[32];
 
-        ICharacter self;
+        CharacterHost self;
 
         public IReadOnlyList<ICharacter> VisibleCharacters => visibleCharacters;
         public Vector3 EyePosition => transform.position + eyeOffset;
@@ -50,7 +51,7 @@ namespace Gast.Features.Sensors
 
         void Start()
         {
-            self = this.RequireComponentInParent<ICharacter>();
+            self = this.RequireComponentInParent<CharacterHost>();
         }
 
         void FixedUpdate()
@@ -67,11 +68,13 @@ namespace Gast.Features.Sensors
                 if (target == transform)
                     continue;
 
-                if (!target.TryGetComponent<ICharacter>(out var character))
+                if (!target.TryGetComponent<CharacterHost>(out var otherHost))
                     continue;
 
-                if (character == self)
+                if (otherHost == self)
                     continue;
+
+                var otherCharacter = otherHost.Character;
 
                 var dirToTarget = (target.position - eyePos).normalized;
                 var angleToTarget = Vector3.Angle(transform.forward, dirToTarget);
@@ -82,7 +85,7 @@ namespace Gast.Features.Sensors
                 if (Physics.Raycast(eyePos, dirToTarget, distToTarget, obstacleMask))
                     continue;
 
-                visibleCharacters.Add(character);
+                visibleCharacters.Add(otherCharacter);
             }
         }
 

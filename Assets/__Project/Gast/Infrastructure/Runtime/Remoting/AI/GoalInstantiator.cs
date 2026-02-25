@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Gast.Domain.AI;
 using Gast.Domain.AI.Attributes;
+using Gast.Infrastructure.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -15,18 +16,18 @@ namespace Gast.Infrastructure.Remoting.AI
         readonly Dictionary<string, Type> goalTypeMap = new();
         readonly JsonSerializer jsonSerializer;
 
-        public GoalInstantiator()
+        public GoalInstantiator(IReflectionAssemblyProvider assemblyProvider)
         {
-            CacheGoalTypes();
+            CacheGoalTypes(assemblyProvider.GetAssemblies());
 
             jsonSerializer = new JsonSerializer();
             jsonSerializer.Converters.Add(new DomainValueObjectConverter());
         }
 
-        void CacheGoalTypes()
+        void CacheGoalTypes(IEnumerable<Assembly> assembliesToScan)
         {
-            var assembly = typeof(IAIObjective).Assembly;
-            var goalTypes = assembly.GetTypes()
+            var goalTypes = assembliesToScan
+                .SelectMany(assembly => assembly.GetTypes())
                 .Where(t => typeof(IAIObjective).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
             foreach (var type in goalTypes)

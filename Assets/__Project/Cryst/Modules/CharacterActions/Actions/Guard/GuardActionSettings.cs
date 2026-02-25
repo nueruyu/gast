@@ -14,10 +14,5 @@ namespace Cryst.Modules.CharacterActions
 
         public float MoveSpeedPenalty => moveSpeedPenalty;
         public float LookDirectionSpeed => lookDirectionSpeed;
-
-        public override ICharacterAction CreateAction(CharacterContext context)
-        {
-            return new GuardAction(context, this);
-        }
     }
 }

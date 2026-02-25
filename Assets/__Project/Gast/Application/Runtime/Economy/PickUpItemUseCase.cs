@@ -2,6 +2,7 @@ using Gast.Core.Commands;
 using Gast.Core.Events;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
+using System;
 
 namespace Gast.Application.Economy
 {
@@ -26,7 +27,12 @@ namespace Gast.Application.Economy
             var character = characterRepository.Get(command.PickerId);
             var itemDefinition = itemRepository.Get(command.ItemId);
 
-            var addedCount = character.Inventory.AddItem(itemDefinition, command.Quantity);
+            if (!character.Is(out IInventoryHost inventoryHost))
+            {
+                throw new InvalidOperationException($"Character '{character.Id}' does not support inventory actions.");
+            }
+
+            var addedCount = inventoryHost.Inventory.AddItem(itemDefinition, command.Quantity);
 
             if (addedCount > 0)
             {

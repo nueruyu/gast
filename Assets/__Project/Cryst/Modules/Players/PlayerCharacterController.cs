@@ -21,7 +21,6 @@ namespace Cryst.Modules.Players
         public void HandleInput(ICharacter character)
         {
             var actor = character.As<ICrystCharacter>();
-            if (actor == null) return;
 
             var inputMove = inputProvider.Move;
             var moveDirection = CalculateMoveDirection(inputMove, cameraService, actor);

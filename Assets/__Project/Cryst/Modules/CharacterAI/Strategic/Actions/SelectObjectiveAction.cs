@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gast.Domain.AI;
-using Gast.Domain.AI.Objectives;
+using Cryst.Domain.AI.Objectives;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Domain.Pickups;
@@ -91,7 +91,7 @@ namespace Cryst.Modules.CharacterAI.Strategic.Actions
         {
             return _characterRepository.GetAll()
                 .Select(c => c.As<ICrystCharacter>())
-                .Where(a => a.TypeId == typeId && a.IsAlive.Value && a.Faction != self.Faction)
+                .Where(a => a.TypeId == typeId && a.Status.IsAlive.Value && a.Faction != self.Faction)
                 .OrderBy(a => Vector3.Distance(self.Body.Position, a.Body.Position))
                 .FirstOrDefault();
         }

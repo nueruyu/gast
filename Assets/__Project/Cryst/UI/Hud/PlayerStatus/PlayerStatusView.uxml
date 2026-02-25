@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" class="player-status">
+    <Style src="PlayerStatusView.uss" />
+    <ui:VisualElement name="HpContainer" class="player-status__hp-container" >
+        <Gast.UI.Controls.Gauge label-text="100/100" name="HpGauge"/>
+    </ui:VisualElement>
+    <ui:Label name="MoneyLabel" text="000G" class="player-status__money-label"/>
+</ui:UXML>

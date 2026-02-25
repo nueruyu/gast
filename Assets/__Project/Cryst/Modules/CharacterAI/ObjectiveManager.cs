@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gast.Domain.AI;
-using Gast.Domain.AI.Objectives;
+using Cryst.Domain.AI.Objectives;
 using Gast.Core.Events;
 using Gast.Domain.Characters;
 using R3;
@@ -44,7 +44,7 @@ namespace Cryst.Modules.CharacterAI
                 foreach (var goal in currentObjectives.OfType<DefeatCharacterObjective>())
                 {
                     if (e.AttackerId == characterId &&
-                        goal.TargetTypeId == e.DefeatedCharacter.TypeId)
+                        goal.TargetTypeId == e.DefeatedCharacter.As<ICrystCharacter>().TypeId)
                     {
                         goal.IncrementCount();
                     }

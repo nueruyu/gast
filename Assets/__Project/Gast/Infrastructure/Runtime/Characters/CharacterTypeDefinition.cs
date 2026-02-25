@@ -1,9 +1,7 @@
 using Gast.Domain.Characters;
 using Gast.Domain.Loot;
-using Gast.Domain.Stats;
 using Gast.Features.Characters;
 using Gast.Infrastructure.Pickups;
-using Gast.Infrastructure.Stats;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +17,6 @@ namespace Gast.Infrastructure.Characters
 
         [SerializeField]
         string displayName;
-
-        [Header("Stats")]
-        [SerializeField]
-        StatSchema statSchema;
 
         [Header("Movement")]
         [SerializeField]
@@ -44,32 +38,18 @@ namespace Gast.Infrastructure.Characters
 
         [Header("Prefabs")]
         [SerializeField]
-        Character characterPrefab;
+        GameObject characterPrefab;
 
         [SerializeField]
         GameObject visualPrefab;
-
-        [Header("Audio")]
-        [SerializeField]
-        CharacterFootstepSettings footstepSettings;
 
         [Header("Loot")]
         [SerializeField]
         LootTable lootTable;
 
-        [Header("Sensor")]
+        [Header("Extensions")]
         [SerializeField]
-        float sensorViewRadius = 30f;
-
-        [SerializeField]
-        float sensorViewAngle = 180f;
-
-        [SerializeField]
-        Vector3 sensorEyeOffset = new(0, 1.5f, 0);
-
-        [Header("Navigation")]
-        [SerializeField]
-        float navigationStoppingDistance = 0.5f;
+        UnityEngine.Object[] extensions = { };
 
         public CharacterTypeId TypeId => reference.Id;
         public string DisplayName => displayName;
@@ -78,16 +58,16 @@ namespace Gast.Infrastructure.Characters
         public IReadOnlyList<CharacterActionSettings> ActionSettings => actionSettings;
         public int InitialMoney => initialMoney;
         public int SlotCapacity => slotCapacity;
-        public Character CharacterPrefab => characterPrefab;
+        public GameObject CharacterPrefab => characterPrefab;
         public GameObject VisualPrefab => visualPrefab;
-        public CharacterFootstepSettings FootstepSettings => footstepSettings;
-        public float SensorViewRadius => sensorViewRadius;
-        public float SensorViewAngle => sensorViewAngle;
-        public Vector3 SensorEyeOffset => sensorEyeOffset;
-        public float NavigationStoppingDistance => navigationStoppingDistance;
-
-        public IStatSchema StatSchema => statSchema;
 
         ILootTable ICharacterTypeDefinition.LootTable => lootTable;
+
+        public T GetExtension<T>()
+        {
+            return extensions.OfType<T>().FirstOrDefault();
+        }
+
+        public IReadOnlyList<UnityEngine.Object> Extensions => extensions;
     }
 }

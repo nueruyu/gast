@@ -22,6 +22,7 @@ using Gast.Infrastructure.Characters;
 using Gast.Infrastructure.Pickups;
 using Gast.Infrastructure.Items;
 using Gast.Infrastructure.Remoting.AI;
+using Gast.Infrastructure.HitDetection;
 
 namespace Gast.Composition
 {
@@ -48,6 +49,9 @@ namespace Gast.Composition
 
         [SerializeField]
         MockAIPlanningSettings mockAIPlanningSettings;
+
+        [SerializeField]
+        HitAreaSettings damageAreaSettings;
 
         [SerializeField]
         UIAssetSettings uiAssetSettings;
@@ -108,6 +112,7 @@ namespace Gast.Composition
             RegisterInstance(builder, itemDatabase, nameof(itemDatabase));
             RegisterInstance(builder, gaiaServerSettings, nameof(gaiaServerSettings));
             RegisterInstance(builder, mockAIPlanningSettings, nameof(mockAIPlanningSettings));
+            RegisterInstance(builder, damageAreaSettings, nameof(damageAreaSettings));
             RegisterInstance(builder, uiAssetSettings, nameof(uiAssetSettings));
         }
 

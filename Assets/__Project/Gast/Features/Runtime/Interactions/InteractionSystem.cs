@@ -14,14 +14,14 @@ namespace Gast.Features.Interactions
     public class InteractionSystem : IInteractionSystem
     {
         readonly Dictionary<InteractableId, Interactable> registeredInteractables = new();
-        readonly ICharacterActorRepository characterActorRepository;
+        readonly ICharacterRepository characterRepository;
         readonly Signal<InteractionProgressEvent> progressChanged = new();
 
         public ISignal<InteractionProgressEvent> ProgressChanged => progressChanged;
 
-        public InteractionSystem(ICharacterActorRepository characterActorRepository)
+        public InteractionSystem(ICharacterRepository characterRepository)
         {
-            this.characterActorRepository = characterActorRepository;
+            this.characterRepository = characterRepository;
         }
 
         public void Register(Interactable interactable)
@@ -42,11 +42,14 @@ namespace Gast.Features.Interactions
             if (!registeredInteractables.TryGetValue(interactableId, out var interactable) || interactable == null)
                 return false;
 
-            var interactorCharacter = characterActorRepository.Get(interactorId);
+            var interactorCharacter = characterRepository.Get(interactorId);
             if (interactorCharacter == null)
                 return false;
 
-            if (!interactorCharacter.InteractionSensor.IsDetectable(interactableId) ||
+            if (!interactorCharacter.Is(out IInteractor interactor))
+                return false;
+
+            if (!interactor.Sensor.IsDetectable(interactableId) ||
                 !interactable.CanInteract)
                 return false;
 
@@ -79,8 +82,8 @@ namespace Gast.Features.Interactions
 
                         await UniTask.Yield(PlayerLoopTiming.Update, linkedCts.Token);
 
-                        var loopDistance = Vector3.Distance(interactorCharacter.Body.Position, interactable.Position);
-                        if (!interactorCharacter.InteractionSensor.IsDetectable(interactableId))
+                        var loopDistance = Vector3.Distance(interactor.InteractionPoint, interactable.Position);
+                        if (!interactor.Sensor.IsDetectable(interactableId))
                         {
                             interactable.OnInteractionCancelled(interactorCharacter);
                             NotifyProgress(interactorId, interactableId, 0);

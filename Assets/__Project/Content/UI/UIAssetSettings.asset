@@ -14,8 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gast.UI::Gast.UI.Root.UIAssetSettings
   gameRootView: {fileID: 9197481963319205126, guid: 2e00c26648d3fab489016fb4c8453fd0, type: 3}
   gameHudView: {fileID: 9197481963319205126, guid: 1a5565e4c785bb943a41eff142f5f2aa, type: 3}
+  gaugeView: {fileID: 9197481963319205126, guid: 43cf51f57c1f4ad48a12dd3ce5f63df1, type: 3}
+  playerStatusView: {fileID: 9197481963319205126, guid: 96fc292acf4548949bbc28ab21b48e0c, type: 3}
+  inventoryView: {fileID: 9197481963319205126, guid: 2dd6886b12668eb44a545040a36979d3, type: 3}
+  aiStatusView: {fileID: 9197481963319205126, guid: bf2e478cfd29b4546bae0625ac5d660f, type: 3}
+  aiObjectivesView: {fileID: 9197481963319205126, guid: b78dee554c07ec74b8f615952f8cea13, type: 3}
   menuView: {fileID: 9197481963319205126, guid: 768d9a1ea10633144aaadf1e1e8b6663, type: 3}
   interactionPromptView: {fileID: 9197481963319205126, guid: 78957609e947f8d44b67db9c9419bcf7, type: 3}
   commandView: {fileID: 9197481963319205126, guid: 5b0644e9f1ef97c44a7468d6a0bbd73a, type: 3}
-  acquireItemObjectiveView: {fileID: 9197481963319205126, guid: a475a672c067ba447854b4a016601eab, type: 3}
-  defeatCharacterObjectiveView: {fileID: 9197481963319205126, guid: 9116f56336aa1fa43b88ee4783e63347, type: 3}
+  aiObjectiveView: {fileID: 9197481963319205126, guid: da631edb23ab588498b826c0d3c8c651, type: 3}
+  themeStyleSheet: {fileID: -4733365628477956816, guid: c50ea84caec8f5642af9dcddfc7018f5, type: 3}

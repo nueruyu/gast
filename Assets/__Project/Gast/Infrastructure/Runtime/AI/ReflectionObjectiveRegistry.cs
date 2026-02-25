@@ -4,28 +4,29 @@ using System.Reflection;
 using Gast.Application.AI;
 using Gast.Domain.AI;
 using Gast.Domain.AI.Attributes;
+using Gast.Infrastructure.Reflection;
 
 namespace Gast.Infrastructure.AI
 {
     public class ReflectionObjectiveRegistry : IObjectiveRegistry
     {
-        static readonly ObjectiveDefinition[] objectiveDefinitions;
+        readonly List<ObjectiveDefinition> objectiveDefinitions;
 
-        static ReflectionObjectiveRegistry()
+        public ReflectionObjectiveRegistry(IReflectionAssemblyProvider assemblyProvider)
         {
-            objectiveDefinitions = GatherObjectiveDefinitions().ToArray();
+            objectiveDefinitions = GatherObjectiveDefinitions(assemblyProvider.GetAssemblies());
         }
 
         public List<ObjectiveDefinition> GetObjectiveDefinitions()
         {
-            return objectiveDefinitions.ToList();
+            return objectiveDefinitions;
         }
 
-        static List<ObjectiveDefinition> GatherObjectiveDefinitions()
+        static List<ObjectiveDefinition> GatherObjectiveDefinitions(IEnumerable<Assembly> assembliesToScan)
         {
             var definitions = new List<ObjectiveDefinition>();
-            var assembly = typeof(IAIObjective).Assembly;
-            var objectiveTypes = assembly.GetTypes()
+            var objectiveTypes = assembliesToScan
+                .SelectMany(assembly => assembly.GetTypes())
                 .Where(t => typeof(IAIObjective).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
             foreach (var type in objectiveTypes)

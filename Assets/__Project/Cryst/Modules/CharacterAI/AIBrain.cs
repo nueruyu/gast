@@ -197,7 +197,7 @@ namespace Cryst.Modules.CharacterAI
         void UpdateCombatWorldState()
         {
             var target = memory.CombatTarget;
-            var isTargetAlive = target != null && target.IsAlive.Value;
+            var isTargetAlive = target != null && target.Status.IsAlive.Value;
 
             if (isTargetAlive)
             {
@@ -214,8 +214,8 @@ namespace Cryst.Modules.CharacterAI
             combatState.IsReadyToAttack = actor.CanAttack();
             combatState.CanGuard = actor.CanGuard();
 
-            var currentHealth = actor.Health.Value;
-            var maxHealth = actor.MaxHealth.Value;
+            var currentHealth = actor.Status.Health.Value;
+            var maxHealth = actor.Status.MaxHealth.Value;
             if (maxHealth > 0)
             {
                 combatState.SelfHealthRatio = currentHealth / maxHealth;

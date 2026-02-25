@@ -4,7 +4,6 @@ using Gast.Features.Gameplay;
 using Gast.Features.Gathering;
 using Gast.Features.Inputs;
 using Gast.Features.Interactions;
-using Gast.Features.Characters;
 using Gast.Features.Loot;
 using Gast.Features.Players;
 using Gast.Features.SpawnSites;

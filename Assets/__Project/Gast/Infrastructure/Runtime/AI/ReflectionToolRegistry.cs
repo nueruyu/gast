@@ -11,13 +11,22 @@ namespace Gast.Infrastructure.AI
     {
         readonly Dictionary<string, ITool> tools = new();
 
-        public void RegisterToolSet(object target)
+        public ReflectionToolRegistry(IEnumerable<IToolSet> toolSets)
+        {
+            foreach (var toolSet in toolSets)
+            {
+                RegisterToolSet(toolSet);
+            }
+        }
+
+        void RegisterToolSet(object target)
         {
             var methods = target.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance);
             foreach (var method in methods)
             {
                 var attr = method.GetCustomAttribute<ToolAttribute>();
-                if (attr == null) continue;
+                if (attr == null)
+                    continue;
 
                 if (tools.ContainsKey(attr.Name))
                 {
@@ -28,19 +37,6 @@ namespace Gast.Infrastructure.AI
                 var definition = CreateToolDefinition(attr, method);
                 var tool = new ReflectionTool(method, target, definition);
                 tools[attr.Name] = tool;
-            }
-        }
-
-        public void UnregisterToolSet(object target)
-        {
-            var keysToRemove = tools
-                .Where(kvp => kvp.Value is ReflectionTool reflectionTool && reflectionTool.Equals(target))
-                .Select(kvp => kvp.Key)
-                .ToList();
-
-            foreach (var key in keysToRemove)
-            {
-                tools.Remove(key);
             }
         }
 

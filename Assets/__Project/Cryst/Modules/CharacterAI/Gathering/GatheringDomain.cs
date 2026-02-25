@@ -1,4 +1,4 @@
-using Gast.Domain.AI.Objectives;
+using Cryst.Domain.AI.Objectives;
 using Cryst.Modules.CharacterAI.Gathering.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;

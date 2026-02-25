@@ -3,7 +3,7 @@ using Gast.Application.Items;
 using Gast.Core.Commands;
 using Gast.Core.Events;
 using Gast.Core.Tasks;
-using Gast.Domain.Characters;
+using Gast.Domain.Loot;
 using Gast.Domain.Pickups;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,13 +28,13 @@ namespace Gast.Features.Loot
         public async Task RunAsync(CancellationToken cancellationToken)
         {
             eventSubscriber
-                .Subscribe<LootSpawnEvent>(OnLootSpawn)
+                .Subscribe<LootPotentialDropEvent>(OnLootPotentialDrop)
                 .AddTo(cancellationToken);
 
             await UniTask.WaitUntilCanceled(cancellationToken);
         }
 
-        void OnLootSpawn(LootSpawnEvent e)
+        void OnLootPotentialDrop(LootPotentialDropEvent e)
         {
             foreach (var entry in e.LootTable.Entries)
             {

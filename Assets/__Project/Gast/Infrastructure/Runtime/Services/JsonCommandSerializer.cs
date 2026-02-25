@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Gast.Core.Commands;
+using Gast.Infrastructure.Reflection;
 using Newtonsoft.Json;
 
 namespace Gast.Infrastructure.Services
@@ -20,18 +21,16 @@ namespace Gast.Infrastructure.Services
             ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
         };
 
-        public JsonCommandSerializer()
+        public JsonCommandSerializer(IReflectionAssemblyProvider assemblyProvider)
         {
-            CacheCommandTypes();
+            CacheCommandTypes(assemblyProvider.GetAssemblies());
         }
 
         /// <summary>
         /// Cache types implementing ICommand or ICommand<T>
         /// </summary>
-        void CacheCommandTypes()
+        void CacheCommandTypes(IEnumerable<Assembly> targetAssemblies)
         {
-            var targetAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where(IsCommandsAssembly);
-
             foreach (var assembly in targetAssemblies)
             {
                 var types = assembly.GetTypes().Where(IsCommandType);
@@ -80,11 +79,6 @@ namespace Gast.Infrastructure.Services
             }
 
             return JsonConvert.DeserializeObject(transport.CommandPayload, commandType, settings);
-        }
-
-        static bool IsCommandsAssembly(Assembly assembly)
-        {
-            return assembly.FullName.Contains($"{nameof(Gast)}.{nameof(Application)}");
         }
 
         static bool IsCommandType(Type type)

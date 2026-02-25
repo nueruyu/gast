@@ -2,7 +2,8 @@ using Gast.Application.AI;
 using Gast.Application.AIPlanning;
 using Gast.Application.Economy;
 using Gast.Core.DI;
-using Gast.Features.Combat;
+using Gast.Domain.Characters;
+using Gast.Features.HitDetection;
 using Gast.Infrastructure.AI;
 using Gast.Infrastructure.Characters;
 using Gast.Infrastructure.Items;
@@ -10,6 +11,7 @@ using Gast.Infrastructure.Pickups;
 using Gast.Infrastructure.Remoting.AI;
 using Gast.Infrastructure.Services;
 using Gast.Lib.AI.Debugging;
+using Gast.Infrastructure.HitDetection;
 using Gast.Lib.Gaia;
 
 namespace Gast.Infrastructure
@@ -27,7 +29,7 @@ namespace Gast.Infrastructure
         {
             // Command & Event System
             builder.Register<CommandDispatcher>().AsImplementedInterfaces();
-            builder.Register<JsonCommandSerializer>().AsImplementedInterfaces();
+            builder.Register<JsonCommandSerializer>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<DomainEventPublisher>().AsImplementedInterfaces();
 
             // AI Server Client / Mock
@@ -41,18 +43,14 @@ namespace Gast.Infrastructure
                 builder.Register<AIPlanningService>().As<IAIPlanningService>();
             }
 
-            // Aspects
-            builder.Register<CharacterAspectFactoryRegistry>().AsImplementedInterfaces();
-
             // Character
-            builder.Register<CharacterFactory>().AsImplementedInterfaces();
+            builder.Register<CharacterFactoryRegistry>().As<ICharacterFactoryRegistry>();
             builder.Register<CharacterRepository>().AsImplementedInterfaces();
-            builder.Register<CharacterActorRepository>().AsImplementedInterfaces();
             builder.Register<CharacterTypeRepository>().AsImplementedInterfaces().AsSelf();
-            builder.Register<CharacterFootstepService>().AsImplementedInterfaces().AsSelf();
+            builder.Register<CharacterBrainManager>().AsImplementedInterfaces();
 
             // Combat
-            builder.Register<CombatFeedbackService>();
+            builder.Register<HitAreaFactory>(Lifetime.Singleton).AsImplementedInterfaces();
 
             // Economy
             builder.Register<ItemRepository>().AsImplementedInterfaces().AsSelf();
@@ -68,10 +66,10 @@ namespace Gast.Infrastructure
             builder.Register<AIDebugInitializer>().AsImplementedInterfaces();
 
             // AI Tools & Objectives
-            builder.Register<ReflectionToolRegistry>().As<IToolRegistry>();
-            builder.Register<ReflectionObjectiveRegistry>().As<IObjectiveRegistry>();
-            builder.Register<GoalInstantiator>();
-            builder.Register<PlanConverter>();
+            builder.Register<ReflectionToolRegistry>(Lifetime.Singleton).As<IToolRegistry>();
+            builder.Register<ReflectionObjectiveRegistry>(Lifetime.Singleton).As<IObjectiveRegistry>();
+            builder.Register<GoalInstantiator>(Lifetime.Singleton);
+            builder.Register<PlanConverter>(Lifetime.Singleton);
         }
     }
 }

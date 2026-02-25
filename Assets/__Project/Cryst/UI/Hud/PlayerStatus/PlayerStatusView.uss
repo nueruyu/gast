@@ -1,0 +1,20 @@
+.player-status {
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    padding: 12px;
+    width: 250px;
+    align-items: flex-start;
+}
+
+.player-status__hp-container {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.player-status__money-label {
+    color: rgb(255, 215, 0);
+    font-size: 18px;
+    -unity-font-style: bold;
+    margin-top: 4px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}

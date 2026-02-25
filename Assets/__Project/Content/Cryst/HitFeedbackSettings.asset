@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 946ebd2a98c024a4785d34d16817900e, type: 3}
+  m_Name: HitFeedbackSettings
+  m_EditorClassIdentifier: GastGame::GastGame.Features.CharacterActions.MeleeAttackEffectSettings
+  swingSfx: {fileID: 8300000, guid: 7cac7fc0b214323468875d49122c2c55, type: 3}
+  swingSfxVolume: 2
+  hitVfxPrefab: {fileID: 8777263924379209434, guid: 08bfdc73f2bc10a44952e2ad670ed13d, type: 3}
+  hitSfx: {fileID: 8300000, guid: b9e5680955d220243aaa1b80cc0af8c6, type: 3}
+  sfxVolume: 0.5
