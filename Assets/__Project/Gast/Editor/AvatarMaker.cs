@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-namespace Gast.Features.Editor
+namespace Gast.Editor
 {
     public class AvatarMaskMaker : MonoBehaviour
     {
