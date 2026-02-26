@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SimpleSoldier_UpperBodyMask
+  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Renderers
+    m_Weight: 0
+  - m_Path: Renderers/Head
+    m_Weight: 0
+  - m_Path: Renderers/Head/Head Renderer
+    m_Weight: 0
+  - m_Path: Renderers/Head/Helmet_1
+    m_Weight: 0
+  - m_Path: Renderers/Head/Helmet_2
+    m_Weight: 0
+  - m_Path: Renderers/Head/Helmet_3
+    m_Weight: 0
+  - m_Path: Renderers/Body
+    m_Weight: 0
+  - m_Path: Renderers/Body/Body Renderer
+    m_Weight: 0
+  - m_Path: Renderers/LegL
+    m_Weight: 0
+  - m_Path: Renderers/LegL/LegL
+    m_Weight: 0
+  - m_Path: Renderers/LegR
+    m_Weight: 0
+  - m_Path: Renderers/LegR/LegR
+    m_Weight: 0
+  - m_Path: Renderers/ArmR
+    m_Weight: 0
+  - m_Path: Renderers/ArmR/ArmL Renderer
+    m_Weight: 0
+  - m_Path: Renderers/ArmL
+    m_Weight: 0
+  - m_Path: Renderers/ArmL/ArmR Renderer
+    m_Weight: 0
+  - m_Path: Root
+    m_Weight: 0
+  - m_Path: Root/Body
+    m_Weight: 1
+  - m_Path: Root/Body/Head
+    m_Weight: 1
+  - m_Path: Root/Body/LegL
+    m_Weight: 0
+  - m_Path: Root/Body/LegR
+    m_Weight: 0
+  - m_Path: Root/Body/ArmL
+    m_Weight: 1
+  - m_Path: Root/Body/ArmR
+    m_Weight: 1
