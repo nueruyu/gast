@@ -32,6 +32,57 @@
       "dependencies": {},
       "hash": "34432703a177c97631a4eb1d908f086037c67969"
     },
+    "com.nueruyu.cryst": {
+      "version": "file:com.nueruyu.cryst",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.nueruyu.gast": "0.1.0",
+        "com.nueruyu.gast.lib.ai": "0.1.0",
+        "com.nueruyu.gast.lib.gaia": "0.1.0",
+        "com.cysharp.r3": "1.1.0",
+        "com.cysharp.unitask": "2.5.0",
+        "jp.hadashikick.vcontainer": "1.15.0"
+      }
+    },
+    "com.nueruyu.cryst.content": {
+      "version": "file:com.nueruyu.cryst.content",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "com.nueruyu.gast": {
+      "version": "file:com.nueruyu.gast",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.nueruyu.gast.lib.ai": "0.1.0",
+        "com.nueruyu.gast.lib.gaia": "0.1.0",
+        "com.unity.inputsystem": "1.7.0",
+        "com.unity.cinemachine": "2.9.7",
+        "com.unity.textmeshpro": "3.0.6",
+        "jp.hadashikick.vcontainer": "1.15.0",
+        "com.cysharp.r3": "1.1.0",
+        "com.cysharp.unitask": "2.5.0"
+      }
+    },
+    "com.nueruyu.gast.lib.ai": {
+      "version": "file:com.nueruyu.gast.lib.ai",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.cysharp.r3": "1.1.0",
+        "com.cysharp.unitask": "2.5.0"
+      }
+    },
+    "com.nueruyu.gast.lib.gaia": {
+      "version": "file:com.nueruyu.gast.lib.gaia",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.2.1"
+      }
+    },
     "com.unity.ai.navigation": {
       "version": "2.0.9",
       "depth": 0,
@@ -228,6 +279,14 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
+    },
+    "com.unity.textmeshpro": {
+      "version": "5.0.0",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.ugui": "2.0.0"
+      }
     },
     "com.unity.timeline": {
       "version": "1.8.9",

@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "com.cysharp.r3": "1.1.0",
-    "com.cysharp.unitask": "2.5.0",
-    "com.neuecc.observablecollections": "1.1.2"
+    "com.cysharp.unitask": "2.5.0"
   }
 }
