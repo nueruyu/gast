@@ -3,8 +3,7 @@
     "rootNamespace": "Gast.Lib.AI.Editor",
     "references": [
         "Gast.Lib.AI",
-        "R3.Unity",
-        "Gast.Shared"
+        "R3.Unity"
     ],
     "includePlatforms": [
         "Editor"

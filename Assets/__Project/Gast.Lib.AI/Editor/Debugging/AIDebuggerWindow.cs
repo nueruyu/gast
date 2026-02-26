@@ -1,5 +1,4 @@
 using Gast.Lib.AI.Debugging;
-using Gast.Shared.UnityExtensions;
 using ObservableCollections;
 using R3;
 using System;
