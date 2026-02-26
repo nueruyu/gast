@@ -1,3 +1,4 @@
+using Cryst.Domain.Characters.Commands;
 using Gast.Domain.Characters;
 using Gast.Features.Characters;
 using System;

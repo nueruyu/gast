@@ -1,18 +1,17 @@
 using Gast.Core.Events;
 using Gast.Domain.Characters;
 using Cryst.Domain.Combat;
-using Cryst.Infrastructure.Feedbacks;
 using Cryst.Modules.Characters.Feedbacks;
 
 namespace Cryst.Modules.Characters.EventHandlers
 {
     public class HitFeedbackHandler
     {
-        readonly CombatFeedbackService feedbackService;
+        readonly CharacterFeedbackService feedbackService;
         readonly HitFeedbackSettings settings;
 
         public HitFeedbackHandler(
-            CombatFeedbackService feedbackService,
+            CharacterFeedbackService feedbackService,
             HitFeedbackSettings settings)
         {
             this.feedbackService = feedbackService;

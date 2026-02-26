@@ -1,8 +1,6 @@
 using Cryst.Domain.Characters;
-using Cryst.Infrastructure.Cameras;
-using Cryst.Infrastructure.Economy;
-using Cryst.Infrastructure.Footsteps;
 using Cryst.Modules.CharacterActions;
+using Cryst.Modules.Characters.Footsteps;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Observables;
 using Gast.Domain.AI;
@@ -75,7 +73,7 @@ namespace Cryst.Infrastructure.Characters
                     context,
                     new()
                     {
-                        { typeof(ICrystCharacter), crystCharacter },
+                        { typeof(CrystCharacter), crystCharacter },
                         { typeof(IWalletHost), new WalletHost(wallet) },
                         { typeof(IInventoryHost), new InventoryHost(inventory) },
                         { typeof(ICameraFocusTarget), new CameraFocusTarget(characterGo.transform) },

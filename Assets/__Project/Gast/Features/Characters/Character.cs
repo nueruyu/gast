@@ -1,11 +1,10 @@
 using Gast.Core.Observables;
 using Gast.Domain.Characters;
-using Gast.Features.Characters;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Cryst.Infrastructure.Characters
+namespace Gast.Features.Characters
 {
     public class Character : ICharacter
     {
@@ -41,7 +40,8 @@ namespace Cryst.Infrastructure.Characters
 
         public void Destroy()
         {
-            if (isDestroyed) return;
+            if (isDestroyed)
+                return;
 
             UnityEngine.Object.Destroy(context.GameObject);
         }

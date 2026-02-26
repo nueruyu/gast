@@ -43,7 +43,7 @@ namespace Cryst.Modules.CharacterAI.Strategic.Actions
             var objectives = ctx.WorldState.AvailableObjectives;
 
             IAIObjective bestObjective = null;
-            ICrystCharacter bestTarget = null;
+            CrystCharacter bestTarget = null;
             float lowestCost = float.MaxValue;
 
             foreach (var objective in objectives)
@@ -64,7 +64,7 @@ namespace Cryst.Modules.CharacterAI.Strategic.Actions
             return UniTask.CompletedTask;
         }
 
-        private (float cost, ICrystCharacter target) CalculateObjectiveCost(ICrystCharacter self, IAIObjective objective)
+        private (float cost, CrystCharacter target) CalculateObjectiveCost(CrystCharacter self, IAIObjective objective)
         {
             switch (objective)
             {
@@ -87,16 +87,16 @@ namespace Cryst.Modules.CharacterAI.Strategic.Actions
             }
         }
 
-        private ICrystCharacter FindClosestCharacterOfType(ICrystCharacter self, CharacterTypeId typeId)
+        private CrystCharacter FindClosestCharacterOfType(CrystCharacter self, CharacterTypeId typeId)
         {
             return _characterRepository.GetAll()
-                .Select(c => c.As<ICrystCharacter>())
+                .Select(c => c.As<CrystCharacter>())
                 .Where(a => a.TypeId == typeId && a.Status.IsAlive.Value && a.Faction != self.Faction)
                 .OrderBy(a => Vector3.Distance(self.Body.Position, a.Body.Position))
                 .FirstOrDefault();
         }
 
-        private IPickup FindClosestPickupOfType(ICrystCharacter self, ItemId itemId)
+        private IPickup FindClosestPickupOfType(CrystCharacter self, ItemId itemId)
         {
             return _pickupRepository.GetAll()
                 .Where(p => p.ItemId == itemId)

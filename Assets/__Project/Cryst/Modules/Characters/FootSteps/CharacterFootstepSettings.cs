@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Cryst.Infrastructure.Footsteps
+namespace Cryst.Modules.Characters.Footsteps
 {
     /// <summary>
     /// Configuration for character audio effects such as footsteps.

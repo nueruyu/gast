@@ -1,7 +1,7 @@
 using Gast.Domain.Characters;
 using UnityEngine;
 
-namespace Cryst.Modules.CharacterActions
+namespace Cryst.Domain.Characters.Commands
 {
     public readonly struct DashCommand : ICharacterTriggerCommand
     {

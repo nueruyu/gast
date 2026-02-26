@@ -8,7 +8,7 @@ namespace Cryst.Modules.CharacterAI
     public readonly struct AIContext<TWorldState> : IContext<AIContext<TWorldState>, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
     {
-        public ICrystCharacter Actor { get; }
+        public CrystCharacter Actor { get; }
         public TWorldState WorldState { get; }
         public AIMemory Memory { get; }
         public CancellationToken CancellationToken { get; }
@@ -18,7 +18,7 @@ namespace Cryst.Modules.CharacterAI
 
         public AIContext(
             ContextKey contextKey,
-            ICrystCharacter actor,
+            CrystCharacter actor,
             TWorldState worldState,
             AIMemory memory,
             Action worldStateUpdater,

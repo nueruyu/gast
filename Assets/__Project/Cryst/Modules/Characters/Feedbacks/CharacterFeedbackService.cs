@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Cryst.Modules.Characters.Feedbacks
 {
-    public class CombatFeedbackService
+    public class CharacterFeedbackService
     {
         public void PlayHitEffect(Vector3 position, Quaternion rotation, GameObject vfxPrefab)
         {

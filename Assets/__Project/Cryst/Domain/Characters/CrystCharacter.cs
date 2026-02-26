@@ -1,16 +1,12 @@
-using Cryst.Domain.Characters;
+using Cryst.Domain.Characters.Commands;
 using Cryst.Domain.Combat;
-using Cryst.Modules.CharacterActions;
-using Gast.Core.Events;
-using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
-using R3;
 using UnityEngine;
 
-namespace Cryst.Infrastructure.Characters
+namespace Cryst.Domain.Characters
 {
-    public class CrystCharacter : ICrystCharacter
+    public class CrystCharacter : ICharacterFacet
     {
         readonly CharacterId id;
         readonly ICharacterTypeDefinition typeDefinition;
@@ -53,7 +49,7 @@ namespace Cryst.Infrastructure.Characters
 
         public CharacterStatus Status => status;
 
-        public bool IsThreatTo(ICrystCharacter other)
+        public bool IsThreatTo(CrystCharacter other)
         {
             if (!Status.IsAlive.Value)
                 return false;

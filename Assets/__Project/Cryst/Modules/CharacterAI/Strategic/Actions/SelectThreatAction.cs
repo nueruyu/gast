@@ -21,7 +21,7 @@ namespace Cryst.Modules.CharacterAI.Strategic.Actions
         {
             var self = ctx.Actor;
             var closestThreat = self.VisionSensor.VisibleCharacters
-                .Select(c => c.As<ICrystCharacter>())
+                .Select(c => c.As<CrystCharacter>())
                 .Where(a => a.IsThreatTo(self))
                 .OrderBy(a => Vector3.Distance(self.VisionSensor.EyePosition, a.Body.Position))
                 .FirstOrDefault();

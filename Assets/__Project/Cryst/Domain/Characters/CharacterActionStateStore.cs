@@ -1,4 +1,4 @@
-namespace Cryst.Modules.CharacterActions
+namespace Cryst.Domain.Characters
 {
     public class CharacterActionStateStore
     {

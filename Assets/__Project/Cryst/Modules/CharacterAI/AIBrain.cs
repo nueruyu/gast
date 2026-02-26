@@ -26,7 +26,7 @@ namespace Cryst.Modules.CharacterAI
         readonly ObjectiveManager objectiveManager;
         readonly IContextRegistry contextRegistry;
 
-        ICrystCharacter actor;
+        CrystCharacter actor;
         ContextKey strategicContextKey;
         ContextKey combatContextKey;
         ContextKey gatheringContextKey;
@@ -61,7 +61,7 @@ namespace Cryst.Modules.CharacterAI
         {
             Debug.Log($"[AIBrain] OnAttached: {character.Id}");
 
-            actor = character.As<ICrystCharacter>();
+            actor = character.As<CrystCharacter>();
 
             strategicContextKey = new(actor.Id, StrategicDomainName);
             combatContextKey = new(actor.Id, CombatDomainName);
@@ -190,7 +190,7 @@ namespace Cryst.Modules.CharacterAI
                 .ToList();
 
             strategicState.IsThreatened = actor.VisionSensor.VisibleCharacters
-                .Select(c => c.As<ICrystCharacter>())
+                .Select(c => c.As<CrystCharacter>())
                 .Any(otherActor => otherActor.IsThreatTo(actor));
         }
 

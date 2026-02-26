@@ -1,8 +1,7 @@
-using Gast.Domain.Economy;
 using Gast.Features.Cameras;
 using UnityEngine;
 
-namespace Cryst.Infrastructure.Cameras
+namespace Cryst.Infrastructure.Characters
 {
     class CameraFocusTarget : ICameraFocusTarget
     {

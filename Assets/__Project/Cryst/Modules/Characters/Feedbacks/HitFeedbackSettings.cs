@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Cryst.Infrastructure.Feedbacks
+namespace Cryst.Modules.Characters.Feedbacks
 {
     [CreateAssetMenu(menuName = "Cryst/Feedbacks/Hit Feedback Settings")]
     public class HitFeedbackSettings : ScriptableObject

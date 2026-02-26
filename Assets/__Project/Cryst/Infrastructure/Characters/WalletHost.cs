@@ -1,6 +1,6 @@
 using Gast.Domain.Economy;
 
-namespace Cryst.Infrastructure.Economy
+namespace Cryst.Infrastructure.Characters
 {
     class WalletHost : IWalletHost
     {

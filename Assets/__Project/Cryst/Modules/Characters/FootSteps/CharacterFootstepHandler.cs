@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 using Gast.Features.Characters;
 using Cryst.Modules.CharacterActions;
 
-namespace Cryst.Infrastructure.Footsteps
+namespace Cryst.Modules.Characters.Footsteps
 {
     public class CharacterFootstepHandler : IDisposable
     {

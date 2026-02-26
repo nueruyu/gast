@@ -6,7 +6,7 @@ using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Domain.Pickups;
 
-namespace Cryst.Infrastructure.AI.Tools
+namespace Cryst.Modules.AI.Tools
 {
     public class GameInfoTools : IToolSet
     {

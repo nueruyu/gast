@@ -20,7 +20,7 @@ namespace Cryst.Modules.Players
 
         public void HandleInput(ICharacter character)
         {
-            var actor = character.As<ICrystCharacter>();
+            var actor = character.As<CrystCharacter>();
 
             var inputMove = inputProvider.Move;
             var moveDirection = CalculateMoveDirection(inputMove, cameraService, actor);
@@ -54,7 +54,7 @@ namespace Cryst.Modules.Players
             }
         }
 
-        Vector3 CalculateMoveDirection(Vector2 input, ICameraService cameraService, ICrystCharacter actor)
+        Vector3 CalculateMoveDirection(Vector2 input, ICameraService cameraService, CrystCharacter actor)
         {
             var cameraRotation = cameraService.MainCamera.Rotation;
 

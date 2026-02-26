@@ -25,10 +25,9 @@ using Cryst.UI.Hud.Objectives;
 using Cryst.Infrastructure.UI;
 using Cryst.Infrastructure.Reflection;
 using Gast.Infrastructure.Reflection;
-using Cryst.Infrastructure.AI.Tools;
 using Gast.Application.AI;
 using Cryst.Infrastructure;
-using Cryst.Infrastructure.Feedbacks;
+using Cryst.Modules.AI.Tools;
 
 namespace Cryst.Composition
 {
@@ -78,7 +77,7 @@ namespace Cryst.Composition
             builder.Register<PlayerCharacterController>().As<IPlayerCharacterController>();
 
             // Feedbacks
-            builder.Register<CombatFeedbackService>(Lifetime.Singleton);
+            builder.Register<CharacterFeedbackService>(Lifetime.Singleton);
 
             // Event Handling
             builder.Register<EventBindingRunner>(Lifetime.Singleton).As<ILifecycleTask>();

@@ -1,7 +1,7 @@
 using Gast.Domain.Characters;
 using Cryst.Domain.Combat;
 
-namespace Cryst.Modules.CharacterActions
+namespace Cryst.Domain.Characters.Commands
 {
     public readonly struct HitCommand : ICharacterTriggerCommand
     {
