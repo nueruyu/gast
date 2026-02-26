@@ -1,0 +1,17 @@
+{
+  "name": "com.nueruyu.cryst",
+  "version": "0.1.0",
+  "displayName": "Cryst",
+  "description": "Game-specific implementation for the Cryst project.",
+  "author": {
+    "name": "nueruyu"
+  },
+  "dependencies": {
+    "com.nueruyu.gast": "0.1.0",
+    "com.nueruyu.gast.lib.ai": "0.1.0",
+    "com.nueruyu.gast.lib.gaia": "0.1.0",
+    "com.cysharp.r3": "1.1.0",
+    "com.cysharp.unitask": "2.5.0",
+    "jp.hadashikick.vcontainer": "1.15.0"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "com.nueruyu.gast.lib.gaia",
+  "version": "0.1.0",
+  "displayName": "Gast Gaia Library",
+  "description": "Client library for communicating with the Gaia planning service.",
+  "author": {
+    "name": "nueruyu"
+  },
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  }
+}
