@@ -1,5 +1,5 @@
 using Gast.Domain.AI;
-using Cryst.Modules.CharacterAI;
+using Cryst.Features.CharacterAI;
 using VContainer;
 
 namespace Cryst.Infrastructure.CharacterAI

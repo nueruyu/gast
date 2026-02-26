@@ -1,6 +1,6 @@
 using Cryst.Domain.Characters;
-using Cryst.Modules.CharacterActions;
-using Cryst.Modules.Characters.Footsteps;
+using Cryst.Features.CharacterActions;
+using Cryst.Features.Characters.Footsteps;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Observables;
 using Gast.Domain.AI;

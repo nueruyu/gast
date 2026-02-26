@@ -1,6 +1,6 @@
 using System;
-using Cryst.Modules.CharacterActions;
-using Cryst.Modules.CharacterActions.Default;
+using Cryst.Features.CharacterActions;
+using Cryst.Features.CharacterActions.Default;
 using Cysharp.Threading.Tasks;
 using Gast.Features.Characters;
 using VContainer;

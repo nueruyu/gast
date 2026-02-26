@@ -1,23 +1,23 @@
 using Gast.Core.DI;
 using Gast.Shared.DI;
-using Cryst.Modules.CharacterAI.Combat;
-using Cryst.Modules.CharacterAI.Combat.Actions;
-using Cryst.Modules.CharacterAI.Gathering;
-using Cryst.Modules.CharacterAI.Gathering.Actions;
-using Cryst.Modules.CharacterAI.Strategic.Actions;
+using Cryst.Features.CharacterAI.Combat;
+using Cryst.Features.CharacterAI.Combat.Actions;
+using Cryst.Features.CharacterAI.Gathering;
+using Cryst.Features.CharacterAI.Gathering.Actions;
+using Cryst.Features.CharacterAI.Strategic.Actions;
 using UnityEngine;
 using Cryst.Infrastructure.CharacterAI;
 using Cryst.Infrastructure.Characters;
-using Cryst.Modules.Players;
-using Cryst.Modules.CharacterAI;
-using Cryst.Modules.CharacterAI.Strategic;
+using Cryst.Features.Players;
+using Cryst.Features.CharacterAI;
+using Cryst.Features.CharacterAI.Strategic;
 using Gast.Domain.Characters;
 using Gast.Domain.Players;
 using Gast.Core.Tasks;
-using Cryst.Modules.Characters.Feedbacks;
-using Cryst.Modules.Characters.EventHandlers;
+using Cryst.Features.Characters.Feedbacks;
+using Cryst.Features.Characters.EventHandlers;
 using Gast.Features.Characters;
-using Cryst.Modules.CharacterActions;
+using Cryst.Features.CharacterActions;
 using Gast.UI.Hud.Status;
 using Cryst.UI.Hud.Status;
 using Gast.UI.Hud.Objectives;
@@ -27,7 +27,7 @@ using Cryst.Infrastructure.Reflection;
 using Gast.Infrastructure.Reflection;
 using Gast.Application.AI;
 using Cryst.Infrastructure;
-using Cryst.Modules.AI.Tools;
+using Cryst.Features.AI.Tools;
 
 namespace Cryst.Composition
 {
@@ -55,9 +55,9 @@ namespace Cryst.Composition
             // Character Actions (Transient)
             builder.Register<AttackAction>(Lifetime.Transient);
             builder.Register<DashAction>(Lifetime.Transient);
-            builder.Register<Modules.CharacterActions.Default.DefaultAction>(Lifetime.Transient);
+            builder.Register<Features.CharacterActions.Default.DefaultAction>(Lifetime.Transient);
             builder.Register<DieAction>(Lifetime.Transient);
-            builder.Register<Modules.CharacterActions.GuardAction>(Lifetime.Transient);
+            builder.Register<Features.CharacterActions.GuardAction>(Lifetime.Transient);
             builder.Register<HitAction>(Lifetime.Transient);
             builder.Register<JumpAction>(Lifetime.Transient);
 
@@ -91,7 +91,7 @@ namespace Cryst.Composition
             builder.Register<MeleeAttackAction>(Lifetime.Transient);
             builder.Register<BackOffAction>(Lifetime.Transient);
             builder.Register<StrafeAction>(Lifetime.Transient);
-            builder.Register<Modules.CharacterAI.Combat.Actions.GuardAction>(Lifetime.Transient);
+            builder.Register<Features.CharacterAI.Combat.Actions.GuardAction>(Lifetime.Transient);
             builder.Register<StalkAction>(Lifetime.Transient);
             builder.Register<PostAttackManeuverAction>(Lifetime.Transient);
 

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Cryst.Domain.Combat;
 using Cryst.Domain.Characters;
-using Cryst.Modules.Characters.EventHandlers;
+using Cryst.Features.Characters.EventHandlers;
 using Gast.Core.Events;
 using Gast.Core.Tasks;
 using Gast.Domain.Characters;
