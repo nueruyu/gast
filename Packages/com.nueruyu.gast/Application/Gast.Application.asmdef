@@ -3,9 +3,7 @@
     "rootNamespace": "Gast.Application",
     "references": [
         "Gast.Core",
-        "Gast.Domain",
-        "Gast.Shared",
-        "UniTask"
+        "Gast.Domain"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
