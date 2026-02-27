@@ -5,7 +5,7 @@ using Gast.Core.Tasks;
 using Gast.Domain.Inputs;
 using UnityEngine;
 
-namespace Gast.Features.Cameras
+namespace Gast.Unity.Features.Cameras
 {
     public class CameraInputController : ILifecycleTask
     {

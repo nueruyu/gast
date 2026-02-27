@@ -2,13 +2,12 @@ using System;
 using Gast.Core.Commands;
 using Gast.Domain.Economy;
 using Gast.Domain.Pickups;
-using Gast.Features.Interactions;
-using Gast.Features.Pickups;
-using Gast.Infrastructure.Items;
+using Gast.Unity.Features.Interactions;
+using Gast.Unity.Features.Pickups;
+using Gast.Unity.Infrastructure.Items;
 using UnityEngine;
-using VContainer;
 
-namespace Gast.Infrastructure.Pickups
+namespace Gast.Unity.Infrastructure.Pickups
 {
     public class PickupFactory : IPickupFactory
     {

@@ -2,7 +2,7 @@ using Gast.Domain.Cameras;
 using Gast.Domain.Characters;
 using UnityEngine;
 
-namespace Gast.Features.Cameras
+namespace Gast.Unity.Features.Cameras
 {
     public class CameraService : ICameraService
     {

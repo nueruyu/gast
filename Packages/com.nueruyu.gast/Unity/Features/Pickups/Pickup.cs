@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using Gast.Application.Economy;
 using Gast.Core.Commands;
@@ -5,12 +6,11 @@ using Gast.Core.Observables;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Domain.Pickups;
-using Gast.Features.Interactions;
-using System;
+using Gast.Unity.Features.Interactions;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Gast.Features.Pickups
+namespace Gast.Unity.Features.Pickups
 {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(Interactable))]

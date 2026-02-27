@@ -1,13 +1,11 @@
-using UnityEngine;
+using Cysharp.Threading.Tasks;
+using Gast.Core.Observables;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
-using Gast.Features.Interactions;
-using Cysharp.Threading.Tasks;
-using Gast.Features.Characters;
-using System;
-using Gast.Core.Observables;
+using Gast.Unity.Features.Interactions;
+using UnityEngine;
 
-namespace Gast.Features.Economy
+namespace Gast.Unity.Features.Economy
 {
     [RequireComponent(typeof(Interactable))]
     public class ShopItem : MonoBehaviour

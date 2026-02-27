@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gast.Features.HitDetection
+namespace Gast.Unity.Features.HitDetection
 {
     public interface IHitAreaFactory
     {

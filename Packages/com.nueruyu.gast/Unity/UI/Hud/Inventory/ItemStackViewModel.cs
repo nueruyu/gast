@@ -1,6 +1,6 @@
 using Gast.Domain.Economy;
 
-namespace Gast.UI.Hud
+namespace Gast.Unity.UI.Hud.Inventory
 {
     public class ItemStackViewModel
     {

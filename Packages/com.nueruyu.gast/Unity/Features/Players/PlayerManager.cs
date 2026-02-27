@@ -1,11 +1,10 @@
-using UnityEngine;
 using Gast.Core.Observables;
-using Gast.Features.Characters;
+using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Players;
-using Gast.Domain.AI;
+using UnityEngine;
 
-namespace Gast.Features.Players
+namespace Gast.Unity.Features.Players
 {
     /// <summary>
     /// Manages player possession of different characters.

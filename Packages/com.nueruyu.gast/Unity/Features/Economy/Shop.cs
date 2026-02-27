@@ -1,13 +1,13 @@
+using System;
 using Cysharp.Threading.Tasks;
 using Gast.Application.Economy;
 using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
-using Gast.Features.Interactions;
-using System;
+using Gast.Unity.Features.Interactions;
 using UnityEngine;
 
-namespace Gast.Features.Economy
+namespace Gast.Unity.Features.Economy
 {
     public class Shop : MonoBehaviour
     {

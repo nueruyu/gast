@@ -1,8 +1,8 @@
 using System;
-using UnityEngine;
 using Gast.Domain.Interactions;
+using UnityEngine;
 
-namespace Gast.Features.Interactions
+namespace Gast.Unity.Features.Interactions
 {
     /// <summary>
     /// Default implementation of IInteractionConfig.

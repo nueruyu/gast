@@ -1,10 +1,9 @@
 using Gast.Core.Observables;
 using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
-using Gast.Features.Characters;
 using UnityEngine;
 
-namespace Gast.Features.Interactions
+namespace Gast.Unity.Features.Interactions
 {
     public class Interactable : MonoBehaviour, IInteractable
     {

@@ -1,9 +1,9 @@
 using Gast.Domain.AI;
 using Cryst.Domain.AI.Objectives;
-using Gast.UI.Hud.Objectives;
 using System;
 using VContainer;
 using Cryst.UI.Hud.Objectives;
+using Gast.Unity.UI.Hud.Objectives;
 
 namespace Cryst.Infrastructure.UI
 {

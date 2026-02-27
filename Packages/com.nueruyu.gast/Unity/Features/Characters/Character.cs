@@ -1,10 +1,10 @@
-using Gast.Core.Observables;
-using Gast.Domain.Characters;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Gast.Core.Observables;
+using Gast.Domain.Characters;
 
-namespace Gast.Features.Characters
+namespace Gast.Unity.Features.Characters
 {
     public class Character : ICharacter
     {

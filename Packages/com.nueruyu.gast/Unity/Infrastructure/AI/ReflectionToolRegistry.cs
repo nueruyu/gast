@@ -5,7 +5,7 @@ using Gast.Application.AI;
 using Gast.Application.AI.Attributes;
 using UnityEngine;
 
-namespace Gast.Infrastructure.AI
+namespace Gast.Unity.Infrastructure.AI
 {
     public class ReflectionToolRegistry : IToolRegistry
     {

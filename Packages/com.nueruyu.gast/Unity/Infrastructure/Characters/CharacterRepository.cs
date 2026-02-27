@@ -1,9 +1,8 @@
+using System.Collections.Generic;
 using Gast.Core.Observables;
 using Gast.Domain.Characters;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Gast.Infrastructure.Characters
+namespace Gast.Unity.Infrastructure.Characters
 {
     /// <summary>
     /// In-memory repository for managing runtime character instances.

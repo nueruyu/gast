@@ -1,14 +1,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using Gast.Core.Observables;
 using Gast.Core.Tasks;
 using Gast.Domain.Cameras;
 using Gast.Domain.Characters;
 using Gast.Domain.Players;
 using UnityEngine;
 
-namespace Gast.Features.Gameplay
+namespace Gast.Unity.Features.Gameplay
 {
     public class PlayerContextBinder : ILifecycleTask
     {

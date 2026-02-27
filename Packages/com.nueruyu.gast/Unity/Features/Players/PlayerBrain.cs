@@ -1,10 +1,10 @@
+using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
 using Gast.Domain.Players;
-using System;
-using System.Threading;
 
-namespace Gast.Features.Players
+namespace Gast.Unity.Features.Players
 {
     public class PlayerBrain : ICharacterBrain
     {

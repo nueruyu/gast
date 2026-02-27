@@ -1,10 +1,10 @@
 using System;
-using Gast.Shared.UnityExtensions;
-using Gast.UI.Command;
+using Gast.Unity.Shared.UnityExtensions;
+using Gast.Unity.UI.Command;
 using R3;
 using UnityEngine.UIElements;
 
-namespace Gast.UI.Menu
+namespace Gast.Unity.UI.Menu
 {
     public class MenuView : VisualElement
     {

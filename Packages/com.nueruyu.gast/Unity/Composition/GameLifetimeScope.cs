@@ -1,30 +1,31 @@
 using System.Collections.Generic;
 using Gast.Application;
 using Gast.Core.Exceptions;
-using Gast.Features;
-using Gast.Features.Cameras;
-using Gast.Features.Economy;
-using Gast.Features.Gameplay;
-using Gast.Features.Gathering;
-using Gast.Features.Inputs;
-using Gast.Features.SpawnSites;
-using Gast.Infrastructure;
 using Gast.Lib.Gaia;
-using Gast.Infrastructure.Services;
-using Gast.UI;
+using Gast.Unity.UI;
+using Gast.Unity.Features;
+using Gast.Unity.Features.Cameras;
+using Gast.Unity.Features.Economy;
+using Gast.Unity.Features.Gameplay;
+using Gast.Unity.Features.Gathering;
+using Gast.Unity.Features.Inputs;
+using Gast.Unity.Features.SpawnSites;
+using Gast.Unity.Infrastructure;
+using Gast.Unity.Infrastructure.Characters;
+using Gast.Unity.Infrastructure.HitDetection;
+using Gast.Unity.Infrastructure.Items;
+using Gast.Unity.Infrastructure.Pickups;
+using Gast.Unity.Infrastructure.Remoting.AI;
+using Gast.Unity.Infrastructure.Services;
+using Gast.Unity.Shared.DI;
+using Gast.Unity.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;
 using VContainer.Unity;
 using IContainerBuilder = VContainer.IContainerBuilder;
-using Gast.Shared.DI;
-using Gast.Infrastructure.Characters;
-using Gast.Infrastructure.Pickups;
-using Gast.Infrastructure.Items;
-using Gast.Infrastructure.Remoting.AI;
-using Gast.Infrastructure.HitDetection;
 
-namespace Gast.Composition
+namespace Gast.Unity.Composition
 {
     public class GameLifetimeScope : LifetimeScope
     {

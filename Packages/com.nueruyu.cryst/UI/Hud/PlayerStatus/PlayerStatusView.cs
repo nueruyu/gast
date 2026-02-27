@@ -1,9 +1,9 @@
 using System;
-using Gast.UI.Controls;
 using R3;
 using UnityEngine.UIElements;
+using Gauge = Gast.Unity.UI.Controls.Gauge;
 
-namespace Cryst.UI.Hud.Status
+namespace Cryst.UI.Hud.PlayerStatus
 {
     public class PlayerStatusView : VisualElement
     {

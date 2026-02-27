@@ -1,11 +1,10 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Gast.Application.AIPlanning;
 using Gast.Lib.Gaia.Dto;
 
-namespace Gast.Infrastructure.Remoting.AI
+namespace Gast.Unity.Infrastructure.Remoting.AI
 {
     public class MockAIPlanningService : IAIPlanningService
     {

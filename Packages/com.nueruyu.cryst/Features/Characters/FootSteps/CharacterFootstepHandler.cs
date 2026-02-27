@@ -1,13 +1,13 @@
 using UnityEngine;
 using Gast.Core.Observables;
 using Cysharp.Threading.Tasks;
-using Gast.Shared.Observables;
 using R3;
 using System;
 using DisposableBag = Gast.Core.Observables.DisposableBag;
 using Random = UnityEngine.Random;
-using Gast.Features.Characters;
 using Cryst.Features.CharacterActions;
+using Gast.Unity.Features.Characters;
+using Gast.Unity.Shared.Observables;
 
 namespace Cryst.Features.Characters.Footsteps
 {

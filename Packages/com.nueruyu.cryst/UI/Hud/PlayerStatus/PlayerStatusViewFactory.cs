@@ -1,10 +1,10 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Gast.UI;
-using Gast.UI.Hud.Status;
+using Gast.Unity.UI;
+using Gast.Unity.UI.Hud.PlayerStatus;
 using UnityEngine.UIElements;
 
-namespace Cryst.UI.Hud.Status
+namespace Cryst.UI.Hud.PlayerStatus
 {
     public class PlayerStatusViewFactory : IPlayerStatusViewFactory
     {

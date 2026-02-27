@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
 
-namespace Gast.UI.Controls
+namespace Gast.Unity.UI.Controls
 {
     [UxmlElement]
     public partial class Gauge : VisualElement

@@ -1,13 +1,15 @@
 using Gast.Core.DI;
 using Gast.Core.Tasks;
-using Gast.UI.Command;
-using Gast.UI.Hud;
-using Gast.UI.Hud.Objectives;
-using Gast.UI.Interactions;
-using Gast.UI.Menu;
-using Gast.UI.System;
+using Gast.Unity.UI.Command;
+using Gast.Unity.UI.Hud;
+using Gast.Unity.UI.Hud.AIStatus;
+using Gast.Unity.UI.Hud.Inventory;
+using Gast.Unity.UI.Hud.Objectives;
+using Gast.Unity.UI.Interactions;
+using Gast.Unity.UI.Menu;
+using Gast.Unity.UI.System;
 
-namespace Gast.UI
+namespace Gast.Unity.UI
 {
     public class UIInstaller : IInstaller
     {

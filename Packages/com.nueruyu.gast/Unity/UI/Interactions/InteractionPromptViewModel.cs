@@ -1,11 +1,11 @@
 using System;
 using Gast.Domain.Interactions;
 using Gast.Domain.Players;
-using Gast.Shared.Observables;
+using Gast.Unity.Shared.Observables;
 using R3;
 using UnityEngine;
 
-namespace Gast.UI.Interactions
+namespace Gast.Unity.UI.Interactions
 {
     public class InteractionPromptViewModel : IDisposable
     {

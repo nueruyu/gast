@@ -2,11 +2,10 @@ using Cryst.Domain.Characters.Commands;
 using Cryst.Domain.Combat;
 using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
-using Gast.Features.Characters;
-using Gast.Features.HitDetection;
-using Gast.Shared.Animations;
 using System;
 using System.Threading;
+using Gast.Unity.Features.Characters;
+using Gast.Unity.Features.HitDetection;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions

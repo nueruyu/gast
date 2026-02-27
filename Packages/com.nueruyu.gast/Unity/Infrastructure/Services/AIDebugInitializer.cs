@@ -1,9 +1,9 @@
-using Gast.Lib.AI.Debugging;
-using VContainer.Unity;
 using System;
+using Gast.Lib.AI.Debugging;
 using UnityEngine;
+using VContainer.Unity;
 
-namespace Gast.Infrastructure.Services
+namespace Gast.Unity.Infrastructure.Services
 {
     public class AIDebugInitializer : IStartable, IDisposable
     {

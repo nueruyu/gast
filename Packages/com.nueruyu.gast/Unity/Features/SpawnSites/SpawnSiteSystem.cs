@@ -1,13 +1,13 @@
-using Cysharp.Threading.Tasks;
-using Gast.Core.Commands;
-using Gast.Core.Tasks;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
+using Gast.Core.Commands;
+using Gast.Core.Tasks;
 using UnityEngine;
 
-namespace Gast.Features.SpawnSites
+namespace Gast.Unity.Features.SpawnSites
 {
     /// <summary>
     /// System that manages all spawn sites in the scene.

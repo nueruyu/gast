@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gast.Domain.Characters;
 
-namespace Gast.Infrastructure.Characters
+namespace Gast.Unity.Infrastructure.Characters
 {
     /// <summary>
     /// Pure C# repository for accessing character type definitions.

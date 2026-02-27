@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Gast.Core.Events;
 using Gast.Core.Observables;
 
-namespace Gast.Infrastructure.Services
+namespace Gast.Unity.Infrastructure.Services
 {
     public class DomainEventPublisher : IDomainEventPublisher, IDomainEventSubscriber
     {

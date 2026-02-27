@@ -4,9 +4,9 @@ using System.Reflection;
 using Gast.Application.AI;
 using Gast.Domain.AI;
 using Gast.Domain.AI.Attributes;
-using Gast.Infrastructure.Reflection;
+using Gast.Unity.Infrastructure.Reflection;
 
-namespace Gast.Infrastructure.AI
+namespace Gast.Unity.Infrastructure.AI
 {
     public class ReflectionObjectiveRegistry : IObjectiveRegistry
     {

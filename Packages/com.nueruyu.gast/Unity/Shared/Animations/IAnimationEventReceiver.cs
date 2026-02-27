@@ -1,4 +1,4 @@
-namespace Gast.Shared.Animations
+namespace Gast.Unity.Shared.Animations
 {
     /// <summary>
     /// Interface for receiving animation events from StateMachineBehaviour.

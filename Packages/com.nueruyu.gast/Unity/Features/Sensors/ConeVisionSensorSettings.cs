@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gast.Features.Sensors
+namespace Gast.Unity.Features.Sensors
 {
     [CreateAssetMenu(fileName = "ConeVisionSensorSettings", menuName = "Gast/Sensors/Cone Vision Sensor Settings")]
     public class ConeVisionSensorSettings : ScriptableObject

@@ -1,9 +1,8 @@
-using System;
-using UnityEngine;
 using Gast.Domain.Economy;
-using Gast.Features.Economy;
+using Gast.Unity.Features.Economy;
+using UnityEngine;
 
-namespace Gast.Infrastructure.Items
+namespace Gast.Unity.Infrastructure.Items
 {
     [CreateAssetMenu(fileName = "NewItem", menuName = "Gast/Economy/Item Definition")]
     public class ItemDefinition : ScriptableObject, IItemDefinition

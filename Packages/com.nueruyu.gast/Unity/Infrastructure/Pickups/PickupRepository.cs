@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gast.Domain.Pickups;
 
-namespace Gast.Infrastructure.Pickups
+namespace Gast.Unity.Infrastructure.Pickups
 {
     public class PickupRepository : IPickupRepository
     {

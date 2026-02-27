@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gast.Features.Characters
+namespace Gast.Unity.Features.Characters
 {
     public abstract class CharacterActionSettings : ScriptableObject
     {

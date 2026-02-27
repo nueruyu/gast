@@ -3,18 +3,17 @@ using Gast.Application.AIPlanning;
 using Gast.Application.Economy;
 using Gast.Core.DI;
 using Gast.Domain.Characters;
-using Gast.Features.HitDetection;
-using Gast.Infrastructure.AI;
-using Gast.Infrastructure.Characters;
-using Gast.Infrastructure.Items;
-using Gast.Infrastructure.Pickups;
-using Gast.Infrastructure.Remoting.AI;
-using Gast.Infrastructure.Services;
 using Gast.Lib.AI.Debugging;
-using Gast.Infrastructure.HitDetection;
 using Gast.Lib.Gaia;
+using Gast.Unity.Infrastructure.AI;
+using Gast.Unity.Infrastructure.Characters;
+using Gast.Unity.Infrastructure.HitDetection;
+using Gast.Unity.Infrastructure.Items;
+using Gast.Unity.Infrastructure.Pickups;
+using Gast.Unity.Infrastructure.Remoting.AI;
+using Gast.Unity.Infrastructure.Services;
 
-namespace Gast.Infrastructure
+namespace Gast.Unity.Infrastructure
 {
     public class InfrastructureInstaller : IInstaller
     {

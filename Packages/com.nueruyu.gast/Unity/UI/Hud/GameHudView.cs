@@ -1,11 +1,12 @@
 using System;
-using Gast.Shared.UnityExtensions;
-using Gast.UI.Hud.Objectives;
-using Gast.UI.Hud.Status;
+using Gast.Unity.Shared.UnityExtensions;
+using Gast.Unity.UI.Hud.AIStatus;
+using Gast.Unity.UI.Hud.Inventory;
+using Gast.Unity.UI.Hud.Objectives;
 using R3;
 using UnityEngine.UIElements;
 
-namespace Gast.UI.Hud
+namespace Gast.Unity.UI.Hud
 {
     public class GameHudView : VisualElement
     {

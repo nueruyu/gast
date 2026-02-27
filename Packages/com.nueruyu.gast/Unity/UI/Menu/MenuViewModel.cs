@@ -1,8 +1,8 @@
+using System;
 using Gast.Domain.Inputs;
 using R3;
-using System;
 
-namespace Gast.UI.Menu
+namespace Gast.Unity.UI.Menu
 {
     public class MenuViewModel : IDisposable
     {

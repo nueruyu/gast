@@ -2,7 +2,7 @@ using System;
 using Cryst.Features.CharacterActions;
 using Cryst.Features.CharacterActions.Default;
 using Cysharp.Threading.Tasks;
-using Gast.Features.Characters;
+using Gast.Unity.Features.Characters;
 using VContainer;
 
 namespace Cryst.Infrastructure.Characters

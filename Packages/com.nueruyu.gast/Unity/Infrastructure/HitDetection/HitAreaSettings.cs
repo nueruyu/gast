@@ -1,7 +1,7 @@
-using Gast.Features.HitDetection;
+using Gast.Unity.Features.HitDetection;
 using UnityEngine;
 
-namespace Gast.Infrastructure.HitDetection
+namespace Gast.Unity.Infrastructure.HitDetection
 {
     [CreateAssetMenu(fileName = "HitAreaSettings", menuName = "Gast/HitDetection/Hit Area Settings")]
     public class HitAreaSettings : ScriptableObject

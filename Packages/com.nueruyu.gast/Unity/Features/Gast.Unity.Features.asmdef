@@ -1,17 +1,17 @@
 {
-    "name": "Gast.Infrastructure",
-    "rootNamespace": "Gast.Infrastructure",
+    "name": "Gast.Unity.Features",
+    "rootNamespace": "Gast.Unity.Features",
     "references": [
         "Gast.Core",
         "Gast.Domain",
         "Gast.Application",
-        "Gast.Features",
-        "Gast.UI",
-        "Gast.Shared",
         "Gast.Lib.AI",
-        "Gast.Lib.Gaia",
+        "Gast.Unity.Shared",
+        "Unity.TextMeshPro",
+        "Unity.InputSystem",
         "UniTask",
         "R3.Unity",
+        "Cinemachine",
         "VContainer"
     ],
     "includePlatforms": [],

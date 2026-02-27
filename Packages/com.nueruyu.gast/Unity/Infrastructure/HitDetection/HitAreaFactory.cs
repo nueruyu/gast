@@ -1,10 +1,10 @@
 using Gast.Core.Events;
 using Gast.Domain.Characters;
-using Gast.Features.HitDetection;
+using Gast.Unity.Features.HitDetection;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Gast.Infrastructure.HitDetection
+namespace Gast.Unity.Infrastructure.HitDetection
 {
     public class HitAreaFactory : IHitAreaFactory
     {

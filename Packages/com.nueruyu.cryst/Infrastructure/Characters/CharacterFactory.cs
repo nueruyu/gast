@@ -7,15 +7,15 @@ using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Domain.Interactions;
-using Gast.Features.Cameras;
-using Gast.Features.Characters;
-using Gast.Features.Navigations;
-using Gast.Features.Sensors;
-using Gast.Infrastructure.Characters;
-using Gast.Shared.UnityExtensions;
 using R3;
 using R3.Triggers;
 using System;
+using Gast.Unity.Features.Cameras;
+using Gast.Unity.Features.Characters;
+using Gast.Unity.Features.Navigations;
+using Gast.Unity.Features.Sensors;
+using Gast.Unity.Infrastructure.Characters;
+using Gast.Unity.Shared.UnityExtensions;
 using UnityEngine;
 
 namespace Cryst.Infrastructure.Characters

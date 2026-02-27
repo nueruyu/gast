@@ -2,7 +2,7 @@ using Gast.Domain.AI;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Gast.Features.Navigations
+namespace Gast.Unity.Features.Navigations
 {
     [RequireComponent(typeof(NavMeshAgent))]
     public class NavMeshNavigator : MonoBehaviour, INavigationProvider

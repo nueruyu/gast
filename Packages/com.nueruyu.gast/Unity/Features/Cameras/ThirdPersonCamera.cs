@@ -1,7 +1,7 @@
-using UnityEngine;
 using Cinemachine;
+using UnityEngine;
 
-namespace Gast.Features.Cameras
+namespace Gast.Unity.Features.Cameras
 {
     [RequireComponent(typeof(CinemachineVirtualCamera))]
     public class ThirdPersonCamera : MonoBehaviour

@@ -5,11 +5,11 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Gast.Domain.AI;
 using Gast.Domain.AI.Attributes;
-using Gast.Infrastructure.Reflection;
+using Gast.Unity.Infrastructure.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Gast.Infrastructure.Remoting.AI
+namespace Gast.Unity.Infrastructure.Remoting.AI
 {
     public class GoalInstantiator
     {

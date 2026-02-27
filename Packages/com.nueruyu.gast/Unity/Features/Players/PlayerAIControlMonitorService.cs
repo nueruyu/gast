@@ -6,11 +6,11 @@ using Cysharp.Threading.Tasks;
 using Gast.Core.Tasks;
 using Gast.Domain.AI;
 using Gast.Domain.Players;
-using Gast.Shared.Observables;
+using Gast.Unity.Shared.Observables;
 using R3;
 using UnityEngine;
 
-namespace Gast.Features.Players
+namespace Gast.Unity.Features.Players
 {
     public class PlayerAIControlMonitorService : ILifecycleTask
     {

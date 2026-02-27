@@ -1,7 +1,6 @@
-using Gast.Shared.Exceptions;
 using UnityEngine;
 
-namespace Gast.Shared.UnityExtensions
+namespace Gast.Unity.Shared.UnityExtensions
 {
     public static class GameObjectExtensions
     {

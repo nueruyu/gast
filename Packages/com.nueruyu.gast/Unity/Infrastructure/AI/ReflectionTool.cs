@@ -8,7 +8,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using UnityEngine;
 
-namespace Gast.Infrastructure.AI
+namespace Gast.Unity.Infrastructure.AI
 {
     public class ReflectionTool : ITool
     {

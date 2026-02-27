@@ -4,7 +4,7 @@ using Gast.Domain.Economy;
 using Gast.Domain.Pickups;
 using Newtonsoft.Json;
 
-namespace Gast.Infrastructure.Remoting.AI
+namespace Gast.Unity.Infrastructure.Remoting.AI
 {
     public class DomainValueObjectConverter : JsonConverter
     {

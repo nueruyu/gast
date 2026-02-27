@@ -1,8 +1,7 @@
-using System;
-using UnityEngine;
 using Gast.Core.Observables;
+using UnityEngine;
 
-namespace Gast.Shared.Animations
+namespace Gast.Unity.Shared.Animations
 {
     /// <summary>
     /// Receives animation events from StateMachineBehaviours and exposes them as C# events.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gast.Domain.Characters;
 
-namespace Gast.Infrastructure.Characters
+namespace Gast.Unity.Infrastructure.Characters
 {
     public class CharacterFactoryRegistry : ICharacterFactoryRegistry
     {

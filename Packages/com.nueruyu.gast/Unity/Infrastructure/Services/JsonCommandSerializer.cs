@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Gast.Core.Commands;
-using Gast.Infrastructure.Reflection;
+using Gast.Unity.Infrastructure.Reflection;
 using Newtonsoft.Json;
 
-namespace Gast.Infrastructure.Services
+namespace Gast.Unity.Infrastructure.Services
 {
     /// <summary>
     /// An implementation of ICommandSerializer that uses Newtonsoft.Json.

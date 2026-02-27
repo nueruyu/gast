@@ -1,7 +1,7 @@
 using Gast.Core.Observables;
 using Gast.Domain.Inputs;
 
-namespace Gast.Features.Inputs
+namespace Gast.Unity.Features.Inputs
 {
     public class InputModeManager : IInputModeManager
     {

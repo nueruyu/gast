@@ -1,9 +1,9 @@
 using System;
-using Gast.Shared.UnityExtensions;
+using Gast.Unity.Shared.UnityExtensions;
 using R3;
 using UnityEngine.UIElements;
 
-namespace Gast.UI.Command
+namespace Gast.Unity.UI.Command
 {
     public class CommandView : VisualElement
     {

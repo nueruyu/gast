@@ -1,13 +1,13 @@
+using System.Threading;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Tasks;
 using Gast.Domain.Inputs;
-using Gast.UI.Hud;
-using Gast.UI.Menu;
+using Gast.Unity.UI.Hud;
+using Gast.Unity.UI.Menu;
 using R3;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Gast.UI.System
+namespace Gast.Unity.UI.System
 {
     public class InputModeController : ILifecycleTask
     {

@@ -1,5 +1,4 @@
 using Gast.Core.DI;
-using Gast.Shared.DI;
 using Cryst.Features.CharacterAI.Combat;
 using Cryst.Features.CharacterAI.Combat.Actions;
 using Cryst.Features.CharacterAI.Gathering;
@@ -16,18 +15,19 @@ using Gast.Domain.Players;
 using Gast.Core.Tasks;
 using Cryst.Features.Characters.Feedbacks;
 using Cryst.Features.Characters.EventHandlers;
-using Gast.Features.Characters;
 using Cryst.Features.CharacterActions;
-using Gast.UI.Hud.Status;
-using Cryst.UI.Hud.Status;
-using Gast.UI.Hud.Objectives;
 using Cryst.UI.Hud.Objectives;
 using Cryst.Infrastructure.UI;
 using Cryst.Infrastructure.Reflection;
-using Gast.Infrastructure.Reflection;
 using Gast.Application.AI;
 using Cryst.Infrastructure;
 using Cryst.Features.AI.Tools;
+using Cryst.UI.Hud.PlayerStatus;
+using Gast.Unity.Features.Characters;
+using Gast.Unity.Infrastructure.Reflection;
+using Gast.Unity.Shared.DI;
+using Gast.Unity.UI.Hud.Objectives;
+using Gast.Unity.UI.Hud.PlayerStatus;
 
 namespace Cryst.Composition
 {

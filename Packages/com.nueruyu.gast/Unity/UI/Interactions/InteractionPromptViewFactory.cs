@@ -1,7 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Gast.UI.Interactions
+namespace Gast.Unity.UI.Interactions
 {
     public class InteractionPromptViewFactory
     {

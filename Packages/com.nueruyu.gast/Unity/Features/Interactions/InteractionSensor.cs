@@ -5,7 +5,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Domain.Interactions;
 using UnityEngine;
 
-namespace Gast.Features.Interactions
+namespace Gast.Unity.Features.Interactions
 {
     public class InteractionSensor : MonoBehaviour, IInteractionSensor
     {

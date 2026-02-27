@@ -5,7 +5,7 @@ using Gast.Domain.AI;
 using Gast.Lib.Gaia.Dto;
 using UnityEngine;
 
-namespace Gast.Infrastructure.Remoting.AI
+namespace Gast.Unity.Infrastructure.Remoting.AI
 {
     public class PlanConverter
     {

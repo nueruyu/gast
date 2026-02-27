@@ -1,8 +1,8 @@
 using System;
-using UnityEngine;
 using Gast.Domain.Economy;
+using UnityEngine;
 
-namespace Gast.Features.Economy
+namespace Gast.Unity.Features.Economy
 {
     [CreateAssetMenu(fileName = "ItemReference", menuName = "Gast/Economy/Item Reference")]
     public class ItemReference : ScriptableObject

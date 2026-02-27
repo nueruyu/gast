@@ -1,10 +1,9 @@
-using R3;
 using System;
 using System.Collections.Generic;
-using System.Threading;
+using R3;
 using UnityEngine.UIElements;
 
-namespace Gast.Shared.UnityExtensions
+namespace Gast.Unity.Shared.UnityExtensions
 {
     public static class UIToolkitR3Extensions
     {

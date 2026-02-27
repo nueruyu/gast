@@ -1,4 +1,4 @@
-namespace Gast.Features.Characters
+namespace Gast.Unity.Features.Characters
 {
     public interface ICharacterActionFactory
     {

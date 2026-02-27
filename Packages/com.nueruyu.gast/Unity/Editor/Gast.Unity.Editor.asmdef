@@ -1,10 +1,10 @@
 {
-    "name": "Gast.Editor",
-    "rootNamespace": "Gast.Editor",
+    "name": "Gast.Unity.Editor",
+    "rootNamespace": "Gast.Unity.Editor",
     "references": [
         "Gast.Core",
         "Gast.Domain",
-        "Gast.Features",
+        "Gast.Unity.Features",
         "Gast.Lib.AI.Editor"
     ],
     "includePlatforms": [

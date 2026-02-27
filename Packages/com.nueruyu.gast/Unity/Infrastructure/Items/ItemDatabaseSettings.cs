@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-namespace Gast.Infrastructure.Items
+namespace Gast.Unity.Infrastructure.Items
 {
     [CreateAssetMenu(fileName = "ItemDatabase", menuName = "Gast/Economy/Item Database")]
     public class ItemDatabaseSettings : ScriptableObject

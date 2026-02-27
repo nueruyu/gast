@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Gast.Features.Inputs
+namespace Gast.Unity.Features.Inputs
 {
     /// <summary>
     /// Settings container for Input System configuration.

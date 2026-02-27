@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
 
-namespace Gast.UI.Root
+namespace Gast.Unity.UI.Root
 {
     /// <summary>
     /// Root visual element that manages the SPA-style UI structure with layered Z-order.

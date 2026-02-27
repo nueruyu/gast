@@ -1,8 +1,8 @@
 using System;
-using UnityEngine;
 using Gast.Domain.Characters;
+using UnityEngine;
 
-namespace Gast.Features.Characters
+namespace Gast.Unity.Features.Characters
 {
     [CreateAssetMenu(fileName = "CharacterTypeReference", menuName = "Gast/Characters/Character Type Reference")]
     public class CharacterTypeReference : ScriptableObject

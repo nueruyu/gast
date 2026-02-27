@@ -1,9 +1,9 @@
 using System;
 using Gast.Domain.Players;
-using Gast.Shared.Observables;
+using Gast.Unity.Shared.Observables;
 using R3;
 
-namespace Gast.UI.Hud
+namespace Gast.Unity.UI.Hud.AIStatus
 {
     public class AIStatusViewModel : IDisposable
     {

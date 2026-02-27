@@ -2,7 +2,7 @@ using Gast.Application.Economy;
 using Gast.Domain.Economy;
 using UnityEngine;
 
-namespace Gast.Infrastructure.Items
+namespace Gast.Unity.Infrastructure.Items
 {
     /// <summary>
     /// Infrastructure-level implementation that retrieves item assets

@@ -1,7 +1,7 @@
 using Gast.Domain.Interactions;
 using UnityEngine;
 
-namespace Gast.Features.Interactions
+namespace Gast.Unity.Features.Interactions
 {
     public class Interactor : MonoBehaviour, IInteractor
     {

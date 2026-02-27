@@ -1,4 +1,4 @@
-namespace Gast.Infrastructure.Services
+namespace Gast.Unity.Infrastructure.Services
 {
     /// <summary>
     /// Internal transport DTO used by NewtonsoftCommandSerializer for command serialization.

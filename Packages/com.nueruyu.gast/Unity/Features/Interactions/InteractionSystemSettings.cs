@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gast.Features.Interactions
+namespace Gast.Unity.Features.Interactions
 {
     /// <summary>
     /// Settings for InteractionDetector.

@@ -1,3 +1,5 @@
+using System.Threading;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Gast.Application.Items;
 using Gast.Core.Commands;
@@ -5,12 +7,10 @@ using Gast.Core.Events;
 using Gast.Core.Tasks;
 using Gast.Domain.Loot;
 using Gast.Domain.Pickups;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Gast.Features.Loot
+namespace Gast.Unity.Features.Loot
 {
     public class LootSystem : ILifecycleTask
     {

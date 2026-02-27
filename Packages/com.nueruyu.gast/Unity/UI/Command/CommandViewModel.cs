@@ -6,7 +6,7 @@ using Gast.Core.Commands;
 using R3;
 using UnityEngine;
 
-namespace Gast.UI.Command
+namespace Gast.Unity.UI.Command
 {
     public class CommandViewModel : IDisposable
     {

@@ -1,4 +1,4 @@
-using Gast.Features.Characters;
+using Gast.Unity.Features.Characters;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions.Default

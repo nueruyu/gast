@@ -5,7 +5,7 @@ using Gast.Core.Tasks;
 using Gast.Domain.Inputs;
 using UnityEngine;
 
-namespace Gast.UI.System
+namespace Gast.Unity.UI.System
 {
     public class CursorController : ILifecycleTask
     {

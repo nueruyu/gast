@@ -1,12 +1,12 @@
+using System.Threading;
+using System.Threading.Tasks;
 using Gast.Core.Commands;
 using Gast.Core.Tasks;
 using Gast.Domain.Economy;
-using Gast.Features.Economy;
-using Gast.Features.Interactions;
-using System.Threading;
-using System.Threading.Tasks;
+using Gast.Unity.Features.Economy;
+using Gast.Unity.Features.Interactions;
 
-namespace Gast.Infrastructure.Items
+namespace Gast.Unity.Infrastructure.Items
 {
     public class ShopInitializer : ILifecycleTask
     {

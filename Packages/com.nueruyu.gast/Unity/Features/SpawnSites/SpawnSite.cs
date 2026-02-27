@@ -1,14 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Application.Characters;
 using Gast.Core.Commands;
 using Gast.Core.Observables;
 using Gast.Domain.Characters;
-using System;
-using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
-namespace Gast.Features.SpawnSites
+namespace Gast.Unity.Features.SpawnSites
 {
     /// <summary>
     /// Scene placement marker for a spawn site.

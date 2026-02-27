@@ -1,8 +1,8 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Gast.UI.Command;
+using Gast.Unity.UI.Command;
 
-namespace Gast.UI.Menu
+namespace Gast.Unity.UI.Menu
 {
     public class MenuViewFactory
     {

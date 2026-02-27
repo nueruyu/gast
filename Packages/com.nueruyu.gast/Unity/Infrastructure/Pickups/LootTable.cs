@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 using Gast.Domain.Economy;
 using Gast.Domain.Loot;
-using Gast.Features.Economy;
+using Gast.Unity.Features.Economy;
+using UnityEngine;
 
-namespace Gast.Infrastructure.Pickups
+namespace Gast.Unity.Infrastructure.Pickups
 {
     [CreateAssetMenu(fileName = "NewLootTable", menuName = "Gast/Loot/Loot Table")]
     public class LootTable : ScriptableObject, ILootTable

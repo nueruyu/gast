@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gast.Features.Navigations
+namespace Gast.Unity.Features.Navigations
 {
     [CreateAssetMenu(fileName = "NavMeshNavigatorSettings", menuName = "Gast/Navigations/NavMesh Navigator Settings")]
     public class NavMeshNavigatorSettings : ScriptableObject

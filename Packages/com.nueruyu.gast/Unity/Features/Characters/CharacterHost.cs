@@ -1,8 +1,8 @@
-using Gast.Domain.Characters;
 using System;
+using Gast.Domain.Characters;
 using UnityEngine;
 
-namespace Gast.Features.Characters
+namespace Gast.Unity.Features.Characters
 {
     public class CharacterHost : MonoBehaviour
     {

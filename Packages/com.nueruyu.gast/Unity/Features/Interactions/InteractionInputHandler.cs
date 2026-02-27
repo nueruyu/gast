@@ -5,9 +5,9 @@ using Gast.Core.Tasks;
 using Gast.Domain.Inputs;
 using Gast.Domain.Interactions;
 using Gast.Domain.Players;
-using Gast.Shared.Tasks;
+using Gast.Unity.Shared.Tasks;
 
-namespace Gast.Features.Interactions
+namespace Gast.Unity.Features.Interactions
 {
     public class InteractionInputHandler : ILifecycleTask
     {

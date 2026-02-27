@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using Gast.Domain.Characters;
-using Gast.Features.Characters;
-using Gast.Shared.UnityExtensions;
+using Gast.Unity.Features.Characters;
+using Gast.Unity.Shared.UnityExtensions;
 using UnityEngine;
 
-namespace Gast.Features.Sensors
+namespace Gast.Unity.Features.Sensors
 {
     public class ConeVisionSensor : MonoBehaviour, IVisionSensor
     {

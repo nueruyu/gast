@@ -1,12 +1,12 @@
+using System.Threading;
+using System.Threading.Tasks;
 using Gast.Application.Characters;
 using Gast.Core.Commands;
 using Gast.Core.Tasks;
 using Gast.Domain.Characters;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Gast.Features.Gameplay
+namespace Gast.Unity.Features.Gameplay
 {
     /// <summary>
     /// Entry point for game initialization.

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Gast.Features.Gathering
+namespace Gast.Unity.Features.Gathering
 {
     public class GatheringSpotRegistry : MonoBehaviour
     {

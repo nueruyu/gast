@@ -1,10 +1,10 @@
 using System;
 using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
-using Gast.Features.Characters;
+using Gast.Unity.Features.Characters;
 using UnityEngine;
 
-namespace Gast.Features.HitDetection
+namespace Gast.Unity.Features.HitDetection
 {
     [RequireComponent(typeof(Collider))]
     public class HitArea : MonoBehaviour

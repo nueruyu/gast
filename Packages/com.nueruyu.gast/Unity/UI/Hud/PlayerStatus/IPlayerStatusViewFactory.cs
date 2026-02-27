@@ -1,7 +1,7 @@
 using System.Threading;
 using UnityEngine.UIElements;
 
-namespace Gast.UI.Hud.Status
+namespace Gast.Unity.UI.Hud.PlayerStatus
 {
     public interface IPlayerStatusViewFactory
     {

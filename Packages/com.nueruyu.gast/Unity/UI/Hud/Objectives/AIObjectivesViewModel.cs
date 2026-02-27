@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gast.Domain.Players;
-using Gast.Shared.Observables;
+using Gast.Unity.Shared.Observables;
 using R3;
 
-namespace Gast.UI.Hud.Objectives
+namespace Gast.Unity.UI.Hud.Objectives
 {
     public class AIObjectivesViewModel : IDisposable
     {

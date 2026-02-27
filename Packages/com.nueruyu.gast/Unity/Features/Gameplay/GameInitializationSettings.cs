@@ -1,7 +1,7 @@
 using Gast.Domain.Characters;
 using UnityEngine;
 
-namespace Gast.Features.Gameplay
+namespace Gast.Unity.Features.Gameplay
 {
     /// <summary>
     /// Settings for game initialization and startup configuration.

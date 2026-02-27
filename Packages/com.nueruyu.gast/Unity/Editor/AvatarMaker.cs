@@ -1,8 +1,8 @@
-using UnityEngine;
-using UnityEditor;
 using System.IO;
+using UnityEditor;
+using UnityEngine;
 
-namespace Gast.Editor
+namespace Gast.Unity.Editor
 {
     public class AvatarMaskMaker : MonoBehaviour
     {

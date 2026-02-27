@@ -1,4 +1,4 @@
-using Gast.Features.Cameras;
+using Gast.Unity.Features.Cameras;
 using UnityEngine;
 
 namespace Cryst.Infrastructure.Characters

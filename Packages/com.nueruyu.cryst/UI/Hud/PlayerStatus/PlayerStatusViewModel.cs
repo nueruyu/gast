@@ -3,11 +3,11 @@ using Cryst.Domain.Characters;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using Gast.Domain.Players;
-using Gast.Shared.Observables;
+using Gast.Unity.Shared.Observables;
 using R3;
 using UnityEngine;
 
-namespace Cryst.UI.Hud.Status
+namespace Cryst.UI.Hud.PlayerStatus
 {
     public class PlayerStatusViewModel : IDisposable
     {

@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Gast.Shared.Tasks
+namespace Gast.Unity.Shared.Tasks
 {
     public static class ValueTaskExtensions
     {

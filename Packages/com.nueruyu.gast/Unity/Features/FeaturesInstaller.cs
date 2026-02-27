@@ -1,14 +1,14 @@
 using Gast.Core.DI;
-using Gast.Features.Cameras;
-using Gast.Features.Gameplay;
-using Gast.Features.Gathering;
-using Gast.Features.Inputs;
-using Gast.Features.Interactions;
-using Gast.Features.Loot;
-using Gast.Features.Players;
-using Gast.Features.SpawnSites;
+using Gast.Unity.Features.Cameras;
+using Gast.Unity.Features.Gameplay;
+using Gast.Unity.Features.Gathering;
+using Gast.Unity.Features.Inputs;
+using Gast.Unity.Features.Interactions;
+using Gast.Unity.Features.Loot;
+using Gast.Unity.Features.Players;
+using Gast.Unity.Features.SpawnSites;
 
-namespace Gast.Features
+namespace Gast.Unity.Features
 {
     public class FeaturesInstaller : IInstaller
     {

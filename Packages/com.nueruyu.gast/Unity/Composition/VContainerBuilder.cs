@@ -1,10 +1,10 @@
-using Gast.Core.DI;
 using System;
+using Gast.Core.DI;
 using VContainer;
 using IContainerBuilder = Gast.Core.DI.IContainerBuilder;
 using Lifetime = Gast.Core.DI.Lifetime;
 
-namespace Gast.Composition
+namespace Gast.Unity.Composition
 {
     public class VContainerBuilder : IContainerBuilder
     {

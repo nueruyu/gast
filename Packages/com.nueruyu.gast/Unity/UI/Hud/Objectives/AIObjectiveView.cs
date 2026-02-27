@@ -2,7 +2,7 @@ using System;
 using R3;
 using UnityEngine.UIElements;
 
-namespace Gast.UI.Hud.Objectives
+namespace Gast.Unity.UI.Hud.Objectives
 {
     public class AIObjectiveView : VisualElement
     {

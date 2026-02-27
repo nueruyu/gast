@@ -1,14 +1,14 @@
-using Gast.Core.Tasks;
-using Gast.UI.Command;
-using Gast.UI.Hud;
-using Gast.UI.Interactions;
-using Gast.UI.Menu;
-using Gast.UI.Root;
 using System.Threading;
 using System.Threading.Tasks;
+using Gast.Core.Tasks;
+using Gast.Unity.UI.Command;
+using Gast.Unity.UI.Hud;
+using Gast.Unity.UI.Interactions;
+using Gast.Unity.UI.Menu;
+using Gast.Unity.UI.Root;
 using UnityEngine.UIElements;
 
-namespace Gast.UI
+namespace Gast.Unity.UI
 {
     public class UIBootstrap : ILifecycleTask
     {

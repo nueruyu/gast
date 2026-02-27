@@ -1,11 +1,11 @@
 {
-    "name": "Gast.UI",
-    "rootNamespace": "Gast.UI",
+    "name": "Gast.Unity.UI",
+    "rootNamespace": "Gast.Unity.UI",
     "references": [
         "Gast.Core",
         "Gast.Domain",
         "Gast.Application",
-        "Gast.Shared",
+        "Gast.Unity.Shared",
         "Unity.TextMeshPro",
         "Unity.InputSystem",
         "UniTask",

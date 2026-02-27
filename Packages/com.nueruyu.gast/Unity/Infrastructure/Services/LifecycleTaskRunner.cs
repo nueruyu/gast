@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using UnityEngine;
-using VContainer.Unity;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Tasks;
+using UnityEngine;
+using VContainer.Unity;
 
-namespace Gast.Infrastructure.Services
+namespace Gast.Unity.Infrastructure.Services
 {
     /// <summary>
     /// Manages and runs all registered ILifecycleTask instances.

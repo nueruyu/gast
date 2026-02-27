@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Gast.Infrastructure.Characters
+namespace Gast.Unity.Infrastructure.Characters
 {
     /// <summary>
     /// Settings container for character type definitions.

@@ -1,8 +1,8 @@
-using R3;
 using System;
+using R3;
 using UnityEngine.UIElements;
 
-namespace Gast.Shared.UnityExtensions
+namespace Gast.Unity.Shared.UnityExtensions
 {
     public static class UIToolkitExtensions
     {

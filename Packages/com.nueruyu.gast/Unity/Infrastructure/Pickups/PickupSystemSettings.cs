@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gast.Infrastructure.Pickups
+namespace Gast.Unity.Infrastructure.Pickups
 {
     [CreateAssetMenu(fileName = "PickupSystemSettings", menuName = "Gast/Pickup/System Settings")]
     public class PickupSystemSettings : ScriptableObject

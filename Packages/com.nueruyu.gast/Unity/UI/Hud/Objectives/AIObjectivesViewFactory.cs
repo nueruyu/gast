@@ -1,7 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Gast.UI.Hud.Objectives
+namespace Gast.Unity.UI.Hud.Objectives
 {
     public class AIObjectivesViewFactory
     {

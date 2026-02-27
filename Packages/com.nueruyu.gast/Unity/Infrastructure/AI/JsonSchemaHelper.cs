@@ -1,7 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace Gast.Infrastructure.AI
+namespace Gast.Unity.Infrastructure.AI
 {
     public static class JsonSchemaHelper
     {

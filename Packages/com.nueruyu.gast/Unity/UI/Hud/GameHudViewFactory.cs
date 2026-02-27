@@ -1,9 +1,11 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Gast.UI.Hud.Objectives;
-using Gast.UI.Hud.Status;
+using Gast.Unity.UI.Hud.AIStatus;
+using Gast.Unity.UI.Hud.Inventory;
+using Gast.Unity.UI.Hud.Objectives;
+using Gast.Unity.UI.Hud.PlayerStatus;
 
-namespace Gast.UI.Hud
+namespace Gast.Unity.UI.Hud
 {
     public class GameHudViewFactory
     {

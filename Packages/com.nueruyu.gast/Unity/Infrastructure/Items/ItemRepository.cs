@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gast.Domain.Economy;
 
-namespace Gast.Infrastructure.Items
+namespace Gast.Unity.Infrastructure.Items
 {
     public class ItemRepository : IItemRepository
     {

@@ -1,13 +1,12 @@
-using Gast.Domain.Characters;
-using Gast.Domain.Loot;
-using Gast.Features.Characters;
-using Gast.Infrastructure.Pickups;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gast.Domain.Characters;
+using Gast.Domain.Loot;
+using Gast.Unity.Features.Characters;
+using Gast.Unity.Infrastructure.Pickups;
 using UnityEngine;
 
-namespace Gast.Infrastructure.Characters
+namespace Gast.Unity.Infrastructure.Characters
 {
     [CreateAssetMenu(fileName = "CharacterType", menuName = "Gast/Characters/Type Definition")]
     public class CharacterTypeDefinition : ScriptableObject, ICharacterTypeDefinition

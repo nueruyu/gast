@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ApplicationException = Gast.Core.Exceptions.ApplicationException;
 
-namespace Gast.Shared.Exceptions
+namespace Gast.Unity.Shared
 {
     public class ComponentNotFoundException : ApplicationException
     {

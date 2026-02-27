@@ -1,4 +1,4 @@
-using Gast.Shared.Animations;
+using Gast.Unity.Shared.Animations;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions

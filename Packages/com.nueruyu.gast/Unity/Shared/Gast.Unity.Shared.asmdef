@@ -1,17 +1,11 @@
 {
-    "name": "Gast.Composition",
-    "rootNamespace": "Gast.Composition",
+    "name": "Gast.Unity.Shared",
+    "rootNamespace": "Gast.Unity.Shared",
     "references": [
         "Gast.Core",
-        "Gast.Domain",
-        "Gast.Application",
-        "Gast.Shared",
-        "Gast.Features",
-        "Gast.UI",
-        "Gast.Infrastructure",
-        "Gast.Lib.Gaia",
-        "VContainer",
-        "UniTask"
+        "UniTask",
+        "R3.Unity",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,7 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Gast.UI.Command
+namespace Gast.Unity.UI.Command
 {
     public class CommandViewFactory
     {

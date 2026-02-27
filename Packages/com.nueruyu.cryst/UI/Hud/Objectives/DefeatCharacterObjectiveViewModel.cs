@@ -1,7 +1,7 @@
 using Cryst.Domain.AI.Objectives;
 using Gast.Domain.Characters;
-using Gast.Shared.Observables;
-using Gast.UI.Hud.Objectives;
+using Gast.Unity.Shared.Observables;
+using Gast.Unity.UI.Hud.Objectives;
 using R3;
 using UnityEngine;
 

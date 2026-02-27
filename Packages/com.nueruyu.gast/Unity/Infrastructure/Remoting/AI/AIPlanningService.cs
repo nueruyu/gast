@@ -8,7 +8,7 @@ using Gast.Lib.Gaia;
 using Gast.Lib.Gaia.Dto;
 using UnityEngine;
 
-namespace Gast.Infrastructure.Remoting.AI
+namespace Gast.Unity.Infrastructure.Remoting.AI
 {
     public class AIPlanningService : IAIPlanningService
     {

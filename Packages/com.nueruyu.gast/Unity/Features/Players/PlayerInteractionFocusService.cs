@@ -10,7 +10,7 @@ using Gast.Domain.Interactions;
 using Gast.Domain.Players;
 using UnityEngine;
 
-namespace Gast.Features.Players
+namespace Gast.Unity.Features.Players
 {
     public class PlayerInteractionFocusService : ILifecycleTask, IPlayerInteractionFocusService
     {

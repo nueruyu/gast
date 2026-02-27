@@ -1,9 +1,9 @@
 using System;
-using Gast.Shared.UnityExtensions;
+using Gast.Unity.Shared.UnityExtensions;
 using R3;
 using UnityEngine.UIElements;
 
-namespace Gast.UI.Hud
+namespace Gast.Unity.UI.Hud.AIStatus
 {
     public class AIStatusView : VisualElement
     {

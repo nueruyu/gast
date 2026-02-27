@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Gast.Infrastructure.Remoting.AI
+namespace Gast.Unity.Infrastructure.Remoting.AI
 {
     [CreateAssetMenu(fileName = "MockAIPlanningSettings", menuName = "Gast/AI/Mock AI Planning Settings")]
     public class MockAIPlanningSettings : ScriptableObject

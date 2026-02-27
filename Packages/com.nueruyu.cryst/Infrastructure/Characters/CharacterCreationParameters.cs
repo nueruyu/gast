@@ -1,6 +1,6 @@
 using Cryst.Domain.Characters;
 using Gast.Domain.Characters;
-using Gast.Features.Characters;
+using Gast.Unity.Features.Characters;
 using UnityEngine;
 
 namespace Cryst.Infrastructure.Characters

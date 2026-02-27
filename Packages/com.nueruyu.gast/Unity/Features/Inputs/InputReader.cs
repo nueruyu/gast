@@ -1,15 +1,14 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.InputSystem;
+using Gast.Core.Observables;
 using Gast.Core.Tasks;
 using Gast.Domain.Inputs;
-using Gast.Core.Observables;
-using Gast.Shared.UnityExtensions;
+using Gast.Unity.Shared.UnityExtensions;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
-namespace Gast.Features.Inputs
+namespace Gast.Unity.Features.Inputs
 {
     /// <summary>
     /// Reads input from the Input System and provides a clean interface for gameplay code.

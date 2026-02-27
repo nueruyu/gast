@@ -1,7 +1,7 @@
-using UnityEngine;
 using Gast.Domain.Characters;
+using UnityEngine;
 
-namespace Gast.Features.Characters
+namespace Gast.Unity.Features.Characters
 {
     /// <summary>
     /// Physical body implementation for characters using Unity's CharacterController.

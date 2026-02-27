@@ -1,7 +1,7 @@
 using Cryst.Domain.Characters.Commands;
 using Gast.Domain.Characters;
-using Gast.Features.Characters;
 using System;
+using Gast.Unity.Features.Characters;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions

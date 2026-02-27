@@ -1,7 +1,7 @@
 using Gast.Core.DI;
 using VContainer;
 
-namespace Gast.Composition
+namespace Gast.Unity.Composition
 {
     public class VContainerRegistrationBuilder : IRegistrationBuilder
     {

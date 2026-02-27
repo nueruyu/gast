@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gast.Features.Gameplay
+namespace Gast.Unity.Features.Gameplay
 {
     /// <summary>
     /// Marker component indicating where the player character should spawn.

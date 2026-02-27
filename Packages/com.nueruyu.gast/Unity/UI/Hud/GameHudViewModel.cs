@@ -1,10 +1,9 @@
-using Gast.Domain.Players;
-using Gast.Shared.Observables;
-using R3;
 using System;
-using System.Collections.Generic;
+using Gast.Domain.Players;
+using Gast.Unity.Shared.Observables;
+using R3;
 
-namespace Gast.UI.Hud
+namespace Gast.Unity.UI.Hud
 {
     public class GameHudViewModel : IDisposable
     {

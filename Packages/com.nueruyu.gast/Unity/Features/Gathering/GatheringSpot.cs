@@ -1,14 +1,13 @@
+using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Application.Items;
 using Gast.Core.Commands;
-using Gast.Core.Observables;
 using Gast.Domain.Pickups;
-using Gast.Features.Economy;
-using System;
-using System.Threading;
+using Gast.Unity.Features.Economy;
 using UnityEngine;
 
-namespace Gast.Features.Gathering
+namespace Gast.Unity.Features.Gathering
 {
     /// <summary>
     /// Represents a location where items can be gathered.
