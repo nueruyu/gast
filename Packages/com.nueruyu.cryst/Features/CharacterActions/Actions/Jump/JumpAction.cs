@@ -1,10 +1,10 @@
+using System;
 using Cryst.Domain.Characters.Commands;
 using Gast.Domain.Characters;
-using System;
 using Gast.Unity.Features.Characters;
 using UnityEngine;
 
-namespace Cryst.Features.CharacterActions
+namespace Cryst.Features.CharacterActions.Actions.Jump
 {
     public class JumpAction : ICharacterExecutableAction<JumpCommand>
     {

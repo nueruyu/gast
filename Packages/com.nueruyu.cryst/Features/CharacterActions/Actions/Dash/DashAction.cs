@@ -1,9 +1,9 @@
-using Cryst.Domain.Characters.Commands;
 using System;
+using Cryst.Domain.Characters.Commands;
 using Gast.Unity.Features.Characters;
 using UnityEngine;
 
-namespace Cryst.Features.CharacterActions
+namespace Cryst.Features.CharacterActions.Actions.Dash
 {
     public class DashAction : ICharacterExecutableAction<DashCommand>
     {

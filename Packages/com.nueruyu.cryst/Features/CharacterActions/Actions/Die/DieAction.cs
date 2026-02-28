@@ -1,9 +1,9 @@
-using Cryst.Domain.Characters.Commands;
 using System;
+using Cryst.Domain.Characters.Commands;
 using Gast.Unity.Features.Characters;
 using UnityEngine;
 
-namespace Cryst.Features.CharacterActions
+namespace Cryst.Features.CharacterActions.Actions.Die
 {
     public class DieAction : ICharacterExecutableAction<DieCommand>
     {

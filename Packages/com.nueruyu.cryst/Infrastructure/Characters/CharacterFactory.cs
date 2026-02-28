@@ -1,6 +1,5 @@
 using Cryst.Domain.Characters;
 using Cryst.Features.CharacterActions;
-using Cryst.Features.Characters.Footsteps;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Observables;
 using Gast.Domain.AI;
@@ -10,6 +9,7 @@ using Gast.Domain.Interactions;
 using R3;
 using R3.Triggers;
 using System;
+using Cryst.Features.Characters.Footsteps;
 using Gast.Unity.Features.Cameras;
 using Gast.Unity.Features.Characters;
 using Gast.Unity.Features.Navigations;

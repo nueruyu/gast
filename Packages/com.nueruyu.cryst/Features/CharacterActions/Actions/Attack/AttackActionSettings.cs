@@ -1,7 +1,7 @@
 using Gast.Unity.Features.Characters;
 using UnityEngine;
 
-namespace Cryst.Features.CharacterActions
+namespace Cryst.Features.CharacterActions.Actions.Attack
 {
     [CreateAssetMenu(fileName = "AttackActionSettings", menuName = "Gast/Actions/Attack Action Settings")]
     public class AttackActionSettings : CharacterActionSettings

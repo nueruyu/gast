@@ -1,7 +1,7 @@
 using Gast.Unity.Features.Characters;
 using UnityEngine;
 
-namespace Cryst.Features.CharacterActions
+namespace Cryst.Features.CharacterActions.Actions.Dash
 {
     [CreateAssetMenu(fileName = "DashActionSettings", menuName = "Gast/Actions/Dash Action Settings")]
     public class DashActionSettings : CharacterActionSettings

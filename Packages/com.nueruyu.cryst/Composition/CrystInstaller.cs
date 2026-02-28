@@ -22,12 +22,19 @@ using Cryst.Infrastructure.Reflection;
 using Gast.Application.AI;
 using Cryst.Infrastructure;
 using Cryst.Features.AI.Tools;
+using Cryst.Features.CharacterActions.Actions.Attack;
+using Cryst.Features.CharacterActions.Actions.Dash;
+using Cryst.Features.CharacterActions.Actions.Default;
+using Cryst.Features.CharacterActions.Actions.Die;
+using Cryst.Features.CharacterActions.Actions.Hit;
+using Cryst.Features.CharacterActions.Actions.Jump;
 using Cryst.UI.Hud.PlayerStatus;
 using Gast.Application.Reflection;
 using Gast.Unity.Features.Characters;
 using Gast.Unity.Shared.DI;
 using Gast.Unity.UI.Hud.Objectives;
 using Gast.Unity.UI.Hud.PlayerStatus;
+using GuardAction = Cryst.Features.CharacterActions.Actions.Guard.GuardAction;
 
 namespace Cryst.Composition
 {
@@ -55,9 +62,9 @@ namespace Cryst.Composition
             // Character Actions (Transient)
             builder.Register<AttackAction>(Lifetime.Transient);
             builder.Register<DashAction>(Lifetime.Transient);
-            builder.Register<Features.CharacterActions.Default.DefaultAction>(Lifetime.Transient);
+            builder.Register<DefaultAction>(Lifetime.Transient);
             builder.Register<DieAction>(Lifetime.Transient);
-            builder.Register<Features.CharacterActions.GuardAction>(Lifetime.Transient);
+            builder.Register<GuardAction>(Lifetime.Transient);
             builder.Register<HitAction>(Lifetime.Transient);
             builder.Register<JumpAction>(Lifetime.Transient);
 

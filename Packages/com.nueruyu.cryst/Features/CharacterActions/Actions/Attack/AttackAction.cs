@@ -1,14 +1,14 @@
+using System;
+using System.Threading;
 using Cryst.Domain.Characters.Commands;
 using Cryst.Domain.Combat;
 using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
-using System;
-using System.Threading;
 using Gast.Unity.Features.Characters;
 using Gast.Unity.Features.HitDetection;
 using UnityEngine;
 
-namespace Cryst.Features.CharacterActions
+namespace Cryst.Features.CharacterActions.Actions.Attack
 {
     public class AttackAction : ICharacterExecutableAction<AttackCommand>
     {

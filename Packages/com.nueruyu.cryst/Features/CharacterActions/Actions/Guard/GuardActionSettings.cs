@@ -1,7 +1,7 @@
 using Gast.Unity.Features.Characters;
 using UnityEngine;
 
-namespace Cryst.Features.CharacterActions
+namespace Cryst.Features.CharacterActions.Actions.Guard
 {
     [CreateAssetMenu(fileName = "GuardActionSettings", menuName = "Gast/Actions/Guard Action Settings")]
     public class GuardActionSettings : CharacterActionSettings

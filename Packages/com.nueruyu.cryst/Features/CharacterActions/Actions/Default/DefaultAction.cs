@@ -1,10 +1,9 @@
 using Cryst.Domain.Characters;
 using Gast.Domain.Characters;
-using System;
 using Gast.Unity.Features.Characters;
 using UnityEngine;
 
-namespace Cryst.Features.CharacterActions.Default
+namespace Cryst.Features.CharacterActions.Actions.Default
 {
     public class DefaultAction : ICharacterAction
     {

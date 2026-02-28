@@ -1,6 +1,12 @@
 using System;
 using Cryst.Features.CharacterActions;
-using Cryst.Features.CharacterActions.Default;
+using Cryst.Features.CharacterActions.Actions.Attack;
+using Cryst.Features.CharacterActions.Actions.Dash;
+using Cryst.Features.CharacterActions.Actions.Default;
+using Cryst.Features.CharacterActions.Actions.Die;
+using Cryst.Features.CharacterActions.Actions.Guard;
+using Cryst.Features.CharacterActions.Actions.Hit;
+using Cryst.Features.CharacterActions.Actions.Jump;
 using Cysharp.Threading.Tasks;
 using Gast.Unity.Features.Characters;
 using VContainer;
