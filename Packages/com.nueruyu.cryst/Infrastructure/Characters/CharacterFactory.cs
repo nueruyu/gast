@@ -6,7 +6,6 @@ using Cryst.Features.CharacterActions.Actions.Dash;
 using Cryst.Features.CharacterActions.Actions.Guard;
 using Cryst.Features.CharacterActions.Actions.Jump;
 using Cysharp.Threading.Tasks;
-using Gast.Core.Observables;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
@@ -21,7 +20,6 @@ using Gast.Unity.Features.Cameras;
 using Gast.Unity.Features.Characters;
 using Gast.Unity.Features.Navigations;
 using Gast.Unity.Features.Sensors;
-using Gast.Unity.Infrastructure.Characters;
 using Gast.Unity.Shared.UnityExtensions;
 using UnityEngine;
 
@@ -32,7 +30,7 @@ namespace Cryst.Infrastructure.Characters
         readonly Func<Vector3, Quaternion, CharacterCreationParameters, ICharacter> factory;
 
         public CharacterFactory(
-            CharacterTypeRepository typeRepository,
+            ICharacterTypeRepository typeRepository,
             ICharacterActionFactory actionFactory)
         {
             factory = Create;
@@ -58,7 +56,8 @@ namespace Cryst.Infrastructure.Characters
 
                 InitializeContext(context, characterGo, definition);
 
-                var actionController = CreateActionController(context, definition);
+                var actionProfile = definition.GetSettings<CharacterActionProfile>();
+                var actionController = CreateActionController(context, actionProfile.ActionSettings);
 
                 characterGo.UpdateAsObservable().Subscribe(_ => actionController.Update());
 
@@ -77,7 +76,7 @@ namespace Cryst.Infrastructure.Characters
                 var inventory = new Inventory(economySettings.SlotCapacity);
                 var interactor = characterGo.RequireComponentInChildren<IInteractor>();
 
-                var facets = CreateFacets(actionController, context, definition);
+                var facets = CreateFacets(actionController, context, actionProfile.ActionSettings);
                 facets[typeof(BaseCharacter)] = baseCharacter;
                 facets[typeof(IWalletHost)] = new WalletHost(wallet);
                 facets[typeof(IInventoryHost)] = new InventoryHost(inventory);
@@ -95,10 +94,10 @@ namespace Cryst.Infrastructure.Characters
             Dictionary<Type, ICharacterFacet> CreateFacets(
                 ICharacterActionController actionController,
                 CharacterContext context,
-                CharacterTypeDefinition definition)
+                IReadOnlyList<CharacterActionSettings> actionSettings)
             {
                 var facets = new Dictionary<Type, ICharacterFacet>();
-                var actionSettingsTypes = definition.ActionSettings.Select(s => s.GetType()).ToHashSet();
+                var actionSettingsTypes = actionSettings.Select(s => s.GetType()).ToHashSet();
 
                 var stateStore = context.Resolve<CharacterActionStateStore>();
                 facets.Add(typeof(SprintableCharacter), new SprintableCharacter(stateStore));
@@ -118,7 +117,7 @@ namespace Cryst.Infrastructure.Characters
                 return facets;
             }
 
-            void InitializeContext(CharacterContext context, GameObject gameObject, CharacterTypeDefinition typeDefinition)
+            void InitializeContext(CharacterContext context, GameObject gameObject, ICharacterTypeDefinition typeDefinition)
             {
                 var body = gameObject.RequireComponentInChildren<CharacterBody>();
                 var visionSensor = gameObject.RequireComponentInChildren<ConeVisionSensor>();
@@ -138,7 +137,7 @@ namespace Cryst.Infrastructure.Characters
                 var status = new CharacterStatus(statusSettings.InitialMaxHealth);
                 context.Register(status);
 
-                context.Register<ICharacterTypeDefinition>(typeDefinition);
+                context.Register(typeDefinition);
                 context.Register<IVisionSensor>(visionSensor);
                 context.Register<INavigationProvider>(navigationProvider);
                 context.Register(body);
@@ -159,11 +158,11 @@ namespace Cryst.Infrastructure.Characters
                 new CharacterFootstepHandler(animator, audio, footstepSettings).AddTo(gameObject);
             }
 
-            CharacterActionController CreateActionController(CharacterContext context, CharacterTypeDefinition definition)
+            CharacterActionController CreateActionController(CharacterContext context, IReadOnlyList<CharacterActionSettings> actionSettings) 
             {
                 var actionController = new CharacterActionController();
 
-                foreach (var settings in definition.ActionSettings)
+                foreach (var settings in actionSettings)
                 {
                     var action = actionFactory.Create(settings, context);
                     if (action is ICharacterExecutableAction executable)

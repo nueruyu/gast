@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gast.Unity.Infrastructure.Characters
+namespace Cryst.Features.CharacterActions
 {
     [CreateAssetMenu(fileName = "CharacterMovementSettings", menuName = "Gast/Characters/Settings/Movement Settings")]
     public class CharacterMovementSettings : ScriptableObject

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gast.Unity.Infrastructure.Characters
+namespace Cryst.Infrastructure.Characters
 {
     [CreateAssetMenu(fileName = "CharacterEconomySettings", menuName = "Gast/Characters/Settings/Economy Settings")]
     public class CharacterEconomySettings : ScriptableObject

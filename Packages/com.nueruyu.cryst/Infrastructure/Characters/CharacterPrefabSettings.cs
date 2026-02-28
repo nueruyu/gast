@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gast.Unity.Infrastructure.Characters
+namespace Cryst.Infrastructure.Characters
 {
     [CreateAssetMenu(fileName = "CharacterPrefabSettings", menuName = "Gast/Characters/Settings/Prefab Settings")]
     public class CharacterPrefabSettings : ScriptableObject
