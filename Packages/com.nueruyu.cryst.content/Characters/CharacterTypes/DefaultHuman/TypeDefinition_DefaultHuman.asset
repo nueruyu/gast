@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TypeDefinition_DefaultHuman
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: e9db19cfea39ace4fb8ba7c43866f726, type: 2}
+  archetypeReference: {fileID: 11400000, guid: b959d76b5b4ede44a82e1915d86f5bdd, type: 2}
   displayName: Default Human
   settings:
   - {fileID: 11400000, guid: b361cd44810190348a146878b14ec6ca, type: 2}

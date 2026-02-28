@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TypeDefinition_DefaultBot
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: 74743be7f3db9d647b1ca2d8167fc767, type: 2}
+  archetypeReference: {fileID: 11400000, guid: 66b0e664f08e6a44ab3e88fe7754b035, type: 2}
   displayName: Default Bot
   settings:
   - {fileID: 11400000, guid: d05926db438469045a327fbbfc2e2137, type: 2}

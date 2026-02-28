@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TypeDefinition_BlueSoldier
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
+  archetypeReference: {fileID: 11400000, guid: b959d76b5b4ede44a82e1915d86f5bdd, type: 2}
   displayName: Blue Soldier
   settings:
   - {fileID: 11400000, guid: e64478cb23b9d2045b8063c0e66eedc8, type: 2}

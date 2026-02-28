@@ -12,12 +12,16 @@ namespace Gast.Unity.Infrastructure.Characters
         CharacterTypeReference reference;
 
         [SerializeField]
+        CharacterArchetypeReference archetypeReference;
+
+        [SerializeField]
         string displayName;
 
         [SerializeField]
         Object[] settings = { };
 
         public CharacterTypeId TypeId => reference.Id;
+        public CharacterArchetypeId ArchetypeId => archetypeReference.Id;
         public string DisplayName => displayName;
         
         public bool TryGetSettings<T>(out T value)

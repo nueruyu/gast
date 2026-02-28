@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TypeDefinition_WhiteSoldier
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: d84ffdeb244f09244a7266fba056d347, type: 2}
+  archetypeReference: {fileID: 11400000, guid: b959d76b5b4ede44a82e1915d86f5bdd, type: 2}
   displayName: White Soldier
   settings:
   - {fileID: 11400000, guid: 92b02766778c95743a9d68004093c4cb, type: 2}
