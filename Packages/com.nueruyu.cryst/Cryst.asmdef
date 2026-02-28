@@ -1,0 +1,27 @@
+{
+    "name": "Cryst",
+    "rootNamespace": "Cryst",
+    "references": [
+        "Gast.Core",
+        "Gast.Domain",
+        "Gast.Application",
+        "Gast.Unity.Shared",
+        "Gast.Unity.Features",
+        "Gast.Unity.UI",
+        "Gast.Unity.Infrastructure",
+        "Gast.Lib.Gaia",
+        "Gast.Lib.AI",
+        "VContainer",
+        "UniTask",
+        "R3.Unity"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

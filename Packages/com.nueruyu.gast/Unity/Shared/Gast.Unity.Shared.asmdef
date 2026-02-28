@@ -1,0 +1,19 @@
+{
+    "name": "Gast.Unity.Shared",
+    "rootNamespace": "Gast.Unity.Shared",
+    "references": [
+        "Gast.Core",
+        "UniTask",
+        "R3.Unity",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

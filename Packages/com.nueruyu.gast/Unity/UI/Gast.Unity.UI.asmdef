@@ -1,0 +1,23 @@
+{
+    "name": "Gast.Unity.UI",
+    "rootNamespace": "Gast.Unity.UI",
+    "references": [
+        "Gast.Core",
+        "Gast.Domain",
+        "Gast.Application",
+        "Gast.Unity.Shared",
+        "Unity.TextMeshPro",
+        "Unity.InputSystem",
+        "UniTask",
+        "R3.Unity"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

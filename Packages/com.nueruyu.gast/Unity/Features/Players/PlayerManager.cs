@@ -1,0 +1,104 @@
+using Gast.Core.Observables;
+using Gast.Domain.AI;
+using Gast.Domain.Characters;
+using Gast.Domain.Players;
+using UnityEngine;
+
+namespace Gast.Unity.Features.Players
+{
+    /// <summary>
+    /// Manages player possession of different characters.
+    /// Provides observable access to the currently controlled character.
+    /// </summary>
+    public class PlayerManager : IPlayerManager
+    {
+        readonly PlayerBrain playerBrain;
+        readonly ICharacterRepository characterRepository;
+        readonly ICharacterBrainManager brainManager;
+        readonly Live<ICharacter> currentCharacter = new(null);
+        readonly Live<ICharacterAIBrain> currentAIBrain = new(null);
+
+        public PlayerManager(
+            PlayerBrain playerBrain,
+            ICharacterRepository characterRepository,
+            ICharacterBrainManager brainManager)
+        {
+            this.playerBrain = playerBrain;
+            this.characterRepository = characterRepository;
+            this.brainManager = brainManager;
+        }
+
+        /// <summary>
+        /// Observable property for the character currently possessed by the player.
+        /// </summary>
+        public ILive<ICharacter> CurrentCharacter => currentCharacter;
+
+        public ILive<ICharacterAIBrain> CurrentAIBrain => currentAIBrain;
+
+        /// <summary>
+        /// Switch player control to a different character.
+        /// Detaches brain from current character and attaches to new one.
+        /// </summary>
+        public void Possess(CharacterId characterId)
+        {
+            Unpossess();
+
+            var character = characterRepository.Get(characterId);
+            brainManager.AttachBrain(character.Id, playerBrain);
+            currentCharacter.Value = character;
+
+            Debug.Log($"PlayerManager: Possessed {character}");
+        }
+
+        /// <summary>
+        /// Release control of the current character.
+        /// </summary>
+        public void Unpossess()
+        {
+            if (currentCharacter.Value != null)
+            {
+                brainManager.DetachBrain(currentCharacter.Value.Id);
+                currentCharacter.Value = null;
+            }
+
+            currentAIBrain.Value = null;
+        }
+
+        /// <summary>
+        /// Temporarily attach an AI brain to the current player character.
+        /// The PlayerBrain is stored for later restoration.
+        /// </summary>
+        public bool TakeoverWithAI(ICharacterAIBrain aiBrain)
+        {
+            if (currentCharacter.Value == null)
+            {
+                Debug.LogWarning("PlayerManager: Cannot takeover - no character possessed");
+                return false;
+            }
+
+            brainManager.AttachBrain(currentCharacter.Value.Id, aiBrain);
+            currentAIBrain.Value = aiBrain;
+
+            Debug.Log($"PlayerManager: AI took over control of {currentCharacter.Value}");
+            return true;
+        }
+
+        /// <summary>
+        /// Restore the original PlayerBrain to the current character.
+        /// </summary>
+        public bool RestorePlayerControl()
+        {
+            if (currentCharacter.Value == null)
+            {
+                Debug.LogWarning("PlayerManager: Cannot restore - no character possessed");
+                return false;
+            }
+
+            brainManager.AttachBrain(currentCharacter.Value.Id, playerBrain);
+            currentAIBrain.Value = null;
+
+            Debug.Log($"PlayerManager: Restored player control of {currentCharacter.Value}");
+            return true;
+        }
+    }
+}

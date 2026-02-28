@@ -1,0 +1,94 @@
+using System;
+using Cysharp.Threading.Tasks;
+using Gast.Application.Economy;
+using Gast.Core.Commands;
+using Gast.Core.Observables;
+using Gast.Domain.Characters;
+using Gast.Domain.Economy;
+using Gast.Domain.Pickups;
+using Gast.Unity.Features.Interactions;
+using UnityEngine;
+using Random = UnityEngine.Random;
+
+namespace Gast.Unity.Features.Pickups
+{
+    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(Interactable))]
+    public class Pickup : MonoBehaviour, IPickup
+    {
+        [Tooltip("Force applied to spawned loot")]
+        [SerializeField]
+        float dropImpulse = 2f;
+
+        [SerializeField]
+        GameObject defaultVisualPrefab;
+
+        ICommandDispatcher commandDispatcher;
+        PickupId id;
+        ItemId itemId;
+        int quantity;
+        Rigidbody rb;
+        Interactable interactable;
+        readonly Signal<IPickup> destroyedSignal = new();
+
+        public PickupId Id => id;
+        public ItemId ItemId => itemId;
+        public int Quantity => quantity;
+        public Vector3 Position => transform.position;
+        public ISignal<IPickup> Destroyed => destroyedSignal;
+
+        public void Initialize(
+            PickupId id,
+            ItemId itemId,
+            string itemName,
+            int quantity,
+            ICommandDispatcher commandDispatcher,
+            InteractionSystem interactionSystem,
+            GameObject visualPrefab = null)
+        {
+            this.id = id;
+            this.itemId = itemId;
+            this.quantity = quantity;
+            this.commandDispatcher = commandDispatcher ?? throw new ArgumentNullException(nameof(commandDispatcher));
+
+            TryGetComponent(out rb);
+            TryGetComponent(out interactable);
+
+            interactable.Initialize(interactionSystem);
+            interactable.Config.Prompt = $"{itemName} x{quantity}";
+
+            interactable.Interacted
+                .Subscribe(OnInteract)
+                .AddTo(destroyCancellationToken);
+
+            _ = visualPrefab != null ?
+                Instantiate(visualPrefab, transform) :
+                Instantiate(defaultVisualPrefab, transform);
+        }
+
+        public void Eject()
+        {
+            var force = (Vector3.up + Random.insideUnitSphere * 0.2f).normalized * dropImpulse;
+            rb.AddForce(force, ForceMode.Impulse);
+            rb.AddTorque(0.1f * dropImpulse * Random.insideUnitSphere, ForceMode.Impulse);
+        }
+
+        void OnInteract(ICharacter interactor)
+        {
+            if (commandDispatcher == null)
+                throw new InvalidOperationException(
+                    $"Pickup on {gameObject.name} not properly initialized with ICommandDispatcher");
+
+            if (commandDispatcher.Dispatch<PickUpItemCommand, bool>(
+                new(interactor.Id, itemId, quantity)))
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        void OnDestroy()
+        {
+            destroyedSignal.Publish(this);
+        }
+    }
+}

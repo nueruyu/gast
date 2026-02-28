@@ -1,0 +1,19 @@
+{
+  "name": "com.nueruyu.gast",
+  "version": "0.1.0",
+  "displayName": "Gast",
+  "description": "Core framework for the Gast project.",
+  "author": {
+    "name": "nueruyu"
+  },
+  "dependencies": {
+    "com.nueruyu.gast.lib.ai": "0.1.0",
+    "com.nueruyu.gast.lib.gaia": "0.1.0",
+    "com.unity.inputsystem": "1.7.0",
+    "com.unity.cinemachine": "2.9.7",
+    "com.unity.textmeshpro": "3.0.6",
+    "jp.hadashikick.vcontainer": "1.15.0",
+    "com.cysharp.r3": "1.1.0",
+    "com.cysharp.unitask": "2.5.0"
+  }
+}

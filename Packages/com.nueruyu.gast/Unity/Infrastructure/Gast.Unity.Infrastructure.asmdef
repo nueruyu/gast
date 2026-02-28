@@ -1,0 +1,26 @@
+{
+    "name": "Gast.Unity.Infrastructure",
+    "rootNamespace": "Gast.Unity.Infrastructure",
+    "references": [
+        "Gast.Core",
+        "Gast.Domain",
+        "Gast.Application",
+        "Gast.Unity.Features",
+        "Gast.Unity.UI",
+        "Gast.Unity.Shared",
+        "Gast.Lib.AI",
+        "Gast.Lib.Gaia",
+        "UniTask",
+        "R3.Unity",
+        "VContainer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

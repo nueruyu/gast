@@ -1,0 +1,9 @@
+{
+  "name": "com.nueruyu.cryst.content",
+  "version": "0.1.0",
+  "displayName": "Cryst Content",
+  "description": "Contains assets for the Cryst project.",
+  "author": {
+    "name": "nueruyu"
+  }
+}

@@ -1,0 +1,25 @@
+{
+    "name": "Gast.Unity.Composition",
+    "rootNamespace": "Gast.Unity.Composition",
+    "references": [
+        "Gast.Core",
+        "Gast.Domain",
+        "Gast.Application",
+        "Gast.Unity.Shared",
+        "Gast.Unity.Features",
+        "Gast.Unity.UI",
+        "Gast.Unity.Infrastructure",
+        "Gast.Lib.Gaia",
+        "VContainer",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

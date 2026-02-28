@@ -1,11 +1,16 @@
 {
   "include": [
     "AGENTS.md",
-    "Assets/__Project/**/*.cs",
-    "Assets/__Project/**/*.asmdef"
+    "Packages/com.nueruyu.gast/**/*.cs",
+    "Packages/com.nueruyu.gast/**/*.asmdef",
+    "Packages/com.nueruyu.cryst/**/*.cs",
+    "Packages/com.nueruyu.cryst/**/*.asmdef"
   ],
   "ignore": {
-    "customPatterns": ["Assets/__Project/Gast/UI", "Assets/__Project/Lib"]
+    "customPatterns": [
+      "Packages/com.nueruyu.gast/Unity/UI",
+      "Packages/com.nueruyu.cryst/UI"
+    ]
   },
   "output": {
     "filePath": "./out/repomix/gast-game.md",
