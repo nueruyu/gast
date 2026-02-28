@@ -44,7 +44,7 @@ namespace Cryst.Features.CharacterAI
                 foreach (var goal in currentObjectives.OfType<DefeatCharacterObjective>())
                 {
                     if (e.AttackerId == characterId &&
-                        goal.TargetTypeId == e.DefeatedCharacter.As<CrystCharacter>().TypeId)
+                        goal.TargetTypeId == e.DefeatedCharacter.As<BaseCharacter>().TypeId)
                     {
                         goal.IncrementCount();
                     }

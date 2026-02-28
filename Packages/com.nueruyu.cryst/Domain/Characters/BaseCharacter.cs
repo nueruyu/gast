@@ -6,25 +6,23 @@ using UnityEngine;
 
 namespace Cryst.Domain.Characters
 {
-    public class CrystCharacter : ICharacterFacet
+    public class BaseCharacter : ICharacterFacet
     {
         readonly CharacterId id;
         readonly ICharacterTypeDefinition typeDefinition;
         readonly Faction faction;
         readonly ICharacterActionController actionController;
         readonly CharacterStatus status;
-        readonly CharacterActionStateStore stateStore;
         readonly ICharacterBody body;
         readonly IVisionSensor visionSensor;
         readonly INavigationProvider navigationProvider;
 
-        public CrystCharacter(
+        public BaseCharacter(
             CharacterId id,
             ICharacterTypeDefinition typeDefinition,
             Faction faction,
             ICharacterActionController actionController,
             CharacterStatus status,
-            CharacterActionStateStore stateStore,
             ICharacterBody body,
             IVisionSensor visionSensor,
             INavigationProvider navigationProvider)
@@ -34,7 +32,6 @@ namespace Cryst.Domain.Characters
             this.faction = faction;
             this.actionController = actionController;
             this.status = status;
-            this.stateStore = stateStore;
             this.body = body;
             this.visionSensor = visionSensor;
             this.navigationProvider = navigationProvider;
@@ -46,10 +43,11 @@ namespace Cryst.Domain.Characters
         public ICharacterBody Body => body;
         public IVisionSensor VisionSensor => visionSensor;
         public INavigationProvider NavigationProvider => navigationProvider;
+        public ICharacter Character { get; set; }
 
         public CharacterStatus Status => status;
 
-        public bool IsThreatTo(CrystCharacter other)
+        public bool IsThreatTo(BaseCharacter other)
         {
             if (!Status.IsAlive.Value)
                 return false;
@@ -59,22 +57,6 @@ namespace Cryst.Domain.Characters
         }
 
         public void Move(Vector3 direction) => actionController.Move(direction);
-
-        public void SetSprint(bool isSprinting) => stateStore.IsSprinting = isSprinting;
-
-        public bool CanAttack() => actionController.CanExecuteAction<AttackCommand>();
-
-        public void Attack() => actionController.ExecuteAction(new AttackCommand());
-
-        public bool CanGuard() => actionController.CanExecuteAction<GuardCommand>();
-
-        public void StartGuard() => actionController.StartAction(new GuardCommand());
-
-        public void StopGuard() => actionController.StopAction<GuardCommand>();
-
-        public void Dash(Vector3 direction) => actionController.ExecuteAction(new DashCommand(direction));
-
-        public void Jump() => actionController.ExecuteAction(new JumpCommand());
 
         public TakeDamageResult TakeDamage(DamageInfo damageInfo)
         {

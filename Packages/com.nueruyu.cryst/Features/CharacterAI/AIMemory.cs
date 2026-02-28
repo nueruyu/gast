@@ -6,7 +6,7 @@ namespace Cryst.Features.CharacterAI
 {
     public class AIMemory
     {
-        public CrystCharacter CombatTarget { get; set; }
+        public BaseCharacter CombatTarget { get; set; }
         public IInteractable InteractableTarget { get; set; }
         public IAIObjective CurrentObjective { get; set; }
     }

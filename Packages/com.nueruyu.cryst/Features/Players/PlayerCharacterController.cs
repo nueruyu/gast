@@ -3,6 +3,7 @@ using Gast.Domain.Characters;
 using Gast.Domain.Inputs;
 using Gast.Domain.Players;
 using Cryst.Domain.Characters;
+using Cryst.Domain.Characters.Facets;
 using UnityEngine;
 
 namespace Cryst.Features.Players
@@ -20,41 +21,56 @@ namespace Cryst.Features.Players
 
         public void HandleInput(ICharacter character)
         {
-            var actor = character.As<CrystCharacter>();
+            var actor = character.As<BaseCharacter>();
 
             var inputMove = inputProvider.Move;
             var moveDirection = CalculateMoveDirection(inputMove, cameraService, actor);
 
-            actor.SetSprint(inputProvider.Sprint);
+            if (character.Is(out SprintableCharacter sprintable))
+            {
+                sprintable.SetSprint(inputProvider.Sprint);
+            }
             actor.Move(moveDirection);
 
             if (inputProvider.Jump)
             {
-                actor.Jump();
+                if (character.Is(out JumpableCharacter jumpable))
+                {
+                    jumpable.Jump();
+                }
             }
 
             if (inputProvider.Dash)
             {
-                var dashDir = moveDirection.sqrMagnitude < 0.01f ? actor.Body.Forward : moveDirection;
-                actor.Dash(dashDir);
+                if (character.Is(out DashableCharacter dashable))
+                {
+                    var dashDir = moveDirection.sqrMagnitude < 0.01f ? actor.Body.Forward : moveDirection;
+                    dashable.Dash(dashDir);
+                }
             }
 
-            if (inputProvider.GuardHeld)
+            if (character.Is(out GuardableCharacter guardable))
             {
-                actor.StartGuard();
-            }
-            else
-            {
-                actor.StopGuard();
+                if (inputProvider.GuardHeld)
+                {
+                    guardable.StartGuard();
+                }
+                else
+                {
+                    guardable.StopGuard();
+                }
             }
 
             if (inputProvider.Attack)
             {
-                actor.Attack();
+                if (character.Is(out AttackableCharacter attackable))
+                {
+                    attackable.Attack();
+                }
             }
         }
 
-        Vector3 CalculateMoveDirection(Vector2 input, ICameraService cameraService, CrystCharacter actor)
+        Vector3 CalculateMoveDirection(Vector2 input, ICameraService cameraService, BaseCharacter actor)
         {
             var cameraRotation = cameraService.MainCamera.Rotation;
 

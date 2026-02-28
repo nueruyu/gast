@@ -6,6 +6,7 @@ using Gast.Lib.AI.Debugging;
 using Cryst.Features.CharacterAI.Combat;
 using Cryst.Features.CharacterAI.Gathering;
 using Cryst.Domain.Characters;
+using Cryst.Domain.Characters.Facets;
 using Cryst.Features.CharacterAI.Strategic;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace Cryst.Features.CharacterAI
         readonly ObjectiveManager objectiveManager;
         readonly IContextRegistry contextRegistry;
 
-        CrystCharacter actor;
+        BaseCharacter actor;
         ContextKey strategicContextKey;
         ContextKey combatContextKey;
         ContextKey gatheringContextKey;
@@ -61,7 +62,7 @@ namespace Cryst.Features.CharacterAI
         {
             Debug.Log($"[AIBrain] OnAttached: {character.Id}");
 
-            actor = character.As<CrystCharacter>();
+            actor = character.As<BaseCharacter>();
 
             strategicContextKey = new(actor.Id, StrategicDomainName);
             combatContextKey = new(actor.Id, CombatDomainName);
@@ -190,7 +191,7 @@ namespace Cryst.Features.CharacterAI
                 .ToList();
 
             strategicState.IsThreatened = actor.VisionSensor.VisibleCharacters
-                .Select(c => c.As<CrystCharacter>())
+                .Select(c => c.As<BaseCharacter>())
                 .Any(otherActor => otherActor.IsThreatTo(actor));
         }
 
@@ -211,8 +212,8 @@ namespace Cryst.Features.CharacterAI
                 combatState.HasTarget = false;
                 combatState.DistanceToTarget = float.PositiveInfinity;
             }
-            combatState.IsReadyToAttack = actor.CanAttack();
-            combatState.CanGuard = actor.CanGuard();
+            combatState.IsReadyToAttack = actor.Character.Is(out AttackableCharacter attackable) && attackable.CanAttack();
+            combatState.CanGuard = actor.Character.Is(out GuardableCharacter guardable) && guardable.CanGuard();
 
             var currentHealth = actor.Status.Health.Value;
             var maxHealth = actor.Status.MaxHealth.Value;

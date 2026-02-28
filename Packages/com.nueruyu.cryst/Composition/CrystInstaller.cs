@@ -28,6 +28,7 @@ using Cryst.Features.CharacterActions.Actions.Default;
 using Cryst.Features.CharacterActions.Actions.Die;
 using Cryst.Features.CharacterActions.Actions.Hit;
 using Cryst.Features.CharacterActions.Actions.Jump;
+using Cryst.Domain.Characters.Facets;
 using Cryst.UI.Hud.PlayerStatus;
 using Gast.Application.Reflection;
 using Gast.Unity.Features.Characters;
@@ -67,6 +68,13 @@ namespace Cryst.Composition
             builder.Register<GuardAction>(Lifetime.Transient);
             builder.Register<HitAction>(Lifetime.Transient);
             builder.Register<JumpAction>(Lifetime.Transient);
+
+            // Character Facets (Transient)
+            builder.Register<AttackableCharacter>(Lifetime.Transient);
+            builder.Register<DashableCharacter>(Lifetime.Transient);
+            builder.Register<GuardableCharacter>(Lifetime.Transient);
+            builder.Register<JumpableCharacter>(Lifetime.Transient);
+            builder.Register<SprintableCharacter>(Lifetime.Transient);
 
             // AI Brain
             builder.Register<ObjectiveManager>(Lifetime.Transient);

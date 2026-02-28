@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Cryst.Domain.Characters.Facets;
 using Gast.Lib.AI;
 using System;
 
@@ -18,15 +19,16 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
 
         public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
         {
-            var actor = ctx.Actor;
-            actor.StartGuard();
+            if (!ctx.Actor.Character.Is(out GuardableCharacter guardable)) return;
+
+            guardable.StartGuard();
             try
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(1.5f), cancellationToken: ctx.CancellationToken);
             }
             finally
             {
-                actor.StopGuard();
+                guardable.StopGuard();
             }
         }
     }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System;
+using Cryst.Domain.Characters.Facets;
 using Gast.Lib.AI;
 
 namespace Cryst.Features.CharacterAI.Combat.Actions
@@ -21,7 +22,10 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
         public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
         {
             var actor = ctx.Actor;
-            actor.SetSprint(true);
+            if (actor.Character.Is(out SprintableCharacter sprintable))
+            {
+                sprintable.SetSprint(true);
+            }
 
             var navigator = actor.NavigationProvider;
 
@@ -39,7 +43,10 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
                     if (currentDist <= worldState.AttackRange)
                     {
                         navigator.Stop();
-                        actor.SetSprint(false);
+                        if (actor.Character.Is(out SprintableCharacter sprintableOnExit))
+                        {
+                            sprintableOnExit.SetSprint(false);
+                        }
                         return;
                     }
 
@@ -54,7 +61,10 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             }
             finally
             {
-                actor.SetSprint(false);
+                if (actor.Character.Is(out SprintableCharacter sprintableOnFinally))
+                {
+                    sprintableOnFinally.SetSprint(false);
+                }
                 navigator.Stop();
             }
         }

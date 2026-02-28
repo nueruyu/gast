@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Cryst.Domain.Characters.Facets;
 using Gast.Lib.AI;
 using System;
 using UnityEngine;
@@ -60,7 +61,10 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             navigator.Stop();
             actor.Move(Vector3.zero); // Stop movement input
 
-            actor.Attack();
+            if (actor.Character.Is(out AttackableCharacter attackable))
+            {
+                attackable.Attack();
+            }
 
             await UniTask.Delay(500, cancellationToken: ctx.CancellationToken);
         }

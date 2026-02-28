@@ -1,5 +1,10 @@
 using Cryst.Domain.Characters;
+using Cryst.Domain.Characters.Facets;
 using Cryst.Features.CharacterActions;
+using Cryst.Features.CharacterActions.Actions.Attack;
+using Cryst.Features.CharacterActions.Actions.Dash;
+using Cryst.Features.CharacterActions.Actions.Guard;
+using Cryst.Features.CharacterActions.Actions.Jump;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Observables;
 using Gast.Domain.AI;
@@ -9,6 +14,8 @@ using Gast.Domain.Interactions;
 using R3;
 using R3.Triggers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Cryst.Features.Characters.Footsteps;
 using Gast.Unity.Features.Cameras;
 using Gast.Unity.Features.Characters;
@@ -54,13 +61,12 @@ namespace Cryst.Infrastructure.Characters
 
                 characterGo.UpdateAsObservable().Subscribe(_ => actionController.Update());
 
-                var crystCharacter = new CrystCharacter(
+                var baseCharacter = new BaseCharacter(
                     characterId,
                     definition,
                     parameters.Faction,
                     actionController,
                     context.Resolve<CharacterStatus>(),
-                    context.Resolve<CharacterActionStateStore>(),
                     context.Resolve<ICharacterBody>(),
                     context.Resolve<IVisionSensor>(),
                     context.Resolve<INavigationProvider>());
@@ -69,21 +75,47 @@ namespace Cryst.Infrastructure.Characters
                 var inventory = new Inventory(definition.SlotCapacity);
                 var interactor = characterGo.RequireComponentInChildren<IInteractor>();
 
-                var character = new Character(
-                    context,
-                    new()
-                    {
-                        { typeof(CrystCharacter), crystCharacter },
-                        { typeof(IWalletHost), new WalletHost(wallet) },
-                        { typeof(IInventoryHost), new InventoryHost(inventory) },
-                        { typeof(ICameraFocusTarget), new CameraFocusTarget(characterGo.transform) },
-                        { typeof(IInteractor), interactor }
-                    });
+                var facets = CreateFacets(actionController, context, definition);
+                facets[typeof(BaseCharacter)] = baseCharacter;
+                facets[typeof(IWalletHost)] = new WalletHost(wallet);
+                facets[typeof(IInventoryHost)] = new InventoryHost(inventory);
+                facets[typeof(ICameraFocusTarget)] = new CameraFocusTarget(characterGo.transform);
+                facets[typeof(IInteractor)] = interactor;
+
+                var character = new Character(context, facets);
+
+                baseCharacter.Character = character;
 
                 var host = characterGo.AddComponent<CharacterHost>();
                 host.AssignCharacter(character);
 
                 return character;
+            }
+
+            Dictionary<Type, ICharacterFacet> CreateFacets(
+                ICharacterActionController actionController,
+                CharacterContext context,
+                CharacterTypeDefinition definition)
+            {
+                var facets = new Dictionary<Type, ICharacterFacet>();
+                var actionSettingsTypes = definition.ActionSettings.Select(s => s.GetType()).ToHashSet();
+
+                var stateStore = context.Resolve<CharacterActionStateStore>();
+                facets.Add(typeof(SprintableCharacter), new SprintableCharacter(stateStore));
+
+                if (actionSettingsTypes.Contains(typeof(AttackActionSettings)))
+                    facets.Add(typeof(AttackableCharacter), new AttackableCharacter(actionController));
+
+                if (actionSettingsTypes.Contains(typeof(DashActionSettings)))
+                    facets.Add(typeof(DashableCharacter), new DashableCharacter(actionController));
+
+                if (actionSettingsTypes.Contains(typeof(GuardActionSettings)))
+                    facets.Add(typeof(GuardableCharacter), new GuardableCharacter(actionController));
+
+                if (actionSettingsTypes.Contains(typeof(JumpActionSettings)))
+                    facets.Add(typeof(JumpableCharacter), new JumpableCharacter(actionController));
+
+                return facets;
             }
 
             void InitializeContext(CharacterContext context, GameObject gameObject, CharacterTypeDefinition typeDefinition)

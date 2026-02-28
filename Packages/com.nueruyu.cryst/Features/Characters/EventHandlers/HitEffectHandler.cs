@@ -29,8 +29,8 @@ namespace Cryst.Features.Characters.EventHandlers
         {
             var attackInfo = e.Context;
 
-            var hitActor = e.HitCharacter.As<CrystCharacter>();
-            var attacker = characterRepository.Get(attackInfo.SourceCharacterId).As<CrystCharacter>();
+            var hitActor = e.HitCharacter.As<BaseCharacter>();
+            var attacker = characterRepository.Get(attackInfo.SourceCharacterId).As<BaseCharacter>();
 
             if (hitActor.Faction == attacker.Faction)
                 return;
