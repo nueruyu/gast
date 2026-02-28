@@ -84,8 +84,6 @@ namespace Cryst.Infrastructure.Characters
 
                 var character = new Character(context, facets);
 
-                baseCharacter.Character = character;
-
                 var host = characterGo.AddComponent<CharacterHost>();
                 host.AssignCharacter(character);
 

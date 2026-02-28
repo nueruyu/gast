@@ -19,7 +19,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
 
         public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
         {
-            if (!ctx.Actor.Character.Is(out GuardableCharacter guardable)) return;
+            if (!ctx.Character.Is(out GuardableCharacter guardable)) return;
 
             guardable.StartGuard();
             try

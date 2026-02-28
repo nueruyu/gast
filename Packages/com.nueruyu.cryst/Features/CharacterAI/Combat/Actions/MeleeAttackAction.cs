@@ -61,7 +61,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             navigator.Stop();
             actor.Move(Vector3.zero); // Stop movement input
 
-            if (actor.Character.Is(out AttackableCharacter attackable))
+            if (ctx.Character.Is(out AttackableCharacter attackable))
             {
                 attackable.Attack();
             }

@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Gast.Lib.AI;
 using Cryst.Domain.Characters;
+using Gast.Domain.Characters;
 
 namespace Cryst.Features.CharacterAI
 {
@@ -9,6 +10,7 @@ namespace Cryst.Features.CharacterAI
         where TWorldState : class, IWorldState<TWorldState>, new()
     {
         public BaseCharacter Actor { get; }
+        public ICharacter Character { get; }
         public TWorldState WorldState { get; }
         public AIMemory Memory { get; }
         public CancellationToken CancellationToken { get; }
@@ -19,6 +21,7 @@ namespace Cryst.Features.CharacterAI
         public AIContext(
             ContextKey contextKey,
             BaseCharacter actor,
+            ICharacter character,
             TWorldState worldState,
             AIMemory memory,
             Action worldStateUpdater,
@@ -26,6 +29,7 @@ namespace Cryst.Features.CharacterAI
         {
             ContextKey = contextKey;
             Actor = actor;
+            Character = character;
             WorldState = worldState;
             Memory = memory;
             CancellationToken = cancellationToken;
@@ -42,6 +46,7 @@ namespace Cryst.Features.CharacterAI
             return new AIContext<TWorldState>(
                 ContextKey,
                 Actor,
+                Character,
                 WorldState,
                 Memory,
                 worldStateUpdater,

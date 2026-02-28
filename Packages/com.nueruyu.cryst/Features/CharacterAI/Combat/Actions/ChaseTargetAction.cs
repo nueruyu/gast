@@ -22,7 +22,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
         public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
         {
             var actor = ctx.Actor;
-            if (actor.Character.Is(out SprintableCharacter sprintable))
+            if (ctx.Character.Is(out SprintableCharacter sprintable))
             {
                 sprintable.SetSprint(true);
             }
@@ -43,7 +43,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
                     if (currentDist <= worldState.AttackRange)
                     {
                         navigator.Stop();
-                        if (actor.Character.Is(out SprintableCharacter sprintableOnExit))
+                        if (ctx.Character.Is(out SprintableCharacter sprintableOnExit))
                         {
                             sprintableOnExit.SetSprint(false);
                         }
@@ -61,7 +61,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             }
             finally
             {
-                if (actor.Character.Is(out SprintableCharacter sprintableOnFinally))
+                if (ctx.Character.Is(out SprintableCharacter sprintableOnFinally))
                 {
                     sprintableOnFinally.SetSprint(false);
                 }

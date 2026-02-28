@@ -43,7 +43,6 @@ namespace Cryst.Domain.Characters
         public ICharacterBody Body => body;
         public IVisionSensor VisionSensor => visionSensor;
         public INavigationProvider NavigationProvider => navigationProvider;
-        public ICharacter Character { get; set; }
 
         public CharacterStatus Status => status;
 

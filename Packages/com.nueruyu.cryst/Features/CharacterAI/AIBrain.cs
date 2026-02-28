@@ -28,6 +28,7 @@ namespace Cryst.Features.CharacterAI
         readonly IContextRegistry contextRegistry;
 
         BaseCharacter actor;
+        ICharacter character;
         ContextKey strategicContextKey;
         ContextKey combatContextKey;
         ContextKey gatheringContextKey;
@@ -62,6 +63,7 @@ namespace Cryst.Features.CharacterAI
         {
             Debug.Log($"[AIBrain] OnAttached: {character.Id}");
 
+            this.character = character;
             actor = character.As<BaseCharacter>();
 
             strategicContextKey = new(actor.Id, StrategicDomainName);
@@ -94,6 +96,7 @@ namespace Cryst.Features.CharacterAI
 
             DebugLogger.ClearContext(strategicContextKey);
             DebugLogger.ClearContext(combatContextKey);
+            DebugLogger.ClearContext(gatheringContextKey);
 
             contextRegistry.Unregister(strategicContextKey);
             contextRegistry.Unregister(combatContextKey);
@@ -104,6 +107,7 @@ namespace Cryst.Features.CharacterAI
             cts = null;
 
             actor = null;
+            character = null;
             strategicContextKey = default;
             combatContextKey = default;
             gatheringContextKey = default;
@@ -143,6 +147,7 @@ namespace Cryst.Features.CharacterAI
                 await strategicAgentRunner.RunAsync(new(
                     strategicContextKey,
                     actor,
+                    character,
                     strategicState,
                     memory,
                     UpdateStrategicWorldState,
@@ -159,6 +164,7 @@ namespace Cryst.Features.CharacterAI
                 await combatAgentRunner.RunAsync(new(
                     combatContextKey,
                     actor,
+                    character,
                     combatState,
                     memory,
                     UpdateCombatWorldState,
@@ -175,6 +181,7 @@ namespace Cryst.Features.CharacterAI
                 await gatheringAgentRunner.RunAsync(new(
                     gatheringContextKey,
                     actor,
+                    character,
                     gatheringState,
                     memory,
                     UpdateGatheringWorldState,
@@ -212,8 +219,8 @@ namespace Cryst.Features.CharacterAI
                 combatState.HasTarget = false;
                 combatState.DistanceToTarget = float.PositiveInfinity;
             }
-            combatState.IsReadyToAttack = actor.Character.Is(out AttackableCharacter attackable) && attackable.CanAttack();
-            combatState.CanGuard = actor.Character.Is(out GuardableCharacter guardable) && guardable.CanGuard();
+            combatState.IsReadyToAttack = character.Is(out AttackableCharacter attackable) && attackable.CanAttack();
+            combatState.CanGuard = character.Is(out GuardableCharacter guardable) && guardable.CanGuard();
 
             var currentHealth = actor.Status.Health.Value;
             var maxHealth = actor.Status.MaxHealth.Value;
