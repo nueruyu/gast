@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Gast.Application.AI;
+using Gast.Application.Reflection;
 using Gast.Domain.AI;
 using Gast.Domain.AI.Attributes;
-using Gast.Unity.Infrastructure.Reflection;
 
 namespace Gast.Unity.Infrastructure.AI
 {

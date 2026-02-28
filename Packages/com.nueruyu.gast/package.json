@@ -1,7 +1,7 @@
 {
   "name": "com.nueruyu.gast",
   "version": "0.1.0",
-  "displayName": "Gast Framework",
+  "displayName": "Gast",
   "description": "Core framework for the Gast project.",
   "author": {
     "name": "nueruyu"

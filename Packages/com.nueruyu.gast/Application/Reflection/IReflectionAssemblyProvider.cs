@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Gast.Unity.Infrastructure.Reflection
+namespace Gast.Application.Reflection
 {
     /// <summary>
     /// Provides a list of assemblies to be scanned for reflection-based features
