@@ -44,7 +44,7 @@ The project is divided into several assemblies, each representing a layer or a s
   - **Command/Query Handlers:** Logic that responds to requests from the outer layers and uses domain entities to fulfill them.
 - **Dependencies:** Depends on `Gast.Domain` and `Gast.Core`.
 
-### `Gast.Infrastructure`
+### `Gast.Unity.Infrastructure`
 
 - **Purpose:** The outermost layer for external concerns. It provides concrete implementations for the interfaces defined in the inner layers (`Domain`, `Application`).
 - **Contents:**
@@ -53,16 +53,16 @@ The project is divided into several assemblies, each representing a layer or a s
   - **Framework-Specific Implementations:** Services that are tightly coupled to the underlying framework (Unity).
 - **Dependencies:** Depends on `Application`, `Domain`, and `Core`.
 
-### `Gast.Features`
+### `Gast.Unity.Features`
 
 - **Purpose:** This layer contains concrete gameplay features implemented as Unity `MonoBehaviour`s and related classes. It acts as the bridge between the abstract application logic and the Unity engine's scene-based components.
 - **Contents:**
   - `MonoBehaviour` components for characters, interactable objects, spawn points, etc.
   - Systems that manage game mechanics within a Unity scene.
   - Code that translates Unity events (e.g., collisions, input) into application commands or queries.
-- **Dependencies:** Can depend on `Application`, `Domain`, and `Core`. It should use interfaces to interact with `Infrastructure` services whenever possible.
+- **Dependencies:** Can depend on `Application`, `Domain`, and `Core`. It should use interfaces to interact with `Gast.Unity.Infrastructure` services whenever possible.
 
-### `Gast.UI`
+### `Gast.Unity.UI`
 
 - **Purpose:** Handles all user interface elements, including HUDs, menus, and prompts. It is responsible for presenting data to the user and capturing user input.
 - **Contents:**
@@ -70,17 +70,26 @@ The project is divided into several assemblies, each representing a layer or a s
   - **ViewModels:** Classes that prepare and manage data for the views, mediating between the UI and the `Application`/`Domain` layers.
 - **Dependencies:** Depends on `Application`, `Domain`, and `Core`.
 
-### `Gast.Shared`
+### `Gast.Unity.Shared`
 
 - **Purpose:** A utility assembly for code that is shared across multiple layers but is not fundamental enough to be in `Gast.Core`. It often contains framework-specific helpers.
 - **Contents:** Extension methods (e.g., for Unity's UI Toolkit or Input System), helper classes, and other reusable utilities.
 - **Dependencies:** Has minimal dependencies, typically `Gast.Core` and third-party libraries. It can be referenced by any other layer.
 
-### `Gast.Composition`
+### `Gast.Unity.Composition`
 
 - **Purpose:** The composition root. This is where the application's object graph is constructed using a Dependency Injection (DI) container.
 - **Contents:** The `LifetimeScope` which initializes the DI container, registering all interfaces with their concrete implementations.
 - **Dependencies:** This is the only place in the project that has knowledge of all other assemblies. It brings all the layers together.
+
+### `Gast.Unity.Editor`
+
+- **Purpose:** Provides Unity Editor-specific tools, windows, and custom inspectors to improve development workflows. This assembly is only included in Editor builds.
+- **Contents:**
+  - Custom `EditorWindow`s (e.g., debuggers, asset creators).
+  - Custom inspectors for `MonoBehaviour` or `ScriptableObject` assets.
+  - Menu items for automating tasks.
+- **Dependencies:** Can depend on any of the runtime assemblies (`Gast.Unity.Features`, `Gast.Domain`, etc.) to inspect or manipulate their data.
 
 ### `Cryst`
 
