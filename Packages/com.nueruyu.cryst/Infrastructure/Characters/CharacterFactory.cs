@@ -146,13 +146,7 @@ namespace Cryst.Infrastructure.Characters
                 context.Register(audio);
 
                 var stateStore = new CharacterActionStateStore();
-                var movement = new CharacterMovement(
-                    animator,
-                    body,
-                    typeDefinition);
-
                 context.Register(stateStore);
-                context.Register(movement);
 
                 var footstepSettings = typeDefinition.GetSettings<CharacterFootstepSettings>();
                 new CharacterFootstepHandler(animator, audio, footstepSettings).AddTo(gameObject);

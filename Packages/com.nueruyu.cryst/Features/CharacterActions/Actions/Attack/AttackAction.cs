@@ -3,7 +3,6 @@ using System.Threading;
 using Cryst.Domain.Characters.Commands;
 using Cryst.Domain.Combat;
 using Cysharp.Threading.Tasks;
-using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
 using Gast.Unity.Features.HitDetection;
 using UnityEngine;
@@ -18,7 +17,7 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
         readonly CharacterAnimator animator;
         readonly CharacterAudio audio;
         readonly CharacterMovement movement;
-        readonly ICharacterTypeDefinition typeDefinition;
+        readonly CharacterMovementSettings movementSettings;
         readonly IHitAreaFactory hitAreaFactory;
 
         float startTime;
@@ -34,7 +33,7 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
             CharacterAnimator animator,
             CharacterAudio audio,
             CharacterMovement movement,
-            ICharacterTypeDefinition typeDefinition,
+            CharacterMovementSettings movementSettings,
             IHitAreaFactory hitAreaFactory)
         {
             this.context = context;
@@ -43,7 +42,7 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
             this.animator = animator;
             this.audio = audio;
             this.movement = movement;
-            this.typeDefinition = typeDefinition;
+            this.movementSettings = movementSettings;
             this.hitAreaFactory = hitAreaFactory;
 
             if (animator)
@@ -110,7 +109,6 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
 
         public void Move(Vector3 direction)
         {
-            var movementSettings = typeDefinition.GetSettings<CharacterMovementSettings>();
             var speed = movementSettings.WalkSpeed;
             movement.Move(direction, speed);
         }

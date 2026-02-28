@@ -1,6 +1,5 @@
 using System;
 using Cryst.Domain.Characters.Commands;
-using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
 using UnityEngine;
 
@@ -11,7 +10,7 @@ namespace Cryst.Features.CharacterActions.Actions.Jump
         readonly JumpActionSettings settings;
         readonly CharacterBody body;
         readonly CharacterMovement movement;
-        readonly ICharacterTypeDefinition typeDefinition;
+        readonly CharacterMovementSettings movementSettings;
 
         public Type CommandType => typeof(JumpCommand);
         public int Priority => 3;
@@ -20,12 +19,12 @@ namespace Cryst.Features.CharacterActions.Actions.Jump
             JumpActionSettings settings,
             CharacterBody body,
             CharacterMovement movement,
-            ICharacterTypeDefinition typeDefinition)
+            CharacterMovementSettings movementSettings)
         {
             this.settings = settings;
             this.body = body;
             this.movement = movement;
-            this.typeDefinition = typeDefinition;
+            this.movementSettings = movementSettings;
         }
 
         public bool CanExecute()
@@ -45,7 +44,6 @@ namespace Cryst.Features.CharacterActions.Actions.Jump
 
         public void Move(Vector3 direction)
         {
-            var movementSettings = typeDefinition.GetSettings<CharacterMovementSettings>();
             var speed = movementSettings.WalkSpeed;
             movement.Move(direction, speed, settings.LookDirectionSpeed);
         }

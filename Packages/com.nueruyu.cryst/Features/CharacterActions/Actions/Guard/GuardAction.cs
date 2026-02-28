@@ -1,6 +1,5 @@
 using System;
 using Cryst.Domain.Characters.Commands;
-using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
 using UnityEngine;
 
@@ -11,7 +10,7 @@ namespace Cryst.Features.CharacterActions.Actions.Guard
         readonly GuardActionSettings settings;
         readonly CharacterAnimator animator;
         readonly CharacterMovement movement;
-        readonly ICharacterTypeDefinition typeDefinition;
+        readonly CharacterMovementSettings movementSettings;
 
         public Type CommandType => typeof(GuardCommand);
         public int Priority => 2;
@@ -20,12 +19,12 @@ namespace Cryst.Features.CharacterActions.Actions.Guard
             GuardActionSettings settings,
             CharacterAnimator animator,
             CharacterMovement movement,
-            ICharacterTypeDefinition typeDefinition)
+            CharacterMovementSettings movementSettings)
         {
             this.settings = settings;
             this.animator = animator;
             this.movement = movement;
-            this.typeDefinition = typeDefinition;
+            this.movementSettings = movementSettings;
         }
 
         public bool CanExecute() => true;
@@ -42,7 +41,6 @@ namespace Cryst.Features.CharacterActions.Actions.Guard
 
         public void Move(Vector3 direction)
         {
-            var movementSettings = typeDefinition.GetSettings<CharacterMovementSettings>();
             var speed = movementSettings.WalkSpeed * settings.MoveSpeedPenalty;
             movement.Move(direction, speed, settings.LookDirectionSpeed);
         }
