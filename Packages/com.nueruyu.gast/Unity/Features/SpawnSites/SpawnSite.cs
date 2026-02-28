@@ -11,18 +11,44 @@ using UnityEngine;
 namespace Gast.Unity.Features.SpawnSites
 {
     /// <summary>
-    /// Scene placement marker for a spawn site.
-    /// Links a position in the scene to spawn site settings.
+    ///     Scene placement marker for a spawn site.
+    ///     Links a position in the scene to spawn site settings.
     /// </summary>
     public class SpawnSite : MonoBehaviour
     {
-        [SerializeField]
-        SpawnSiteEntry[] entries = { };
+        [SerializeField] SpawnSiteEntry[] entries = { };
 
-        [SerializeField]
-        float respawnCooldown = 30f;
+        [SerializeField] float respawnCooldown = 30f;
 
         ICommandDispatcher commandDispatcher;
+
+        void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+
+            // Draw anchor center
+            Gizmos.DrawWireSphere(transform.position, 0.5f);
+
+            // Draw each spawn entry position
+            foreach (var entry in entries)
+            {
+                var worldPosition = transform.position + transform.rotation * entry.LocalPosition;
+                var worldRotation = transform.rotation * entry.LocalRotation;
+
+                // Draw spawn point sphere
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(worldPosition, 0.3f);
+
+                // Draw forward direction arrow
+                Gizmos.color = Color.blue;
+                var forward = worldRotation * Vector3.forward;
+                Gizmos.DrawLine(worldPosition, worldPosition + forward * 1f);
+
+                // Draw line from anchor to spawn point
+                Gizmos.color = Color.gray;
+                Gizmos.DrawLine(transform.position, worldPosition);
+            }
+        }
 
         public void Initialize(ICommandDispatcher commandDispatcher)
         {
@@ -60,7 +86,7 @@ namespace Gast.Unity.Features.SpawnSites
                 var worldPosition = transform.position + transform.rotation * entry.LocalPosition;
                 var worldRotation = transform.rotation * entry.LocalRotation;
 
-                var character = commandDispatcher.Dispatch<CreateNpcCommand, ICharacter>(new(
+                var character = commandDispatcher.Dispatch<CreateNpcCommand, ICharacter>(new CreateNpcCommand(
                     entry.CreationParameters,
                     worldPosition,
                     worldRotation));
@@ -78,50 +104,21 @@ namespace Gast.Unity.Features.SpawnSites
             }
         }
 
-        void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.red;
-
-            // Draw anchor center
-            Gizmos.DrawWireSphere(transform.position, 0.5f);
-
-            // Draw each spawn entry position
-            foreach (var entry in entries)
-            {
-                var worldPosition = transform.position + transform.rotation * entry.LocalPosition;
-                var worldRotation = transform.rotation * entry.LocalRotation;
-
-                // Draw spawn point sphere
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawWireSphere(worldPosition, 0.3f);
-
-                // Draw forward direction arrow
-                Gizmos.color = Color.blue;
-                var forward = worldRotation * Vector3.forward;
-                Gizmos.DrawLine(worldPosition, worldPosition + forward * 1f);
-
-                // Draw line from anchor to spawn point
-                Gizmos.color = Color.gray;
-                Gizmos.DrawLine(transform.position, worldPosition);
-            }
-        }
-
         /// <summary>
-        /// Defines a single character spawn entry within a spawn site.
+        ///     Defines a single character spawn entry within a spawn site.
         /// </summary>
         [Serializable]
         class SpawnSiteEntry
         {
-            [SerializeField]
-            ScriptableObject creationParameters;
+            [SerializeField] ScriptableObject creationParameters;
 
-            [SerializeField]
-            Vector3 localPosition;
+            [SerializeField] Vector3 localPosition;
 
-            [SerializeField]
-            Vector3 localRotationEuler;
+            [SerializeField] Vector3 localRotationEuler;
 
-            public ICharacterCreationParameters CreationParameters => creationParameters as ICharacterCreationParameters;
+            public ICharacterCreationParameters CreationParameters =>
+                (ICharacterCreationParameters)creationParameters;
+
             public Vector3 LocalPosition => localPosition;
             public Quaternion LocalRotation => Quaternion.Euler(localRotationEuler);
         }
