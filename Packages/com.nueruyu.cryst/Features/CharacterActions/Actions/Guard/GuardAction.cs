@@ -2,7 +2,6 @@ using System;
 using Cryst.Domain.Characters.Commands;
 using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
-using Gast.Unity.Infrastructure.Characters;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions.Actions.Guard

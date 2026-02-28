@@ -6,7 +6,6 @@ using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
 using Gast.Unity.Features.HitDetection;
-using Gast.Unity.Infrastructure.Characters;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions.Actions.Attack

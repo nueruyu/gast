@@ -8,7 +8,6 @@
         "Gast.Unity.Shared",
         "Gast.Unity.Features",
         "Gast.Unity.UI",
-        "Gast.Unity.Infrastructure",
         "Gast.Lib.Gaia",
         "Gast.Lib.AI",
         "VContainer",
