@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gast.Domain.AI;
-using Gast.Lib.Gaia.Dto;
+using Gast.Lib.Gaia;
 using UnityEngine;
 
 namespace Gast.Unity.Infrastructure.Remoting.AI

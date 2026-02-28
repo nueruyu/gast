@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Gast.Lib.Gaia.Dto
+namespace Gast.Lib.Gaia
 {
     // --- Enums ---
     public enum SessionStatus

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Gast.Application.AI;
 using Gast.Application.AIPlanning;
 using Gast.Lib.Gaia;
-using Gast.Lib.Gaia.Dto;
 using UnityEngine;
 
 namespace Gast.Unity.Infrastructure.Remoting.AI
