@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Gast.Domain.Characters;
-using Gast.Domain.Loot;
 using Gast.Unity.Features.Characters;
-using Gast.Unity.Infrastructure.Pickups;
 using UnityEngine;
 
 namespace Gast.Unity.Infrastructure.Characters
@@ -17,56 +15,33 @@ namespace Gast.Unity.Infrastructure.Characters
         [SerializeField]
         string displayName;
 
-        [Header("Movement")]
-        [SerializeField]
-        float walkSpeed = 4f;
-
-        [SerializeField]
-        float sprintSpeed = 7f;
-
         [Header("Actions")]
         [SerializeField]
         List<CharacterActionSettings> actionSettings = new();
 
-        [Header("Economy")]
+        [Header("Features / Settings")]
         [SerializeField]
-        int initialMoney = 100;
-
-        [SerializeField]
-        int slotCapacity = 20;
-
-        [Header("Prefabs")]
-        [SerializeField]
-        GameObject characterPrefab;
-
-        [SerializeField]
-        GameObject visualPrefab;
-
-        [Header("Loot")]
-        [SerializeField]
-        LootTable lootTable;
-
-        [Header("Extensions")]
-        [SerializeField]
-        UnityEngine.Object[] extensions = { };
+        Object[] settings = { };
 
         public CharacterTypeId TypeId => reference.Id;
         public string DisplayName => displayName;
-        public float WalkSpeed => walkSpeed;
-        public float SprintSpeed => sprintSpeed;
         public IReadOnlyList<CharacterActionSettings> ActionSettings => actionSettings;
-        public int InitialMoney => initialMoney;
-        public int SlotCapacity => slotCapacity;
-        public GameObject CharacterPrefab => characterPrefab;
-        public GameObject VisualPrefab => visualPrefab;
 
-        ILootTable ICharacterTypeDefinition.LootTable => lootTable;
-
-        public T GetExtension<T>()
+        public bool TryGetSettings<T>(out T value)
         {
-            return extensions.OfType<T>().FirstOrDefault();
+            foreach (var s in settings)
+            {
+                if (s is T matched)
+                {
+                    value = matched;
+                    return true;
+                }
+            }
+
+            value = default;
+            return false;
         }
 
-        public IReadOnlyList<UnityEngine.Object> Extensions => extensions;
+        public IReadOnlyList<Object> Settings => settings;
     }
 }

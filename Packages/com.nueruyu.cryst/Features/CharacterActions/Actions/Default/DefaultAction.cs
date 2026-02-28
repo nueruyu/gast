@@ -1,6 +1,7 @@
 using Cryst.Domain.Characters;
 using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
+using Gast.Unity.Infrastructure.Characters;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions.Actions.Default
@@ -30,10 +31,11 @@ namespace Cryst.Features.CharacterActions.Actions.Default
 
         public void Move(Vector3 direction)
         {
+            var movementSettings = typeDefinition.GetSettings<CharacterMovementSettings>();
             float targetSpeed;
             if (direction.sqrMagnitude > 0.01f)
             {
-                targetSpeed = stateStore.IsSprinting ? typeDefinition.SprintSpeed : typeDefinition.WalkSpeed;
+                targetSpeed = stateStore.IsSprinting ? movementSettings.SprintSpeed : movementSettings.WalkSpeed;
             }
             else
             {

@@ -4,6 +4,7 @@ using Gast.Application.AI;
 using Gast.Application.AI.Attributes;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
+using Gast.Domain.Loot;
 using Gast.Domain.Pickups;
 
 namespace Cryst.Features.AI.Tools
@@ -30,22 +31,27 @@ namespace Cryst.Features.AI.Tools
         public List<object> GetCharacterTypes()
         {
             return characterTypeRepository.GetAllDefinitions()
-                .Select(def => new
+                .Select(def =>
                 {
-                    Id = def.TypeId.ToString(),
-                    Name = def.DisplayName,
-                    Loot = def.LootTable.Entries.Select(entry =>
+                    def.TryGetSettings<ILootTable>(out var lootTable);
+                    
+                    return new
                     {
-                        var itemDef = itemRepository.Get(entry.ItemId);
-                        return new
+                        Id = def.TypeId.ToString(),
+                        Name = def.DisplayName,
+                        Loot = lootTable?.Entries.Select(entry =>
                         {
-                            ItemId = entry.ItemId.ToString(),
-                            ItemName = itemDef?.Name ?? "Unknown",
-                            Chance = entry.DropRate,
-                            Min = entry.MinQuantity,
-                            Max = entry.MaxQuantity
-                        };
-                    }).ToList()
+                            var itemDef = itemRepository.Get(entry.ItemId);
+                            return new
+                            {
+                                ItemId = entry.ItemId.ToString(),
+                                ItemName = itemDef?.Name ?? "Unknown",
+                                Chance = entry.DropRate,
+                                Min = entry.MinQuantity,
+                                Max = entry.MaxQuantity
+                            };
+                        }).ToList()
+                    };
                 })
                 .Cast<object>()
                 .ToList();

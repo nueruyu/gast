@@ -18,7 +18,6 @@ using Gast.Unity.Infrastructure.Pickups;
 using Gast.Unity.Infrastructure.Remoting.AI;
 using Gast.Unity.Infrastructure.Services;
 using Gast.Unity.Shared.DI;
-using Gast.Unity.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 using VContainer;

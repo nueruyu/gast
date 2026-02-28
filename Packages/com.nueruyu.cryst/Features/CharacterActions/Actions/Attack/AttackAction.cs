@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
 using Gast.Unity.Features.HitDetection;
+using Gast.Unity.Infrastructure.Characters;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions.Actions.Attack
@@ -110,7 +111,8 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
 
         public void Move(Vector3 direction)
         {
-            var speed = typeDefinition.WalkSpeed;
+            var movementSettings = typeDefinition.GetSettings<CharacterMovementSettings>();
+            var speed = movementSettings.WalkSpeed;
             movement.Move(direction, speed);
         }
 

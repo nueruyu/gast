@@ -1,5 +1,6 @@
 using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
+using Gast.Unity.Infrastructure.Characters;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions
@@ -39,7 +40,8 @@ namespace Cryst.Features.CharacterActions
                 body.SetInputVelocity(Vector3.zero);
             }
 
-            var normalizedSpeed = targetSpeed / typeDefinition.SprintSpeed;
+            var movementSettings = typeDefinition.GetSettings<CharacterMovementSettings>();
+            var normalizedSpeed = targetSpeed / movementSettings.SprintSpeed;
             if (animator)
             {
                 animator.SetMoveSpeed(normalizedSpeed);

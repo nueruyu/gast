@@ -2,6 +2,7 @@ using System;
 using Cryst.Domain.Characters.Commands;
 using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
+using Gast.Unity.Infrastructure.Characters;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions.Actions.Guard
@@ -42,7 +43,8 @@ namespace Cryst.Features.CharacterActions.Actions.Guard
 
         public void Move(Vector3 direction)
         {
-            var speed = typeDefinition.WalkSpeed * settings.MoveSpeedPenalty;
+            var movementSettings = typeDefinition.GetSettings<CharacterMovementSettings>();
+            var speed = movementSettings.WalkSpeed * settings.MoveSpeedPenalty;
             movement.Move(direction, speed, settings.LookDirectionSpeed);
         }
 

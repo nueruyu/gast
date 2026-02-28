@@ -52,8 +52,12 @@ namespace Cryst.Features.Characters.EventHandlers
 
                 eventPublisher.Publish(
                     new CharacterDefeatedEvent(e.HitCharacter, damageInfo.AttackerId));
-                eventPublisher.Publish(
-                    new LootPotentialDropEvent(typeDefinition.LootTable, hitActor.Body.Position));
+
+                if (typeDefinition.TryGetSettings<ILootTable>(out var lootTable))
+                {
+                    eventPublisher.Publish(
+                        new LootPotentialDropEvent(lootTable, hitActor.Body.Position));
+                }
             }
         }
     }

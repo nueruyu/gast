@@ -40,14 +40,15 @@ namespace Cryst.Infrastructure.Characters
             ICharacter Create(Vector3 position, Quaternion rotation, CharacterCreationParameters parameters)
             {
                 var definition = typeRepository.Get(parameters.TypeId);
-                var characterPrefab = definition.CharacterPrefab;
+                var prefabSettings = definition.GetSettings<CharacterPrefabSettings>();
+                var characterPrefab = prefabSettings.CharacterPrefab;
 
                 var characterId = CharacterId.New();
                 var characterGo = UnityEngine.Object.Instantiate(characterPrefab, position, rotation);
                 characterGo.name = $"{definition.DisplayName}@{characterPrefab.name}:{characterId}";
 
-                var visual = UnityEngine.Object.Instantiate(definition.VisualPrefab, characterGo.transform);
-                visual.name = $"Visual ({definition.VisualPrefab.name})";
+                var visual = UnityEngine.Object.Instantiate(prefabSettings.VisualPrefab, characterGo.transform);
+                visual.name = $"Visual ({prefabSettings.VisualPrefab.name})";
 
                 var destroyCancellationToken = characterGo.GetCancellationTokenOnDestroy();
                 var context = new CharacterContext(
@@ -71,8 +72,9 @@ namespace Cryst.Infrastructure.Characters
                     context.Resolve<IVisionSensor>(),
                     context.Resolve<INavigationProvider>());
 
-                var wallet = new Wallet(definition.InitialMoney);
-                var inventory = new Inventory(definition.SlotCapacity);
+                var economySettings = definition.GetSettings<CharacterEconomySettings>();
+                var wallet = new Wallet(economySettings.InitialMoney);
+                var inventory = new Inventory(economySettings.SlotCapacity);
                 var interactor = characterGo.RequireComponentInChildren<IInteractor>();
 
                 var facets = CreateFacets(actionController, context, definition);
@@ -124,15 +126,15 @@ namespace Cryst.Infrastructure.Characters
                 var animator = gameObject.GetComponentInChildren<CharacterAnimator>();
                 var audio = gameObject.RequireComponentInChildren<CharacterAudio>();
 
-                var visionSettings = typeDefinition.GetExtension<ConeVisionSensorSettings>();
+                var visionSettings = typeDefinition.GetSettings<ConeVisionSensorSettings>();
                 visionSensor.ViewAngle = visionSettings.ViewAngle;
                 visionSensor.ViewRadius = visionSettings.ViewRadius;
                 visionSensor.EyeOffset = visionSettings.EyeOffset;
 
-                var navSettings = typeDefinition.GetExtension<NavMeshNavigatorSettings>();
+                var navSettings = typeDefinition.GetSettings<NavMeshNavigatorSettings>();
                 navigationProvider.StoppingDistance = navSettings.StoppingDistance;
 
-                var statusSettings = typeDefinition.GetExtension<CharacterStatusSettings>();
+                var statusSettings = typeDefinition.GetSettings<CharacterStatusSettings>();
                 var status = new CharacterStatus(statusSettings.InitialMaxHealth);
                 context.Register(status);
 
@@ -153,7 +155,7 @@ namespace Cryst.Infrastructure.Characters
                 context.Register(stateStore);
                 context.Register(movement);
 
-                var footstepSettings = typeDefinition.GetExtension<CharacterFootstepSettings>();
+                var footstepSettings = typeDefinition.GetSettings<CharacterFootstepSettings>();
                 new CharacterFootstepHandler(animator, audio, footstepSettings).AddTo(gameObject);
             }
 
