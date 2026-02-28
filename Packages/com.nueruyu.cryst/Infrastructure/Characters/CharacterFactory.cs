@@ -37,7 +37,7 @@ namespace Cryst.Infrastructure.Characters
 
                 var characterId = CharacterId.New();
                 var characterGo = UnityEngine.Object.Instantiate(characterPrefab, position, rotation);
-                characterGo.name = $"{definition.name}@{characterPrefab.name}:{characterId}";
+                characterGo.name = $"{definition.DisplayName}@{characterPrefab.name}:{characterId}";
 
                 var visual = UnityEngine.Object.Instantiate(definition.VisualPrefab, characterGo.transform);
                 visual.name = $"Visual ({definition.VisualPrefab.name})";
