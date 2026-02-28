@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f462def45f2a6674abee5de0b19298ab, type: 3}
+  m_Name: Archetype_Bot
+  m_EditorClassIdentifier: Gast.Unity.Infrastructure::Gast.Unity.Infrastructure.Characters.CharacterArchetype
+  reference: {fileID: 11400000, guid: 66b0e664f08e6a44ab3e88fe7754b035, type: 2}
+  baseArchetype: {fileID: 0}
+  settings:
+  - {fileID: 11400000, guid: 9ab2792c0b559804ca5f161181b4f9b3, type: 2}
+  - {fileID: 11400000, guid: f0dc487c825578f4bbf87c21123919c2, type: 2}
+  - {fileID: 11400000, guid: 2ace03e6991f6084499ec83320e0e6f7, type: 2}
+  - {fileID: 11400000, guid: 10046ca14df4f3744a3057d6e6f2a5ed, type: 2}
+  - {fileID: 11400000, guid: b3eb2f61abb274a4bacf3d5d73d9c6bb, type: 2}
+  - {fileID: 11400000, guid: 74cfe9ce56ec3b64a96c2ed7861480ba, type: 2}

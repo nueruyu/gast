@@ -7,27 +7,21 @@ using Object = UnityEngine.Object;
 
 namespace Gast.Unity.Infrastructure.Characters
 {
-    [CreateAssetMenu(fileName = "CharacterType", menuName = "Gast/Characters/Type Definition")]
-    public class CharacterTypeDefinition : ScriptableObject, ICharacterTypeDefinition
+    [CreateAssetMenu(fileName = "CharacterArchetype", menuName = "Gast/Characters/Archetype")]
+    public class CharacterArchetype : ScriptableObject
     {
-        [SerializeField] CharacterTypeReference reference;
-
-        [SerializeField] CharacterArchetype archetype;
-
-        [SerializeField] string displayName;
+        [SerializeField] CharacterArchetypeReference reference;
 
         [SerializeField] Object[] settings = { };
 
         [NonSerialized] Dictionary<Type, object> settingsCache;
 
+        public CharacterArchetypeId Id => reference.Id;
+
         void OnValidate()
         {
             settingsCache = null;
         }
-
-        public CharacterTypeId TypeId => reference.Id;
-        public CharacterArchetypeId ArchetypeId => archetype != null ? archetype.Id : default;
-        public string DisplayName => displayName;
 
         public bool TryGetSettings<T>(out T value)
         {
@@ -38,8 +32,6 @@ namespace Gast.Unity.Infrastructure.Characters
                 value = (T)setting;
                 return true;
             }
-
-            if (archetype != null) return archetype.TryGetSettings(out value);
 
             value = default;
             return false;

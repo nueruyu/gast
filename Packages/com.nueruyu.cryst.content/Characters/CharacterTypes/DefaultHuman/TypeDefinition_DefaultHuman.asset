@@ -13,15 +13,8 @@ MonoBehaviour:
   m_Name: TypeDefinition_DefaultHuman
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: e9db19cfea39ace4fb8ba7c43866f726, type: 2}
-  archetypeReference: {fileID: 11400000, guid: b959d76b5b4ede44a82e1915d86f5bdd, type: 2}
+  archetype: {fileID: 11400000, guid: d6a8a1d57e0852147a7cb6d209e34d8c, type: 2}
   displayName: Default Human
   settings:
   - {fileID: 11400000, guid: b361cd44810190348a146878b14ec6ca, type: 2}
-  - {fileID: 11400000, guid: b3eb2f61abb274a4bacf3d5d73d9c6bb, type: 2}
-  - {fileID: 11400000, guid: 10046ca14df4f3744a3057d6e6f2a5ed, type: 2}
-  - {fileID: 11400000, guid: 74cfe9ce56ec3b64a96c2ed7861480ba, type: 2}
-  - {fileID: 11400000, guid: 9ab2792c0b559804ca5f161181b4f9b3, type: 2}
-  - {fileID: 11400000, guid: f054d0ee758f72c4683543530e0a076b, type: 2}
   - {fileID: 11400000, guid: 8416b10d29d6fd445b438e48fa040731, type: 2}
-  - {fileID: 11400000, guid: f0dc487c825578f4bbf87c21123919c2, type: 2}
-  - {fileID: 11400000, guid: 2ace03e6991f6084499ec83320e0e6f7, type: 2}

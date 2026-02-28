@@ -13,15 +13,9 @@ MonoBehaviour:
   m_Name: TypeDefinition_BlueSoldier
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
-  archetypeReference: {fileID: 11400000, guid: b959d76b5b4ede44a82e1915d86f5bdd, type: 2}
+  archetype: {fileID: 11400000, guid: d6a8a1d57e0852147a7cb6d209e34d8c, type: 2}
   displayName: Blue Soldier
   settings:
   - {fileID: 11400000, guid: e64478cb23b9d2045b8063c0e66eedc8, type: 2}
-  - {fileID: 11400000, guid: b3eb2f61abb274a4bacf3d5d73d9c6bb, type: 2}
-  - {fileID: 11400000, guid: 10046ca14df4f3744a3057d6e6f2a5ed, type: 2}
-  - {fileID: 11400000, guid: 74cfe9ce56ec3b64a96c2ed7861480ba, type: 2}
-  - {fileID: 11400000, guid: 9ab2792c0b559804ca5f161181b4f9b3, type: 2}
-  - {fileID: 11400000, guid: 8c7afb30caebeed4f8aebc453db88697, type: 2}
   - {fileID: 11400000, guid: d13f3d488c514f0419560625a24e698b, type: 2}
-  - {fileID: 11400000, guid: f0dc487c825578f4bbf87c21123919c2, type: 2}
-  - {fileID: 11400000, guid: 2ace03e6991f6084499ec83320e0e6f7, type: 2}
+  - {fileID: 11400000, guid: 8c7afb30caebeed4f8aebc453db88697, type: 2}

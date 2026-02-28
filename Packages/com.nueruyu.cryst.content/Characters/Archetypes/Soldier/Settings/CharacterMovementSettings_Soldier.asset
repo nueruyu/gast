@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5912170a30330f146a9da029ee93d933, type: 3}
-  m_Name: CharacterEconomySettings_Default
-  m_EditorClassIdentifier: Cryst::Cryst.Infrastructure.Characters.CharacterEconomySettings
-  initialMoney: 100
-  slotCapacity: 20
+  m_Script: {fileID: 11500000, guid: d65bac7a3d5421847ac0d6774c3d6ee8, type: 3}
+  m_Name: CharacterMovementSettings_Soldier
+  m_EditorClassIdentifier: Cryst::Cryst.Features.CharacterActions.CharacterMovementSettings
+  walkSpeed: 4
+  sprintSpeed: 7
