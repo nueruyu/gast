@@ -1,3 +1,4 @@
+using Gast.Unity.Features.Characters;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions.Effects

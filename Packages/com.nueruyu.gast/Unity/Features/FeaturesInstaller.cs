@@ -1,5 +1,6 @@
 using Gast.Core.DI;
 using Gast.Unity.Features.Cameras;
+using Gast.Unity.Features.Characters;
 using Gast.Unity.Features.Gameplay;
 using Gast.Unity.Features.Gathering;
 using Gast.Unity.Features.Inputs;
@@ -17,6 +18,9 @@ namespace Gast.Unity.Features
             // Camera
             builder.Register<CameraInputController>().AsImplementedInterfaces();
             builder.Register<CameraService>().AsImplementedInterfaces();
+
+            // Character
+            builder.Register<CharacterActionEffectDispatcher>(Lifetime.Transient);
 
             // Player
             builder.Register<PlayerAIControlMonitorService>();
