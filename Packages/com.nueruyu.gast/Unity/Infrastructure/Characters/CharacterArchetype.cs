@@ -33,6 +33,16 @@ namespace Gast.Unity.Infrastructure.Characters
                 return true;
             }
 
+            foreach (var s in settings)
+            {
+                if (s is T match)
+                {
+                    settingsCache[typeof(T)] = match;
+                    value = match;
+                    return true;
+                }
+            }
+
             value = default;
             return false;
         }
