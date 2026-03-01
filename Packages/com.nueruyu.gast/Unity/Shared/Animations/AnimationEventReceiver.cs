@@ -3,25 +3,19 @@ using UnityEngine;
 
 namespace Gast.Unity.Shared.Animations
 {
-    /// <summary>
-    /// Receives animation events from StateMachineBehaviours and exposes them as C# events.
-    /// This component bridges the animation system with gameplay logic for characters.
-    /// </summary>
     [RequireComponent(typeof(Animator))]
     public class AnimationEventReceiver : MonoBehaviour, IAnimationEventReceiver
     {
-        readonly Signal<string> eventReceived = new();
+        readonly Signal<AnimationEventSymbol> eventReceived = new();
 
-        public ISignal<string> EventReceived => eventReceived;
+        public ISignal<AnimationEventSymbol> EventReceived => eventReceived;
 
-        /// <summary>
-        /// Called by TimedEventBehaviour when an animation event is triggered.
-        /// Routes the event to appropriate C# event handlers based on event name.
-        /// </summary>
-        /// <param name="eventName">Event identifier from the animation state machine</param>
-        public void TriggerAnimationEvent(string eventName)
+        public void TriggerAnimationEvent(AnimationEventSymbol eventSymbol)
         {
-            eventReceived.Publish(eventName);
+            if (eventSymbol != null)
+            {
+                eventReceived.Publish(eventSymbol);
+            }
         }
     }
 }

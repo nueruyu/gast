@@ -1,4 +1,5 @@
 using Gast.Unity.Features.Characters;
+using Gast.Unity.Shared.Animations;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions.Actions.Attack
@@ -43,6 +44,9 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
         [SerializeField]
         float sfxVolume = 1.0f;
 
+        [SerializeField]
+        AnimationEventSymbol sfxEvent;
+
         public float Cooldown => cooldown;
         public float Duration => duration;
         public float DamageAreaDuration => damageAreaDuration;
@@ -54,5 +58,6 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
         public float KnockbackForce => knockbackForce;
         public AudioClip Sfx => sfx;
         public float SfxVolume => sfxVolume;
+        public AnimationEventSymbol SfxEvent => sfxEvent;
     }
 }

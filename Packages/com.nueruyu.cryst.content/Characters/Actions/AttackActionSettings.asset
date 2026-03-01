@@ -23,3 +23,4 @@ MonoBehaviour:
   knockbackForce: 10
   sfx: {fileID: 8300000, guid: 7cac7fc0b214323468875d49122c2c55, type: 3}
   sfxVolume: 2
+  sfxEvent: {fileID: 11400000, guid: d061093224140af48bcb95d17005a0a4, type: 2}

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ebfac28d2a23c84db4b506ac3f477ef, type: 3}
   m_Name: CharacterFootstepSettings_Default
   m_EditorClassIdentifier: Gast.Features.Characters::Gast.Features.Characters.Audio.CharacterAudioSettings
+  footstepEvent: {fileID: 11400000, guid: 6c8157b8bd54d3049843d1f9f0e29e48, type: 2}
   footstepClips:
   - {fileID: 8300000, guid: eee229d3898f72f4f9d8b5e68776ed09, type: 3}
   footstepVolume: 0.9997

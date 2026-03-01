@@ -9,7 +9,7 @@ namespace Gast.Unity.Shared.Animations
         /// <summary>
         /// Called when an animation event is triggered by the StateMachineBehaviour.
         /// </summary>
-        /// <param name="eventName">Event identifier (e.g., "Footstep", "Attack", "WeaponSwing")</param>
-        void TriggerAnimationEvent(string eventName);
+        /// <param name="eventSymbol">Event identifier from the animation state machine</param>
+        void TriggerAnimationEvent(AnimationEventSymbol eventSymbol);
     }
 }

@@ -5,6 +5,7 @@ using Cryst.Domain.Combat;
 using Cysharp.Threading.Tasks;
 using Gast.Unity.Features.Characters;
 using Gast.Unity.Features.HitDetection;
+using Gast.Unity.Shared.Animations;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions.Actions.Attack
@@ -51,9 +52,9 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
             }
         }
 
-        void OnAnimationEvent(string name)
+        void OnAnimationEvent(AnimationEventSymbol eventSymbol)
         {
-            if (name == "WeaponSwing")
+            if (eventSymbol == settings.SfxEvent)
             {
                 var audioSource = audio.AudioSource;
                 audioSource.volume = settings.SfxVolume;
