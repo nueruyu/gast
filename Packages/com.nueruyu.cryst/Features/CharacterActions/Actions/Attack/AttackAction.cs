@@ -10,7 +10,6 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
 {
     public class AttackAction : ICharacterExecutableAction<AttackCommand>
     {
-        readonly CharacterContext context;
         readonly AttackActionSettings settings;
         readonly CharacterAnimator animator;
         readonly CharacterMovement movement;
@@ -24,14 +23,12 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
         public int Priority => 5;
 
         public AttackAction(
-            CharacterContext context,
             AttackActionSettings settings,
             CharacterAnimator animator,
             CharacterMovement movement,
             CharacterMovementSettings movementSettings,
             CharacterActionEffectDispatcher effectDispatcher)
         {
-            this.context = context;
             this.settings = settings;
             this.animator = animator;
             this.movement = movement;
@@ -49,7 +46,7 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
             var timedEffect = settings.TimedEffects.FirstOrDefault(e => e.EventSymbol == eventSymbol);
             if (timedEffect?.Effect != null)
             {
-                effectDispatcher.Dispatch(timedEffect.Effect, context);
+                effectDispatcher.Dispatch(timedEffect.Effect);
             }
         }
 

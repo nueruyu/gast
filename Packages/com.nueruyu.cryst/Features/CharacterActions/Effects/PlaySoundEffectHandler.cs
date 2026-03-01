@@ -8,9 +8,15 @@ namespace Cryst.Features.CharacterActions.Effects
     /// </summary>
     public class PlaySoundEffectHandler : ICharacterActionEffectHandler<PlaySoundEffect>
     {
-        public void Handle(PlaySoundEffect effect, CharacterContext context)
+        readonly CharacterAudio audio;
+
+        public PlaySoundEffectHandler(CharacterAudio audio)
         {
-            var audio = context.Resolve<CharacterAudio>();
+            this.audio = audio;
+        }
+
+        public void Handle(PlaySoundEffect effect)
+        {
             if (audio == null || effect.Sfx == null) return;
 
             audio.AudioSource.PlayOneShot(effect.Sfx, effect.Volume);

@@ -10,8 +10,8 @@ namespace Gast.Unity.Features.Characters
         /// <summary>The effect type this handler is responsible for.</summary>
         Type EffectType { get; }
 
-        /// <summary>Handles the given effect for the specified character context.</summary>
-        void Handle(CharacterActionEffect effect, CharacterContext context);
+        /// <summary>Handles the given effect.</summary>
+        void Handle(CharacterActionEffect effect);
     }
 
     /// <summary>
@@ -24,12 +24,12 @@ namespace Gast.Unity.Features.Characters
     {
         Type ICharacterActionEffectHandler.EffectType => typeof(T);
 
-        void ICharacterActionEffectHandler.Handle(CharacterActionEffect effect, CharacterContext context)
+        void ICharacterActionEffectHandler.Handle(CharacterActionEffect effect)
         {
-            Handle((T)effect, context);
+            Handle((T)effect);
         }
 
         /// <summary>Handles the given effect in a type-safe manner.</summary>
-        void Handle(T effect, CharacterContext context);
+        void Handle(T effect);
     }
 }

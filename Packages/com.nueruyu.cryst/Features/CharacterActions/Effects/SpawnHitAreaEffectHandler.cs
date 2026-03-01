@@ -1,4 +1,5 @@
 using Cryst.Domain.Combat;
+using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
 using Gast.Unity.Features.HitDetection;
 using UnityEngine;
@@ -12,16 +13,18 @@ namespace Cryst.Features.CharacterActions.Effects
     public class SpawnHitAreaEffectHandler : ICharacterActionEffectHandler<SpawnHitAreaEffect>
     {
         readonly IHitAreaFactory hitAreaFactory;
+        readonly CharacterBody body;
+        readonly CharacterId characterId;
 
-        public SpawnHitAreaEffectHandler(IHitAreaFactory hitAreaFactory)
+        public SpawnHitAreaEffectHandler(IHitAreaFactory hitAreaFactory, CharacterBody body, CharacterId characterId)
         {
             this.hitAreaFactory = hitAreaFactory;
+            this.body = body;
+            this.characterId = characterId;
         }
 
-        public void Handle(SpawnHitAreaEffect effect, CharacterContext context)
+        public void Handle(SpawnHitAreaEffect effect)
         {
-            var body = context.Resolve<CharacterBody>();
-
             var attackerTransform = body.transform;
             var forward = attackerTransform.forward;
             var spawnPosition = attackerTransform.position + attackerTransform.rotation * effect.Offset + forward * effect.Range;
@@ -30,7 +33,7 @@ namespace Cryst.Features.CharacterActions.Effects
             var knockbackDirection = spawnRotation * Vector3.forward;
 
             var attackInfo = new AttackInfo(
-                context.CharacaterId,
+                characterId,
                 effect.Damage,
                 effect.KnockbackForce * knockbackDirection);
 

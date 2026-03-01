@@ -19,9 +19,6 @@ namespace Gast.Unity.Features
             builder.Register<CameraInputController>().AsImplementedInterfaces();
             builder.Register<CameraService>().AsImplementedInterfaces();
 
-            // Character
-            builder.Register<CharacterActionEffectDispatcher>(Lifetime.Transient);
-
             // Player
             builder.Register<PlayerAIControlMonitorService>();
             builder.Register<PlayerInteractionFocusService>().AsImplementedInterfaces().AsSelf();

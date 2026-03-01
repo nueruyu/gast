@@ -29,6 +29,7 @@ namespace Cryst.Infrastructure.Characters
             {
                 builder.RegisterInstance(context);
                 builder.RegisterInstance(settings, settings.GetType());
+                builder.RegisterInstance(context.CharacaterId);
 
                 foreach (var (type, module) in context.GetModules())
                 {
@@ -40,6 +41,7 @@ namespace Cryst.Infrastructure.Characters
                 builder.RegisterInstance(movementSettings);
 
                 builder.Register<CharacterMovement>(Lifetime.Transient);
+                builder.Register<CharacterActionEffectDispatcher>(Lifetime.Transient);
             });
 
             scope.AddTo(context.CancellationToken);

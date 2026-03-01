@@ -71,8 +71,8 @@ namespace Cryst.Composition
             builder.Register<JumpAction>(Lifetime.Transient);
 
             // Character Action Effects
-            builder.Register<PlaySoundEffectHandler>(Lifetime.Singleton).As<ICharacterActionEffectHandler>();
-            builder.Register<SpawnHitAreaEffectHandler>(Lifetime.Singleton).As<ICharacterActionEffectHandler>();
+            builder.Register<PlaySoundEffectHandler>(Lifetime.Transient).As<ICharacterActionEffectHandler>();
+            builder.Register<SpawnHitAreaEffectHandler>(Lifetime.Transient).As<ICharacterActionEffectHandler>();
 
             // Character Facets (Transient)
             builder.Register<AttackableCharacter>(Lifetime.Transient);
