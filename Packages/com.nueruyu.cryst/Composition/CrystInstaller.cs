@@ -29,6 +29,7 @@ using Cryst.Features.CharacterActions.Actions.Die;
 using Cryst.Features.CharacterActions.Actions.Hit;
 using Cryst.Features.CharacterActions.Actions.Jump;
 using Cryst.Domain.Characters.Facets;
+using Cryst.Features.CharacterActions.Effects;
 using Cryst.UI.Hud.PlayerStatus;
 using Gast.Application.Reflection;
 using Gast.Unity.Features.Characters;
@@ -68,6 +69,11 @@ namespace Cryst.Composition
             builder.Register<GuardAction>(Lifetime.Transient);
             builder.Register<HitAction>(Lifetime.Transient);
             builder.Register<JumpAction>(Lifetime.Transient);
+
+            // Character Action Effects
+            builder.Register<CharacterActionEffectDispatcher>(Lifetime.Transient);
+            builder.Register<PlaySoundEffectHandler>(Lifetime.Singleton).As<ICharacterActionEffectHandler>();
+            builder.Register<SpawnHitAreaEffectHandler>(Lifetime.Singleton).As<ICharacterActionEffectHandler>();
 
             // Character Facets (Transient)
             builder.Register<AttackableCharacter>(Lifetime.Transient);

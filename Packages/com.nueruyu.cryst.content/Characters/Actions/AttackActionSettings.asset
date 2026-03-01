@@ -14,13 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gast.Features::Gast.Features.Characters.Actions.AttackActionSettings
   cooldown: 0.2
   duration: 0.6
-  damageAreaDuration: 0.1
-  range: 1.5
-  offset: {x: 0, y: 0.5, z: 0}
-  hitboxSize: {x: 1, y: 0.2, z: 1}
-  animationTriggerDelay: 0.1
-  damage: 10
-  knockbackForce: 10
-  sfx: {fileID: 8300000, guid: 7cac7fc0b214323468875d49122c2c55, type: 3}
-  sfxVolume: 2
-  sfxEvent: {fileID: 11400000, guid: d061093224140af48bcb95d17005a0a4, type: 2}
+  timedEffects:
+  - eventSymbol: {fileID: 11400000, guid: d061093224140af48bcb95d17005a0a4, type: 2}
+    effect: {fileID: 11400000, guid: 25ef8d32592af7849894c4c9ea6761c4, type: 2}
+  - eventSymbol: {fileID: 11400000, guid: 96d7053ce32021b48b7f920f4f3eaaed, type: 2}
+    effect: {fileID: 11400000, guid: 81dfadd4481a19048bb97a6f1260f00f, type: 2}
