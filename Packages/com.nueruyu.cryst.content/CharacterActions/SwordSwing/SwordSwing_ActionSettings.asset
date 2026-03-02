@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 122ed5642ad21f447b5f527b9361837c, type: 3}
-  m_Name: AttackActionSettings
+  m_Name: SwordSwing_ActionSettings
   m_EditorClassIdentifier: Gast.Features::Gast.Features.Characters.Actions.AttackActionSettings
   cooldown: 0.2
   duration: 0.6

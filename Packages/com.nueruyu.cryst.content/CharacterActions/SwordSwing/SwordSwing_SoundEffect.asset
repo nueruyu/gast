@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e458f018b6e8a0345b2e2c73e19c41fc, type: 3}
-  m_Name: SwordSwingSoundEffect
+  m_Name: SwordSwing_SoundEffect
   m_EditorClassIdentifier: Cryst::Cryst.Features.CharacterActions.Effects.PlaySoundEffect
   sfx: {fileID: 8300000, guid: 7cac7fc0b214323468875d49122c2c55, type: 3}
   volume: 1
