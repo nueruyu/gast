@@ -10,41 +10,32 @@ using UnityEngine;
 
 namespace Gast.Unity.Features.SpawnSites
 {
-    /// <summary>
-    ///     Scene placement marker for a spawn site.
-    ///     Links a position in the scene to spawn site settings.
-    /// </summary>
     public class SpawnSite : MonoBehaviour
     {
-        [SerializeField] SpawnSiteEntry[] entries = { };
-
-        [SerializeField] float respawnCooldown = 30f;
+        [SerializeField]
+        float respawnCooldown = 30f;
 
         ICommandDispatcher commandDispatcher;
 
         void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
-
-            // Draw anchor center
             Gizmos.DrawWireSphere(transform.position, 0.5f);
 
-            // Draw each spawn entry position
+            var entries = GetComponentsInChildren<SpawnSiteEntryBase>();
             foreach (var entry in entries)
             {
-                var worldPosition = transform.position + transform.rotation * entry.LocalPosition;
-                var worldRotation = transform.rotation * entry.LocalRotation;
+                var entryTransform = entry.transform;
+                var worldPosition = entryTransform.position;
+                var worldRotation = entryTransform.rotation;
 
-                // Draw spawn point sphere
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawWireSphere(worldPosition, 0.3f);
 
-                // Draw forward direction arrow
                 Gizmos.color = Color.blue;
                 var forward = worldRotation * Vector3.forward;
                 Gizmos.DrawLine(worldPosition, worldPosition + forward * 1f);
 
-                // Draw line from anchor to spawn point
                 Gizmos.color = Color.gray;
                 Gizmos.DrawLine(transform.position, worldPosition);
             }
@@ -81,10 +72,12 @@ namespace Gast.Unity.Features.SpawnSites
 
         void SpawnAll(List<ICharacter> activeCharacters, DisposableBag disposableBag)
         {
+            var entries = GetComponentsInChildren<SpawnSiteEntryBase>();
             foreach (var entry in entries)
             {
-                var worldPosition = transform.position + transform.rotation * entry.LocalPosition;
-                var worldRotation = transform.rotation * entry.LocalRotation;
+                var entryTransform = entry.transform;
+                var worldPosition = entryTransform.position;
+                var worldRotation = entryTransform.rotation;
 
                 var character = commandDispatcher.Dispatch<CreateNpcCommand, ICharacter>(new CreateNpcCommand(
                     entry.CreationParameters,
@@ -102,25 +95,6 @@ namespace Gast.Unity.Features.SpawnSites
             {
                 activeCharacters.Remove(character);
             }
-        }
-
-        /// <summary>
-        ///     Defines a single character spawn entry within a spawn site.
-        /// </summary>
-        [Serializable]
-        class SpawnSiteEntry
-        {
-            [SerializeField] ScriptableObject creationParameters;
-
-            [SerializeField] Vector3 localPosition;
-
-            [SerializeField] Vector3 localRotationEuler;
-
-            public ICharacterCreationParameters CreationParameters =>
-                (ICharacterCreationParameters)creationParameters;
-
-            public Vector3 LocalPosition => localPosition;
-            public Quaternion LocalRotation => Quaternion.Euler(localRotationEuler);
         }
     }
 }

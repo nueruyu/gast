@@ -548,6 +548,52 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 37ca3e2b272679b488a5d7a632e9cf35, type: 3}
+--- !u!1 &199904703
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 199904704}
+  - component: {fileID: 199904705}
+  m_Layer: 0
+  m_Name: Entry (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &199904704
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 199904703}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.7999992, y: 0, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2037068026}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &199904705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 199904703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2dbbd76a4339a64abcaa84f1a19aa4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Cryst::Cryst.Infrastructure.Characters.NpcSpawnSiteEntry
+  characterTypeReference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
+  faction: 2
 --- !u!1 &207331374
 GameObject:
   m_ObjectHideFlags: 0
@@ -1254,6 +1300,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &960681626
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 960681627}
+  - component: {fileID: 960681628}
+  m_Layer: 0
+  m_Name: Entry (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &960681627
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 960681626}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2084794415}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &960681628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 960681626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2dbbd76a4339a64abcaa84f1a19aa4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Cryst::Cryst.Infrastructure.Characters.NpcSpawnSiteEntry
+  characterTypeReference: {fileID: 11400000, guid: 74743be7f3db9d647b1ca2d8167fc767, type: 2}
+  faction: 2
 --- !u!1 &990410302
 GameObject:
   m_ObjectHideFlags: 0
@@ -2561,7 +2653,10 @@ Transform:
   m_LocalPosition: {x: 49, y: 0, z: 20.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2145093716}
+  - {fileID: 199904704}
+  - {fileID: 2093405105}
   m_Father: {fileID: 803372589}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &2037068027
@@ -2576,16 +2671,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2a5e38478a35ac438dacc6833a5ebc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Gast.Systems.SpawnSites::Gast.Systems.SpawnSites.SpawnSiteAnchor
-  entries:
-  - creationParameters: {fileID: 11400000, guid: 33b3ad5f8d4cf6d4b986721acebcd23e, type: 2}
-    localPosition: {x: 1.98, y: 0, z: 1}
-    localRotationEuler: {x: 0, y: 0, z: 0}
-  - creationParameters: {fileID: 11400000, guid: 29952189894572044bb56b71092c11e4, type: 2}
-    localPosition: {x: 1.12, y: 0, z: -1.64}
-    localRotationEuler: {x: 0, y: 0, z: 0}
-  - creationParameters: {fileID: 11400000, guid: 29952189894572044bb56b71092c11e4, type: 2}
-    localPosition: {x: -1.8, y: 0, z: 1}
-    localRotationEuler: {x: 0, y: 0, z: 0}
   respawnCooldown: 10
 --- !u!1 &2080562600
 GameObject:
@@ -2743,10 +2828,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2a5e38478a35ac438dacc6833a5ebc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Gast.Systems.SpawnSites::Gast.Systems.SpawnSites.SpawnSiteAnchor
-  entries:
-  - creationParameters: {fileID: 11400000, guid: 33b3ad5f8d4cf6d4b986721acebcd23e, type: 2}
-    localPosition: {x: 1.98, y: 0, z: 1}
-    localRotationEuler: {x: 0, y: 0, z: 0}
   respawnCooldown: 10
 --- !u!4 &2084794415
 Transform:
@@ -2760,9 +2841,56 @@ Transform:
   m_LocalPosition: {x: -30.800001, y: 0, z: 18.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 960681627}
   m_Father: {fileID: 803372589}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!1 &2093405104
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2093405105}
+  - component: {fileID: 2093405106}
+  m_Layer: 0
+  m_Name: Entry (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2093405105
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2093405104}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.7999992, y: 0, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2037068026}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2093405106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2093405104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2dbbd76a4339a64abcaa84f1a19aa4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Cryst::Cryst.Infrastructure.Characters.NpcSpawnSiteEntry
+  characterTypeReference: {fileID: 11400000, guid: d84ffdeb244f09244a7266fba056d347, type: 2}
+  faction: 2
 --- !u!1 &2101637810
 GameObject:
   m_ObjectHideFlags: 0
@@ -2919,6 +3047,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Cinemachine::Cinemachine.CinemachinePipeline
+--- !u!1 &2145093715
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2145093716}
+  - component: {fileID: 2145093717}
+  m_Layer: 0
+  m_Name: Entry
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2145093716
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2145093715}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2037068026}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2145093717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2145093715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2dbbd76a4339a64abcaa84f1a19aa4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Cryst::Cryst.Infrastructure.Characters.NpcSpawnSiteEntry
+  characterTypeReference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
+  faction: 2
 --- !u!1001 &8419556042836358336
 PrefabInstance:
   m_ObjectHideFlags: 0
