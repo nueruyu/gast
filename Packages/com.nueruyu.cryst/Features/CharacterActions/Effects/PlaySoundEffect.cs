@@ -11,7 +11,7 @@ namespace Cryst.Features.CharacterActions.Effects
     {
         [SerializeField] AudioClip sfx;
 
-        [SerializeField] [Range(0f, 1f)] float volume = 1.0f;
+        [SerializeField] [Range(0f, 10f)] float volume = 1.0f;
 
         public AudioClip Sfx => sfx;
         public float Volume => volume;
