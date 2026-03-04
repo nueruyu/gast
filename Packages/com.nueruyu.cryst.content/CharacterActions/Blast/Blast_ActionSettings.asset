@@ -17,5 +17,7 @@ MonoBehaviour:
   timedEffects:
   - eventSymbol: {fileID: 11400000, guid: d061093224140af48bcb95d17005a0a4, type: 2}
     effect: {fileID: 11400000, guid: b81df4378bb0bed4db4066c199a30822, type: 2}
+  - eventSymbol: {fileID: 11400000, guid: 94feccfae377ebc48bce7ffda989aa92, type: 2}
+    effect: {fileID: 11400000, guid: 871cf9df05596a34399ff9edc9ba688c, type: 2}
   - eventSymbol: {fileID: 11400000, guid: 96d7053ce32021b48b7f920f4f3eaaed, type: 2}
     effect: {fileID: 11400000, guid: 2f5d2b0799b79bc4f91827b92a15e003, type: 2}

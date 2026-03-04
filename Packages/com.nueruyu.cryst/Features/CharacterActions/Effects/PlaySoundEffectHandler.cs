@@ -19,7 +19,7 @@ namespace Cryst.Features.CharacterActions.Effects
         {
             if (audio == null || effect.Sfx == null) return;
 
-            audio.AudioSource.PlayOneShot(effect.Sfx, effect.Volume);
+            audio.OneShotAudioSource.PlayOneShot(effect.Sfx, effect.Volume);
         }
     }
 }

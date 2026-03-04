@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: SwordSwing_SoundEffect
   m_EditorClassIdentifier: Cryst::Cryst.Features.CharacterActions.Effects.PlaySoundEffect
   sfx: {fileID: 8300000, guid: 7cac7fc0b214323468875d49122c2c55, type: 3}
-  volume: 1
+  volume: 0.1

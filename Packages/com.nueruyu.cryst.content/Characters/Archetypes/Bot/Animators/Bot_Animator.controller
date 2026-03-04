@@ -66,6 +66,8 @@ MonoBehaviour:
   events:
   - time: 0
     eventSymbol: {fileID: 11400000, guid: d061093224140af48bcb95d17005a0a4, type: 2}
+  - time: 0
+    eventSymbol: {fileID: 11400000, guid: 94feccfae377ebc48bce7ffda989aa92, type: 2}
   - time: 0.1
     eventSymbol: {fileID: 11400000, guid: 96d7053ce32021b48b7f920f4f3eaaed, type: 2}
 --- !u!1101 &-6259100819860680346

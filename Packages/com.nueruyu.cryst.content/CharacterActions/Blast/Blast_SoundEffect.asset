@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Blast_SoundEffect
   m_EditorClassIdentifier: Cryst::Cryst.Features.CharacterActions.Effects.PlaySoundEffect
   sfx: {fileID: 8300000, guid: 3fb1bb7ff88a21a4fa405d055882febe, type: 3}
-  volume: 3
+  volume: 0.3

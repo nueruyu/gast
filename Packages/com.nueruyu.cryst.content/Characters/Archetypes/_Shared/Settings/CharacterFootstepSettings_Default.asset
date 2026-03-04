@@ -15,6 +15,6 @@ MonoBehaviour:
   footstepEvent: {fileID: 11400000, guid: 6c8157b8bd54d3049843d1f9f0e29e48, type: 2}
   footstepClips:
   - {fileID: 8300000, guid: eee229d3898f72f4f9d8b5e68776ed09, type: 3}
-  footstepVolume: 0.9997
-  volumeVariance: 0.09
+  footstepVolume: 0.05
+  volumeVariance: 0.03
   pitchVariance: 0.092

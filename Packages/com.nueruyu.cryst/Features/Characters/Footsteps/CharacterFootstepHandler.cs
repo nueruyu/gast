@@ -32,7 +32,7 @@ namespace Cryst.Features.Characters.Footsteps
 
         void PlayFootstep(CharacterAudio audio, CharacterFootstepSettings settings)
         {
-            var audioSource = audio.AudioSource;
+            var audioSource = audio.FootStepAudioSource;
 
             // Select random footstep clip
             var clip = settings.FootstepClips[Random.Range(0, settings.FootstepClips.Length)];

@@ -20,6 +20,7 @@ using Gast.Unity.Features.Cameras;
 using Gast.Unity.Features.Characters;
 using Gast.Unity.Features.Navigations;
 using Gast.Unity.Features.Sensors;
+using Gast.Unity.Shared.Attachments;
 using Gast.Unity.Shared.UnityExtensions;
 using UnityEngine;
 
@@ -144,6 +145,10 @@ namespace Cryst.Infrastructure.Characters
                 context.Register(typeof(ICharacterBody), body);
                 context.Register(animator);
                 context.Register(audio);
+
+                var attachmentAnchors = gameObject.GetComponentsInChildren<AttachmentAnchor>();
+                var anchorRegistry = new AttachmentAnchorRegistry(attachmentAnchors);
+                context.Register(anchorRegistry);
 
                 var stateStore = new CharacterActionStateStore();
                 context.Register(stateStore);
