@@ -4,22 +4,34 @@ using System;
 
 namespace Cryst.Features.CharacterAI.Gathering.Actions
 {
-    public class WaitAction : IAction<GatheringState, AIContext<GatheringState>, float>
+    public class WaitAction : IAction<GatheringState, AIContext<GatheringState>>
     {
-        public bool CanExecute(GatheringState worldState, float param)
+        readonly float seconds;
+
+        public WaitAction(float seconds)
+        {
+            this.seconds = seconds;
+        }
+
+        public bool CanExecute(GatheringState worldState)
         {
             return true;
         }
 
-        public void Simulate(GatheringState worldState, float param)
+        public void Simulate(GatheringState worldState)
         {
         }
 
-        public UniTask ExecuteAsync(AIContext<GatheringState> ctx, float seconds)
+        public UniTask ExecuteAsync(AIContext<GatheringState> ctx)
         {
             return UniTask.Delay(
                 TimeSpan.FromSeconds(seconds),
                 cancellationToken: ctx.CancellationToken);
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(WaitAction)}({seconds:F1}s)";
         }
     }
 }

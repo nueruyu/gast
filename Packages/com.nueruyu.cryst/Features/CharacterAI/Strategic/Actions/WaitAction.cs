@@ -4,22 +4,34 @@ using System;
 
 namespace Cryst.Features.CharacterAI.Strategic.Actions
 {
-    public class WaitAction : IAction<StrategicState, AIContext<StrategicState>, float>
+    public class WaitAction : IAction<StrategicState, AIContext<StrategicState>>
     {
-        public bool CanExecute(StrategicState worldState, float param)
+        readonly float seconds;
+
+        public WaitAction(float seconds)
+        {
+            this.seconds = seconds;
+        }
+
+        public bool CanExecute(StrategicState worldState)
         {
             return true;
         }
 
-        public void Simulate(StrategicState worldState, float param)
+        public void Simulate(StrategicState worldState)
         {
         }
 
-        public UniTask ExecuteAsync(AIContext<StrategicState> ctx, float seconds)
+        public UniTask ExecuteAsync(AIContext<StrategicState> ctx)
         {
             return UniTask.Delay(
                 TimeSpan.FromSeconds(seconds),
                 cancellationToken: ctx.CancellationToken);
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(WaitAction)}({seconds:F1}s)";
         }
     }
 }

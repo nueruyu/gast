@@ -43,15 +43,7 @@ namespace Gast.Lib.AI.Builders
 
         public MethodBuilder<TWorldState, TContext> Do(IAction<TWorldState, TContext> action)
         {
-            var taskName = action.GetType().Name;
-            subTasks.Add(new PrimitiveTask<TWorldState, TContext>(taskName, action));
-            return this;
-        }
-
-        public MethodBuilder<TWorldState, TContext> Do<TParam>(IAction<TWorldState, TContext, TParam> action, TParam param)
-        {
-            var taskName = action.GetType().Name;
-            subTasks.Add(new ParametricPrimitiveTask<TWorldState, TContext, TParam>(taskName, action, param));
+            subTasks.Add(new PrimitiveTask<TWorldState, TContext>(action));
             return this;
         }
 

@@ -18,7 +18,7 @@ namespace Cryst.Features.CharacterAI.Gathering
             acquireItem.AddMethod("FindAndCollect")
                 .Do(new FindItemPickupAction())
                 .Do(new MoveToInteractableAction())
-                .Do(new WaitAction(), 0.3f)
+                .Do(new WaitAction(0.3f))
                 .Do(new InteractWithTargetAction())
                 .End();
             acquireItem.AddMethod("ClearTargetIfNotFound")
@@ -32,7 +32,7 @@ namespace Cryst.Features.CharacterAI.Gathering
                 .Do(acquireItem)
                 .End();
             root.AddMethod("Idle")
-                .Do(new WaitAction(), 0.5f)
+                .Do(new WaitAction(0.5f))
                 .End();
 
             domain = builder.Build("Root");

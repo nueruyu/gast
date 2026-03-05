@@ -25,7 +25,7 @@ namespace Cryst.Features.CharacterAI.Strategic
             root.AddMethod("Idle")
                 .Condition(s => !s.IsThreatened && s.AvailableObjectives.Count == 0)
                 .Do(new ClearTargetAction())
-                .Do(new WaitAction(), 1.0f)
+                .Do(new WaitAction(1.0f))
                 .End();
 
             domain = builder.Build("Root");
