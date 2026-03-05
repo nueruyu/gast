@@ -13,35 +13,27 @@ namespace Cryst.Features.CharacterAI.Gathering
         {
             var builder = new AIDomainBuilder<GatheringState, AIContext<GatheringState>>();
 
-            var findItemPickup = builder.RegisterAction("FindItemPickup", new FindItemPickupAction());
-            var moveToInteractable = builder.RegisterAction("MoveToInteractable", new MoveToInteractableAction());
-            var interactWithTarget = builder.RegisterAction("InteractWithTarget", new InteractWithTargetAction());
-            var clearInteractableTarget = builder.RegisterAction("ClearInteractableTarget", new ClearInteractableTargetAction());
-            var wait = builder.RegisterAction<float>("Wait", new WaitAction());
+            var acquireItem = builder.DefineCompound("AcquireItem");
+            
+            acquireItem.AddMethod("FindAndCollect")
+                .Do(new FindItemPickupAction())
+                .Do(new MoveToInteractableAction())
+                .Do(new WaitAction(), 0.3f)
+                .Do(new InteractWithTargetAction())
+                .End();
+            acquireItem.AddMethod("ClearTargetIfNotFound")
+                .Do(new ClearInteractableTargetAction())
+                .End();
 
-            var acquireItem = builder.DefineCompound("AcquireItem", c =>
-            {
-                c.AddMethod("FindAndCollect")
-                    .Do(findItemPickup)
-                    .Do(moveToInteractable)
-                    .Do(wait, 0.3f)
-                    .Do(interactWithTarget)
-                    .End();
-                c.AddMethod("ClearTargetIfNotFound")
-                    .Do(clearInteractableTarget)
-                    .End();
-            });
-
-            builder.DefineCompound("Root", c =>
-            {
-                c.AddMethod("AcquireItemGoal")
-                    .Condition(s => !s.IsInCombat && s.HasGoal && s.CurrentGoal is AcquireItemObjective)
-                    .Do(acquireItem)
-                    .End();
-                c.AddMethod("Idle")
-                    .Do(wait, 0.5f)
-                    .End();
-            });
+            var root = builder.DefineCompound("Root");
+            
+            root.AddMethod("AcquireItemGoal")
+                .Condition(s => !s.IsInCombat && s.HasGoal && s.CurrentGoal is AcquireItemObjective)
+                .Do(acquireItem)
+                .End();
+            root.AddMethod("Idle")
+                .Do(new WaitAction(), 0.5f)
+                .End();
 
             domain = builder.Build("Root");
         }

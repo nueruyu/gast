@@ -1,6 +1,5 @@
 using Gast.Lib.AI.Tasks;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Gast.Lib.AI.Builders
 {
@@ -8,18 +7,18 @@ namespace Gast.Lib.AI.Builders
         where TWorldState : class, IWorldState<TWorldState>, new()
         where TContext : struct, IContext<TContext, TWorldState>
     {
-        readonly AIDomainBuilder<TWorldState, TContext> domainBuilder;
-        readonly string taskName;
         readonly List<Method<TWorldState, TContext>> methods = new();
-
         IMethodSelector<TWorldState, TContext> selector;
 
         internal int CurrentMethodCount => methods.Count;
 
-        internal CompoundTaskBuilder(AIDomainBuilder<TWorldState, TContext> domainBuilder, string taskName)
+        internal AIDomainBuilder<TWorldState, TContext> DomainBuilder { get; }
+        public string Name { get; }
+
+        internal CompoundTaskBuilder(AIDomainBuilder<TWorldState, TContext> domainBuilder, string name)
         {
-            this.domainBuilder = domainBuilder;
-            this.taskName = taskName;
+            DomainBuilder = domainBuilder;
+            Name = name;
         }
 
         public CompoundTaskBuilder<TWorldState, TContext> UseSelector(IMethodSelector<TWorldState, TContext> selector)
@@ -39,14 +38,12 @@ namespace Gast.Lib.AI.Builders
             return this;
         }
 
-        public CompoundTask<TWorldState, TContext> Build()
+        internal CompoundTask<TWorldState, TContext> Build()
         {
             return new CompoundTask<TWorldState, TContext>(
-                taskName,
+                Name,
                 methods,
                 selector ?? new MethodSelectors.PrioritySelector<TWorldState, TContext>());
         }
-
-        internal AIDomainBuilder<TWorldState, TContext> DomainBuilder => domainBuilder;
     }
 }

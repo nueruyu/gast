@@ -11,8 +11,8 @@ namespace Gast.Lib.AI.Builders
         readonly CompoundTaskBuilder<TWorldState, TContext> compoundBuilder;
         readonly string methodName;
         Func<TWorldState, bool> condition = _ => true;
-        Func<TWorldState, float> scorer = null;
-        Func<TWorldState, float> interruptionCost = null;
+        Func<TWorldState, float> scorer;
+        Func<TWorldState, float> interruptionCost;
         readonly List<ITask<TWorldState, TContext>> subTasks = new();
 
         internal MethodBuilder(
@@ -41,47 +41,25 @@ namespace Gast.Lib.AI.Builders
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> Do(TaskToken token)
+        public MethodBuilder<TWorldState, TContext> Do(IAction<TWorldState, TContext> action)
         {
-            var item = GetRegisteredItem(token.Name);
-            if (item is ITask<TWorldState, TContext> task)
-            {
-                subTasks.Add(task);
-            }
-            else if (item is IAction<TWorldState, TContext> action)
-            {
-                subTasks.Add(new PrimitiveTask<TWorldState, TContext>(token.Name, action));
-            }
-            else
-            {
-                throw new InvalidOperationException($"'{token.Name}' requires parameters. Use Do(token, param) instead.");
-            }
+            var taskName = action.GetType().Name;
+            subTasks.Add(new PrimitiveTask<TWorldState, TContext>(taskName, action));
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> Do<TParam>(ParametricTaskToken<TParam> token, TParam param)
+        public MethodBuilder<TWorldState, TContext> Do<TParam>(IAction<TWorldState, TContext, TParam> action, TParam param)
         {
-            var item = GetRegisteredItem(token.Name);
-
-            if (item is IAction<TWorldState, TContext, TParam> action)
-            {
-                subTasks.Add(new ParametricPrimitiveTask<TWorldState, TContext, TParam>(token.Name, action, param));
-            }
-            else
-            {
-                throw new InvalidOperationException($"'{token.Name}' is not registered as a parametric action with type '{typeof(TParam).Name}'.");
-            }
+            var taskName = action.GetType().Name;
+            subTasks.Add(new ParametricPrimitiveTask<TWorldState, TContext, TParam>(taskName, action, param));
             return this;
         }
 
-        object GetRegisteredItem(string name)
+        public MethodBuilder<TWorldState, TContext> Do(CompoundTaskBuilder<TWorldState, TContext> builder)
         {
-            var item = compoundBuilder.DomainBuilder.GetRegisteredItem(name);
-            if (item == null)
-            {
-                throw new InvalidOperationException($"'{name}' is not registered.");
-            }
-            return item;
+            var task = builder.DomainBuilder.GetTask(builder.Name);
+            subTasks.Add(task);
+            return this;
         }
 
         public CompoundTaskBuilder<TWorldState, TContext> End()
