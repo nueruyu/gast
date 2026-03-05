@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Cysharp.Threading.Tasks;
 using Cryst.Domain.AI.Objectives;
 using Gast.Domain.Interactions;
@@ -10,13 +10,6 @@ namespace Cryst.Features.CharacterAI.Gathering.Actions
 {
     public class FindItemPickupAction : IAction<GatheringState, AIContext<GatheringState>>
     {
-        readonly IPickupRepository pickupRepository;
-
-        public FindItemPickupAction(IPickupRepository pickupRepository)
-        {
-            this.pickupRepository = pickupRepository;
-        }
-
         public bool CanExecute(GatheringState worldState)
         {
             return worldState.CurrentGoal is AcquireItemObjective && !worldState.HasInteractableTarget;
@@ -34,7 +27,7 @@ namespace Cryst.Features.CharacterAI.Gathering.Actions
                 return UniTask.CompletedTask;
             }
 
-            var targetPickup = pickupRepository
+            var targetPickup = ctx.PickupRepository
                 .GetAll()
                 .Where(x =>
                 {

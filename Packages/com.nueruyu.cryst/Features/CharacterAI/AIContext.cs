@@ -1,8 +1,10 @@
 using System;
 using System.Threading;
+using Gast.Core.Commands;
+using Gast.Domain.Characters;
+using Gast.Domain.Pickups;
 using Gast.Lib.AI;
 using Cryst.Domain.Characters;
-using Gast.Domain.Characters;
 
 namespace Cryst.Features.CharacterAI
 {
@@ -16,6 +18,10 @@ namespace Cryst.Features.CharacterAI
         public CancellationToken CancellationToken { get; }
         public ContextKey ContextKey { get; }
 
+        public ICharacterRepository CharacterRepository { get; }
+        public IPickupRepository PickupRepository { get; }
+        public ICommandDispatcher CommandDispatcher { get; }
+
         readonly Action worldStateUpdater;
 
         public AIContext(
@@ -25,6 +31,9 @@ namespace Cryst.Features.CharacterAI
             TWorldState worldState,
             AIMemory memory,
             Action worldStateUpdater,
+            ICharacterRepository characterRepository,
+            IPickupRepository pickupRepository,
+            ICommandDispatcher commandDispatcher,
             CancellationToken cancellationToken)
         {
             ContextKey = contextKey;
@@ -32,8 +41,11 @@ namespace Cryst.Features.CharacterAI
             Character = character;
             WorldState = worldState;
             Memory = memory;
-            CancellationToken = cancellationToken;
             this.worldStateUpdater = worldStateUpdater;
+            CharacterRepository = characterRepository;
+            PickupRepository = pickupRepository;
+            CommandDispatcher = commandDispatcher;
+            CancellationToken = cancellationToken;
         }
 
         public void UpdateWorldState()
@@ -50,6 +62,9 @@ namespace Cryst.Features.CharacterAI
                 WorldState,
                 Memory,
                 worldStateUpdater,
+                CharacterRepository,
+                PickupRepository,
+                CommandDispatcher,
                 cancellationToken);
         }
     }

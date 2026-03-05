@@ -39,14 +39,12 @@ namespace Gast.Lib.AI.Builders
             return this;
         }
 
-        public AIDomainBuilder<TWorldState, TContext> End()
+        public CompoundTask<TWorldState, TContext> Build()
         {
-            var compoundTask = new CompoundTask<TWorldState, TContext>(
+            return new CompoundTask<TWorldState, TContext>(
                 taskName,
                 methods,
                 selector ?? new MethodSelectors.PrioritySelector<TWorldState, TContext>());
-
-            return domainBuilder.CompleteCompound(compoundTask);
         }
 
         internal AIDomainBuilder<TWorldState, TContext> DomainBuilder => domainBuilder;

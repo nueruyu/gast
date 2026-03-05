@@ -1,4 +1,4 @@
-using Cryst.Domain.AI.Objectives;
+﻿using Cryst.Domain.AI.Objectives;
 using Cryst.Features.CharacterAI.Gathering.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
@@ -9,38 +9,41 @@ namespace Cryst.Features.CharacterAI.Gathering
     {
         readonly AIDomain<GatheringState, AIContext<GatheringState>> domain;
 
-        public GatheringDomain(
-            FindItemPickupAction findItemPickupAction,
-            MoveToInteractableAction moveToInteractableAction,
-            InteractWithTargetAction interactWithTargetAction,
-            ClearInteractableTargetAction clearInteractableTargetAction)
+        public GatheringDomain()
         {
-            domain = new AIDomainBuilder<GatheringState, AIContext<GatheringState>>()
-                .RegisterAction("FindItemPickup", findItemPickupAction)
-                .RegisterAction("MoveToInteractable", moveToInteractableAction)
-                .RegisterAction("InteractWithTarget", interactWithTargetAction)
-                .RegisterAction("ClearInteractableTarget", clearInteractableTargetAction)
-                .RegisterAction("Wait", new WaitAction())
-                .DefineCompound("AcquireItem")
-                    .AddMethod("FindAndCollect")
-                        .Do("FindItemPickup", "MoveToInteractable")
-                        .Do("Wait", 0.3f)
-                        .Do("InteractWithTarget")
-                    .End()
-                    .AddMethod("ClearTargetIfNotFound")
-                        .Do("ClearInteractableTarget")
-                    .End()
-                .End()
-                .DefineCompound("Root")
-                    .AddMethod("AcquireItemGoal")
-                        .Condition(s => !s.IsInCombat && s.HasGoal && s.CurrentGoal is AcquireItemObjective)
-                        .Do("AcquireItem")
-                    .End()
-                    .AddMethod("Idle")
-                        .Do("Wait", 0.5f)
-                    .End()
-                .End()
-                .Build("Root");
+            var builder = new AIDomainBuilder<GatheringState, AIContext<GatheringState>>();
+
+            var findItemPickup = builder.RegisterAction("FindItemPickup", new FindItemPickupAction());
+            var moveToInteractable = builder.RegisterAction("MoveToInteractable", new MoveToInteractableAction());
+            var interactWithTarget = builder.RegisterAction("InteractWithTarget", new InteractWithTargetAction());
+            var clearInteractableTarget = builder.RegisterAction("ClearInteractableTarget", new ClearInteractableTargetAction());
+            var wait = builder.RegisterAction<float>("Wait", new WaitAction());
+
+            var acquireItem = builder.DefineCompound("AcquireItem", c =>
+            {
+                c.AddMethod("FindAndCollect")
+                    .Do(findItemPickup)
+                    .Do(moveToInteractable)
+                    .Do(wait, 0.3f)
+                    .Do(interactWithTarget)
+                    .End();
+                c.AddMethod("ClearTargetIfNotFound")
+                    .Do(clearInteractableTarget)
+                    .End();
+            });
+
+            builder.DefineCompound("Root", c =>
+            {
+                c.AddMethod("AcquireItemGoal")
+                    .Condition(s => !s.IsInCombat && s.HasGoal && s.CurrentGoal is AcquireItemObjective)
+                    .Do(acquireItem)
+                    .End();
+                c.AddMethod("Idle")
+                    .Do(wait, 0.5f)
+                    .End();
+            });
+
+            domain = builder.Build("Root");
         }
 
         public AIRunner<GatheringState, AIContext<GatheringState>> CreateRunner()

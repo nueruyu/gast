@@ -41,39 +41,35 @@ namespace Gast.Lib.AI.Builders
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> Do(params string[] taskNames)
+        public MethodBuilder<TWorldState, TContext> Do(TaskToken token)
         {
-            foreach (var name in taskNames)
+            var item = GetRegisteredItem(token.Name);
+            if (item is ITask<TWorldState, TContext> task)
             {
-                var item = GetRegisteredItem(name);
-
-                if (item is ITask<TWorldState, TContext> task)
-                {
-                    subTasks.Add(task);
-                }
-                else if (item is IAction<TWorldState, TContext> action)
-                {
-                    subTasks.Add(new PrimitiveTask<TWorldState, TContext>(name, action));
-                }
-                else
-                {
-                    throw new InvalidOperationException($"'{name}' requires parameters. Use Do(\"{name}\", param) instead.");
-                }
+                subTasks.Add(task);
+            }
+            else if (item is IAction<TWorldState, TContext> action)
+            {
+                subTasks.Add(new PrimitiveTask<TWorldState, TContext>(token.Name, action));
+            }
+            else
+            {
+                throw new InvalidOperationException($"'{token.Name}' requires parameters. Use Do(token, param) instead.");
             }
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> Do<TParam>(string taskName, TParam param)
+        public MethodBuilder<TWorldState, TContext> Do<TParam>(ParametricTaskToken<TParam> token, TParam param)
         {
-            var item = GetRegisteredItem(taskName);
+            var item = GetRegisteredItem(token.Name);
 
             if (item is IAction<TWorldState, TContext, TParam> action)
             {
-                subTasks.Add(new ParametricPrimitiveTask<TWorldState, TContext, TParam>(taskName, action, param));
+                subTasks.Add(new ParametricPrimitiveTask<TWorldState, TContext, TParam>(token.Name, action, param));
             }
             else
             {
-                throw new InvalidOperationException($"'{taskName}' is not registered as a parametric action with type '{typeof(TParam).Name}'.");
+                throw new InvalidOperationException($"'{token.Name}' is not registered as a parametric action with type '{typeof(TParam).Name}'.");
             }
             return this;
         }

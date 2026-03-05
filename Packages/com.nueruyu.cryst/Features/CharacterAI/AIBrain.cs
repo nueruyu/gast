@@ -1,4 +1,4 @@
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
@@ -11,6 +11,8 @@ using Cryst.Features.CharacterAI.Strategic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Gast.Core.Commands;
+using Gast.Domain.Pickups;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterAI
@@ -26,6 +28,9 @@ namespace Cryst.Features.CharacterAI
         readonly GatheringDomain gatheringDomain;
         readonly ObjectiveManager objectiveManager;
         readonly IContextRegistry contextRegistry;
+        readonly ICharacterRepository characterRepository;
+        readonly IPickupRepository pickupRepository;
+        readonly ICommandDispatcher commandDispatcher;
 
         BaseCharacter actor;
         ICharacter character;
@@ -50,13 +55,19 @@ namespace Cryst.Features.CharacterAI
             CombatDomain combatDomain,
             GatheringDomain gatheringDomain,
             ObjectiveManager objectiveManager,
-            IContextRegistry contextRegistry)
+            IContextRegistry contextRegistry,
+            ICharacterRepository characterRepository,
+            IPickupRepository pickupRepository,
+            ICommandDispatcher commandDispatcher)
         {
             this.strategicDomain = strategicDomain;
             this.combatDomain = combatDomain;
             this.gatheringDomain = gatheringDomain;
             this.objectiveManager = objectiveManager;
             this.contextRegistry = contextRegistry;
+            this.characterRepository = characterRepository;
+            this.pickupRepository = pickupRepository;
+            this.commandDispatcher = commandDispatcher;
         }
 
         public void OnAttached(ICharacter character)
@@ -151,6 +162,9 @@ namespace Cryst.Features.CharacterAI
                     strategicState,
                     memory,
                     UpdateStrategicWorldState,
+                    characterRepository,
+                    pickupRepository,
+                    commandDispatcher,
                     cancellationToken));
 
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
@@ -168,6 +182,9 @@ namespace Cryst.Features.CharacterAI
                     combatState,
                     memory,
                     UpdateCombatWorldState,
+                    characterRepository,
+                    pickupRepository,
+                    commandDispatcher,
                     cancellationToken));
 
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
@@ -185,6 +202,9 @@ namespace Cryst.Features.CharacterAI
                     gatheringState,
                     memory,
                     UpdateGatheringWorldState,
+                    characterRepository,
+                    pickupRepository,
+                    commandDispatcher,
                     cancellationToken));
 
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);

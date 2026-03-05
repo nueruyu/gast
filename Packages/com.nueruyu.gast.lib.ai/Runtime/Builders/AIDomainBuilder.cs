@@ -11,28 +11,25 @@ namespace Gast.Lib.AI.Builders
     {
         readonly Dictionary<string, object> registry = new();
 
-        public AIDomainBuilder<TWorldState, TContext> RegisterAction(string name, IAction<TWorldState, TContext> action)
+        public PrimitiveTaskToken RegisterAction(string name, IAction<TWorldState, TContext> action)
         {
             registry[name] = action;
-            return this;
+            return new PrimitiveTaskToken(name);
         }
 
-        public AIDomainBuilder<TWorldState, TContext> RegisterAction<TParam>(string name, IAction<TWorldState, TContext, TParam> action)
+        public ParametricTaskToken<TParam> RegisterAction<TParam>(string name, IAction<TWorldState, TContext, TParam> action)
         {
             registry[name] = action;
-            return this;
+            return new ParametricTaskToken<TParam>(name);
         }
 
-        public CompoundTaskBuilder<TWorldState, TContext> DefineCompound(string name)
+        public CompoundTaskToken DefineCompound(string name, Action<CompoundTaskBuilder<TWorldState, TContext>> buildAction)
         {
-            return new CompoundTaskBuilder<TWorldState, TContext>(this, name);
-        }
-
-        internal AIDomainBuilder<TWorldState, TContext> CompleteCompound(
-            CompoundTask<TWorldState, TContext> task)
-        {
-            registry[task.Name] = task;
-            return this;
+            var compoundBuilder = new CompoundTaskBuilder<TWorldState, TContext>(this, name);
+            buildAction(compoundBuilder);
+            var compoundTask = compoundBuilder.Build();
+            registry[name] = compoundTask;
+            return new CompoundTaskToken(name);
         }
 
         internal object GetRegisteredItem(string name)
