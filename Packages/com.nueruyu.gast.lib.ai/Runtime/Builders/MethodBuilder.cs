@@ -8,18 +8,14 @@ namespace Gast.Lib.AI.Builders
         where TWorldState : class, IWorldState<TWorldState>, new()
         where TContext : struct, IContext<TContext, TWorldState>
     {
-        readonly CompoundTaskBuilder<TWorldState, TContext> compoundBuilder;
         readonly string methodName;
         Func<TWorldState, bool> condition = _ => true;
         Func<TWorldState, float> scorer;
         Func<TWorldState, float> interruptionCost;
         readonly List<ITask<TWorldState, TContext>> subTasks = new();
 
-        internal MethodBuilder(
-            CompoundTaskBuilder<TWorldState, TContext> compoundBuilder,
-            string methodName)
+        internal MethodBuilder(string methodName)
         {
-            this.compoundBuilder = compoundBuilder;
             this.methodName = methodName;
         }
 
@@ -54,17 +50,15 @@ namespace Gast.Lib.AI.Builders
             return this;
         }
 
-        public CompoundTaskBuilder<TWorldState, TContext> End()
+        internal Method<TWorldState, TContext> Build(int index)
         {
-            var method = new Method<TWorldState, TContext>(
+            return new Method<TWorldState, TContext>(
                 methodName,
-                compoundBuilder.CurrentMethodCount,
+                index,
                 subTasks,
                 condition,
                 scorer,
                 interruptionCost);
-
-            return compoundBuilder.CompleteMethod(method);
         }
     }
 }

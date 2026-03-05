@@ -19,21 +19,17 @@ namespace Cryst.Features.CharacterAI.Gathering
                 .Do(new FindItemPickupAction())
                 .Do(new MoveToInteractableAction())
                 .Do(new WaitAction(0.3f))
-                .Do(new InteractWithTargetAction())
-                .End();
+                .Do(new InteractWithTargetAction());
             acquireItem.AddMethod("ClearTargetIfNotFound")
-                .Do(new ClearInteractableTargetAction())
-                .End();
+                .Do(new ClearInteractableTargetAction());
 
             var root = builder.DefineCompound("Root");
-            
+
             root.AddMethod("AcquireItemGoal")
                 .Condition(s => !s.IsInCombat && s.HasGoal && s.CurrentGoal is AcquireItemObjective)
-                .Do(acquireItem)
-                .End();
+                .Do(acquireItem);
             root.AddMethod("Idle")
-                .Do(new WaitAction(0.5f))
-                .End();
+                .Do(new WaitAction(0.5f));
 
             domain = builder.Build("Root");
         }

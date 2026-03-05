@@ -7,10 +7,8 @@ namespace Gast.Lib.AI.Builders
         where TWorldState : class, IWorldState<TWorldState>, new()
         where TContext : struct, IContext<TContext, TWorldState>
     {
-        readonly List<Method<TWorldState, TContext>> methods = new();
+        readonly List<MethodBuilder<TWorldState, TContext>> methodBuilders = new();
         IMethodSelector<TWorldState, TContext> selector;
-
-        internal int CurrentMethodCount => methods.Count;
 
         internal AIDomainBuilder<TWorldState, TContext> DomainBuilder { get; }
         public string Name { get; }
@@ -29,20 +27,22 @@ namespace Gast.Lib.AI.Builders
 
         public MethodBuilder<TWorldState, TContext> AddMethod(string methodName)
         {
-            return new MethodBuilder<TWorldState, TContext>(this, methodName);
-        }
-
-        internal CompoundTaskBuilder<TWorldState, TContext> CompleteMethod(Method<TWorldState, TContext> method)
-        {
-            methods.Add(method);
-            return this;
+            var builder = new MethodBuilder<TWorldState, TContext>(methodName);
+            methodBuilders.Add(builder);
+            return builder;
         }
 
         internal CompoundTask<TWorldState, TContext> Build()
         {
+            var builtMethods = new List<Method<TWorldState, TContext>>();
+            for (var i = 0; i < methodBuilders.Count; i++)
+            {
+                builtMethods.Add(methodBuilders[i].Build(i));
+            }
+
             return new CompoundTask<TWorldState, TContext>(
                 Name,
-                methods,
+                builtMethods,
                 selector ?? new MethodSelectors.PrioritySelector<TWorldState, TContext>());
         }
     }

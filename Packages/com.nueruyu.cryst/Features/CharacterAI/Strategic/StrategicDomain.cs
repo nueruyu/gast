@@ -16,17 +16,14 @@ namespace Cryst.Features.CharacterAI.Strategic
 
             root.AddMethod("RespondToThreat")
                 .Condition(s => s.IsThreatened)
-                .Do(new SelectThreatAction())
-                .End();
+                .Do(new SelectThreatAction());
             root.AddMethod("PursueObjective")
                 .Condition(s => !s.IsThreatened && s.AvailableObjectives.Count > 0)
-                .Do(new SelectObjectiveAction())
-                .End();
+                .Do(new SelectObjectiveAction());
             root.AddMethod("Idle")
                 .Condition(s => !s.IsThreatened && s.AvailableObjectives.Count == 0)
                 .Do(new ClearTargetAction())
-                .Do(new WaitAction(1.0f))
-                .End();
+                .Do(new WaitAction(1.0f));
 
             domain = builder.Build("Root");
         }
