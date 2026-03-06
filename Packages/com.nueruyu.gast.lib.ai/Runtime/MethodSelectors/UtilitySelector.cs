@@ -6,18 +6,18 @@ using UnityEngine;
 
 namespace Gast.Lib.AI.MethodSelectors
 {
-    public class UtilitySelector<TWorldState, TContext> : IMethodSelector<TWorldState, TContext>
+    public class UtilitySelector<TActorContext, TWorldState> : IMethodSelector<TActorContext, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
         readonly TWorldState simulationState = new();
 
-        public async UniTask<Method<TWorldState, TContext>> SelectAsync(
-            IReadOnlyList<Method<TWorldState, TContext>> methods,
+        public async UniTask<Method<TActorContext, TWorldState>> SelectAsync(
+            IReadOnlyList<Method<TActorContext, TWorldState>> methods,
             TWorldState worldState,
             CancellationToken cancellationToken)
         {
-            var candidates = new List<(Method<TWorldState, TContext> Method, float Score)>();
+            var candidates = new List<(Method<TActorContext, TWorldState> Method, float Score)>();
             var totalScore = 0f;
 
             // 1. Validate methods and calculate scores
@@ -67,9 +67,9 @@ namespace Gast.Lib.AI.MethodSelectors
             return candidates.Last().Method;
         }
 
-        public async UniTask<Method<TWorldState, TContext>> SelectInterruptsAsync(
-            IReadOnlyList<Method<TWorldState, TContext>> methods,
-            Method<TWorldState, TContext> currentMethod,
+        public async UniTask<Method<TActorContext, TWorldState>> SelectInterruptsAsync(
+            IReadOnlyList<Method<TActorContext, TWorldState>> methods,
+            Method<TActorContext, TWorldState> currentMethod,
             TWorldState worldState,
             CancellationToken cancellationToken)
         {
@@ -98,7 +98,7 @@ namespace Gast.Lib.AI.MethodSelectors
         }
 
         async UniTask<bool> ValidateMethod(
-           Method<TWorldState, TContext> method,
+           Method<TActorContext, TWorldState> method,
            TWorldState worldState,
            CancellationToken cancellationToken)
         {

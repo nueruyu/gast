@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Threading;
 using Cryst.Domain.Characters;
 using Cryst.Domain.Characters.Facets;
 using Cryst.Features.CharacterAI.Combat;
@@ -45,14 +44,14 @@ namespace Cryst.Features.CharacterAI
         {
             var strategicKey = new ContextKey(actor.Id,
                 StrategicDomainName);
-            var strategicContext = new AIContext<StrategicState>(strategicKey,
+            var strategicActorContext = new ActorContext<StrategicState>(
                 services,
                 actor,
                 character,
                 memory,
                 strategicState,
-                UpdateStrategicWorldState,
-                CancellationToken.None);
+                UpdateStrategicWorldState);
+            var strategicContext = new AIContext<ActorContext<StrategicState>>(strategicKey, strategicActorContext);
             registrar.Register(strategicKey,
                 strategicDomain.CreateRunner(),
                 strategicContext);
@@ -61,28 +60,28 @@ namespace Cryst.Features.CharacterAI
             combatState.CombatRange = 4.5f;
             var combatKey = new ContextKey(actor.Id,
                 CombatDomainName);
-            var combatContext = new AIContext<CombatState>(combatKey,
+            var combatActorContext = new ActorContext<CombatState>(
                 services,
                 actor,
                 character,
                 memory,
                 combatState,
-                UpdateCombatWorldState,
-                CancellationToken.None);
+                UpdateCombatWorldState);
+            var combatContext = new AIContext<ActorContext<CombatState>>(combatKey, combatActorContext);
             registrar.Register(combatKey,
                 combatDomain.CreateRunner(),
                 combatContext);
 
             var gatheringKey = new ContextKey(actor.Id,
                 GatheringDomainName);
-            var gatheringContext = new AIContext<GatheringState>(gatheringKey,
+            var gatheringActorContext = new ActorContext<GatheringState>(
                 services,
                 actor,
                 character,
                 memory,
                 gatheringState,
-                UpdateGatheringWorldState,
-                CancellationToken.None);
+                UpdateGatheringWorldState);
+            var gatheringContext = new AIContext<ActorContext<GatheringState>>(gatheringKey, gatheringActorContext);
             registrar.Register(gatheringKey,
                 gatheringDomain.CreateRunner(),
                 gatheringContext);

@@ -1,12 +1,14 @@
-﻿using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using System;
+using System.Threading;
 using Random = UnityEngine.Random;
+using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Combat.CombatState>;
 
 namespace Cryst.Features.CharacterAI.Combat.Actions
 {
     [Serializable]
-    public class PostAttackManeuverAction : IAction<CombatState, AIContext<CombatState>>
+    public class PostAttackManeuverAction : IAction<ActorContext_, CombatState>
     {
         readonly GuardAction guardAction = new();
         readonly StrafeAction strafeAction = new();
@@ -28,21 +30,21 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             backOffAction.Simulate(worldState);
         }
 
-        public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
+        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
         {
             var rand = Random.value;
 
-            if (ctx.WorldState.CanGuard && rand < 0.3f)
+            if (context.WorldState.CanGuard && rand < 0.3f)
             {
-                await guardAction.ExecuteAsync(ctx);
+                await guardAction.ExecuteAsync(context, cancellationToken);
             }
             else if (rand < 0.7f)
             {
-                await strafeAction.ExecuteAsync(ctx);
+                await strafeAction.ExecuteAsync(context, cancellationToken);
             }
             else
             {
-                await backOffAction.ExecuteAsync(ctx);
+                await backOffAction.ExecuteAsync(context, cancellationToken);
             }
         }
     }

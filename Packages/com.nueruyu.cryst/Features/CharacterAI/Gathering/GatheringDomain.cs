@@ -1,20 +1,21 @@
-﻿using Cryst.Domain.AI.Objectives;
+using Cryst.Domain.AI.Objectives;
 using Cryst.Features.CharacterAI.Gathering.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
+using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Gathering.GatheringState>;
 
 namespace Cryst.Features.CharacterAI.Gathering
 {
     public class GatheringDomain
     {
-        readonly AIDomain<GatheringState, AIContext<GatheringState>> domain;
+        readonly AIDomain<ActorContext_, GatheringState> domain;
 
         public GatheringDomain()
         {
-            var builder = new AIDomainBuilder<GatheringState, AIContext<GatheringState>>();
+            var builder = new AIDomainBuilder<ActorContext_, GatheringState>();
 
             var acquireItem = builder.DefineCompound("AcquireItem");
-            
+
             acquireItem.AddMethod("FindAndCollect")
                 .Do(new FindItemPickupAction())
                 .Do(new MoveToInteractableAction())
@@ -34,7 +35,7 @@ namespace Cryst.Features.CharacterAI.Gathering
             domain = builder.Build("Root");
         }
 
-        public AIRunner<GatheringState, AIContext<GatheringState>> CreateRunner()
+        public AIRunner<ActorContext_, GatheringState> CreateRunner()
         {
             return domain.CreateRunner();
         }

@@ -1,8 +1,10 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using System;
+using System.Threading;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Combat.CombatState>;
 
 namespace Cryst.Features.CharacterAI.Combat.Actions
 {
@@ -10,7 +12,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
     /// An action where the AI moves around the target for a short period of time to time an attack.
     /// </summary>
     [Serializable]
-    public class StalkAction : IAction<CombatState, AIContext<CombatState>>
+    public class StalkAction : IAction<ActorContext_, CombatState>
     {
         public bool CanExecute(CombatState worldState)
         {
@@ -22,23 +24,23 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             // This action does not significantly change the world state in simulation.
         }
 
-        public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
+        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
         {
-            var actor = ctx.Actor;
+            var actor = context.Actor;
             var navigator = actor.NavigationProvider;
             var duration = Random.Range(0.2f, 0.6f);
             var timer = 0f;
 
             var directionSign = Random.value > 0.5f ? 1f : -1f;
-            var idealDist = Mathf.Max(0.5f, ctx.WorldState.AttackRange - 0.5f);
+            var idealDist = Mathf.Max(0.5f, context.WorldState.AttackRange - 0.5f);
 
             try
             {
-                while (timer < duration && !ctx.CancellationToken.IsCancellationRequested)
+                while (timer < duration && !cancellationToken.IsCancellationRequested)
                 {
                     timer += Time.deltaTime;
 
-                    var worldState = ctx.WorldState;
+                    var worldState = context.WorldState;
                     if (!worldState.HasTarget)
                         break;
 
@@ -66,7 +68,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
                     navigator.SetDestination(selfPos + finalMoveDir * 0.5f);
                     actor.Move(navigator.NextSteeringDirection);
 
-                    await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
+                    await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
                 }
             }
             finally

@@ -4,14 +4,14 @@ using System.Threading;
 
 namespace Gast.Lib.AI.MethodSelectors
 {
-    public class PrioritySelector<TWorldState, TContext> : IMethodSelector<TWorldState, TContext>
+    public class PrioritySelector<TActorContext, TWorldState> : IMethodSelector<TActorContext, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
         readonly TWorldState simulationState = new();
 
-        public async UniTask<Method<TWorldState, TContext>> SelectAsync(
-            IReadOnlyList<Method<TWorldState, TContext>> methods,
+        public async UniTask<Method<TActorContext, TWorldState>> SelectAsync(
+            IReadOnlyList<Method<TActorContext, TWorldState>> methods,
             TWorldState worldState,
             CancellationToken cancellationToken)
         {
@@ -29,9 +29,9 @@ namespace Gast.Lib.AI.MethodSelectors
             return null;
         }
 
-        public async UniTask<Method<TWorldState, TContext>> SelectInterruptsAsync(
-            IReadOnlyList<Method<TWorldState, TContext>> methods,
-            Method<TWorldState, TContext> currentMethod,
+        public async UniTask<Method<TActorContext, TWorldState>> SelectInterruptsAsync(
+            IReadOnlyList<Method<TActorContext, TWorldState>> methods,
+            Method<TActorContext, TWorldState> currentMethod,
             TWorldState worldState,
             CancellationToken cancellationToken)
         {
@@ -48,7 +48,7 @@ namespace Gast.Lib.AI.MethodSelectors
         }
 
         async UniTask<bool> ValidateMethod(
-           Method<TWorldState, TContext> method,
+           Method<TActorContext, TWorldState> method,
            TWorldState worldState,
            CancellationToken cancellationToken)
         {

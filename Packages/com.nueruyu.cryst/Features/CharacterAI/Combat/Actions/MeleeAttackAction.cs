@@ -2,12 +2,14 @@ using Cysharp.Threading.Tasks;
 using Cryst.Domain.Characters.Facets;
 using Gast.Lib.AI;
 using System;
+using System.Threading;
 using UnityEngine;
+using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Combat.CombatState>;
 
 namespace Cryst.Features.CharacterAI.Combat.Actions
 {
     [Serializable]
-    public class MeleeAttackAction : IAction<CombatState, AIContext<CombatState>>
+    public class MeleeAttackAction : IAction<ActorContext_, CombatState>
     {
         public bool CanExecute(CombatState worldState)
         {
@@ -19,9 +21,9 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             worldState.IsReadyToAttack = false;
         }
 
-        public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
+        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
         {
-            var actor = ctx.Actor;
+            var actor = context.Actor;
 
             // 1. Step-in phase: Align facing direction naturally by moving toward target
             const float alignmentTimeout = 1.0f;
@@ -30,9 +32,9 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
 
             var navigator = actor.NavigationProvider;
 
-            while (timer < alignmentTimeout && !ctx.CancellationToken.IsCancellationRequested)
+            while (timer < alignmentTimeout && !cancellationToken.IsCancellationRequested)
             {
-                var targetPos = ctx.WorldState.TargetPosition;
+                var targetPos = context.WorldState.TargetPosition;
                 var selfPos = actor.Body.Position;
 
                 // Calculate direction to target
@@ -54,19 +56,19 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
                 actor.Move(navigator.NextSteeringDirection);
 
                 timer += Time.deltaTime;
-                await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
 
             // 2. Attack phase: Stop movement and execute attack
             navigator.Stop();
             actor.Move(Vector3.zero); // Stop movement input
 
-            if (ctx.Character.Is(out AttackableCharacter attackable))
+            if (context.Character.Is(out AttackableCharacter attackable))
             {
                 attackable.Attack();
             }
 
-            await UniTask.Delay(500, cancellationToken: ctx.CancellationToken);
+            await UniTask.Delay(500, cancellationToken: cancellationToken);
         }
     }
 }

@@ -1,10 +1,12 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
+using System.Threading;
 using UnityEngine;
+using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Gathering.GatheringState>;
 
 namespace Cryst.Features.CharacterAI.Gathering.Actions
 {
-    public class MoveToInteractableAction : IAction<GatheringState, AIContext<GatheringState>>
+    public class MoveToInteractableAction : IAction<ActorContext_, GatheringState>
     {
         public bool CanExecute(GatheringState worldState)
         {
@@ -16,19 +18,19 @@ namespace Cryst.Features.CharacterAI.Gathering.Actions
             worldState.IsInRangeToInteract = true;
         }
 
-        public async UniTask ExecuteAsync(AIContext<GatheringState> ctx)
+        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
         {
-            var actor = ctx.Actor;
+            var actor = context.Actor;
             var navigator = actor.NavigationProvider;
 
             try
             {
-                while (!ctx.CancellationToken.IsCancellationRequested && ctx.WorldState.HasInteractableTarget)
+                while (!cancellationToken.IsCancellationRequested && context.WorldState.HasInteractableTarget)
                 {
-                    var targetPosition = ctx.WorldState.InteractableTargetPosition;
+                    var targetPosition = context.WorldState.InteractableTargetPosition;
                     navigator.SetDestination(targetPosition);
 
-                    if (navigator.HasArrived || ctx.WorldState.IsInRangeToInteract)
+                    if (navigator.HasArrived || context.WorldState.IsInRangeToInteract)
                     {
                         break;
                     }
@@ -39,7 +41,7 @@ namespace Cryst.Features.CharacterAI.Gathering.Actions
                         actor.Move(direction);
                     }
 
-                    await UniTask.Yield(ctx.CancellationToken);
+                    await UniTask.Yield(cancellationToken);
                 }
             }
             finally

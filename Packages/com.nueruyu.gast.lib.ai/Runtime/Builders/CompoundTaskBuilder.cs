@@ -3,47 +3,47 @@ using System.Collections.Generic;
 
 namespace Gast.Lib.AI.Builders
 {
-    public class CompoundTaskBuilder<TWorldState, TContext>
+    public class CompoundTaskBuilder<TActorContext, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly List<MethodBuilder<TWorldState, TContext>> methodBuilders = new();
-        IMethodSelector<TWorldState, TContext> selector;
+        readonly List<MethodBuilder<TActorContext, TWorldState>> methodBuilders = new();
+        IMethodSelector<TActorContext, TWorldState> selector;
 
-        internal AIDomainBuilder<TWorldState, TContext> DomainBuilder { get; }
+        internal AIDomainBuilder<TActorContext, TWorldState> DomainBuilder { get; }
         public string Name { get; }
 
-        internal CompoundTaskBuilder(AIDomainBuilder<TWorldState, TContext> domainBuilder, string name)
+        internal CompoundTaskBuilder(AIDomainBuilder<TActorContext, TWorldState> domainBuilder, string name)
         {
             DomainBuilder = domainBuilder;
             Name = name;
         }
 
-        public CompoundTaskBuilder<TWorldState, TContext> UseSelector(IMethodSelector<TWorldState, TContext> selector)
+        public CompoundTaskBuilder<TActorContext, TWorldState> UseSelector(IMethodSelector<TActorContext, TWorldState> selector)
         {
             this.selector = selector;
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> AddMethod(string methodName)
+        public MethodBuilder<TActorContext, TWorldState> AddMethod(string methodName)
         {
-            var builder = new MethodBuilder<TWorldState, TContext>(methodName);
+            var builder = new MethodBuilder<TActorContext, TWorldState>(methodName);
             methodBuilders.Add(builder);
             return builder;
         }
 
-        internal CompoundTask<TWorldState, TContext> Build()
+        internal CompoundTask<TActorContext, TWorldState> Build()
         {
-            var builtMethods = new List<Method<TWorldState, TContext>>();
+            var builtMethods = new List<Method<TActorContext, TWorldState>>();
             for (var i = 0; i < methodBuilders.Count; i++)
             {
                 builtMethods.Add(methodBuilders[i].Build(i));
             }
 
-            return new CompoundTask<TWorldState, TContext>(
+            return new CompoundTask<TActorContext, TWorldState>(
                 Name,
                 builtMethods,
-                selector ?? new MethodSelectors.PrioritySelector<TWorldState, TContext>());
+                selector ?? new MethodSelectors.PrioritySelector<TActorContext, TWorldState>());
         }
     }
 }

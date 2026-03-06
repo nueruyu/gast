@@ -5,9 +5,9 @@ using System.Threading;
 
 namespace Gast.Lib.AI.MethodSelectors
 {
-    public class SimulationSelector<TWorldState, TContext> : IMethodSelector<TWorldState, TContext>
+    public class SimulationSelector<TActorContext, TWorldState> : IMethodSelector<TActorContext, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
         readonly Func<TWorldState, float> worldEvaluator;
         readonly IEnvironmentModel<TWorldState> envModel;
@@ -19,12 +19,12 @@ namespace Gast.Lib.AI.MethodSelectors
             this.envModel = envModel;
         }
 
-        public async UniTask<Method<TWorldState, TContext>> SelectAsync(
-            IReadOnlyList<Method<TWorldState, TContext>> methods,
+        public async UniTask<Method<TActorContext, TWorldState>> SelectAsync(
+            IReadOnlyList<Method<TActorContext, TWorldState>> methods,
             TWorldState worldState,
             CancellationToken cancellationToken)
         {
-            Method<TWorldState, TContext> bestMethod = null;
+            Method<TActorContext, TWorldState> bestMethod = null;
             var bestOutcomeScore = float.NegativeInfinity;
 
             foreach (var method in methods)
@@ -54,9 +54,9 @@ namespace Gast.Lib.AI.MethodSelectors
             return bestMethod;
         }
 
-        public async UniTask<Method<TWorldState, TContext>> SelectInterruptsAsync(
-            IReadOnlyList<Method<TWorldState, TContext>> methods,
-            Method<TWorldState, TContext> currentMethod,
+        public async UniTask<Method<TActorContext, TWorldState>> SelectInterruptsAsync(
+            IReadOnlyList<Method<TActorContext, TWorldState>> methods,
+            Method<TActorContext, TWorldState> currentMethod,
             TWorldState worldState,
             CancellationToken cancellationToken)
         {
@@ -69,7 +69,7 @@ namespace Gast.Lib.AI.MethodSelectors
 
             var currentScore = worldEvaluator(simulationState);
 
-            Method<TWorldState, TContext> bestMethod = null;
+            Method<TActorContext, TWorldState> bestMethod = null;
             var bestOutcomeScore = currentScore;
 
             foreach (var method in methods)
@@ -103,7 +103,7 @@ namespace Gast.Lib.AI.MethodSelectors
         }
 
         async UniTask<bool> SimulateMethodAsync(
-           Method<TWorldState, TContext> method,
+           Method<TActorContext, TWorldState> method,
            TWorldState worldState,
            CancellationToken cancellationToken)
         {

@@ -1,13 +1,15 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using System;
+using System.Threading;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Combat.CombatState>;
 
 namespace Cryst.Features.CharacterAI.Combat.Actions
 {
     [Serializable]
-    public class StrafeAction : IAction<CombatState, AIContext<CombatState>>
+    public class StrafeAction : IAction<ActorContext_, CombatState>
     {
         const float MinDuration = 0.5f;
         const float MaxDuration = 2.5f;
@@ -21,26 +23,26 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
         {
         }
 
-        public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
+        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
         {
-            var actor = ctx.Actor;
+            var actor = context.Actor;
             var navigator = actor.NavigationProvider;
             var duration = Random.Range(MinDuration, MaxDuration);
             var timer = 0f;
 
             var directionSign = Random.value > 0.5f ? 1f : -1f;
 
-            var idealDist = Mathf.Max(0.5f, ctx.WorldState.AttackRange - 0.3f);
+            var idealDist = Mathf.Max(0.5f, context.WorldState.AttackRange - 0.3f);
 
             try
             {
-                await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
 
-                while (timer < duration && !ctx.CancellationToken.IsCancellationRequested)
+                while (timer < duration && !cancellationToken.IsCancellationRequested)
                 {
                     timer += Time.deltaTime;
 
-                    var worldState = ctx.WorldState;
+                    var worldState = context.WorldState;
                     var targetPos = worldState.TargetPosition;
                     var targetFwd = worldState.TargetForward;
                     var selfPos = actor.Body.Position;
@@ -91,7 +93,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
 
                     actor.Move(navigator.NextSteeringDirection);
 
-                    await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
+                    await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
                 }
             }
             finally

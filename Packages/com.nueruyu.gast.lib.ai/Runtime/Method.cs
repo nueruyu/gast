@@ -5,13 +5,13 @@ using System.Linq;
 
 namespace Gast.Lib.AI
 {
-    public class Method<TWorldState, TContext>
+    public class Method<TActorContext, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
         public string Name { get; }
         public int Index { get; }
-        public IReadOnlyList<ITask<TWorldState, TContext>> SubTasks { get; }
+        public IReadOnlyList<ITask<TActorContext, TWorldState>> SubTasks { get; }
 
         readonly Func<TWorldState, bool> condition;
         readonly Func<TWorldState, float> scorer;
@@ -20,7 +20,7 @@ namespace Gast.Lib.AI
         internal Method(
             string name,
             int index,
-            IEnumerable<ITask<TWorldState, TContext>> subTasks,
+            IEnumerable<ITask<TActorContext, TWorldState>> subTasks,
             Func<TWorldState, bool> condition,
             Func<TWorldState, float> scorer = null,
             Func<TWorldState, float> interruptionCost = null)

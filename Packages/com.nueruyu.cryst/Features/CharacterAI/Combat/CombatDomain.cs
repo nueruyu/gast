@@ -2,19 +2,20 @@ using Cryst.Features.CharacterAI.Combat.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 using Gast.Lib.AI.MethodSelectors;
+using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Combat.CombatState>;
 
 namespace Cryst.Features.CharacterAI.Combat
 {
     public class CombatDomain
     {
-        readonly AIDomain<CombatState, AIContext<CombatState>> domain;
+        readonly AIDomain<ActorContext_, CombatState> domain;
 
         public CombatDomain()
         {
-            var builder = new AIDomainBuilder<CombatState, AIContext<CombatState>>();
+            var builder = new AIDomainBuilder<ActorContext_, CombatState>();
 
             var engageTarget = builder.DefineCompound("EngageTarget")
-                .UseSelector(new UtilitySelector<CombatState, AIContext<CombatState>>());
+                .UseSelector(new UtilitySelector<ActorContext_, CombatState>());
 
             engageTarget.AddMethod("Attack")
                 .Condition(s => s.IsInAttackRange && s.IsReadyToAttack)
@@ -49,7 +50,7 @@ namespace Cryst.Features.CharacterAI.Combat
             domain = builder.Build("Root");
         }
 
-        public AIRunner<CombatState, AIContext<CombatState>> CreateRunner()
+        public AIRunner<ActorContext_, CombatState> CreateRunner()
         {
             return domain.CreateRunner();
         }

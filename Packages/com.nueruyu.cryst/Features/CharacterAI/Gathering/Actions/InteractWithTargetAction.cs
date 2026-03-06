@@ -1,11 +1,13 @@
-﻿using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Gast.Application.Interactions;
 using Gast.Core.Commands;
 using Gast.Lib.AI;
+using System.Threading;
+using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Gathering.GatheringState>;
 
 namespace Cryst.Features.CharacterAI.Gathering.Actions
 {
-    public class InteractWithTargetAction : IAction<GatheringState, AIContext<GatheringState>>
+    public class InteractWithTargetAction : IAction<ActorContext_, GatheringState>
     {
         public bool CanExecute(GatheringState worldState)
         {
@@ -18,10 +20,10 @@ namespace Cryst.Features.CharacterAI.Gathering.Actions
             worldState.IsInRangeToInteract = false;
         }
 
-        public async UniTask ExecuteAsync(AIContext<GatheringState> ctx)
+        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
         {
-            var command = new InteractCommand(ctx.Actor.Id, ctx.WorldState.InteractableTargetId);
-            await ctx.CommandDispatcher.DispatchAsync<InteractCommand, bool>(command, ctx.CancellationToken);
+            var command = new InteractCommand(context.Actor.Id, context.WorldState.InteractableTargetId);
+            await context.CommandDispatcher.DispatchAsync<InteractCommand, bool>(command, cancellationToken);
         }
     }
 }

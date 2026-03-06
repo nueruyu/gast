@@ -8,20 +8,20 @@ using UnityEngine;
 
 namespace Gast.Lib.AI.Tasks
 {
-    public class CompoundTask<TWorldState, TContext> : ITask<TWorldState, TContext>
+    public class CompoundTask<TActorContext, TWorldState> : ITask<TActorContext, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
         public string Name { get; }
 
-        readonly Method<TWorldState, TContext>[] methods;
-        readonly IMethodSelector<TWorldState, TContext> methodSelector;
+        readonly Method<TActorContext, TWorldState>[] methods;
+        readonly IMethodSelector<TActorContext, TWorldState> methodSelector;
         readonly TWorldState simulationState = new();
 
         internal CompoundTask(
             string name,
-            IEnumerable<Method<TWorldState, TContext>> methods,
-            IMethodSelector<TWorldState, TContext> methodSelector)
+            IEnumerable<Method<TActorContext, TWorldState>> methods,
+            IMethodSelector<TActorContext, TWorldState> methodSelector)
         {
             Name = name;
             this.methods = methods.ToArray();
@@ -39,19 +39,20 @@ namespace Gast.Lib.AI.Tasks
             return method != null;
         }
 
-        public async UniTask RunAsync(TContext ctx)
+        public async UniTask RunAsync(AIContext<TActorContext> context, CancellationToken cancellationToken)
         {
-            var contextKey = ctx.ContextKey;
+            var contextKey = context.Key;
+            var actorContext = context.ActorContext;
 
             DebugLogger.EnterTask(contextKey, Name);
 
             try
             {
-                simulationState.CopyFrom(ctx.WorldState);
+                simulationState.CopyFrom(actorContext.WorldState);
 
                 var method = await SelectCurrentMethodAsync(
                     simulationState,
-                    ctx.CancellationToken);
+                    cancellationToken);
 
                 if (method == null)
                 {
@@ -59,17 +60,16 @@ namespace Gast.Lib.AI.Tasks
                     return;
                 }
 
-                DebugLogger.LogMethodSelected(contextKey, Name, method.Name, ctx.WorldState);
+                DebugLogger.LogMethodSelected(contextKey, Name, method.Name, actorContext.WorldState);
                 DebugLogger.LogPlan(contextKey, method.SubTasks.Cast<ITask>());
 
-                using var localCts = CancellationTokenSource.CreateLinkedTokenSource(ctx.CancellationToken);
-                var localCtx = ctx.WithCancellationToken(localCts.Token);
+                using var localCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
                 try
                 {
                     await UniTask.WhenAny(
-                        RunMethodAsync(method, localCtx),
-                        MonitorInterruptsAsync(method, localCtx)
+                        RunMethodAsync(method, context, localCts.Token),
+                        MonitorInterruptsAsync(method, context, localCts.Token)
                     );
                 }
                 finally
@@ -84,34 +84,37 @@ namespace Gast.Lib.AI.Tasks
         }
 
         async UniTask RunMethodAsync(
-            Method<TWorldState, TContext> method,
-            TContext ctx)
+            Method<TActorContext, TWorldState> method,
+            AIContext<TActorContext> context,
+            CancellationToken cancellationToken)
         {
             foreach (var task in method.SubTasks)
             {
-                await task.RunAsync(ctx);
+                await task.RunAsync(context, cancellationToken);
 
-                ctx.UpdateWorldState();
+                context.ActorContext.UpdateWorldState();
             }
         }
 
         async UniTask MonitorInterruptsAsync(
-            Method<TWorldState, TContext> currentMethod,
-            TContext ctx)
+            Method<TActorContext, TWorldState> currentMethod,
+            AIContext<TActorContext> context,
+            CancellationToken cancellationToken)
         {
-            var contextKey = ctx.ContextKey;
+            var contextKey = context.Key;
+            var actorContext = context.ActorContext;
 
             while (true)
             {
-                await UniTask.Yield(PlayerLoopTiming.Update, ctx.CancellationToken);
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
 
-                simulationState.CopyFrom(ctx.WorldState);
+                simulationState.CopyFrom(actorContext.WorldState);
 
                 var interruptsMethod = await methodSelector.SelectInterruptsAsync(
                     methods,
                     currentMethod,
                     simulationState,
-                    ctx.CancellationToken);
+                    cancellationToken);
 
                 if (interruptsMethod != null)
                 {
@@ -121,7 +124,7 @@ namespace Gast.Lib.AI.Tasks
             }
         }
 
-        UniTask<Method<TWorldState, TContext>> SelectCurrentMethodAsync(
+        UniTask<Method<TActorContext, TWorldState>> SelectCurrentMethodAsync(
            TWorldState worldState,
            CancellationToken cancellationToken)
         {

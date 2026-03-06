@@ -1,5 +1,6 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace Gast.Lib.AI
 {
@@ -9,14 +10,14 @@ namespace Gast.Lib.AI
         void UpdateState();
     }
 
-    public class DomainProcess<TWorldState, TContext> : IDomainProcess
+    public class DomainProcess<TActorContext, TWorldState> : IDomainProcess
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly TContext context;
-        readonly AIRunner<TWorldState, TContext> runner;
+        readonly AIContext<TActorContext> context;
+        readonly AIRunner<TActorContext, TWorldState> runner;
 
-        public DomainProcess(AIRunner<TWorldState, TContext> runner, TContext context)
+        public DomainProcess(AIRunner<TActorContext, TWorldState> runner, AIContext<TActorContext> context)
         {
             this.runner = runner;
             this.context = context;
@@ -26,16 +27,14 @@ namespace Gast.Lib.AI
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                // ReSharper disable once PossiblyImpureMethodCallOnReadonlyVariable
-                await runner.RunAsync(context.WithCancellationToken(cancellationToken));
+                await runner.RunAsync(context, cancellationToken);
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
         }
 
-        // ReSharper disable once PossiblyImpureMethodCallOnReadonlyVariable
         public void UpdateState()
         {
-            context.UpdateWorldState();
+            context.ActorContext.UpdateWorldState();
         }
     }
 }

@@ -1,22 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace Gast.Lib.AI
 {
-    public class AIDomain<TWorldState, TContext>
+    public class AIDomain<TActorContext, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly ITask<TWorldState, TContext>[] tasks;
-        readonly Dictionary<string, ITask<TWorldState, TContext>> taskMap = new();
-        readonly ITask<TWorldState, TContext> rootTask;
+        readonly ITask<TActorContext, TWorldState>[] tasks;
+        readonly Dictionary<string, ITask<TActorContext, TWorldState>> taskMap = new();
+        readonly ITask<TActorContext, TWorldState> rootTask;
 
-        public IReadOnlyList<ITask<TWorldState, TContext>> Tasks => tasks;
+        public IReadOnlyList<ITask<TActorContext, TWorldState>> Tasks => tasks;
 
         public AIDomain(
-            IEnumerable<ITask<TWorldState, TContext>> tasks,
+            IEnumerable<ITask<TActorContext, TWorldState>> tasks,
             string rootTaskName)
         {
             this.tasks = tasks.ToArray();
@@ -29,14 +28,14 @@ namespace Gast.Lib.AI
             rootTask = taskMap[rootTaskName];
         }
 
-        public ITask<TWorldState, TContext> GetTask(string name)
+        public ITask<TActorContext, TWorldState> GetTask(string name)
         {
             return taskMap[name];
         }
 
-        public AIRunner<TWorldState, TContext> CreateRunner()
+        public AIRunner<TActorContext, TWorldState> CreateRunner()
         {
-            return new AIRunner<TWorldState, TContext>(rootTask);
+            return new AIRunner<TActorContext, TWorldState>(rootTask);
         }
     }
 }

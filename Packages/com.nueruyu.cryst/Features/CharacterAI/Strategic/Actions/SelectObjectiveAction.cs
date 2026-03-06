@@ -1,4 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Gast.Domain.AI;
 using Cryst.Domain.AI.Objectives;
 using Gast.Domain.Characters;
@@ -7,11 +7,13 @@ using Gast.Domain.Pickups;
 using Gast.Lib.AI;
 using Cryst.Domain.Characters;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
+using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Strategic.StrategicState>;
 
 namespace Cryst.Features.CharacterAI.Strategic.Actions
 {
-    public class SelectObjectiveAction : IAction<StrategicState, AIContext<StrategicState>>
+    public class SelectObjectiveAction : IAction<ActorContext_, StrategicState>
     {
         public bool CanExecute(StrategicState worldState)
         {
@@ -22,10 +24,10 @@ namespace Cryst.Features.CharacterAI.Strategic.Actions
         {
         }
 
-        public UniTask ExecuteAsync(AIContext<StrategicState> ctx)
+        public UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
         {
-            var self = ctx.Actor;
-            var objectives = ctx.WorldState.AvailableObjectives;
+            var self = context.Actor;
+            var objectives = context.WorldState.AvailableObjectives;
 
             IAIObjective bestObjective = null;
             BaseCharacter bestTarget = null;
@@ -33,7 +35,7 @@ namespace Cryst.Features.CharacterAI.Strategic.Actions
 
             foreach (var objective in objectives)
             {
-                var (cost, target) = CalculateObjectiveCost(ctx, self, objective);
+                var (cost, target) = CalculateObjectiveCost(context, self, objective);
 
                 if (cost < lowestCost)
                 {
@@ -43,25 +45,25 @@ namespace Cryst.Features.CharacterAI.Strategic.Actions
                 }
             }
 
-            ctx.Memory.CurrentObjective = bestObjective;
-            ctx.Memory.CombatTarget = bestTarget;
+            context.Memory.CurrentObjective = bestObjective;
+            context.Memory.CombatTarget = bestTarget;
 
             return UniTask.CompletedTask;
         }
 
-        private (float cost, BaseCharacter target) CalculateObjectiveCost(AIContext<StrategicState> ctx, BaseCharacter self, IAIObjective objective)
+        private (float cost, BaseCharacter target) CalculateObjectiveCost(ActorContext_ context, BaseCharacter self, IAIObjective objective)
         {
             switch (objective)
             {
                 case DefeatCharacterObjective defeat:
-                    var target = FindClosestCharacterOfType(ctx, self, defeat.TargetTypeId);
+                    var target = FindClosestCharacterOfType(context, self, defeat.TargetTypeId);
                     if (target == null)
                         return (float.MaxValue, null);
                     var distanceToEnemy = Vector3.Distance(self.Body.Position, target.Body.Position);
                     return (distanceToEnemy, target);
 
                 case AcquireItemObjective acquire:
-                    var pickup = FindClosestPickupOfType(ctx, self, acquire.TargetItemId);
+                    var pickup = FindClosestPickupOfType(context, self, acquire.TargetItemId);
                     if (pickup == null)
                         return (float.MaxValue, null);
                     var distanceToItem = Vector3.Distance(self.Body.Position, pickup.Position);
@@ -72,18 +74,18 @@ namespace Cryst.Features.CharacterAI.Strategic.Actions
             }
         }
 
-        private BaseCharacter FindClosestCharacterOfType(AIContext<StrategicState> ctx, BaseCharacter self, CharacterTypeId typeId)
+        private BaseCharacter FindClosestCharacterOfType(ActorContext_ context, BaseCharacter self, CharacterTypeId typeId)
         {
-            return ctx.CharacterRepository.GetAll()
+            return context.CharacterRepository.GetAll()
                 .Select(c => c.As<BaseCharacter>())
                 .Where(a => a.TypeId == typeId && a.Status.IsAlive.Value && a.Faction != self.Faction)
                 .OrderBy(a => Vector3.Distance(self.Body.Position, a.Body.Position))
                 .FirstOrDefault();
         }
 
-        private IPickup FindClosestPickupOfType(AIContext<StrategicState> ctx, BaseCharacter self, ItemId itemId)
+        private IPickup FindClosestPickupOfType(ActorContext_ context, BaseCharacter self, ItemId itemId)
         {
-            return ctx.PickupRepository.GetAll()
+            return context.PickupRepository.GetAll()
                 .Where(p => p.ItemId == itemId)
                 .OrderBy(p => Vector3.Distance(self.Body.Position, p.Position))
                 .FirstOrDefault();

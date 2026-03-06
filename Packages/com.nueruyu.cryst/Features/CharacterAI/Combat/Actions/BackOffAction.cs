@@ -1,12 +1,14 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using System;
+using System.Threading;
 using UnityEngine;
+using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Combat.CombatState>;
 
 namespace Cryst.Features.CharacterAI.Combat.Actions
 {
     [Serializable]
-    public class BackOffAction : IAction<CombatState, AIContext<CombatState>>
+    public class BackOffAction : IAction<ActorContext_, CombatState>
     {
         public bool CanExecute(CombatState worldState)
         {
@@ -18,10 +20,10 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             worldState.DistanceToTarget += 2.0f;
         }
 
-        public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
+        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
         {
-            var actor = ctx.Actor;
-            var worldState = ctx.WorldState;
+            var actor = context.Actor;
+            var worldState = context.WorldState;
             var navigator = actor.NavigationProvider;
 
             var selfPos = actor.Body.Position;
@@ -37,7 +39,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             try
             {
                 var timer = 0f;
-                while (timer < 1.5f && !ctx.CancellationToken.IsCancellationRequested)
+                while (timer < 1.5f && !cancellationToken.IsCancellationRequested)
                 {
                     timer += Time.deltaTime;
 
@@ -50,7 +52,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
                     if (navigator.HasArrived)
                         break;
 
-                    await UniTask.Yield(ctx.CancellationToken);
+                    await UniTask.Yield(cancellationToken);
                 }
             }
             finally

@@ -4,55 +4,55 @@ using System.Collections.Generic;
 
 namespace Gast.Lib.AI.Builders
 {
-    public class MethodBuilder<TWorldState, TContext>
+    public class MethodBuilder<TActorContext, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
         readonly string methodName;
         Func<TWorldState, bool> condition = _ => true;
         Func<TWorldState, float> scorer;
         Func<TWorldState, float> interruptionCost;
-        readonly List<ITask<TWorldState, TContext>> subTasks = new();
+        readonly List<ITask<TActorContext, TWorldState>> subTasks = new();
 
         internal MethodBuilder(string methodName)
         {
             this.methodName = methodName;
         }
 
-        public MethodBuilder<TWorldState, TContext> Condition(Func<TWorldState, bool> predicate)
+        public MethodBuilder<TActorContext, TWorldState> Condition(Func<TWorldState, bool> predicate)
         {
             condition = predicate ?? throw new ArgumentNullException(nameof(predicate));
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> Score(Func<TWorldState, float> scoreFunc)
+        public MethodBuilder<TActorContext, TWorldState> Score(Func<TWorldState, float> scoreFunc)
         {
             scorer = scoreFunc ?? throw new ArgumentNullException(nameof(scoreFunc));
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> InterruptCost(Func<TWorldState, float> costFunc)
+        public MethodBuilder<TActorContext, TWorldState> InterruptCost(Func<TWorldState, float> costFunc)
         {
             interruptionCost = costFunc ?? throw new ArgumentNullException(nameof(costFunc));
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> Do(IAction<TWorldState, TContext> action)
+        public MethodBuilder<TActorContext, TWorldState> Do(IAction<TActorContext, TWorldState> action)
         {
-            subTasks.Add(new PrimitiveTask<TWorldState, TContext>(action));
+            subTasks.Add(new PrimitiveTask<TActorContext, TWorldState>(action));
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> Do(CompoundTaskBuilder<TWorldState, TContext> builder)
+        public MethodBuilder<TActorContext, TWorldState> Do(CompoundTaskBuilder<TActorContext, TWorldState> builder)
         {
             var task = builder.DomainBuilder.GetTask(builder.Name);
             subTasks.Add(task);
             return this;
         }
 
-        internal Method<TWorldState, TContext> Build(int index)
+        internal Method<TActorContext, TWorldState> Build(int index)
         {
-            return new Method<TWorldState, TContext>(
+            return new Method<TActorContext, TWorldState>(
                 methodName,
                 index,
                 subTasks,

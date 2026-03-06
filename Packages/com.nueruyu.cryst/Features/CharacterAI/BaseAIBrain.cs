@@ -13,12 +13,12 @@ namespace Cryst.Features.CharacterAI
 {
     public interface IDomainRegistrar
     {
-        void Register<TWorldState, TContext>(
+        void Register<TActorContext, TWorldState>(
             ContextKey contextKey,
-            AIRunner<TWorldState, TContext> runner,
-            TContext context)
+            AIRunner<TActorContext, TWorldState> runner,
+            AIContext<TActorContext> context)
             where TWorldState : class, IWorldState<TWorldState>, new()
-            where TContext : struct, IContext<TContext, TWorldState>;
+            where TActorContext : class, IActorContext<TWorldState>;
     }
 
     public abstract class BaseAIBrain : ICharacterAIBrain
@@ -101,17 +101,17 @@ namespace Cryst.Features.CharacterAI
                 });
             }
 
-            public void Register<TWorldState, TContext>(
+            public void Register<TActorContext, TWorldState>(
                 ContextKey contextKey,
-                AIRunner<TWorldState, TContext> runner,
-                TContext context)
+                AIRunner<TActorContext, TWorldState> runner,
+                AIContext<TActorContext> context)
                 where TWorldState : class, IWorldState<TWorldState>, new()
-                where TContext : struct, IContext<TContext, TWorldState>
+                where TActorContext : class, IActorContext<TWorldState>
             {
                 contextKeys[contextKey.DomainName] = contextKey;
-                brain.contextRegistry.Register(contextKey, context.WorldState);
+                brain.contextRegistry.Register(contextKey, context.ActorContext.WorldState);
 
-                var process = new DomainProcess<TWorldState, TContext>(runner, context);
+                var process = new DomainProcess<TActorContext, TWorldState>(runner, context);
                 domainRunner.Register(process);
             }
         }

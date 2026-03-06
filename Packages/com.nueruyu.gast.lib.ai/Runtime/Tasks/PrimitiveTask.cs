@@ -4,15 +4,15 @@ using System.Threading;
 
 namespace Gast.Lib.AI.Tasks
 {
-    public class PrimitiveTask<TWorldState, TContext> : ITask<TWorldState, TContext>
+    public class PrimitiveTask<TActorContext, TWorldState> : ITask<TActorContext, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly IAction<TWorldState, TContext> action;
+        readonly IAction<TActorContext, TWorldState> action;
 
         public string Name => action.ToString();
 
-        public PrimitiveTask(IAction<TWorldState, TContext> action)
+        public PrimitiveTask(IAction<TActorContext, TWorldState> action)
         {
             this.action = action;
         }
@@ -29,16 +29,16 @@ namespace Gast.Lib.AI.Tasks
             return UniTask.FromResult(true);
         }
 
-        public async UniTask RunAsync(TContext ctx)
+        public async UniTask RunAsync(AIContext<TActorContext> context, CancellationToken cancellationToken)
         {
-            ctx.CancellationToken.ThrowIfCancellationRequested();
+            cancellationToken.ThrowIfCancellationRequested();
 
-            var contextKey = ctx.ContextKey;
+            var contextKey = context.Key;
 
             DebugLogger.EnterTask(contextKey, Name);
             try
             {
-                await action.ExecuteAsync(ctx);
+                await action.ExecuteAsync(context.ActorContext, cancellationToken);
             }
             finally
             {

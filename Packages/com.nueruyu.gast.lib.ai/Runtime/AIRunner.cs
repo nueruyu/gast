@@ -1,22 +1,23 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.Threading;
 
 namespace Gast.Lib.AI
 {
-    public class AIRunner<TWorldState, TContext>
+    public class AIRunner<TActorContext, TWorldState>
        where TWorldState : class, IWorldState<TWorldState>, new()
-       where TContext : struct, IContext<TContext, TWorldState>
+       where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly ITask<TWorldState, TContext> rootTask;
+        readonly ITask<TActorContext, TWorldState> rootTask;
 
-        public AIRunner(ITask<TWorldState, TContext> rootTask)
+        public AIRunner(ITask<TActorContext, TWorldState> rootTask)
         {
             this.rootTask = rootTask ?? throw new ArgumentNullException(nameof(rootTask));
         }
 
-        public UniTask RunAsync(TContext context)
+        public UniTask RunAsync(AIContext<TActorContext> context, CancellationToken cancellationToken)
         {
-            return rootTask.RunAsync(context);
+            return rootTask.RunAsync(context, cancellationToken);
         }
     }
 }

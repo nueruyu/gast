@@ -1,13 +1,15 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System;
+using System.Threading;
 using Cryst.Domain.Characters.Facets;
 using Gast.Lib.AI;
+using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Combat.CombatState>;
 
 namespace Cryst.Features.CharacterAI.Combat.Actions
 {
     [Serializable]
-    public class ChaseTargetAction : IAction<CombatState, AIContext<CombatState>>
+    public class ChaseTargetAction : IAction<ActorContext_, CombatState>
     {
         public bool CanExecute(CombatState worldState)
         {
@@ -19,10 +21,10 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             worldState.DistanceToTarget = worldState.AttackRange;
         }
 
-        public async UniTask ExecuteAsync(AIContext<CombatState> ctx)
+        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
         {
-            var actor = ctx.Actor;
-            if (ctx.Character.Is(out SprintableCharacter sprintable))
+            var actor = context.Actor;
+            if (context.Character.Is(out SprintableCharacter sprintable))
             {
                 sprintable.SetSprint(true);
             }
@@ -31,9 +33,9 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
 
             try
             {
-                while (!ctx.CancellationToken.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    var worldState = ctx.WorldState;
+                    var worldState = context.WorldState;
                     navigator.SetDestination(worldState.TargetPosition);
 
                     var selfToTarget = worldState.TargetPosition - actor.Body.Position;
@@ -43,7 +45,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
                     if (currentDist <= worldState.AttackRange)
                     {
                         navigator.Stop();
-                        if (ctx.Character.Is(out SprintableCharacter sprintableOnExit))
+                        if (context.Character.Is(out SprintableCharacter sprintableOnExit))
                         {
                             sprintableOnExit.SetSprint(false);
                         }
@@ -56,12 +58,12 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
                         actor.Move(direction);
                     }
 
-                    await UniTask.Yield(ctx.CancellationToken);
+                    await UniTask.Yield(cancellationToken);
                 }
             }
             finally
             {
-                if (ctx.Character.Is(out SprintableCharacter sprintableOnFinally))
+                if (context.Character.Is(out SprintableCharacter sprintableOnFinally))
                 {
                     sprintableOnFinally.SetSprint(false);
                 }

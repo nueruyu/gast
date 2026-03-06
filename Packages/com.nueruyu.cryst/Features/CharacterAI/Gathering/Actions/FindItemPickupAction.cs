@@ -1,14 +1,16 @@
-﻿using System.Linq;
+using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Cryst.Domain.AI.Objectives;
 using Gast.Domain.Interactions;
 using Gast.Domain.Pickups;
 using Gast.Lib.AI;
 using UnityEngine;
+using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Gathering.GatheringState>;
 
 namespace Cryst.Features.CharacterAI.Gathering.Actions
 {
-    public class FindItemPickupAction : IAction<GatheringState, AIContext<GatheringState>>
+    public class FindItemPickupAction : IAction<ActorContext_, GatheringState>
     {
         public bool CanExecute(GatheringState worldState)
         {
@@ -20,25 +22,25 @@ namespace Cryst.Features.CharacterAI.Gathering.Actions
             worldState.HasInteractableTarget = true;
         }
 
-        public UniTask ExecuteAsync(AIContext<GatheringState> ctx)
+        public UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
         {
-            if (ctx.Memory.CurrentObjective is not AcquireItemObjective goal)
+            if (context.Memory.CurrentObjective is not AcquireItemObjective goal)
             {
                 return UniTask.CompletedTask;
             }
 
-            var targetPickup = ctx.PickupRepository
+            var targetPickup = context.PickupRepository
                 .GetAll()
                 .Where(x =>
                 {
                     return x.ItemId == goal.TargetItemId;
                 })
-                .OrderBy(x => Vector3.Distance(ctx.Actor.Body.Position, x.Position))
+                .OrderBy(x => Vector3.Distance(context.Actor.Body.Position, x.Position))
                 .FirstOrDefault();
 
             if (targetPickup != null)
             {
-                ctx.Memory.InteractableTarget = (targetPickup as Component).GetComponentInChildren<IInteractable>();
+                context.Memory.InteractableTarget = (targetPickup as Component).GetComponentInChildren<IInteractable>();
             }
 
             return UniTask.CompletedTask;
