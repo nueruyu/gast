@@ -17,11 +17,8 @@ namespace Cryst.Features.CharacterAI
         const string GatheringDomainName = "Gathering";
 
         readonly CombatDomain combatDomain;
-        readonly CombatState combatState = new();
         readonly GatheringDomain gatheringDomain;
-        readonly GatheringState gatheringState = new();
         readonly StrategicDomain strategicDomain;
-        readonly StrategicState strategicState = new();
 
         public AIBrain(
             StrategicDomain strategicDomain,
@@ -29,9 +26,8 @@ namespace Cryst.Features.CharacterAI
             GatheringDomain gatheringDomain,
             IContextRegistry contextRegistry,
             AIBrainServices services,
-            ObjectiveManager objectiveManager) : base(contextRegistry,
-            services,
-            objectiveManager)
+            ObjectiveManager objectiveManager) :
+            base(contextRegistry, services, objectiveManager)
         {
             this.strategicDomain = strategicDomain;
             this.combatDomain = combatDomain;
@@ -43,21 +39,19 @@ namespace Cryst.Features.CharacterAI
             registrar.Register(
                 StrategicDomainName,
                 strategicDomain.CreateRunner(),
-                strategicState,
+                new StrategicState(),
                 UpdateStrategicWorldState);
 
-            combatState.AttackRange = 1.5f;
-            combatState.CombatRange = 4.5f;
             registrar.Register(
                 CombatDomainName,
                 combatDomain.CreateRunner(),
-                combatState,
+                new CombatState(),
                 UpdateCombatWorldState);
 
             registrar.Register(
                 GatheringDomainName,
                 gatheringDomain.CreateRunner(),
-                gatheringState,
+                new GatheringState(),
                 UpdateGatheringWorldState);
         }
 
@@ -82,11 +76,12 @@ namespace Cryst.Features.CharacterAI
             var actor = context.Actor;
             var combatState = context.WorldState;
 
-            var target = memory.CombatTarget;
-            var isTargetAlive = target != null && target.Status.IsAlive.Value;
+            combatState.AttackRange = 1.5f;
+            combatState.CombatRange = 4.5f;
 
-            if (isTargetAlive)
+            if (memory.HasTarget)
             {
+                var target = memory.CombatTarget;
                 combatState.HasTarget = true;
                 combatState.TargetPosition = target.Body.Position;
                 combatState.TargetForward = target.Body.Forward;
@@ -116,7 +111,7 @@ namespace Cryst.Features.CharacterAI
             var currentGoal = memory.CurrentObjective;
             gatheringState.CurrentGoal = currentGoal;
             gatheringState.HasGoal = currentGoal != null;
-            gatheringState.IsInCombat = combatState.HasTarget;
+            gatheringState.IsInCombat = memory.HasTarget;
 
             if (memory.InteractableTarget is Component interactableTargetComponent &&
                 !interactableTargetComponent)
