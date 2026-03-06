@@ -5,7 +5,6 @@ using Cryst.Features.CharacterAI.Combat;
 using Cryst.Features.CharacterAI.Gathering;
 using Cryst.Features.CharacterAI.Strategic;
 using Gast.Domain.Characters;
-using Gast.Lib.AI;
 using Gast.Lib.AI.Debugging;
 using UnityEngine;
 
@@ -16,13 +15,12 @@ namespace Cryst.Features.CharacterAI
         const string StrategicDomainName = "Strategic";
         const string CombatDomainName = "Combat";
         const string GatheringDomainName = "Gathering";
+
         readonly CombatDomain combatDomain;
         readonly CombatState combatState = new();
         readonly GatheringDomain gatheringDomain;
         readonly GatheringState gatheringState = new();
-
         readonly StrategicDomain strategicDomain;
-
         readonly StrategicState strategicState = new();
 
         public AIBrain(
@@ -42,53 +40,32 @@ namespace Cryst.Features.CharacterAI
 
         protected override void RegisterDomains(IDomainRegistrar registrar)
         {
-            var strategicKey = new ContextKey(actor.Id,
-                StrategicDomainName);
-            var strategicActorContext = new ActorContext<StrategicState>(
-                services,
-                actor,
-                character,
-                memory,
+            registrar.Register(
+                StrategicDomainName,
+                strategicDomain.CreateRunner(),
                 strategicState,
                 UpdateStrategicWorldState);
-            var strategicContext = new AIContext<ActorContext<StrategicState>>(strategicKey, strategicActorContext);
-            registrar.Register(strategicKey,
-                strategicDomain.CreateRunner(),
-                strategicContext);
 
             combatState.AttackRange = 1.5f;
             combatState.CombatRange = 4.5f;
-            var combatKey = new ContextKey(actor.Id,
-                CombatDomainName);
-            var combatActorContext = new ActorContext<CombatState>(
-                services,
-                actor,
-                character,
-                memory,
+            registrar.Register(
+                CombatDomainName,
+                combatDomain.CreateRunner(),
                 combatState,
                 UpdateCombatWorldState);
-            var combatContext = new AIContext<ActorContext<CombatState>>(combatKey, combatActorContext);
-            registrar.Register(combatKey,
-                combatDomain.CreateRunner(),
-                combatContext);
 
-            var gatheringKey = new ContextKey(actor.Id,
-                GatheringDomainName);
-            var gatheringActorContext = new ActorContext<GatheringState>(
-                services,
-                actor,
-                character,
-                memory,
+            registrar.Register(
+                GatheringDomainName,
+                gatheringDomain.CreateRunner(),
                 gatheringState,
                 UpdateGatheringWorldState);
-            var gatheringContext = new AIContext<ActorContext<GatheringState>>(gatheringKey, gatheringActorContext);
-            registrar.Register(gatheringKey,
-                gatheringDomain.CreateRunner(),
-                gatheringContext);
         }
 
-        void UpdateStrategicWorldState()
+        void UpdateStrategicWorldState(ActorContext<StrategicState> context)
         {
+            var actor = context.Actor;
+            var strategicState = context.WorldState;
+
             strategicState.AvailableObjectives = CurrentObjectives
                 .Where(o => !o.IsCompleted.Value)
                 .ToList();
@@ -98,8 +75,13 @@ namespace Cryst.Features.CharacterAI
                 .Any(otherActor => otherActor.IsThreatTo(actor));
         }
 
-        void UpdateCombatWorldState()
+        void UpdateCombatWorldState(ActorContext<CombatState> context)
         {
+            var memory = context.Memory;
+            var character = context.Character;
+            var actor = context.Actor;
+            var combatState = context.WorldState;
+
             var target = memory.CombatTarget;
             var isTargetAlive = target != null && target.Status.IsAlive.Value;
 
@@ -125,8 +107,12 @@ namespace Cryst.Features.CharacterAI
             combatState.SelfHealthRatio = maxHealth > 0 ? currentHealth / maxHealth : 1f;
         }
 
-        void UpdateGatheringWorldState()
+        void UpdateGatheringWorldState(ActorContext<GatheringState> context)
         {
+            var memory = context.Memory;
+            var actor = context.Actor;
+            var gatheringState = context.WorldState;
+
             var currentGoal = memory.CurrentObjective;
             gatheringState.CurrentGoal = currentGoal;
             gatheringState.HasGoal = currentGoal != null;

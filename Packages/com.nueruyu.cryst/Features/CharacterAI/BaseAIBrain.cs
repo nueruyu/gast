@@ -1,39 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Cryst.Domain.Characters;
 using Cysharp.Threading.Tasks;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Debugging;
-using Cryst.Domain.Characters;
-using R3;
 
 namespace Cryst.Features.CharacterAI
 {
-    public interface IDomainRegistrar
-    {
-        void Register<TActorContext, TWorldState>(
-            ContextKey contextKey,
-            AIRunner<TActorContext, TWorldState> runner,
-            AIContext<TActorContext> context)
-            where TWorldState : class, IWorldState<TWorldState>, new()
-            where TActorContext : class, IActorContext<TWorldState>;
-    }
-
     public abstract class BaseAIBrain : ICharacterAIBrain
     {
         readonly IContextRegistry contextRegistry;
-        protected readonly AIBrainServices services;
         readonly ObjectiveManager objectiveManager;
+        readonly AIBrainServices services;
+        BaseCharacter actor;
+        ICharacter character;
+        CancellationTokenSource characterCts;
 
         DomainRunner domainRunner;
-        CancellationTokenSource characterCts;
-        protected BaseCharacter actor;
-        protected ICharacter character;
-        protected AIMemory memory;
-
-        public IReadOnlyList<IAIObjective> CurrentObjectives => objectiveManager.CurrentObjectives;
+        AIMemory memory;
 
         protected BaseAIBrain(
             IContextRegistry contextRegistry,
@@ -44,6 +31,8 @@ namespace Cryst.Features.CharacterAI
             this.services = services;
             this.objectiveManager = objectiveManager;
         }
+
+        public IReadOnlyList<IAIObjective> CurrentObjectives => objectiveManager.CurrentObjectives;
 
         public void OnAttached(ICharacter character)
         {
@@ -83,8 +72,8 @@ namespace Cryst.Features.CharacterAI
         class DomainRegistrar : IDomainRegistrar
         {
             readonly BaseAIBrain brain;
-            readonly DomainRunner domainRunner;
             readonly Dictionary<string, ContextKey> contextKeys = new();
+            readonly DomainRunner domainRunner;
 
             public DomainRegistrar(BaseAIBrain brain, DomainRunner domainRunner)
             {
@@ -101,17 +90,27 @@ namespace Cryst.Features.CharacterAI
                 });
             }
 
-            public void Register<TActorContext, TWorldState>(
-                ContextKey contextKey,
-                AIRunner<TActorContext, TWorldState> runner,
-                AIContext<TActorContext> context)
+            public void Register<TWorldState>(
+                string domainName,
+                AIRunner<ActorContext<TWorldState>, TWorldState> runner,
+                TWorldState worldState,
+                Action<ActorContext<TWorldState>> worldStateUpdater)
                 where TWorldState : class, IWorldState<TWorldState>, new()
-                where TActorContext : class, IActorContext<TWorldState>
             {
+                var contextKey = new ContextKey(brain.actor.Id, domainName);
                 contextKeys[contextKey.DomainName] = contextKey;
-                brain.contextRegistry.Register(contextKey, context.ActorContext.WorldState);
+                brain.contextRegistry.Register(contextKey, worldState);
 
-                var process = new DomainProcess<TActorContext, TWorldState>(runner, context);
+                var actorContext = new ActorContext<TWorldState>(
+                    brain.services,
+                    brain.actor,
+                    brain.character,
+                    brain.memory,
+                    worldState,
+                    worldStateUpdater);
+
+                var aiContext = new AIContext<ActorContext<TWorldState>>(contextKey, actorContext);
+                var process = new DomainProcess<ActorContext<TWorldState>, TWorldState>(runner, aiContext);
                 domainRunner.Register(process);
             }
         }
