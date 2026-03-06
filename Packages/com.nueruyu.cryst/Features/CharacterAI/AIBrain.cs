@@ -1,23 +1,20 @@
-﻿using Cysharp.Threading.Tasks;
-using Gast.Domain.AI;
-using Gast.Domain.Characters;
-using Gast.Lib.AI;
-using Gast.Lib.AI.Debugging;
-using Cryst.Features.CharacterAI.Combat;
-using Cryst.Features.CharacterAI.Gathering;
-using Cryst.Domain.Characters;
-using Cryst.Domain.Characters.Facets;
-using Cryst.Features.CharacterAI.Strategic;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Gast.Core.Commands;
+using Gast.Domain.AI;
+using Gast.Domain.Characters;
 using Gast.Domain.Pickups;
+using Gast.Lib.AI.Debugging;
+using Cryst.Domain.Characters;
+using Cryst.Domain.Characters.Facets;
+using Cryst.Features.CharacterAI.Combat;
+using Cryst.Features.CharacterAI.Gathering;
+using Cryst.Features.CharacterAI.Strategic;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterAI
 {
-    public class AIBrain : ICharacterAIBrain
+    public class AIBrain : BaseAIBrain
     {
         const string StrategicDomainName = "Strategic";
         const string CombatDomainName = "Combat";
@@ -27,25 +24,7 @@ namespace Cryst.Features.CharacterAI
         readonly CombatDomain combatDomain;
         readonly GatheringDomain gatheringDomain;
         readonly ObjectiveManager objectiveManager;
-        readonly IContextRegistry contextRegistry;
-        readonly ICharacterRepository characterRepository;
-        readonly IPickupRepository pickupRepository;
-        readonly ICommandDispatcher commandDispatcher;
 
-        BaseCharacter actor;
-        ICharacter character;
-        ContextKey strategicContextKey;
-        ContextKey combatContextKey;
-        ContextKey gatheringContextKey;
-        CancellationTokenSource cts;
-
-        public IReadOnlyList<IAIObjective> CurrentObjectives => objectiveManager.CurrentObjectives;
-
-        AIRunner<StrategicState, AIContext<StrategicState>> strategicAgentRunner;
-        AIRunner<CombatState, AIContext<CombatState>> combatAgentRunner;
-        AIRunner<GatheringState, AIContext<GatheringState>> gatheringAgentRunner;
-
-        readonly AIMemory memory = new();
         readonly StrategicState strategicState = new();
         readonly CombatState combatState = new();
         readonly GatheringState gatheringState = new();
@@ -54,161 +33,42 @@ namespace Cryst.Features.CharacterAI
             StrategicDomain strategicDomain,
             CombatDomain combatDomain,
             GatheringDomain gatheringDomain,
-            ObjectiveManager objectiveManager,
             IContextRegistry contextRegistry,
             ICharacterRepository characterRepository,
             IPickupRepository pickupRepository,
-            ICommandDispatcher commandDispatcher)
+            ICommandDispatcher commandDispatcher,
+            ObjectiveManager objectiveManager) : base(contextRegistry, characterRepository, pickupRepository, commandDispatcher, objectiveManager)
         {
             this.strategicDomain = strategicDomain;
             this.combatDomain = combatDomain;
             this.gatheringDomain = gatheringDomain;
             this.objectiveManager = objectiveManager;
-            this.contextRegistry = contextRegistry;
-            this.characterRepository = characterRepository;
-            this.pickupRepository = pickupRepository;
-            this.commandDispatcher = commandDispatcher;
         }
 
-        public void OnAttached(ICharacter character)
+        protected override void RegisterDomains(IDomainRegistrar registrar)
         {
-            Debug.Log($"[AIBrain] OnAttached: {character.Id}");
-
-            this.character = character;
-            actor = character.As<BaseCharacter>();
-
-            strategicContextKey = new(actor.Id, StrategicDomainName);
-            combatContextKey = new(actor.Id, CombatDomainName);
-            gatheringContextKey = new(actor.Id, GatheringDomainName);
-
-            contextRegistry.Register(strategicContextKey, strategicState);
-            contextRegistry.Register(combatContextKey, combatState);
-            contextRegistry.Register(gatheringContextKey, gatheringState);
-
-            strategicAgentRunner = strategicDomain.CreateRunner();
-            combatAgentRunner = combatDomain.CreateRunner();
-            gatheringAgentRunner = gatheringDomain.CreateRunner();
+            registrar.Register<StrategicState, AIContext<StrategicState>>(
+                StrategicDomainName,
+                strategicState,
+                strategicDomain.CreateRunner(),
+                UpdateStrategicWorldState
+            );
 
             combatState.AttackRange = 1.5f;
             combatState.CombatRange = 4.5f;
-
-            cts = new CancellationTokenSource();
-            RunAsync(cts.Token).Forget();
-
-            objectiveManager
-                .BindCharacter(actor.Id)
-                .AddTo(cts.Token);
-        }
-
-        public void OnDetached()
-        {
-            if (actor == null)
-                return;
-
-            DebugLogger.ClearContext(strategicContextKey);
-            DebugLogger.ClearContext(combatContextKey);
-            DebugLogger.ClearContext(gatheringContextKey);
-
-            contextRegistry.Unregister(strategicContextKey);
-            contextRegistry.Unregister(combatContextKey);
-            contextRegistry.Unregister(gatheringContextKey);
-
-            cts?.Cancel();
-            cts?.Dispose();
-            cts = null;
-
-            actor = null;
-            character = null;
-            strategicContextKey = default;
-            combatContextKey = default;
-            gatheringContextKey = default;
-        }
-
-        public void SetObjectives(IEnumerable<IAIObjective> objectives)
-        {
-            objectiveManager.UpdateObjectives(objectives);
-        }
-
-        async UniTaskVoid RunAsync(CancellationToken cancellationToken)
-        {
-            await UniTask.WhenAll(
-                StateUpdateLoop(cancellationToken),
-                StrategicLoop(cancellationToken),
-                TacticalLoop(cancellationToken),
-                GatheringLoop(cancellationToken)
+            registrar.Register<CombatState, AIContext<CombatState>>(
+                CombatDomainName,
+                combatState,
+                combatDomain.CreateRunner(),
+                UpdateCombatWorldState
             );
-        }
 
-        async UniTask StateUpdateLoop(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                UpdateStrategicWorldState();
-                UpdateCombatWorldState();
-                UpdateGatheringWorldState();
-
-                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
-            }
-        }
-
-        async UniTask StrategicLoop(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await strategicAgentRunner.RunAsync(new(
-                    strategicContextKey,
-                    actor,
-                    character,
-                    strategicState,
-                    memory,
-                    UpdateStrategicWorldState,
-                    characterRepository,
-                    pickupRepository,
-                    commandDispatcher,
-                    cancellationToken));
-
-                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
-            }
-        }
-
-        async UniTask TacticalLoop(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await combatAgentRunner.RunAsync(new(
-                    combatContextKey,
-                    actor,
-                    character,
-                    combatState,
-                    memory,
-                    UpdateCombatWorldState,
-                    characterRepository,
-                    pickupRepository,
-                    commandDispatcher,
-                    cancellationToken));
-
-                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
-            }
-        }
-
-        async UniTask GatheringLoop(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await gatheringAgentRunner.RunAsync(new(
-                    gatheringContextKey,
-                    actor,
-                    character,
-                    gatheringState,
-                    memory,
-                    UpdateGatheringWorldState,
-                    characterRepository,
-                    pickupRepository,
-                    commandDispatcher,
-                    cancellationToken));
-
-                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
-            }
+            registrar.Register<GatheringState, AIContext<GatheringState>>(
+                GatheringDomainName,
+                gatheringState,
+                gatheringDomain.CreateRunner(),
+                UpdateGatheringWorldState
+            );
         }
 
         void UpdateStrategicWorldState()
@@ -239,19 +99,13 @@ namespace Cryst.Features.CharacterAI
                 combatState.HasTarget = false;
                 combatState.DistanceToTarget = float.PositiveInfinity;
             }
+
             combatState.IsReadyToAttack = character.Is(out AttackableCharacter attackable) && attackable.CanAttack();
             combatState.CanGuard = character.Is(out GuardableCharacter guardable) && guardable.CanGuard();
 
             var currentHealth = actor.Status.Health.Value;
             var maxHealth = actor.Status.MaxHealth.Value;
-            if (maxHealth > 0)
-            {
-                combatState.SelfHealthRatio = currentHealth / maxHealth;
-            }
-            else
-            {
-                combatState.SelfHealthRatio = 1f;
-            }
+            combatState.SelfHealthRatio = maxHealth > 0 ? currentHealth / maxHealth : 1f;
         }
 
         void UpdateGatheringWorldState()

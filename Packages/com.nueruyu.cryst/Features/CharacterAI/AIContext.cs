@@ -13,14 +13,13 @@ namespace Cryst.Features.CharacterAI
     {
         public BaseCharacter Actor { get; }
         public ICharacter Character { get; }
-        public TWorldState WorldState { get; }
         public AIMemory Memory { get; }
-        public CancellationToken CancellationToken { get; }
-        public ContextKey ContextKey { get; }
-
         public ICharacterRepository CharacterRepository { get; }
         public IPickupRepository PickupRepository { get; }
         public ICommandDispatcher CommandDispatcher { get; }
+        public TWorldState WorldState { get; }
+        public CancellationToken CancellationToken { get; }
+        public ContextKey ContextKey { get; }
 
         readonly Action worldStateUpdater;
 
@@ -28,23 +27,23 @@ namespace Cryst.Features.CharacterAI
             ContextKey contextKey,
             BaseCharacter actor,
             ICharacter character,
-            TWorldState worldState,
             AIMemory memory,
-            Action worldStateUpdater,
             ICharacterRepository characterRepository,
             IPickupRepository pickupRepository,
             ICommandDispatcher commandDispatcher,
+            TWorldState worldState,
+            Action worldStateUpdater,
             CancellationToken cancellationToken)
         {
             ContextKey = contextKey;
             Actor = actor;
             Character = character;
-            WorldState = worldState;
             Memory = memory;
-            this.worldStateUpdater = worldStateUpdater;
             CharacterRepository = characterRepository;
             PickupRepository = pickupRepository;
             CommandDispatcher = commandDispatcher;
+            WorldState = worldState;
+            this.worldStateUpdater = worldStateUpdater;
             CancellationToken = cancellationToken;
         }
 
@@ -59,12 +58,12 @@ namespace Cryst.Features.CharacterAI
                 ContextKey,
                 Actor,
                 Character,
-                WorldState,
                 Memory,
-                worldStateUpdater,
                 CharacterRepository,
                 PickupRepository,
                 CommandDispatcher,
+                WorldState,
+                worldStateUpdater,
                 cancellationToken);
         }
     }
