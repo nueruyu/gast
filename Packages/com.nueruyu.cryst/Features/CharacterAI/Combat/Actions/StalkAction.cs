@@ -4,7 +4,6 @@ using System;
 using System.Threading;
 using UnityEngine;
 using Random = UnityEngine.Random;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Combat.CombatState>;
 
 namespace Cryst.Features.CharacterAI.Combat.Actions
 {
@@ -12,7 +11,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
     /// An action where the AI moves around the target for a short period of time to time an attack.
     /// </summary>
     [Serializable]
-    public class StalkAction : IAction<ActorContext_, CombatState>
+    public class StalkAction : IAction<ActorContext<CombatState>, CombatState>
     {
         public bool CanExecute(CombatState worldState)
         {
@@ -24,7 +23,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             // This action does not significantly change the world state in simulation.
         }
 
-        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(ActorContext<CombatState> context, CancellationToken cancellationToken)
         {
             var actor = context.Actor;
             var navigator = actor.NavigationProvider;

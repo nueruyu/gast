@@ -6,12 +6,11 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 using Gast.Domain.Characters;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Strategic.StrategicState>;
 
 namespace Cryst.Features.CharacterAI.Strategic.Actions
 {
     [Serializable]
-    public class SelectThreatAction : IAction<ActorContext_, StrategicState>
+    public class SelectThreatAction : IAction<ActorContext<StrategicState>, StrategicState>
     {
         public bool CanExecute(StrategicState worldState) => worldState.IsThreatened;
 
@@ -19,7 +18,7 @@ namespace Cryst.Features.CharacterAI.Strategic.Actions
         {
         }
 
-        public UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public UniTask ExecuteAsync(ActorContext<StrategicState> context, CancellationToken cancellationToken)
         {
             var self = context.Actor;
             var closestThreat = self.VisionSensor.VisibleCharacters

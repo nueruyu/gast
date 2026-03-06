@@ -6,11 +6,10 @@ using Gast.Domain.Interactions;
 using Gast.Domain.Pickups;
 using Gast.Lib.AI;
 using UnityEngine;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Gathering.GatheringState>;
 
 namespace Cryst.Features.CharacterAI.Gathering.Actions
 {
-    public class FindItemPickupAction : IAction<ActorContext_, GatheringState>
+    public class FindItemPickupAction : IAction<ActorContext<GatheringState>, GatheringState>
     {
         public bool CanExecute(GatheringState worldState)
         {
@@ -22,7 +21,7 @@ namespace Cryst.Features.CharacterAI.Gathering.Actions
             worldState.HasInteractableTarget = true;
         }
 
-        public UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public UniTask ExecuteAsync(ActorContext<GatheringState> context, CancellationToken cancellationToken)
         {
             if (context.Memory.CurrentObjective is not AcquireItemObjective goal)
             {

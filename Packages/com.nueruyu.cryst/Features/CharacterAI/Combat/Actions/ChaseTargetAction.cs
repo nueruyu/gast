@@ -4,12 +4,11 @@ using System;
 using System.Threading;
 using Cryst.Domain.Characters.Facets;
 using Gast.Lib.AI;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Combat.CombatState>;
 
 namespace Cryst.Features.CharacterAI.Combat.Actions
 {
     [Serializable]
-    public class ChaseTargetAction : IAction<ActorContext_, CombatState>
+    public class ChaseTargetAction : IAction<ActorContext<CombatState>, CombatState>
     {
         public bool CanExecute(CombatState worldState)
         {
@@ -21,7 +20,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             worldState.DistanceToTarget = worldState.AttackRange;
         }
 
-        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(ActorContext<CombatState> context, CancellationToken cancellationToken)
         {
             var actor = context.Actor;
             if (context.Character.Is(out SprintableCharacter sprintable))

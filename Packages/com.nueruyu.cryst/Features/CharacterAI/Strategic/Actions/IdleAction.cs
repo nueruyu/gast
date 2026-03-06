@@ -1,11 +1,10 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using System.Threading;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Strategic.StrategicState>;
 
 namespace Cryst.Features.CharacterAI.Strategic.Actions
 {
-    public class IdleAction : IAction<ActorContext_, StrategicState>
+    public class IdleAction : IAction<ActorContext<StrategicState>, StrategicState>
     {
         public bool CanExecute(StrategicState worldState)
         {
@@ -16,7 +15,7 @@ namespace Cryst.Features.CharacterAI.Strategic.Actions
         {
         }
 
-        public UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public UniTask ExecuteAsync(ActorContext<StrategicState> context, CancellationToken cancellationToken)
         {
             return UniTask.WaitUntilCanceled(cancellationToken);
         }

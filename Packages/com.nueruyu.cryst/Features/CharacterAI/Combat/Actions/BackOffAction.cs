@@ -3,12 +3,11 @@ using Gast.Lib.AI;
 using System;
 using System.Threading;
 using UnityEngine;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Combat.CombatState>;
 
 namespace Cryst.Features.CharacterAI.Combat.Actions
 {
     [Serializable]
-    public class BackOffAction : IAction<ActorContext_, CombatState>
+    public class BackOffAction : IAction<ActorContext<CombatState>, CombatState>
     {
         public bool CanExecute(CombatState worldState)
         {
@@ -20,7 +19,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             worldState.DistanceToTarget += 2.0f;
         }
 
-        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(ActorContext<CombatState> context, CancellationToken cancellationToken)
         {
             var actor = context.Actor;
             var worldState = context.WorldState;

@@ -3,12 +3,11 @@ using Gast.Lib.AI;
 using System;
 using System.Threading;
 using Random = UnityEngine.Random;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Combat.CombatState>;
 
 namespace Cryst.Features.CharacterAI.Combat.Actions
 {
     [Serializable]
-    public class PostAttackManeuverAction : IAction<ActorContext_, CombatState>
+    public class PostAttackManeuverAction : IAction<ActorContext<CombatState>, CombatState>
     {
         readonly GuardAction guardAction = new();
         readonly StrafeAction strafeAction = new();
@@ -30,7 +29,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
             backOffAction.Simulate(worldState);
         }
 
-        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(ActorContext<CombatState> context, CancellationToken cancellationToken)
         {
             var rand = Random.value;
 

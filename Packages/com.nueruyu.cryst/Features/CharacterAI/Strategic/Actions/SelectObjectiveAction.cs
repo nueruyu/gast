@@ -9,11 +9,10 @@ using Cryst.Domain.Characters;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Strategic.StrategicState>;
 
 namespace Cryst.Features.CharacterAI.Strategic.Actions
 {
-    public class SelectObjectiveAction : IAction<ActorContext_, StrategicState>
+    public class SelectObjectiveAction : IAction<ActorContext<StrategicState>, StrategicState>
     {
         public bool CanExecute(StrategicState worldState)
         {
@@ -24,7 +23,7 @@ namespace Cryst.Features.CharacterAI.Strategic.Actions
         {
         }
 
-        public UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public UniTask ExecuteAsync(ActorContext<StrategicState> context, CancellationToken cancellationToken)
         {
             var self = context.Actor;
             var objectives = context.WorldState.AvailableObjectives;
@@ -51,7 +50,7 @@ namespace Cryst.Features.CharacterAI.Strategic.Actions
             return UniTask.CompletedTask;
         }
 
-        private (float cost, BaseCharacter target) CalculateObjectiveCost(ActorContext_ context, BaseCharacter self, IAIObjective objective)
+        private (float cost, BaseCharacter target) CalculateObjectiveCost(ActorContext<StrategicState> context, BaseCharacter self, IAIObjective objective)
         {
             switch (objective)
             {
@@ -74,7 +73,7 @@ namespace Cryst.Features.CharacterAI.Strategic.Actions
             }
         }
 
-        private BaseCharacter FindClosestCharacterOfType(ActorContext_ context, BaseCharacter self, CharacterTypeId typeId)
+        private BaseCharacter FindClosestCharacterOfType(ActorContext<StrategicState> context, BaseCharacter self, CharacterTypeId typeId)
         {
             return context.CharacterRepository.GetAll()
                 .Select(c => c.As<BaseCharacter>())
@@ -83,7 +82,7 @@ namespace Cryst.Features.CharacterAI.Strategic.Actions
                 .FirstOrDefault();
         }
 
-        private IPickup FindClosestPickupOfType(ActorContext_ context, BaseCharacter self, ItemId itemId)
+        private IPickup FindClosestPickupOfType(ActorContext<StrategicState> context, BaseCharacter self, ItemId itemId)
         {
             return context.PickupRepository.GetAll()
                 .Where(p => p.ItemId == itemId)

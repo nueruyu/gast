@@ -1,17 +1,16 @@
 using Cryst.Features.CharacterAI.Strategic.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Strategic.StrategicState>;
 
 namespace Cryst.Features.CharacterAI.Strategic
 {
     public class StrategicDomain
     {
-        readonly AIDomain<ActorContext_, StrategicState> domain;
+        readonly AIDomain<ActorContext<StrategicState>, StrategicState> domain;
 
         public StrategicDomain()
         {
-            var builder = new AIDomainBuilder<ActorContext_, StrategicState>();
+            var builder = new AIDomainBuilder<ActorContext<StrategicState>, StrategicState>();
 
             var root = builder.DefineCompound("Root");
 
@@ -29,7 +28,7 @@ namespace Cryst.Features.CharacterAI.Strategic
             domain = builder.Build("Root");
         }
 
-        public AIRunner<ActorContext_, StrategicState> CreateRunner()
+        public AIRunner<ActorContext<StrategicState>, StrategicState> CreateRunner()
         {
             return domain.CreateRunner();
         }

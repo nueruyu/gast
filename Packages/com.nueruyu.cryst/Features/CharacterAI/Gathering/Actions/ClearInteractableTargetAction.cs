@@ -1,11 +1,10 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using System.Threading;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Gathering.GatheringState>;
 
 namespace Cryst.Features.CharacterAI.Gathering.Actions
 {
-    public class ClearInteractableTargetAction : IAction<ActorContext_, GatheringState>
+    public class ClearInteractableTargetAction : IAction<ActorContext<GatheringState>, GatheringState>
     {
         public bool CanExecute(GatheringState worldState)
         {
@@ -18,7 +17,7 @@ namespace Cryst.Features.CharacterAI.Gathering.Actions
             worldState.IsInRangeToInteract = false;
         }
 
-        public UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public UniTask ExecuteAsync(ActorContext<GatheringState> context, CancellationToken cancellationToken)
         {
             context.Memory.InteractableTarget = null;
             return UniTask.CompletedTask;

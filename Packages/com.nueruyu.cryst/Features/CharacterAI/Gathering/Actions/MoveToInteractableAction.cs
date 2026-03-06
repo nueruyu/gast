@@ -2,11 +2,10 @@ using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using System.Threading;
 using UnityEngine;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Gathering.GatheringState>;
 
 namespace Cryst.Features.CharacterAI.Gathering.Actions
 {
-    public class MoveToInteractableAction : IAction<ActorContext_, GatheringState>
+    public class MoveToInteractableAction : IAction<ActorContext<GatheringState>, GatheringState>
     {
         public bool CanExecute(GatheringState worldState)
         {
@@ -18,7 +17,7 @@ namespace Cryst.Features.CharacterAI.Gathering.Actions
             worldState.IsInRangeToInteract = true;
         }
 
-        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(ActorContext<GatheringState> context, CancellationToken cancellationToken)
         {
             var actor = context.Actor;
             var navigator = actor.NavigationProvider;

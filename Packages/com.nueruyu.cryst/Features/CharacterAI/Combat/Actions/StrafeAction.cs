@@ -4,12 +4,11 @@ using System;
 using System.Threading;
 using UnityEngine;
 using Random = UnityEngine.Random;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Combat.CombatState>;
 
 namespace Cryst.Features.CharacterAI.Combat.Actions
 {
     [Serializable]
-    public class StrafeAction : IAction<ActorContext_, CombatState>
+    public class StrafeAction : IAction<ActorContext<CombatState>, CombatState>
     {
         const float MinDuration = 0.5f;
         const float MaxDuration = 2.5f;
@@ -23,7 +22,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
         {
         }
 
-        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(ActorContext<CombatState> context, CancellationToken cancellationToken)
         {
             var actor = context.Actor;
             var navigator = actor.NavigationProvider;

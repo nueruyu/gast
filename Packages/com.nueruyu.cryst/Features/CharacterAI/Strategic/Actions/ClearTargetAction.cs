@@ -1,11 +1,10 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using System.Threading;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Strategic.StrategicState>;
 
 namespace Cryst.Features.CharacterAI.Strategic.Actions
 {
-    public class ClearTargetAction : IAction<ActorContext_, StrategicState>
+    public class ClearTargetAction : IAction<ActorContext<StrategicState>, StrategicState>
     {
         public bool CanExecute(StrategicState worldState)
         {
@@ -18,7 +17,7 @@ namespace Cryst.Features.CharacterAI.Strategic.Actions
             // it does not change the predictable future state of the world for planning.
         }
 
-        public UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public UniTask ExecuteAsync(ActorContext<StrategicState> context, CancellationToken cancellationToken)
         {
             context.Memory.CombatTarget = null;
             context.Memory.CurrentObjective = null;

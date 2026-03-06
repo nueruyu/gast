@@ -2,11 +2,10 @@ using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using System;
 using System.Threading;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Gathering.GatheringState>;
 
 namespace Cryst.Features.CharacterAI.Gathering.Actions
 {
-    public class WaitAction : IAction<ActorContext_, GatheringState>
+    public class WaitAction : IAction<ActorContext<GatheringState>, GatheringState>
     {
         readonly float seconds;
 
@@ -24,7 +23,7 @@ namespace Cryst.Features.CharacterAI.Gathering.Actions
         {
         }
 
-        public UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public UniTask ExecuteAsync(ActorContext<GatheringState> context, CancellationToken cancellationToken)
         {
             return UniTask.Delay(
                 TimeSpan.FromSeconds(seconds),

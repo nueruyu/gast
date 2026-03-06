@@ -3,12 +3,11 @@ using Cryst.Domain.Characters.Facets;
 using Gast.Lib.AI;
 using System;
 using System.Threading;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Combat.CombatState>;
 
 namespace Cryst.Features.CharacterAI.Combat.Actions
 {
     [Serializable]
-    public class GuardAction : IAction<ActorContext_, CombatState>
+    public class GuardAction : IAction<ActorContext<CombatState>, CombatState>
     {
         public bool CanExecute(CombatState worldState)
         {
@@ -19,7 +18,7 @@ namespace Cryst.Features.CharacterAI.Combat.Actions
         {
         }
 
-        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(ActorContext<CombatState> context, CancellationToken cancellationToken)
         {
             if (!context.Character.Is(out GuardableCharacter guardable)) return;
 

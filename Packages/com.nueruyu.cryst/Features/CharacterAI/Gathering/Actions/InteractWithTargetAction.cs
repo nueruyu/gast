@@ -3,11 +3,10 @@ using Gast.Application.Interactions;
 using Gast.Core.Commands;
 using Gast.Lib.AI;
 using System.Threading;
-using ActorContext_ = Cryst.Features.CharacterAI.ActorContext<Cryst.Features.CharacterAI.Gathering.GatheringState>;
 
 namespace Cryst.Features.CharacterAI.Gathering.Actions
 {
-    public class InteractWithTargetAction : IAction<ActorContext_, GatheringState>
+    public class InteractWithTargetAction : IAction<ActorContext<GatheringState>, GatheringState>
     {
         public bool CanExecute(GatheringState worldState)
         {
@@ -20,7 +19,7 @@ namespace Cryst.Features.CharacterAI.Gathering.Actions
             worldState.IsInRangeToInteract = false;
         }
 
-        public async UniTask ExecuteAsync(ActorContext_ context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(ActorContext<GatheringState> context, CancellationToken cancellationToken)
         {
             var command = new InteractCommand(context.Actor.Id, context.WorldState.InteractableTargetId);
             await context.CommandDispatcher.DispatchAsync<InteractCommand, bool>(command, cancellationToken);
