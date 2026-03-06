@@ -1,15 +1,13 @@
-using System.Collections.Generic;
 using System.Linq;
-using Gast.Core.Commands;
-using Gast.Domain.AI;
-using Gast.Domain.Characters;
-using Gast.Domain.Pickups;
-using Gast.Lib.AI.Debugging;
+using System.Threading;
 using Cryst.Domain.Characters;
 using Cryst.Domain.Characters.Facets;
 using Cryst.Features.CharacterAI.Combat;
 using Cryst.Features.CharacterAI.Gathering;
 using Cryst.Features.CharacterAI.Strategic;
+using Gast.Domain.Characters;
+using Gast.Lib.AI;
+using Gast.Lib.AI.Debugging;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterAI
@@ -19,61 +17,80 @@ namespace Cryst.Features.CharacterAI
         const string StrategicDomainName = "Strategic";
         const string CombatDomainName = "Combat";
         const string GatheringDomainName = "Gathering";
+        readonly CombatDomain combatDomain;
+        readonly CombatState combatState = new();
+        readonly GatheringDomain gatheringDomain;
+        readonly GatheringState gatheringState = new();
 
         readonly StrategicDomain strategicDomain;
-        readonly CombatDomain combatDomain;
-        readonly GatheringDomain gatheringDomain;
-        readonly ObjectiveManager objectiveManager;
 
         readonly StrategicState strategicState = new();
-        readonly CombatState combatState = new();
-        readonly GatheringState gatheringState = new();
 
         public AIBrain(
             StrategicDomain strategicDomain,
             CombatDomain combatDomain,
             GatheringDomain gatheringDomain,
             IContextRegistry contextRegistry,
-            ICharacterRepository characterRepository,
-            IPickupRepository pickupRepository,
-            ICommandDispatcher commandDispatcher,
-            ObjectiveManager objectiveManager) : base(contextRegistry, characterRepository, pickupRepository, commandDispatcher, objectiveManager)
+            AIBrainServices services,
+            ObjectiveManager objectiveManager) : base(contextRegistry,
+            services,
+            objectiveManager)
         {
             this.strategicDomain = strategicDomain;
             this.combatDomain = combatDomain;
             this.gatheringDomain = gatheringDomain;
-            this.objectiveManager = objectiveManager;
         }
 
         protected override void RegisterDomains(IDomainRegistrar registrar)
         {
-            registrar.Register<StrategicState, AIContext<StrategicState>>(
-                StrategicDomainName,
+            var strategicKey = new ContextKey(actor.Id,
+                StrategicDomainName);
+            var strategicContext = new AIContext<StrategicState>(strategicKey,
+                services,
+                actor,
+                character,
+                memory,
                 strategicState,
+                UpdateStrategicWorldState,
+                CancellationToken.None);
+            registrar.Register(strategicKey,
                 strategicDomain.CreateRunner(),
-                UpdateStrategicWorldState
-            );
+                strategicContext);
 
             combatState.AttackRange = 1.5f;
             combatState.CombatRange = 4.5f;
-            registrar.Register<CombatState, AIContext<CombatState>>(
-                CombatDomainName,
+            var combatKey = new ContextKey(actor.Id,
+                CombatDomainName);
+            var combatContext = new AIContext<CombatState>(combatKey,
+                services,
+                actor,
+                character,
+                memory,
                 combatState,
+                UpdateCombatWorldState,
+                CancellationToken.None);
+            registrar.Register(combatKey,
                 combatDomain.CreateRunner(),
-                UpdateCombatWorldState
-            );
+                combatContext);
 
-            registrar.Register<GatheringState, AIContext<GatheringState>>(
-                GatheringDomainName,
+            var gatheringKey = new ContextKey(actor.Id,
+                GatheringDomainName);
+            var gatheringContext = new AIContext<GatheringState>(gatheringKey,
+                services,
+                actor,
+                character,
+                memory,
                 gatheringState,
+                UpdateGatheringWorldState,
+                CancellationToken.None);
+            registrar.Register(gatheringKey,
                 gatheringDomain.CreateRunner(),
-                UpdateGatheringWorldState
-            );
+                gatheringContext);
         }
 
         void UpdateStrategicWorldState()
         {
-            strategicState.AvailableObjectives = objectiveManager.CurrentObjectives
+            strategicState.AvailableObjectives = CurrentObjectives
                 .Where(o => !o.IsCompleted.Value)
                 .ToList();
 
@@ -92,7 +109,8 @@ namespace Cryst.Features.CharacterAI
                 combatState.HasTarget = true;
                 combatState.TargetPosition = target.Body.Position;
                 combatState.TargetForward = target.Body.Forward;
-                combatState.DistanceToTarget = Vector3.Distance(actor.Body.Position, target.Body.Position);
+                combatState.DistanceToTarget = Vector3.Distance(actor.Body.Position,
+                    target.Body.Position);
             }
             else
             {
@@ -117,9 +135,7 @@ namespace Cryst.Features.CharacterAI
 
             if (memory.InteractableTarget is Component interactableTargetComponent &&
                 !interactableTargetComponent)
-            {
                 memory.InteractableTarget = null;
-            }
 
             var interactableTarget = memory.InteractableTarget;
 
@@ -128,7 +144,8 @@ namespace Cryst.Features.CharacterAI
             {
                 gatheringState.InteractableTargetId = interactableTarget.Id;
                 gatheringState.InteractableTargetPosition = interactableTarget.Position;
-                var distance = Vector3.Distance(actor.Body.Position, interactableTarget.Position);
+                var distance = Vector3.Distance(actor.Body.Position,
+                    interactableTarget.Position);
                 gatheringState.IsInRangeToInteract = distance <= 1.5f;
             }
         }

@@ -80,6 +80,7 @@ namespace Cryst.Composition
             builder.Register<SprintableCharacter>(Lifetime.Transient);
 
             // AI Brain
+            builder.Register<AIBrainServices>(Lifetime.Singleton);
             builder.Register<ObjectiveManager>(Lifetime.Transient);
             builder.Register<AIBrain>(Lifetime.Transient);
             builder.Register<CharacterAIBrainFactory>().AsImplementedInterfaces();

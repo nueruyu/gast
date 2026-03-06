@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Gast.Core.Commands;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
-using Gast.Domain.Pickups;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Debugging;
 using Cryst.Domain.Characters;
@@ -16,10 +14,9 @@ namespace Cryst.Features.CharacterAI
     public interface IDomainRegistrar
     {
         void Register<TWorldState, TContext>(
-            string domainName,
-            TWorldState worldState,
+            ContextKey contextKey,
             AIRunner<TWorldState, TContext> runner,
-            Action stateUpdater)
+            TContext context)
             where TWorldState : class, IWorldState<TWorldState>, new()
             where TContext : struct, IContext<TContext, TWorldState>;
     }
@@ -27,9 +24,7 @@ namespace Cryst.Features.CharacterAI
     public abstract class BaseAIBrain : ICharacterAIBrain
     {
         readonly IContextRegistry contextRegistry;
-        readonly ICharacterRepository characterRepository;
-        readonly IPickupRepository pickupRepository;
-        readonly ICommandDispatcher commandDispatcher;
+        protected readonly AIBrainServices services;
         readonly ObjectiveManager objectiveManager;
 
         DomainRunner domainRunner;
@@ -42,15 +37,11 @@ namespace Cryst.Features.CharacterAI
 
         protected BaseAIBrain(
             IContextRegistry contextRegistry,
-            ICharacterRepository characterRepository,
-            IPickupRepository pickupRepository,
-            ICommandDispatcher commandDispatcher,
+            AIBrainServices services,
             ObjectiveManager objectiveManager)
         {
             this.contextRegistry = contextRegistry;
-            this.characterRepository = characterRepository;
-            this.pickupRepository = pickupRepository;
-            this.commandDispatcher = commandDispatcher;
+            this.services = services;
             this.objectiveManager = objectiveManager;
         }
 
@@ -111,21 +102,14 @@ namespace Cryst.Features.CharacterAI
             }
 
             public void Register<TWorldState, TContext>(
-                string domainName,
-                TWorldState worldState,
+                ContextKey contextKey,
                 AIRunner<TWorldState, TContext> runner,
-                Action stateUpdater)
+                TContext context)
                 where TWorldState : class, IWorldState<TWorldState>, new()
                 where TContext : struct, IContext<TContext, TWorldState>
             {
-                var contextKey = new ContextKey(brain.actor.Id, domainName);
-                contextKeys[domainName] = contextKey;
-                brain.contextRegistry.Register(contextKey, worldState);
-
-                var context = (TContext)Activator.CreateInstance(typeof(TContext),
-                    contextKey, brain.actor, brain.character, brain.memory,
-                    brain.characterRepository, brain.pickupRepository, brain.commandDispatcher,
-                    worldState, stateUpdater, CancellationToken.None);
+                contextKeys[contextKey.DomainName] = contextKey;
+                brain.contextRegistry.Register(contextKey, context.WorldState);
 
                 var process = new DomainProcess<TWorldState, TContext>(runner, context);
                 domainRunner.Register(process);

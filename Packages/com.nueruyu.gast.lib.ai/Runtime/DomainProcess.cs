@@ -1,5 +1,5 @@
-using Cysharp.Threading.Tasks;
 using System.Threading;
+using Cysharp.Threading.Tasks;
 
 namespace Gast.Lib.AI
 {
@@ -13,8 +13,8 @@ namespace Gast.Lib.AI
         where TWorldState : class, IWorldState<TWorldState>, new()
         where TContext : struct, IContext<TContext, TWorldState>
     {
-        readonly AIRunner<TWorldState, TContext> runner;
         readonly TContext context;
+        readonly AIRunner<TWorldState, TContext> runner;
 
         public DomainProcess(AIRunner<TWorldState, TContext> runner, TContext context)
         {
@@ -26,11 +26,16 @@ namespace Gast.Lib.AI
         {
             while (!cancellationToken.IsCancellationRequested)
             {
+                // ReSharper disable once PossiblyImpureMethodCallOnReadonlyVariable
                 await runner.RunAsync(context.WithCancellationToken(cancellationToken));
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
         }
 
-        public void UpdateState() => context.UpdateWorldState();
+        // ReSharper disable once PossiblyImpureMethodCallOnReadonlyVariable
+        public void UpdateState()
+        {
+            context.UpdateWorldState();
+        }
     }
 }

@@ -11,37 +11,35 @@ namespace Cryst.Features.CharacterAI
     public readonly struct AIContext<TWorldState> : IContext<AIContext<TWorldState>, TWorldState>
         where TWorldState : class, IWorldState<TWorldState>, new()
     {
+        readonly AIBrainServices services;
+        readonly Action worldStateUpdater;
+
         public BaseCharacter Actor { get; }
         public ICharacter Character { get; }
         public AIMemory Memory { get; }
-        public ICharacterRepository CharacterRepository { get; }
-        public IPickupRepository PickupRepository { get; }
-        public ICommandDispatcher CommandDispatcher { get; }
+        public ICharacterRepository CharacterRepository => services.CharacterRepository;
+        public IPickupRepository PickupRepository => services.PickupRepository;
+        public ICommandDispatcher CommandDispatcher => services.CommandDispatcher;
+
         public TWorldState WorldState { get; }
         public CancellationToken CancellationToken { get; }
         public ContextKey ContextKey { get; }
 
-        readonly Action worldStateUpdater;
-
         public AIContext(
             ContextKey contextKey,
+            AIBrainServices services,
             BaseCharacter actor,
             ICharacter character,
             AIMemory memory,
-            ICharacterRepository characterRepository,
-            IPickupRepository pickupRepository,
-            ICommandDispatcher commandDispatcher,
             TWorldState worldState,
             Action worldStateUpdater,
             CancellationToken cancellationToken)
         {
             ContextKey = contextKey;
+            this.services = services;
             Actor = actor;
             Character = character;
             Memory = memory;
-            CharacterRepository = characterRepository;
-            PickupRepository = pickupRepository;
-            CommandDispatcher = commandDispatcher;
             WorldState = worldState;
             this.worldStateUpdater = worldStateUpdater;
             CancellationToken = cancellationToken;
@@ -56,12 +54,10 @@ namespace Cryst.Features.CharacterAI
         {
             return new AIContext<TWorldState>(
                 ContextKey,
+                services,
                 Actor,
                 Character,
                 Memory,
-                CharacterRepository,
-                PickupRepository,
-                CommandDispatcher,
                 WorldState,
                 worldStateUpdater,
                 cancellationToken);
