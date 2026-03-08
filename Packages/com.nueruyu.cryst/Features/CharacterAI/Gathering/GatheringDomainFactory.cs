@@ -5,11 +5,11 @@ using Gast.Lib.AI.Builders;
 
 namespace Cryst.Features.CharacterAI.Gathering
 {
-    public class GatheringDomain
+    public class GatheringDomainFactory : IAIDomainFactory<GatheringState>
     {
         readonly AIDomain<ActorContext<GatheringState>, GatheringState> domain;
 
-        public GatheringDomain()
+        public GatheringDomainFactory()
         {
             var builder = new AIDomainBuilder<ActorContext<GatheringState>, GatheringState>();
 
@@ -34,9 +34,9 @@ namespace Cryst.Features.CharacterAI.Gathering
             domain = builder.Build("Root");
         }
 
-        public AIRunner<ActorContext<GatheringState>, GatheringState> CreateRunner()
+        public AIDomain<ActorContext<GatheringState>, GatheringState> CreateDomain()
         {
-            return domain.CreateRunner();
+            return domain;
         }
     }
 }

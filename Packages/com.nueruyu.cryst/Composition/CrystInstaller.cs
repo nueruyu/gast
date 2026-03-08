@@ -86,9 +86,17 @@ namespace Cryst.Composition
             builder.Register<CharacterAIBrainFactory>().AsImplementedInterfaces();
 
             // AI Domains
-            builder.Register<CombatDomain>(Lifetime.Transient);
-            builder.Register<StrategicDomain>(Lifetime.Transient);
-            builder.Register<GatheringDomain>(Lifetime.Transient);
+            builder.Register<CombatDomainFactory>(Lifetime.Singleton).As<IAIDomainFactory<CombatState>>();
+            builder.Register<StrategicDomainFactory>(Lifetime.Singleton).As<IAIDomainFactory<StrategicState>>();
+            builder.Register<GatheringDomainFactory>(Lifetime.Singleton).As<IAIDomainFactory<GatheringState>>();
+
+            builder.Register<CombatWorldStateUpdater>(Lifetime.Singleton).As<IWorldStateUpdater<CombatState>>();
+            builder.Register<StrategicWorldStateUpdater>(Lifetime.Singleton).As<IWorldStateUpdater<StrategicState>>();
+            builder.Register<GatheringWorldStateUpdater>(Lifetime.Singleton).As<IWorldStateUpdater<GatheringState>>();
+
+            builder.Register<CombatDomainDefinition>(Lifetime.Singleton).As<IAIDomainDefinition>();
+            builder.Register<StrategicDomainDefinition>(Lifetime.Singleton).As<IAIDomainDefinition>();
+            builder.Register<GatheringDomainDefinition>(Lifetime.Singleton).As<IAIDomainDefinition>();
 
             // UI
             builder.Register<PlayerStatusViewModel>(Lifetime.Singleton);

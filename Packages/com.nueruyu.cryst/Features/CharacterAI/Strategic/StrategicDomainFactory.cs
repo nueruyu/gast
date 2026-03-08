@@ -4,11 +4,11 @@ using Gast.Lib.AI.Builders;
 
 namespace Cryst.Features.CharacterAI.Strategic
 {
-    public class StrategicDomain
+    public class StrategicDomainFactory : IAIDomainFactory<StrategicState>
     {
         readonly AIDomain<ActorContext<StrategicState>, StrategicState> domain;
 
-        public StrategicDomain()
+        public StrategicDomainFactory()
         {
             var builder = new AIDomainBuilder<ActorContext<StrategicState>, StrategicState>();
 
@@ -28,9 +28,9 @@ namespace Cryst.Features.CharacterAI.Strategic
             domain = builder.Build("Root");
         }
 
-        public AIRunner<ActorContext<StrategicState>, StrategicState> CreateRunner()
+        public AIDomain<ActorContext<StrategicState>, StrategicState> CreateDomain()
         {
-            return domain.CreateRunner();
+            return domain;
         }
     }
 }

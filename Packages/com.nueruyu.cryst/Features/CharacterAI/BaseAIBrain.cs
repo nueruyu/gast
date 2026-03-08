@@ -89,7 +89,7 @@ namespace Cryst.Features.CharacterAI
 
             public void Register<TWorldState>(
                 string domainName,
-                AIRunner<ActorContext<TWorldState>, TWorldState> runner,
+                AIDomain<ActorContext<TWorldState>, TWorldState> domain,
                 TWorldState worldState,
                 Action<ActorContext<TWorldState>> worldStateUpdater)
                 where TWorldState : class, IWorldState<TWorldState>
@@ -107,6 +107,7 @@ namespace Cryst.Features.CharacterAI
                     worldStateUpdater);
 
                 var aiContext = new AIContext<ActorContext<TWorldState>>(contextKey, actorContext);
+                var runner = domain.CreateRunner();
                 var process = new DomainProcess<ActorContext<TWorldState>, TWorldState>(runner, aiContext);
                 domainRunner.Register(process);
             }

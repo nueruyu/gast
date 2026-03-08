@@ -7,7 +7,7 @@ namespace Cryst.Features.CharacterAI
     {
         void Register<TWorldState>(
             string domainName,
-            AIRunner<ActorContext<TWorldState>, TWorldState> runner,
+            AIDomain<ActorContext<TWorldState>, TWorldState> domain,
             TWorldState worldState,
             Action<ActorContext<TWorldState>> worldStateUpdater)
             where TWorldState : class, IWorldState<TWorldState>;

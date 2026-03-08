@@ -5,11 +5,11 @@ using Gast.Lib.AI.MethodSelectors;
 
 namespace Cryst.Features.CharacterAI.Combat
 {
-    public class CombatDomain
+    public class CombatDomainFactory : IAIDomainFactory<CombatState>
     {
         readonly AIDomain<ActorContext<CombatState>, CombatState> domain;
 
-        public CombatDomain()
+        public CombatDomainFactory()
         {
             var builder = new AIDomainBuilder<ActorContext<CombatState>, CombatState>();
 
@@ -49,9 +49,9 @@ namespace Cryst.Features.CharacterAI.Combat
             domain = builder.Build("Root");
         }
 
-        public AIRunner<ActorContext<CombatState>, CombatState> CreateRunner()
+        public AIDomain<ActorContext<CombatState>, CombatState> CreateDomain()
         {
-            return domain.CreateRunner();
+            return domain;
         }
     }
 }
