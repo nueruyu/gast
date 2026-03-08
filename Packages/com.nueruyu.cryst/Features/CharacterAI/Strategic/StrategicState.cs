@@ -9,10 +9,11 @@ namespace Cryst.Features.CharacterAI.Strategic
         public bool IsThreatened { get; set; }
         public List<IAIObjective> AvailableObjectives { get; set; } = new();
 
-        public void CopyFrom(StrategicState source)
+        public void WriteTo(ref StrategicState dest)
         {
-            IsThreatened = source.IsThreatened;
-            AvailableObjectives = source.AvailableObjectives;
+            dest ??= new();
+            dest.IsThreatened = IsThreatened;
+            dest.AvailableObjectives = AvailableObjectives;
         }
     }
 }

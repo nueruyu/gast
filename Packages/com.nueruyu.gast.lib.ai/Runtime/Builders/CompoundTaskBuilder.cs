@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Gast.Lib.AI.Builders
 {
     public class CompoundTaskBuilder<TActorContext, TWorldState>
-        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
         readonly List<MethodBuilder<TActorContext, TWorldState>> methodBuilders = new();

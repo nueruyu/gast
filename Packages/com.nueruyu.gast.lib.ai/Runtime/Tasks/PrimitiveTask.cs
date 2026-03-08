@@ -5,7 +5,7 @@ using System.Threading;
 namespace Gast.Lib.AI.Tasks
 {
     public class PrimitiveTask<TActorContext, TWorldState> : ITask<TActorContext, TWorldState>
-        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
         readonly IAction<TActorContext, TWorldState> action;

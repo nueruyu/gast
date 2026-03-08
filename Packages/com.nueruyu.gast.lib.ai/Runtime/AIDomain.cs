@@ -5,7 +5,7 @@ using System.Linq;
 namespace Gast.Lib.AI
 {
     public class AIDomain<TActorContext, TWorldState>
-        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
         readonly ITask<TActorContext, TWorldState>[] tasks;

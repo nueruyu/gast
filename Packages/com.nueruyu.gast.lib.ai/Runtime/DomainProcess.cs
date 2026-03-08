@@ -11,7 +11,7 @@ namespace Gast.Lib.AI
     }
 
     public class DomainProcess<TActorContext, TWorldState> : IDomainProcess
-        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
         readonly AIContext<TActorContext> context;

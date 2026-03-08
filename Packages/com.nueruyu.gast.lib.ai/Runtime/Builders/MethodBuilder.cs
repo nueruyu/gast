@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Gast.Lib.AI.Builders
 {
     public class MethodBuilder<TActorContext, TWorldState>
-        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
         readonly string methodName;

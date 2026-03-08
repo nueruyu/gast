@@ -10,6 +10,6 @@ namespace Cryst.Features.CharacterAI
             AIRunner<ActorContext<TWorldState>, TWorldState> runner,
             TWorldState worldState,
             Action<ActorContext<TWorldState>> worldStateUpdater)
-            where TWorldState : class, IWorldState<TWorldState>, new();
+            where TWorldState : class, IWorldState<TWorldState>;
     }
 }

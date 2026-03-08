@@ -7,10 +7,10 @@ using UnityEngine;
 namespace Gast.Lib.AI.MethodSelectors
 {
     public class UtilitySelector<TActorContext, TWorldState> : IMethodSelector<TActorContext, TWorldState>
-        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly TWorldState simulationState = new();
+        TWorldState simulationState;
 
         public async UniTask<Method<TActorContext, TWorldState>> SelectAsync(
             IReadOnlyList<Method<TActorContext, TWorldState>> methods,
@@ -23,7 +23,7 @@ namespace Gast.Lib.AI.MethodSelectors
             // 1. Validate methods and calculate scores
             foreach (var method in methods)
             {
-                simulationState.CopyFrom(worldState);
+                worldState.WriteTo(ref simulationState);
 
                 if (!await ValidateMethod(method, simulationState, cancellationToken))
                 {

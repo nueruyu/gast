@@ -5,7 +5,7 @@ using System.Threading;
 namespace Gast.Lib.AI
 {
     public interface IMethodSelector<TActorContext, TWorldState>
-        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
         UniTask<Method<TActorContext, TWorldState>> SelectAsync(

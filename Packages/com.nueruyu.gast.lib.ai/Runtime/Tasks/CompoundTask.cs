@@ -9,14 +9,14 @@ using UnityEngine;
 namespace Gast.Lib.AI.Tasks
 {
     public class CompoundTask<TActorContext, TWorldState> : ITask<TActorContext, TWorldState>
-        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
         public string Name { get; }
 
         readonly Method<TActorContext, TWorldState>[] methods;
         readonly IMethodSelector<TActorContext, TWorldState> methodSelector;
-        readonly TWorldState simulationState = new();
+        TWorldState simulationState;
 
         internal CompoundTask(
             string name,
@@ -48,7 +48,7 @@ namespace Gast.Lib.AI.Tasks
 
             try
             {
-                simulationState.CopyFrom(actorContext.WorldState);
+                actorContext.WorldState.WriteTo(ref simulationState);
 
                 var method = await SelectCurrentMethodAsync(
                     simulationState,
@@ -108,7 +108,7 @@ namespace Gast.Lib.AI.Tasks
             {
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
 
-                simulationState.CopyFrom(actorContext.WorldState);
+                actorContext.WorldState.WriteTo(ref simulationState);
 
                 var interruptsMethod = await methodSelector.SelectInterruptsAsync(
                     methods,

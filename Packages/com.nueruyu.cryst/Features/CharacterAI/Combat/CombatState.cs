@@ -17,22 +17,24 @@ namespace Cryst.Features.CharacterAI.Combat
         public bool IsInAttackRange => HasTarget && DistanceToTarget <= AttackRange;
         public bool IsInCombatRange => HasTarget && DistanceToTarget < CombatRange;
 
-        public void CopyFrom(CombatState source)
+        public void WriteTo(ref CombatState dest)
         {
-            HasTarget = source.HasTarget;
-            TargetPosition = source.TargetPosition;
-            TargetForward = source.TargetForward;
-            DistanceToTarget = source.DistanceToTarget;
-            IsReadyToAttack = source.IsReadyToAttack;
-            CanGuard = source.CanGuard;
-            SelfHealthRatio = source.SelfHealthRatio;
-            AttackRange = source.AttackRange;
-            CombatRange = source.CombatRange;
+            dest ??= new();
+            dest.HasTarget = HasTarget;
+            dest.TargetPosition = TargetPosition;
+            dest.TargetForward = TargetForward;
+            dest.DistanceToTarget = DistanceToTarget;
+            dest.IsReadyToAttack = IsReadyToAttack;
+            dest.CanGuard = CanGuard;
+            dest.SelfHealthRatio = SelfHealthRatio;
+            dest.AttackRange = AttackRange;
+            dest.CombatRange = CombatRange;
         }
 
         public override string ToString()
         {
-            return $"Combat[Dist:{DistanceToTarget:F1}, InRange:{IsInAttackRange}, Ready:{IsReadyToAttack}, HP:{SelfHealthRatio:P0}]";
+            return
+                $"Combat[Dist:{DistanceToTarget:F1}, InRange:{IsInAttackRange}, Ready:{IsReadyToAttack}, HP:{SelfHealthRatio:P0}]";
         }
     }
 }

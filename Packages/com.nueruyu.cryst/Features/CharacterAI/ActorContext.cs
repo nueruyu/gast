@@ -8,7 +8,7 @@ using Gast.Lib.AI;
 namespace Cryst.Features.CharacterAI
 {
     public class ActorContext<TWorldState> : IActorContext<TWorldState>
-        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TWorldState : class, IWorldState<TWorldState>
     {
         readonly AIBrainServices services;
         readonly Action<ActorContext<TWorldState>> worldStateUpdater;
@@ -40,7 +40,7 @@ namespace Cryst.Features.CharacterAI
 
         public void UpdateWorldState()
         {
-            worldStateUpdater?.Invoke(this);
+            worldStateUpdater.Invoke(this);
         }
     }
 }

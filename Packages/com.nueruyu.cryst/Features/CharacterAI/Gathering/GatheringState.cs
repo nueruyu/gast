@@ -15,15 +15,16 @@ namespace Cryst.Features.CharacterAI.Gathering
         public bool IsInRangeToInteract { get; set; }
         public bool IsInCombat { get; set; }
 
-        public void CopyFrom(GatheringState source)
+        public void WriteTo(ref GatheringState dest)
         {
-            CurrentGoal = source.CurrentGoal;
-            HasGoal = source.HasGoal;
-            HasInteractableTarget = source.HasInteractableTarget;
-            InteractableTargetId = source.InteractableTargetId;
-            InteractableTargetPosition = source.InteractableTargetPosition;
-            IsInRangeToInteract = source.IsInRangeToInteract;
-            IsInCombat = source.IsInCombat;
+            dest ??= new();
+            dest.CurrentGoal = CurrentGoal;
+            dest.HasGoal = HasGoal;
+            dest.HasInteractableTarget = HasInteractableTarget;
+            dest.InteractableTargetId = InteractableTargetId;
+            dest.InteractableTargetPosition = InteractableTargetPosition;
+            dest.IsInRangeToInteract = IsInRangeToInteract;
+            dest.IsInCombat = IsInCombat;
         }
     }
 }

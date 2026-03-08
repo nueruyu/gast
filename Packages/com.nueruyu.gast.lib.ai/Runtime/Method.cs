@@ -6,7 +6,7 @@ using System.Linq;
 namespace Gast.Lib.AI
 {
     public class Method<TActorContext, TWorldState>
-        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
         public string Name { get; }

@@ -6,12 +6,12 @@ using System.Threading;
 namespace Gast.Lib.AI.MethodSelectors
 {
     public class SimulationSelector<TActorContext, TWorldState> : IMethodSelector<TActorContext, TWorldState>
-        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
         readonly Func<TWorldState, float> worldEvaluator;
         readonly IEnvironmentModel<TWorldState> envModel;
-        readonly TWorldState simulationState = new();
+        TWorldState simulationState;
 
         public SimulationSelector(Func<TWorldState, float> worldEvaluator, IEnvironmentModel<TWorldState> envModel = null)
         {
@@ -32,7 +32,7 @@ namespace Gast.Lib.AI.MethodSelectors
                 if (!method.CheckCondition(worldState))
                     continue;
 
-                simulationState.CopyFrom(worldState);
+                worldState.WriteTo(ref simulationState);
 
                 var valid = await SimulateMethodAsync(
                     method,
@@ -46,7 +46,7 @@ namespace Gast.Lib.AI.MethodSelectors
                     {
                         bestOutcomeScore = outcomeScore;
                         bestMethod = method;
-                        worldState.CopyFrom(simulationState);
+                        simulationState.WriteTo(ref worldState);
                     }
                 }
             }
@@ -60,7 +60,7 @@ namespace Gast.Lib.AI.MethodSelectors
             TWorldState worldState,
             CancellationToken cancellationToken)
         {
-            simulationState.CopyFrom(worldState);
+            worldState.WriteTo(ref simulationState);
 
             await SimulateMethodAsync(
                 currentMethod,
@@ -80,7 +80,7 @@ namespace Gast.Lib.AI.MethodSelectors
                 if (!method.CheckCondition(worldState))
                     continue;
 
-                simulationState.CopyFrom(worldState);
+                worldState.WriteTo(ref simulationState);
 
                 var valid = await SimulateMethodAsync(
                     method,
@@ -94,7 +94,7 @@ namespace Gast.Lib.AI.MethodSelectors
                     {
                         bestOutcomeScore = outcomeScore;
                         bestMethod = method;
-                        worldState.CopyFrom(simulationState);
+                        simulationState.WriteTo(ref worldState);
                     }
                 }
             }

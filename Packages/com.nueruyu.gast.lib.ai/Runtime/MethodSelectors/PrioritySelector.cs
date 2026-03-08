@@ -5,10 +5,10 @@ using System.Threading;
 namespace Gast.Lib.AI.MethodSelectors
 {
     public class PrioritySelector<TActorContext, TWorldState> : IMethodSelector<TActorContext, TWorldState>
-        where TWorldState : class, IWorldState<TWorldState>, new()
+        where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly TWorldState simulationState = new();
+        TWorldState simulationState;
 
         public async UniTask<Method<TActorContext, TWorldState>> SelectAsync(
             IReadOnlyList<Method<TActorContext, TWorldState>> methods,
@@ -17,11 +17,11 @@ namespace Gast.Lib.AI.MethodSelectors
         {
             foreach (var method in methods)
             {
-                simulationState.CopyFrom(worldState);
+                worldState.WriteTo(ref simulationState);
 
                 if (await ValidateMethod(method, simulationState, cancellationToken))
                 {
-                    worldState.CopyFrom(simulationState);
+                    simulationState.WriteTo(ref worldState);
                     return method;
                 }
             }
