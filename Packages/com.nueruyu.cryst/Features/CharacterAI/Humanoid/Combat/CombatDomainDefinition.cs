@@ -1,6 +1,6 @@
 namespace Cryst.Features.CharacterAI.Humanoid.Combat
 {
-    public class CombatDomainDefinition : IAIDomainDefinition
+    public class CombatDomainDefinition
     {
         readonly IAIDomainFactory<CombatState> factory;
         readonly IWorldStateUpdater<CombatState> updater;

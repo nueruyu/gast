@@ -1,6 +1,6 @@
 namespace Cryst.Features.CharacterAI.Humanoid.Strategic
 {
-    public class StrategicDomainDefinition : IAIDomainDefinition
+    public class StrategicDomainDefinition
     {
         readonly IAIDomainFactory<StrategicState> factory;
         readonly IWorldStateUpdater<StrategicState> updater;

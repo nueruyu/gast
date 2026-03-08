@@ -24,10 +24,6 @@ using Cryst.Features.CharacterActions.Actions.Hit;
 using Cryst.Features.CharacterActions.Actions.Jump;
 using Cryst.Domain.Characters.Facets;
 using Cryst.Features.CharacterActions.Effects;
-using Cryst.Features.CharacterAI.Humanoid;
-using Cryst.Features.CharacterAI.Humanoid.Combat;
-using Cryst.Features.CharacterAI.Humanoid.Gathering;
-using Cryst.Features.CharacterAI.Humanoid.Strategic;
 using Cryst.UI.Hud.PlayerStatus;
 using Gast.Application.Reflection;
 using Gast.Unity.Features.Characters;
@@ -80,24 +76,8 @@ namespace Cryst.Composition
             builder.Register<JumpableCharacter>(Lifetime.Transient);
             builder.Register<SprintableCharacter>(Lifetime.Transient);
 
-            // AI Brain
-            builder.Register<AIBrainServices>(Lifetime.Singleton);
-            builder.Register<ObjectiveManager>(Lifetime.Transient);
-            builder.Register<HumanoidAIBrain>(Lifetime.Transient);
-            builder.Register<CharacterAIBrainFactory>().AsImplementedInterfaces();
-
-            // AI Domains
-            builder.Register<CombatDomainFactory>(Lifetime.Singleton).As<IAIDomainFactory<CombatState>>();
-            builder.Register<CombatWorldStateUpdater>(Lifetime.Singleton).As<IWorldStateUpdater<CombatState>>();
-            builder.Register<CombatDomainDefinition>(Lifetime.Singleton).As<IAIDomainDefinition>();
-            
-            builder.Register<StrategicDomainFactory>(Lifetime.Singleton).As<IAIDomainFactory<StrategicState>>();
-            builder.Register<StrategicWorldStateUpdater>(Lifetime.Singleton).As<IWorldStateUpdater<StrategicState>>();
-            builder.Register<StrategicDomainDefinition>(Lifetime.Singleton).As<IAIDomainDefinition>();
-            
-            builder.Register<GatheringDomainFactory>(Lifetime.Singleton).As<IAIDomainFactory<GatheringState>>();
-            builder.Register<GatheringWorldStateUpdater>(Lifetime.Singleton).As<IWorldStateUpdater<GatheringState>>();
-            builder.Register<GatheringDomainDefinition>(Lifetime.Singleton).As<IAIDomainDefinition>();
+            // AI
+            new CharacterAIInstaller().Install(builder);
 
             // UI
             builder.Register<PlayerStatusViewModel>(Lifetime.Singleton);

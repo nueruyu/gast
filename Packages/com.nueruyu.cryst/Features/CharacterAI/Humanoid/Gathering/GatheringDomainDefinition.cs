@@ -1,6 +1,6 @@
 namespace Cryst.Features.CharacterAI.Humanoid.Gathering
 {
-    public class GatheringDomainDefinition : IAIDomainDefinition
+    public class GatheringDomainDefinition
     {
         readonly IAIDomainFactory<GatheringState> factory;
         readonly IWorldStateUpdater<GatheringState> updater;
