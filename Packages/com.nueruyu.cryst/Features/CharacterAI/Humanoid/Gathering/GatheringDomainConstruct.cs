@@ -1,17 +1,17 @@
 namespace Cryst.Features.CharacterAI.Humanoid.Gathering
 {
-    public class GatheringDomainDefinition
+    public class GatheringDomainConstruct
     {
         readonly IAIDomainFactory<GatheringState> factory;
         readonly IWorldStateUpdater<GatheringState> updater;
 
-        public GatheringDomainDefinition(IAIDomainFactory<GatheringState> factory, IWorldStateUpdater<GatheringState> updater)
+        public GatheringDomainConstruct(IAIDomainFactory<GatheringState> factory, IWorldStateUpdater<GatheringState> updater)
         {
             this.factory = factory;
             this.updater = updater;
         }
 
-        public void RegisterTo(IDomainRegistrar registrar)
+        public void ApplyTo(IDomainRegistrar registrar)
         {
             registrar.Register(
                 "Gathering",

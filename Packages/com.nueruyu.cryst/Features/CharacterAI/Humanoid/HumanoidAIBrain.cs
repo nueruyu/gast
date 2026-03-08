@@ -7,22 +7,22 @@ namespace Cryst.Features.CharacterAI.Humanoid
 {
     public class HumanoidAIBrain : AIBrainBase
     {
-        readonly CombatDomainDefinition combatDomain;
-        readonly StrategicDomainDefinition strategicDomain;
-        readonly GatheringDomainDefinition gatheringDomain;
+        readonly CombatDomainConstruct combat;
+        readonly StrategicDomainConstruct strategic;
+        readonly GatheringDomainConstruct gathering;
         HumanoidMemory memory;
 
         public HumanoidAIBrain(
             IContextRegistry contextRegistry,
             AIBrainServices services,
-            CombatDomainDefinition combatDomain,
-            StrategicDomainDefinition strategicDomain,
-            GatheringDomainDefinition gatheringDomain) :
+            CombatDomainConstruct combat,
+            StrategicDomainConstruct strategic,
+            GatheringDomainConstruct gathering) :
             base(contextRegistry, services)
         {
-            this.combatDomain = combatDomain;
-            this.strategicDomain = strategicDomain;
-            this.gatheringDomain = gatheringDomain;
+            this.combat = combat;
+            this.strategic = strategic;
+            this.gathering = gathering;
         }
 
         protected override void OnBrainInitialize()
@@ -37,9 +37,9 @@ namespace Cryst.Features.CharacterAI.Humanoid
 
         protected override void RegisterDomains(IDomainRegistrar registrar)
         {
-            combatDomain.RegisterTo(registrar);
-            strategicDomain.RegisterTo(registrar);
-            gatheringDomain.RegisterTo(registrar);
+            combat.ApplyTo(registrar);
+            strategic.ApplyTo(registrar);
+            gathering.ApplyTo(registrar);
         }
 
         protected override void RegisterModules<TWorldState>(ActorContext<TWorldState> context)

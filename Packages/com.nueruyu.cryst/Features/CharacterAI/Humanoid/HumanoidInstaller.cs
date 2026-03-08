@@ -12,17 +12,17 @@ namespace Cryst.Features.CharacterAI.Humanoid
             // Combat Domain
             builder.Register<CombatDomainFactory>(Lifetime.Singleton).As<IAIDomainFactory<CombatState>>();
             builder.Register<CombatWorldStateUpdater>(Lifetime.Singleton).As<IWorldStateUpdater<CombatState>>();
-            builder.Register<CombatDomainDefinition>(Lifetime.Singleton);
+            builder.Register<CombatDomainConstruct>(Lifetime.Singleton);
 
             // Strategic Domain
             builder.Register<StrategicDomainFactory>(Lifetime.Singleton).As<IAIDomainFactory<StrategicState>>();
             builder.Register<StrategicWorldStateUpdater>(Lifetime.Singleton).As<IWorldStateUpdater<StrategicState>>();
-            builder.Register<StrategicDomainDefinition>(Lifetime.Singleton);
+            builder.Register<StrategicDomainConstruct>(Lifetime.Singleton);
 
             // Gathering Domain
             builder.Register<GatheringDomainFactory>(Lifetime.Singleton).As<IAIDomainFactory<GatheringState>>();
             builder.Register<GatheringWorldStateUpdater>(Lifetime.Singleton).As<IWorldStateUpdater<GatheringState>>();
-            builder.Register<GatheringDomainDefinition>(Lifetime.Singleton);
+            builder.Register<GatheringDomainConstruct>(Lifetime.Singleton);
             
             // Brain
             builder.Register<HumanoidAIBrain>(Lifetime.Transient);
