@@ -1,21 +1,30 @@
 using System.Collections.Generic;
-using Cryst.Features.CharacterAI.Humanoid;
-using Gast.Lib.AI;
 using Gast.Lib.AI.Debugging;
 
-namespace Cryst.Features.CharacterAI
+namespace Cryst.Features.CharacterAI.Humanoid
 {
-    public class AIBrain : BaseAIBrain
+    public class HumanoidAIBrain : AIBrainBase
     {
         readonly IEnumerable<IAIDomainDefinition> domainDefinitions;
+        HumanoidMemory memory;
 
-        public AIBrain(
+        public HumanoidAIBrain(
             IContextRegistry contextRegistry,
             AIBrainServices services,
             IEnumerable<IAIDomainDefinition> domainDefinitions) :
             base(contextRegistry, services)
         {
             this.domainDefinitions = domainDefinitions;
+        }
+
+        protected override void OnBrainInitialize()
+        {
+            memory = new HumanoidMemory();
+        }
+
+        protected override void OnBrainCleanup()
+        {
+            memory = null;
         }
 
         protected override void RegisterDomains(IDomainRegistrar registrar)
@@ -28,7 +37,7 @@ namespace Cryst.Features.CharacterAI
 
         protected override void RegisterModules<TWorldState>(ActorContext<TWorldState> context)
         {
-            context.RegisterModule(new HumanoidMemory());
+            context.RegisterModule(memory);
         }
     }
 }

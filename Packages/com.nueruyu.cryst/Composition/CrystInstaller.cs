@@ -24,6 +24,7 @@ using Cryst.Features.CharacterActions.Actions.Hit;
 using Cryst.Features.CharacterActions.Actions.Jump;
 using Cryst.Domain.Characters.Facets;
 using Cryst.Features.CharacterActions.Effects;
+using Cryst.Features.CharacterAI.Humanoid;
 using Cryst.Features.CharacterAI.Humanoid.Combat;
 using Cryst.Features.CharacterAI.Humanoid.Gathering;
 using Cryst.Features.CharacterAI.Humanoid.Strategic;
@@ -82,7 +83,7 @@ namespace Cryst.Composition
             // AI Brain
             builder.Register<AIBrainServices>(Lifetime.Singleton);
             builder.Register<ObjectiveManager>(Lifetime.Transient);
-            builder.Register<AIBrain>(Lifetime.Transient);
+            builder.Register<HumanoidAIBrain>(Lifetime.Transient);
             builder.Register<CharacterAIBrainFactory>().AsImplementedInterfaces();
 
             // AI Domains

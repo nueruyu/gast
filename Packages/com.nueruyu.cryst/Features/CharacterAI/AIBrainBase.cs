@@ -10,7 +10,7 @@ using Gast.Lib.AI.Debugging;
 
 namespace Cryst.Features.CharacterAI
 {
-    public abstract class BaseAIBrain : ICharacterAIBrain
+    public abstract class AIBrainBase : ICharacterAIBrain
     {
         readonly IContextRegistry contextRegistry;
         readonly AIBrainServices services;
@@ -20,7 +20,7 @@ namespace Cryst.Features.CharacterAI
 
         DomainRunner domainRunner;
 
-        protected BaseAIBrain(
+        protected AIBrainBase(
             IContextRegistry contextRegistry,
             AIBrainServices services)
         {
@@ -36,6 +36,8 @@ namespace Cryst.Features.CharacterAI
             actor = character.As<BaseCharacter>();
             characterCts = CancellationTokenSource.CreateLinkedTokenSource(character.CancellationToken);
 
+            OnBrainInitialize();
+
             domainRunner = new DomainRunner();
             RegisterDomains(new DomainRegistrar(this, domainRunner));
 
@@ -47,6 +49,8 @@ namespace Cryst.Features.CharacterAI
 
         public void OnDetached()
         {
+            OnBrainCleanup();
+
             characterCts?.Cancel();
             characterCts?.Dispose();
             characterCts = null;
@@ -66,13 +70,16 @@ namespace Cryst.Features.CharacterAI
         protected abstract void RegisterModules<TWorldState>(ActorContext<TWorldState> context)
             where TWorldState : class, IWorldState<TWorldState>;
 
+        protected virtual void OnBrainInitialize() { }
+        protected virtual void OnBrainCleanup() { }
+
         class DomainRegistrar : IDomainRegistrar
         {
-            readonly BaseAIBrain brain;
+            readonly AIBrainBase brain;
             readonly Dictionary<string, ContextKey> contextKeys = new();
             readonly DomainRunner domainRunner;
 
-            public DomainRegistrar(BaseAIBrain brain, DomainRunner domainRunner)
+            public DomainRegistrar(AIBrainBase brain, DomainRunner domainRunner)
             {
                 this.brain = brain;
                 this.domainRunner = domainRunner;
