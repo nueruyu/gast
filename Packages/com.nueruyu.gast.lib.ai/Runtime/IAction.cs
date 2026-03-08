@@ -3,6 +3,11 @@ using Cysharp.Threading.Tasks;
 
 namespace Gast.Lib.AI
 {
+    public interface IAction
+    {
+        UniTask ExecuteAsync(CancellationToken cancellationToken);
+    }
+
     public interface IAction<in TActorContext, in TWorldState>
         where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>

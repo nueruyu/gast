@@ -3,9 +3,9 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 
-namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
+namespace Cryst.Features.CharacterAI.Actions
 {
-    public class WaitAction : IAction<ActorContext<GatheringState>, GatheringState>
+    public class WaitAction : IAction
     {
         readonly float seconds;
 
@@ -14,16 +14,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
             this.seconds = seconds;
         }
 
-        public bool CanExecute(GatheringState worldState)
-        {
-            return true;
-        }
-
-        public void Simulate(GatheringState worldState)
-        {
-        }
-
-        public UniTask ExecuteAsync(ActorContext<GatheringState> context, CancellationToken cancellationToken)
+        public UniTask ExecuteAsync(CancellationToken cancellationToken)
         {
             return UniTask.Delay(
                 TimeSpan.FromSeconds(seconds),
