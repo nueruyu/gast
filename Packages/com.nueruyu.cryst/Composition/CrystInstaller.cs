@@ -1,7 +1,4 @@
 ﻿using Gast.Core.DI;
-using Cryst.Features.CharacterAI.Combat;
-using Cryst.Features.CharacterAI.Gathering;
-using Cryst.Features.CharacterAI.Strategic;
 using UnityEngine;
 using Cryst.Infrastructure.CharacterAI;
 using Cryst.Infrastructure.Characters;
@@ -27,6 +24,9 @@ using Cryst.Features.CharacterActions.Actions.Hit;
 using Cryst.Features.CharacterActions.Actions.Jump;
 using Cryst.Domain.Characters.Facets;
 using Cryst.Features.CharacterActions.Effects;
+using Cryst.Features.CharacterAI.Humanoid.Combat;
+using Cryst.Features.CharacterAI.Humanoid.Gathering;
+using Cryst.Features.CharacterAI.Humanoid.Strategic;
 using Cryst.UI.Hud.PlayerStatus;
 using Gast.Application.Reflection;
 using Gast.Unity.Features.Characters;
