@@ -19,7 +19,6 @@ namespace Cryst.Features.CharacterAI
         CancellationTokenSource characterCts;
 
         DomainRunner domainRunner;
-        AIMemory memory;
 
         protected BaseAIBrain(
             IContextRegistry contextRegistry,
@@ -35,7 +34,6 @@ namespace Cryst.Features.CharacterAI
         {
             this.character = character;
             actor = character.As<BaseCharacter>();
-            memory = new AIMemory();
             characterCts = CancellationTokenSource.CreateLinkedTokenSource(character.CancellationToken);
 
             domainRunner = new DomainRunner();
@@ -56,7 +54,6 @@ namespace Cryst.Features.CharacterAI
             domainRunner = null;
             actor = null;
             character = null;
-            memory = null;
         }
 
         public void SetObjectives(IEnumerable<IAIObjective> objectives)
@@ -65,6 +62,9 @@ namespace Cryst.Features.CharacterAI
         }
 
         protected abstract void RegisterDomains(IDomainRegistrar registrar);
+
+        protected abstract void RegisterModules<TWorldState>(ActorContext<TWorldState> context)
+            where TWorldState : class, IWorldState<TWorldState>;
 
         class DomainRegistrar : IDomainRegistrar
         {
@@ -102,9 +102,10 @@ namespace Cryst.Features.CharacterAI
                     brain.services,
                     brain.actor,
                     brain.character,
-                    brain.memory,
                     worldState,
                     worldStateUpdater);
+
+                brain.RegisterModules(actorContext);
 
                 var aiContext = new AIContext<ActorContext<TWorldState>>(contextKey, actorContext);
                 var runner = domain.CreateRunner();

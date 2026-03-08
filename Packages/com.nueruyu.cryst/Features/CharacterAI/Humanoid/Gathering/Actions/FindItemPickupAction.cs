@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading;
 using Cryst.Domain.AI.Objectives;
+using Cryst.Features.CharacterAI.Humanoid;
 using Cysharp.Threading.Tasks;
 using Gast.Domain.Interactions;
 using Gast.Lib.AI;
@@ -22,7 +23,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
 
         public UniTask ExecuteAsync(ActorContext<GatheringState> context, CancellationToken cancellationToken)
         {
-            if (context.Memory.CurrentObjective is not AcquireItemObjective goal)
+            var memory = context.GetModule<HumanoidMemory>();
+            if (memory.CurrentObjective is not AcquireItemObjective goal)
             {
                 return UniTask.CompletedTask;
             }
@@ -38,7 +40,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
 
             if (targetPickup != null)
             {
-                context.Memory.InteractableTarget = (targetPickup as Component).GetComponentInChildren<IInteractable>();
+                memory.InteractableTarget = (targetPickup as Component).GetComponentInChildren<IInteractable>();
             }
 
             return UniTask.CompletedTask;

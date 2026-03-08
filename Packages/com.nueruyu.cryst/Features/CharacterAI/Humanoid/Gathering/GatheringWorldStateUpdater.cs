@@ -1,3 +1,4 @@
+using Cryst.Features.CharacterAI.Humanoid;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Gathering
@@ -6,7 +7,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering
     {
         public void Update(ActorContext<GatheringState> context)
         {
-            var memory = context.Memory;
+            var memory = context.GetModule<HumanoidMemory>();
             var actor = context.Actor;
             var state = context.WorldState;
 

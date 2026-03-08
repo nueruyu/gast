@@ -2,9 +2,9 @@ using Cryst.Domain.Characters;
 using Gast.Domain.AI;
 using Gast.Domain.Interactions;
 
-namespace Cryst.Features.CharacterAI
+namespace Cryst.Features.CharacterAI.Humanoid
 {
-    public class AIMemory
+    public class HumanoidMemory
     {
         public BaseCharacter CombatTarget { get; set; }
         public IInteractable InteractableTarget { get; set; }

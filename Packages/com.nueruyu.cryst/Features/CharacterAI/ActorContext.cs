@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Cryst.Domain.Characters;
 using Gast.Core.Commands;
 using Gast.Domain.Characters;
@@ -12,26 +13,24 @@ namespace Cryst.Features.CharacterAI
     {
         readonly AIBrainServices services;
         readonly Action<ActorContext<TWorldState>> worldStateUpdater;
+        readonly Dictionary<Type, object> modules = new();
 
         public ActorContext(
             AIBrainServices services,
             BaseCharacter actor,
             ICharacter character,
-            AIMemory memory,
             TWorldState worldState,
             Action<ActorContext<TWorldState>> worldStateUpdater)
         {
             this.services = services;
             Actor = actor;
             Character = character;
-            Memory = memory;
             WorldState = worldState;
             this.worldStateUpdater = worldStateUpdater;
         }
 
         public BaseCharacter Actor { get; }
         public ICharacter Character { get; }
-        public AIMemory Memory { get; }
         public ICharacterRepository CharacterRepository => services.CharacterRepository;
         public IPickupRepository PickupRepository => services.PickupRepository;
         public ICommandDispatcher CommandDispatcher => services.CommandDispatcher;
@@ -42,6 +41,20 @@ namespace Cryst.Features.CharacterAI
         public void UpdateWorldState()
         {
             worldStateUpdater.Invoke(this);
+        }
+
+        public void RegisterModule<T>(T module) where T : class
+        {
+            modules[typeof(T)] = module;
+        }
+
+        public T GetModule<T>() where T : class
+        {
+            if (modules.TryGetValue(typeof(T), out var module))
+            {
+                return (T)module;
+            }
+            throw new KeyNotFoundException($"Module of type '{typeof(T).Name}' not found in ActorContext.");
         }
     }
 }

@@ -44,8 +44,9 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
                 }
             }
 
-            context.Memory.CurrentObjective = bestObjective;
-            context.Memory.CombatTarget = bestTarget;
+            var memory = context.GetModule<HumanoidMemory>();
+            memory.CurrentObjective = bestObjective;
+            memory.CombatTarget = bestTarget;
 
             return UniTask.CompletedTask;
         }

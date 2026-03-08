@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Cryst.Features.CharacterAI.Humanoid;
+using Gast.Lib.AI;
 using Gast.Lib.AI.Debugging;
 
 namespace Cryst.Features.CharacterAI
@@ -22,6 +24,11 @@ namespace Cryst.Features.CharacterAI
             {
                 definition.RegisterTo(registrar);
             }
+        }
+
+        protected override void RegisterModules<TWorldState>(ActorContext<TWorldState> context)
+        {
+            context.RegisterModule(new HumanoidMemory());
         }
     }
 }

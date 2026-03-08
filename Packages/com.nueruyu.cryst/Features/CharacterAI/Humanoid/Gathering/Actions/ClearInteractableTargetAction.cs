@@ -1,4 +1,5 @@
 using System.Threading;
+using Cryst.Features.CharacterAI.Humanoid;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 
@@ -19,7 +20,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
 
         public UniTask ExecuteAsync(ActorContext<GatheringState> context, CancellationToken cancellationToken)
         {
-            context.Memory.InteractableTarget = null;
+            context.GetModule<HumanoidMemory>().InteractableTarget = null;
             return UniTask.CompletedTask;
         }
     }

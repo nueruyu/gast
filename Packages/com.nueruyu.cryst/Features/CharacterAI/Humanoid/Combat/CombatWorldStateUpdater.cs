@@ -1,4 +1,5 @@
 using Cryst.Domain.Characters.Facets;
+using Cryst.Features.CharacterAI.Humanoid;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat
@@ -7,7 +8,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
     {
         public void Update(ActorContext<CombatState> context)
         {
-            var memory = context.Memory;
+            var memory = context.GetModule<HumanoidMemory>();
             var character = context.Character;
             var actor = context.Actor;
             var state = context.WorldState;
