@@ -7,6 +7,7 @@ namespace Cryst.Features.CharacterAI
     public record AIBrainServices(
         ICharacterRepository CharacterRepository,
         IPickupRepository PickupRepository,
-        ICommandDispatcher CommandDispatcher
+        ICommandDispatcher CommandDispatcher,
+        ObjectiveManager ObjectiveManager
     );
 }

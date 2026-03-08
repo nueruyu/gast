@@ -25,9 +25,8 @@ namespace Cryst.Features.CharacterAI
             CombatDomain combatDomain,
             GatheringDomain gatheringDomain,
             IContextRegistry contextRegistry,
-            AIBrainServices services,
-            ObjectiveManager objectiveManager) :
-            base(contextRegistry, services, objectiveManager)
+            AIBrainServices services) :
+            base(contextRegistry, services)
         {
             this.strategicDomain = strategicDomain;
             this.combatDomain = combatDomain;
@@ -60,7 +59,7 @@ namespace Cryst.Features.CharacterAI
             var actor = context.Actor;
             var strategicState = context.WorldState;
 
-            strategicState.AvailableObjectives = CurrentObjectives
+            strategicState.AvailableObjectives = context.ObjectiveManager.CurrentObjectives
                 .Where(o => !o.IsCompleted.Value)
                 .ToList();
 

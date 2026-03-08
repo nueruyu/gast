@@ -13,7 +13,6 @@ namespace Cryst.Features.CharacterAI
     public abstract class BaseAIBrain : ICharacterAIBrain
     {
         readonly IContextRegistry contextRegistry;
-        readonly ObjectiveManager objectiveManager;
         readonly AIBrainServices services;
         BaseCharacter actor;
         ICharacter character;
@@ -24,15 +23,13 @@ namespace Cryst.Features.CharacterAI
 
         protected BaseAIBrain(
             IContextRegistry contextRegistry,
-            AIBrainServices services,
-            ObjectiveManager objectiveManager)
+            AIBrainServices services)
         {
             this.contextRegistry = contextRegistry;
             this.services = services;
-            this.objectiveManager = objectiveManager;
         }
 
-        public IReadOnlyList<IAIObjective> CurrentObjectives => objectiveManager.CurrentObjectives;
+        public IReadOnlyList<IAIObjective> CurrentObjectives => services.ObjectiveManager.CurrentObjectives;
 
         public void OnAttached(ICharacter character)
         {
@@ -46,7 +43,7 @@ namespace Cryst.Features.CharacterAI
 
             domainRunner.RunAsync(characterCts.Token).Forget();
 
-            objectiveManager.BindCharacter(actor.Id)
+            services.ObjectiveManager.BindCharacter(actor.Id)
                 .AddTo(characterCts.Token);
         }
 
@@ -64,7 +61,7 @@ namespace Cryst.Features.CharacterAI
 
         public void SetObjectives(IEnumerable<IAIObjective> objectives)
         {
-            objectiveManager.UpdateObjectives(objectives);
+            services.ObjectiveManager.UpdateObjectives(objectives);
         }
 
         protected abstract void RegisterDomains(IDomainRegistrar registrar);

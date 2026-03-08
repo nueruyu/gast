@@ -35,6 +35,7 @@ namespace Cryst.Features.CharacterAI
         public ICharacterRepository CharacterRepository => services.CharacterRepository;
         public IPickupRepository PickupRepository => services.PickupRepository;
         public ICommandDispatcher CommandDispatcher => services.CommandDispatcher;
+        public ObjectiveManager ObjectiveManager => services.ObjectiveManager;
 
         public TWorldState WorldState { get; }
 
