@@ -1,6 +1,7 @@
 using Cryst.Domain.AI.Objectives;
 using Cryst.Features.CharacterAI.Actions;
 using Cryst.Features.CharacterAI.Humanoid.Gathering.Actions;
+using Gast.Core.Values;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 
@@ -19,7 +20,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering
             acquireItem.AddMethod("FindAndCollect")
                 .Do(new FindItemPickupAction())
                 .Do(new MoveToInteractableAction())
-                .Do(new WaitAction(0.3f))
+                .Do(new WaitAction(new FloatRange(0.2f, 0.4f)))
                 .Do(new InteractWithTargetAction());
             acquireItem.AddMethod("ClearTargetIfNotFound")
                 .Do(new ClearInteractableTargetAction());
