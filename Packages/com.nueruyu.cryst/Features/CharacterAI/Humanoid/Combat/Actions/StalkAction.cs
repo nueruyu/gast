@@ -1,18 +1,41 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gast.Core.Values;
 using Gast.Lib.AI;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
+    [Serializable]
+    public class StalkActionSettings
+    {
+        [SerializeField] FloatRange duration = new(0.2f, 0.6f);
+        [SerializeField] float idealDistanceOffset = 0.5f;
+        [SerializeField] float strafeWeight = 0.7f;
+        [SerializeField] float approachWeight = 0.3f;
+        [SerializeField] float moveDistance = 0.5f;
+
+        public FloatRange Duration => duration;
+        public float IdealDistanceOffset => idealDistanceOffset;
+        public float StrafeWeight => strafeWeight;
+        public float ApproachWeight => approachWeight;
+        public float MoveDistance => moveDistance;
+    }
+
     /// <summary>
     /// An action where the AI moves around the target for a short period of time to time an attack.
     /// </summary>
-    [Serializable]
     public class StalkAction : IAction<ActorContext<CombatState>, CombatState>
     {
+        readonly StalkActionSettings settings;
+
+        public StalkAction(StalkActionSettings settings = null)
+        {
+            this.settings = settings ?? new StalkActionSettings();
+        }
+
         public bool CanExecute(CombatState worldState)
         {
             return worldState.HasTarget && worldState.IsInCombatRange;
@@ -27,11 +50,11 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
         {
             var actor = context.Actor;
             var navigator = actor.NavigationProvider;
-            var duration = Random.Range(0.2f, 0.6f);
+            var duration = settings.Duration.Sample();
             var timer = 0f;
 
             var directionSign = Random.value > 0.5f ? 1f : -1f;
-            var idealDist = Mathf.Max(0.5f, context.WorldState.AttackRange - 0.5f);
+            var idealDist = Mathf.Max(settings.IdealDistanceOffset, context.WorldState.AttackRange - settings.IdealDistanceOffset);
 
             try
             {
@@ -61,10 +84,10 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
                     var approachDir = toTargetDir * gap;
 
                     // Combine movements to create a circling motion while adjusting distance
-                    var finalMoveDir = (strafeDir * 0.7f + approachDir * 0.3f).normalized;
+                    var finalMoveDir = (strafeDir * settings.StrafeWeight + approachDir * settings.ApproachWeight).normalized;
 
                     // Set a destination a short distance away to create small movements
-                    navigator.SetDestination(selfPos + finalMoveDir * 0.5f);
+                    navigator.SetDestination(selfPos + finalMoveDir * settings.MoveDistance);
                     actor.Move(navigator.NextSteeringDirection);
 
                     await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
