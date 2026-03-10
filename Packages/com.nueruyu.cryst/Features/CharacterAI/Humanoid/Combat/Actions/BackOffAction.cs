@@ -6,9 +6,21 @@ using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
-    [Serializable]
+    public class BackOffActionSettings
+    {
+        public float BackOffDistance { get; set; } = 3.0f;
+        public float Duration { get; set; } = 1.5f;
+    }
+
     public class BackOffAction : IAction<ActorContext<CombatState>, CombatState>
     {
+        readonly BackOffActionSettings settings;
+
+        public BackOffAction(BackOffActionSettings settings = null)
+        {
+            this.settings = settings ?? new BackOffActionSettings();
+        }
+
         public bool CanExecute(CombatState worldState)
         {
             return worldState.IsInAttackRange && !worldState.IsReadyToAttack;
@@ -31,14 +43,14 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
             var targetToSelf = selfPos - targetPos;
             targetToSelf.y = 0;
             var dirAway = targetToSelf.normalized;
-            var dest = selfPos + dirAway * 3.0f;
+            var dest = selfPos + dirAway * settings.BackOffDistance;
 
             navigator.SetDestination(dest);
 
             try
             {
                 var timer = 0f;
-                while (timer < 1.5f && !cancellationToken.IsCancellationRequested)
+                while (timer < settings.Duration && !cancellationToken.IsCancellationRequested)
                 {
                     timer += Time.deltaTime;
 

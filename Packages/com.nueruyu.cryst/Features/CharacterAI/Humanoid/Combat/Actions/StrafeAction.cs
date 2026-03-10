@@ -1,17 +1,31 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gast.Core.Values;
 using Gast.Lib.AI;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
-    [Serializable]
+    public class StrafeActionSettings
+    {
+        public FloatRange Duration { get; set; } = new(0.5f, 2.5f);
+        public float IdealDistanceOffset { get; set; } = 0.3f;
+        public float InFrontDotThreshold { get; set; } = 0.86f;
+        public float ApproachWeightWhenBehind { get; set; } = 0.8f;
+        public float ApproachWeightWhenInFront { get; set; } = 0.1f;
+        public float StrafeMultiplierWhenInFront { get; set; } = 1.5f;
+    }
+
     public class StrafeAction : IAction<ActorContext<CombatState>, CombatState>
     {
-        const float MinDuration = 0.5f;
-        const float MaxDuration = 2.5f;
+        readonly StrafeActionSettings settings;
+
+        public StrafeAction(StrafeActionSettings settings = null)
+        {
+            this.settings = settings ?? new StrafeActionSettings();
+        }
 
         public bool CanExecute(CombatState worldState)
         {
@@ -26,12 +40,12 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
         {
             var actor = context.Actor;
             var navigator = actor.NavigationProvider;
-            var duration = Random.Range(MinDuration, MaxDuration);
+            var duration = settings.Duration.Sample();
             var timer = 0f;
 
             var directionSign = Random.value > 0.5f ? 1f : -1f;
 
-            var idealDist = Mathf.Max(0.5f, context.WorldState.AttackRange - 0.3f);
+            var idealDist = Mathf.Max(0.5f, context.WorldState.AttackRange - settings.IdealDistanceOffset);
 
             try
             {
@@ -65,18 +79,18 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
                     var gap = currentDist - idealDist;
                     var approachDir = Vector3.zero;
 
-                    bool isInFront = dot > 0.86f;
+                    bool isInFront = dot > settings.InFrontDotThreshold;
 
                     if (Mathf.Abs(gap) > 0.1f)
                     {
                         float approachWeight;
                         if (gap > 0)
                         {
-                            approachWeight = isInFront ? 0.1f : 0.8f;
+                            approachWeight = isInFront ? settings.ApproachWeightWhenInFront : settings.ApproachWeightWhenBehind;
                         }
                         else
                         {
-                            approachWeight = 0.8f;
+                            approachWeight = settings.ApproachWeightWhenBehind;
                         }
 
                         approachDir = toTargetDir * gap * approachWeight;
@@ -84,7 +98,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 
                     if (isInFront)
                     {
-                        strafeDir *= 1.5f;
+                        strafeDir *= settings.StrafeMultiplierWhenInFront;
                     }
 
                     var finalMoveDir = (strafeDir + approachDir).normalized;

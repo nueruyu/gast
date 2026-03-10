@@ -1,23 +1,36 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gast.Core.Values;
 using Gast.Lib.AI;
 using Random = UnityEngine.Random;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
-    [Serializable]
+    public class PostAttackManeuverActionSettings
+    {
+        public Rate GuardChance { get; set; } = 0.3f;
+        public Rate StrafeChance { get; set; } = 0.4f;
+    }
+
     public class PostAttackManeuverAction : IAction<ActorContext<CombatState>, CombatState>
     {
-        readonly GuardAction guardAction = new();
-        readonly StrafeAction strafeAction = new();
-        readonly BackOffAction backOffAction = new();
+        readonly GuardAction guardAction;
+        readonly StrafeAction strafeAction;
+        readonly BackOffAction backOffAction;
+        readonly PostAttackManeuverActionSettings settings;
 
-        public PostAttackManeuverAction(GuardAction guardAction, StrafeAction strafeAction, BackOffAction backOffAction)
+        public PostAttackManeuverAction(
+            GuardAction guardAction,
+            StrafeAction strafeAction,
+            BackOffAction backOffAction,
+            PostAttackManeuverActionSettings settings = null)
         {
+            this.guardAction = guardAction;
+            this.strafeAction = strafeAction;
+            this.backOffAction = backOffAction;
+            this.settings = settings ?? new PostAttackManeuverActionSettings();
         }
-
-        public PostAttackManeuverAction() {}
 
         public bool CanExecute(CombatState worldState)
         {
@@ -33,11 +46,11 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
         {
             var rand = Random.value;
 
-            if (context.WorldState.CanGuard && rand < 0.3f)
+            if (context.WorldState.CanGuard && rand < settings.GuardChance.Value)
             {
                 await guardAction.ExecuteAsync(context, cancellationToken);
             }
-            else if (rand < 0.7f)
+            else if (rand < settings.GuardChance.Value + settings.StrafeChance.Value)
             {
                 await strafeAction.ExecuteAsync(context, cancellationToken);
             }

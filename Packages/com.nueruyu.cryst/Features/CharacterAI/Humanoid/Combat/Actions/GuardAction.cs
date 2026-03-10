@@ -6,9 +6,20 @@ using Gast.Lib.AI;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
-    [Serializable]
+    public class GuardActionSettings
+    {
+        public float Duration { get; set; } = 1.5f;
+    }
+
     public class GuardAction : IAction<ActorContext<CombatState>, CombatState>
     {
+        readonly GuardActionSettings settings;
+
+        public GuardAction(GuardActionSettings settings = null)
+        {
+            this.settings = settings ?? new GuardActionSettings();
+        }
+
         public bool CanExecute(CombatState worldState)
         {
             return worldState.IsInAttackRange && !worldState.IsReadyToAttack && worldState.CanGuard;
@@ -25,7 +36,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
             guardable.StartGuard();
             try
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(1.5f), cancellationToken: cancellationToken);
+                await UniTask.Delay(TimeSpan.FromSeconds(settings.Duration), cancellationToken: cancellationToken);
             }
             finally
             {
