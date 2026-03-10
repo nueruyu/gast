@@ -8,15 +8,12 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
 {
     public class CombatDomainFactory : IAIDomainFactory<CombatState>
     {
-        public static class Settings
-        {
-            public static StalkActionSettings Stalk { get; set; } = new();
-            public static MeleeAttackActionSettings MeleeAttack { get; set; } = new();
-            public static PostAttackManeuverActionSettings PostAttackManeuver { get; set; } = new();
-            public static StrafeActionSettings Strafe { get; set; } = new();
-            public static BackOffActionSettings BackOff { get; set; } = new();
-            public static GuardActionSettings Guard { get; set; } = new();
-        }
+        readonly StalkActionSettings stalkSettings = new();
+        readonly MeleeAttackActionSettings meleeAttackSettings = new();
+        readonly PostAttackManeuverActionSettings postAttackManeuverSettings = new();
+        readonly StrafeActionSettings strafeSettings = new();
+        readonly BackOffActionSettings backOffSettings = new();
+        readonly GuardActionSettings guardSettings = new();
 
         readonly AIDomain<ActorContext<CombatState>, CombatState> domain;
 
@@ -25,18 +22,18 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
             var builder = new AIDomainBuilder<ActorContext<CombatState>, CombatState>();
 
             // Create action instances with settings
-            var stalkAction = new StalkAction(Settings.Stalk);
-            var meleeAttackAction = new MeleeAttackAction(Settings.MeleeAttack);
+            var stalkAction = new StalkAction(stalkSettings);
+            var meleeAttackAction = new MeleeAttackAction(meleeAttackSettings);
 
-            var backOffAction = new BackOffAction(Settings.BackOff);
-            var guardAction = new GuardAction(Settings.Guard);
-            var strafeAction = new StrafeAction(Settings.Strafe);
+            var backOffAction = new BackOffAction(backOffSettings);
+            var guardAction = new GuardAction(guardSettings);
+            var strafeAction = new StrafeAction(strafeSettings);
 
             var postAttackManeuverAction = new PostAttackManeuverAction(
                 guardAction,
                 strafeAction,
                 backOffAction,
-                Settings.PostAttackManeuver);
+                postAttackManeuverSettings);
 
             var chaseTargetAction = new ChaseTargetAction();
             var idleAction = new IdleAction();

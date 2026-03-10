@@ -17,6 +17,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
         [SerializeField] float approachWeightWhenBehind = 0.8f;
         [SerializeField] float approachWeightWhenInFront = 0.1f;
         [SerializeField] float strafeMultiplierWhenInFront = 1.5f;
+        [SerializeField] float minIdealDistance = 0.5f;
 
         public FloatRange Duration => duration;
         public float IdealDistanceOffset => idealDistanceOffset;
@@ -24,6 +25,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
         public float ApproachWeightWhenBehind => approachWeightWhenBehind;
         public float ApproachWeightWhenInFront => approachWeightWhenInFront;
         public float StrafeMultiplierWhenInFront => strafeMultiplierWhenInFront;
+        public float MinIdealDistance => minIdealDistance;
     }
 
     public class StrafeAction : IAction<ActorContext<CombatState>, CombatState>
@@ -53,7 +55,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 
             var directionSign = Random.value > 0.5f ? 1f : -1f;
 
-            var idealDist = Mathf.Max(0.5f, context.WorldState.AttackRange - settings.IdealDistanceOffset);
+            var idealDist = Mathf.Max(settings.MinIdealDistance, context.WorldState.AttackRange - settings.IdealDistanceOffset);
 
             try
             {
