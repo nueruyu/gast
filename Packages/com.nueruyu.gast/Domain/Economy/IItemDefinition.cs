@@ -12,6 +12,7 @@ namespace Gast.Domain.Economy
         public int Price { get; }
         public int MaxStack { get; }
         public string Description { get; }
+        public bool Placeable { get; }
         IReadOnlyList<IItemEffect> Effects { get; }
     }
 }

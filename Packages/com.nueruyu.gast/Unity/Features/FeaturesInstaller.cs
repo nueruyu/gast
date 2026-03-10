@@ -5,6 +5,7 @@ using Gast.Unity.Features.Gathering;
 using Gast.Unity.Features.Inputs;
 using Gast.Unity.Features.Interactions;
 using Gast.Unity.Features.Loot;
+using Gast.Unity.Features.Placement;
 using Gast.Unity.Features.Players;
 using Gast.Unity.Features.SpawnSites;
 
@@ -36,6 +37,11 @@ namespace Gast.Unity.Features
             // Interaction
             builder.Register<InteractionSystem>().AsSelf().AsImplementedInterfaces();
             builder.Register<InteractionInputHandler>().AsImplementedInterfaces();
+
+            // Placement
+            builder.Register<PlacementService>(Lifetime.Singleton);
+            builder.Register<PlacementController>().AsImplementedInterfaces();
+            builder.Register<PlacementInputHandler>().AsImplementedInterfaces();
 
             // Loot & Gathering
             builder.Register<LootSystem>().AsImplementedInterfaces();

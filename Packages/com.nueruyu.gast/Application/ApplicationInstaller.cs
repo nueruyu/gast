@@ -23,6 +23,7 @@ namespace Gast.Application
 
             // Items
             builder.Register<SpawnItemUseCase>().AsImplementedInterfaces();
+            builder.Register<PlaceItemUseCase>().AsImplementedInterfaces();
 
             // Interactions
             builder.Register<InteractUseCase>().AsImplementedInterfaces();

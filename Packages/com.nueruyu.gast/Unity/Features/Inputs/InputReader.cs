@@ -21,6 +21,7 @@ namespace Gast.Unity.Features.Inputs
 
         readonly InputActionMap playerActionMap;
         readonly InputActionMap menuActionMap;
+        readonly InputActionMap placementActionMap;
 
         readonly InputAction moveAction;
         readonly InputAction lookAction;
@@ -31,6 +32,10 @@ namespace Gast.Unity.Features.Inputs
         readonly InputAction guardAction;
         readonly InputAction showMenuAction;
         readonly InputAction hideMenuAction;
+
+        readonly InputAction placeAction;
+        readonly InputAction cancelAction;
+        readonly InputAction rotateAction;
 
         readonly Signal showMenu = new();
         readonly Signal hideMenu = new();
@@ -52,6 +57,9 @@ namespace Gast.Unity.Features.Inputs
         public ISignal ShowMenu => showMenu;
         public ISignal HideMenu => hideMenu;
         public ISignal<int> UseItemSlot => useItemSlot;
+        public bool Place { get; private set; }
+        public bool Cancel { get; private set; }
+        public bool Rotate { get; private set; }
 
         public InputReader(
             IInputModeManager inputModeManager,
@@ -61,6 +69,7 @@ namespace Gast.Unity.Features.Inputs
 
             playerActionMap = settings.InputActions.FindActionMap("Player");
             menuActionMap = settings.InputActions.FindActionMap("Menu");
+            placementActionMap = settings.InputActions.FindActionMap("Placement");
 
             moveAction = playerActionMap.FindAction("Move");
             lookAction = playerActionMap.FindAction("Look");
@@ -71,6 +80,10 @@ namespace Gast.Unity.Features.Inputs
             guardAction = playerActionMap.FindAction("Guard");
             showMenuAction = playerActionMap.FindAction("ShowMenu");
             hideMenuAction = menuActionMap.FindAction("HideMenu");
+
+            placeAction = placementActionMap?.FindAction("Place");
+            cancelAction = placementActionMap?.FindAction("Cancel");
+            rotateAction = placementActionMap?.FindAction("Rotate");
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
@@ -79,6 +92,7 @@ namespace Gast.Unity.Features.Inputs
             {
                 playerActionMap.SetEnabled(mode == InputMode.Gameplay);
                 menuActionMap.SetEnabled(mode == InputMode.UI);
+                placementActionMap?.SetEnabled(mode == InputMode.Placement);
             }).AddTo(cancellationToken);
 
             jumpAction.SubscribePerformed(OnJumpPerformed).AddTo(cancellationToken);
@@ -88,6 +102,10 @@ namespace Gast.Unity.Features.Inputs
             sprintAction.SubscribePerformed(OnSprintPerformed).AddTo(cancellationToken);
             showMenuAction.SubscribePerformed(OnShowMenuPerformed).AddTo(cancellationToken);
             hideMenuAction.SubscribePerformed(OnHideMenuPerformed).AddTo(cancellationToken);
+
+            placeAction?.SubscribePerformed(_ => Place = true).AddTo(cancellationToken);
+            cancelAction?.SubscribePerformed(_ => Cancel = true).AddTo(cancellationToken);
+            rotateAction?.SubscribePerformed(_ => Rotate = true).AddTo(cancellationToken);
 
             try
             {
@@ -109,6 +127,9 @@ namespace Gast.Unity.Features.Inputs
                     InteractPressed = false;
                     Attack = false;
                     Dash = false;
+                    Place = false;
+                    Cancel = false;
+                    Rotate = false;
 
                     await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
                 }
@@ -117,6 +138,7 @@ namespace Gast.Unity.Features.Inputs
             {
                 playerActionMap.Disable();
                 menuActionMap.Disable();
+                placementActionMap?.Disable();
             }
         }
 

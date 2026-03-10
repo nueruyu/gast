@@ -9,6 +9,7 @@ using Gast.Unity.Features.Economy;
 using Gast.Unity.Features.Gameplay;
 using Gast.Unity.Features.Gathering;
 using Gast.Unity.Features.Inputs;
+using Gast.Unity.Features.Placement;
 using Gast.Unity.Features.SpawnSites;
 using Gast.Unity.Infrastructure;
 using Gast.Unity.Infrastructure.Characters;
@@ -58,6 +59,9 @@ namespace Gast.Unity.Composition
 
         [SerializeField]
         UIAssetSettings uiAssetSettings;
+
+        [SerializeField]
+        PlacementSettings placementSettings;
 
         [Header("Scene Components")]
         [SerializeField]
@@ -118,6 +122,7 @@ namespace Gast.Unity.Composition
             RegisterInstance(builder, mockStoryGenerationSettings, nameof(mockStoryGenerationSettings));
             RegisterInstance(builder, damageAreaSettings, nameof(damageAreaSettings));
             RegisterInstance(builder, uiAssetSettings, nameof(uiAssetSettings));
+            RegisterInstance(builder, placementSettings, nameof(placementSettings));
         }
 
         void RegisterSceneComponents(IContainerBuilder builder)

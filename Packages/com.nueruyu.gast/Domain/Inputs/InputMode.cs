@@ -13,6 +13,11 @@ namespace Gast.Domain.Inputs
         /// <summary>
         /// Input is directed to UI elements (menus, dialogs, etc.).
         /// </summary>
-        UI
+        UI,
+
+        /// <summary>
+        /// Input is directed to item placement logic.
+        /// </summary>
+        Placement
     }
 }
