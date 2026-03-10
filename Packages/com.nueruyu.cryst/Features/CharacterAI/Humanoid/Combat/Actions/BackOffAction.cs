@@ -6,10 +6,14 @@ using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
+    [Serializable]
     public class BackOffActionSettings
     {
-        public float BackOffDistance { get; set; } = 3.0f;
-        public float Duration { get; set; } = 1.5f;
+        [SerializeField] float backOffDistance = 3.0f;
+        [SerializeField] float duration = 1.5f;
+
+        public float BackOffDistance => backOffDistance;
+        public float Duration => duration;
     }
 
     public class BackOffAction : IAction<ActorContext<CombatState>, CombatState>

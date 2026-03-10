@@ -8,13 +8,20 @@ using Random = UnityEngine.Random;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
+    [Serializable]
     public class StalkActionSettings
     {
-        public FloatRange Duration { get; set; } = new(0.2f, 0.6f);
-        public float IdealDistanceOffset { get; set; } = 0.5f;
-        public float StrafeWeight { get; set; } = 0.7f;
-        public float ApproachWeight { get; set; } = 0.3f;
-        public float MoveDistance { get; set; } = 0.5f;
+        [SerializeField] FloatRange duration = new(0.2f, 0.6f);
+        [SerializeField] float idealDistanceOffset = 0.5f;
+        [SerializeField] float strafeWeight = 0.7f;
+        [SerializeField] float approachWeight = 0.3f;
+        [SerializeField] float moveDistance = 0.5f;
+
+        public FloatRange Duration => duration;
+        public float IdealDistanceOffset => idealDistanceOffset;
+        public float StrafeWeight => strafeWeight;
+        public float ApproachWeight => approachWeight;
+        public float MoveDistance => moveDistance;
     }
 
     /// <summary>

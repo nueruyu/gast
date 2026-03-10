@@ -3,14 +3,19 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Values;
 using Gast.Lib.AI;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
+    [Serializable]
     public class PostAttackManeuverActionSettings
     {
-        public Rate GuardChance { get; set; } = 0.3f;
-        public Rate StrafeChance { get; set; } = 0.4f;
+        [SerializeField] Rate guardChance = 0.3f;
+        [SerializeField] Rate strafeChance = 0.4f;
+
+        public Rate GuardChance => guardChance;
+        public Rate StrafeChance => strafeChance;
     }
 
     public class PostAttackManeuverAction : IAction<ActorContext<CombatState>, CombatState>

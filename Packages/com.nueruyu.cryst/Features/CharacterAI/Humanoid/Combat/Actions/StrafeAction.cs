@@ -8,14 +8,22 @@ using Random = UnityEngine.Random;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
+    [Serializable]
     public class StrafeActionSettings
     {
-        public FloatRange Duration { get; set; } = new(0.5f, 2.5f);
-        public float IdealDistanceOffset { get; set; } = 0.3f;
-        public float InFrontDotThreshold { get; set; } = 0.86f;
-        public float ApproachWeightWhenBehind { get; set; } = 0.8f;
-        public float ApproachWeightWhenInFront { get; set; } = 0.1f;
-        public float StrafeMultiplierWhenInFront { get; set; } = 1.5f;
+        [SerializeField] FloatRange duration = new(0.5f, 2.5f);
+        [SerializeField] float idealDistanceOffset = 0.3f;
+        [SerializeField] float inFrontDotThreshold = 0.86f;
+        [SerializeField] float approachWeightWhenBehind = 0.8f;
+        [SerializeField] float approachWeightWhenInFront = 0.1f;
+        [SerializeField] float strafeMultiplierWhenInFront = 1.5f;
+
+        public FloatRange Duration => duration;
+        public float IdealDistanceOffset => idealDistanceOffset;
+        public float InFrontDotThreshold => inFrontDotThreshold;
+        public float ApproachWeightWhenBehind => approachWeightWhenBehind;
+        public float ApproachWeightWhenInFront => approachWeightWhenInFront;
+        public float StrafeMultiplierWhenInFront => strafeMultiplierWhenInFront;
     }
 
     public class StrafeAction : IAction<ActorContext<CombatState>, CombatState>

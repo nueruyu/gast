@@ -7,11 +7,16 @@ using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
+    [Serializable]
     public class MeleeAttackActionSettings
     {
-        public float AlignmentTimeout { get; set; } = 1.0f;
-        public float AlignmentThreshold { get; set; } = 20.0f;
-        public int PostAttackDelayMs { get; set; } = 500;
+        [SerializeField] float alignmentTimeout = 1.0f;
+        [SerializeField] float alignmentThreshold = 20.0f;
+        [SerializeField] int postAttackDelayMs = 500;
+
+        public float AlignmentTimeout => alignmentTimeout;
+        public float AlignmentThreshold => alignmentThreshold;
+        public int PostAttackDelayMs => postAttackDelayMs;
     }
 
     public class MeleeAttackAction : IAction<ActorContext<CombatState>, CombatState>

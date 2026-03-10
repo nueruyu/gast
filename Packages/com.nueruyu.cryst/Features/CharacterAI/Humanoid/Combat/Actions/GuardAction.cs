@@ -3,12 +3,16 @@ using System.Threading;
 using Cryst.Domain.Characters.Facets;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
+using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
+    [Serializable]
     public class GuardActionSettings
     {
-        public float Duration { get; set; } = 1.5f;
+        [SerializeField] float duration = 1.5f;
+
+        public float Duration => duration;
     }
 
     public class GuardAction : IAction<ActorContext<CombatState>, CombatState>
