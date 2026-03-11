@@ -13,6 +13,7 @@ namespace Gast.Lib.AI
         readonly ITask<TActorContext, TWorldState> rootTask;
 
         public IReadOnlyList<ITask<TActorContext, TWorldState>> Tasks => tasks;
+        public ITask<TActorContext, TWorldState> RootTask => rootTask;
 
         public AIDomain(
             IEnumerable<ITask<TActorContext, TWorldState>> tasks,

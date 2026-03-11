@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI.Debugging;
+using Gast.Lib.AI.Testing;
 using System.Threading;
 
 namespace Gast.Lib.AI.Tasks
@@ -27,6 +28,14 @@ namespace Gast.Lib.AI.Tasks
             action.Simulate(worldState);
 
             return UniTask.FromResult(true);
+        }
+
+        public async UniTask SimulateAsync(SimulationContext<TWorldState> context, CancellationToken cancellationToken)
+        {
+            if (await ValidateAsync(context.WorldState, cancellationToken))
+            {
+                context.SimulatedPlan.Add(this);
+            }
         }
 
         public async UniTask RunAsync(AIContext<TActorContext> context, CancellationToken cancellationToken)

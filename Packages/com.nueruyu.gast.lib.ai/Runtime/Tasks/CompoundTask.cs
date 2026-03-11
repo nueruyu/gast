@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI.Debugging;
+using Gast.Lib.AI.Testing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,33 @@ namespace Gast.Lib.AI.Tasks
                 cancellationToken);
 
             return method != null;
+        }
+
+        public async UniTask SimulateAsync(SimulationContext<TWorldState> context, CancellationToken cancellationToken)
+        {
+            // Save world state before method selection.
+            // SelectAsync mutates the state as a side effect of subtask validation.
+            var worldState = context.WorldState;
+            worldState.WriteTo(ref simulationState);
+
+            var method = await methodSelector.SelectAsync(methods, worldState, cancellationToken);
+            if (method == null)
+            {
+                return;
+            }
+
+            // Restore state to pre-selection so subtask SimulateAsync applies effects exactly once.
+            simulationState.WriteTo(ref worldState);
+
+            if (!context.PlanFound)
+            {
+                context.RootMethodName = method.Name;
+            }
+
+            foreach (var task in method.SubTasks)
+            {
+                await task.SimulateAsync(context, cancellationToken);
+            }
         }
 
         public async UniTask RunAsync(AIContext<TActorContext> context, CancellationToken cancellationToken)
