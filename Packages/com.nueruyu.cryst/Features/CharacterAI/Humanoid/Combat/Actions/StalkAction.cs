@@ -44,14 +44,13 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
         {
             var direction = Random.value > 0.5f ? ManeuverDirection.Left : ManeuverDirection.Right;
             var duration = settings.Duration.Sample();
-            var worldState = context.WorldState;
-            var maneuver = new StalkManeuver(direction, settings.Maneuver, worldState.AttackRange);
+            var maneuver = new StalkManeuver(direction, settings.Maneuver, context.WorldState.AttackRange);
 
             await context.Actor.ExecuteManeuverAsync(
                 maneuver,
-                static state => state.worldState.TargetPosition,
-                static state => state.worldState.TargetForward,
-                (context.Actor, worldState),
+                static state => state.TargetPosition,
+                static state => state.TargetForward,
+                context.WorldState,
                 duration,
                 cancellationToken);
         }

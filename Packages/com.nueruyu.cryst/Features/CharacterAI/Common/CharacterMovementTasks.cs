@@ -88,8 +88,6 @@ namespace Cryst.Features.CharacterAI.Common
             {
                 while (timer < duration && !cancellationToken.IsCancellationRequested)
                 {
-                    timer += Time.deltaTime;
-
                     var targetPosition = targetPositionProvider(state);
                     var targetForward = targetForwardProvider(state);
                     var moveDir = maneuver.CalculateMoveDirection(actor, targetPosition, targetForward);
@@ -97,6 +95,7 @@ namespace Cryst.Features.CharacterAI.Common
                     navigator.SetDestination(actor.Body.Position + moveDir);
                     actor.Move(navigator.NextSteeringDirection);
 
+                    timer += Time.deltaTime;
                     await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
                 }
             }

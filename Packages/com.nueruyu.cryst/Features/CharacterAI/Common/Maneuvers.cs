@@ -16,13 +16,6 @@ namespace Cryst.Features.CharacterAI.Common
     }
 
     [Serializable]
-    public class BackOffManeuverSettings
-    {
-        [SerializeField] float backOffDistance = 3.0f;
-        public float BackOffDistance => backOffDistance;
-    }
-
-    [Serializable]
     public class StrafeManeuverSettings
     {
         [SerializeField] float idealDistanceOffset = 0.3f;
@@ -52,9 +45,6 @@ namespace Cryst.Features.CharacterAI.Common
 
     public readonly struct BackOffManeuver : IManeuverStrategy
     {
-        public readonly BackOffManeuverSettings Settings;
-        public BackOffManeuver(BackOffManeuverSettings settings) => Settings = settings;
-
         public Vector3 CalculateMoveDirection(BaseCharacter actor, Vector3 targetPosition, Vector3 targetForward)
         {
             var selfPos = actor.Body.Position;
@@ -97,8 +87,8 @@ namespace Cryst.Features.CharacterAI.Common
 
             if (Mathf.Abs(gap) > 0.1f)
             {
-                var approachWeight = (gap > 0)
-                    ? (isInFront ? Settings.ApproachWeightWhenInFront : Settings.ApproachWeightWhenBehind)
+                var approachWeight = (gap > 0 && isInFront)
+                    ? Settings.ApproachWeightWhenInFront
                     : Settings.ApproachWeightWhenBehind;
                 approachDir = toTargetDir * gap * approachWeight;
             }
