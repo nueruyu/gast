@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Cryst.Features.CharacterAI.Common;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Values;
 using Gast.Lib.AI;
@@ -12,20 +13,10 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
     public class StrafeActionSettings
     {
         [SerializeField] FloatRange duration = new(0.5f, 2.5f);
-        [SerializeField] float idealDistanceOffset = 0.3f;
-        [SerializeField] float inFrontDotThreshold = 0.86f;
-        [SerializeField] float approachWeightWhenBehind = 0.8f;
-        [SerializeField] float approachWeightWhenInFront = 0.1f;
-        [SerializeField] float strafeMultiplierWhenInFront = 1.5f;
-        [SerializeField] float minIdealDistance = 0.5f;
+        [SerializeField] StrafeManeuverSettings maneuver = new();
 
         public FloatRange Duration => duration;
-        public float IdealDistanceOffset => idealDistanceOffset;
-        public float InFrontDotThreshold => inFrontDotThreshold;
-        public float ApproachWeightWhenBehind => approachWeightWhenBehind;
-        public float ApproachWeightWhenInFront => approachWeightWhenInFront;
-        public float StrafeMultiplierWhenInFront => strafeMultiplierWhenInFront;
-        public float MinIdealDistance => minIdealDistance;
+        public StrafeManeuverSettings Maneuver => maneuver;
     }
 
     public class StrafeAction : IAction<ActorContext<CombatState>, CombatState>
@@ -48,81 +39,18 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 
         public async UniTask ExecuteAsync(ActorContext<CombatState> context, CancellationToken cancellationToken)
         {
-            var actor = context.Actor;
-            var navigator = actor.NavigationProvider;
+            var direction = Random.value > 0.5f ? ManeuverDirection.Left : ManeuverDirection.Right;
             var duration = settings.Duration.Sample();
-            var timer = 0f;
+            var worldState = context.WorldState;
+            var maneuver = new StrafeManeuver(direction, settings.Maneuver, worldState.CombatRange);
 
-            var directionSign = Random.value > 0.5f ? 1f : -1f;
-
-            var idealDist = Mathf.Max(settings.MinIdealDistance, context.WorldState.AttackRange - settings.IdealDistanceOffset);
-
-            try
-            {
-                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
-
-                while (timer < duration && !cancellationToken.IsCancellationRequested)
-                {
-                    timer += Time.deltaTime;
-
-                    var worldState = context.WorldState;
-                    var targetPos = worldState.TargetPosition;
-                    var targetFwd = worldState.TargetForward;
-                    var selfPos = actor.Body.Position;
-
-                    var selfToTarget = targetPos - selfPos;
-                    selfToTarget.y = 0;
-
-                    var toTargetDir = selfToTarget.normalized;
-                    var currentDist = selfToTarget.magnitude;
-
-                    if (toTargetDir.sqrMagnitude < 0.01f)
-                    {
-                        toTargetDir = actor.Body.Forward;
-                    }
-
-                    var dot = Vector3.Dot(targetFwd, -toTargetDir);
-
-                    var tangent = Vector3.Cross(toTargetDir, Vector3.up);
-                    var strafeDir = tangent * directionSign;
-
-                    var gap = currentDist - idealDist;
-                    var approachDir = Vector3.zero;
-
-                    bool isInFront = dot > settings.InFrontDotThreshold;
-
-                    if (Mathf.Abs(gap) > 0.1f)
-                    {
-                        float approachWeight;
-                        if (gap > 0)
-                        {
-                            approachWeight = isInFront ? settings.ApproachWeightWhenInFront : settings.ApproachWeightWhenBehind;
-                        }
-                        else
-                        {
-                            approachWeight = settings.ApproachWeightWhenBehind;
-                        }
-
-                        approachDir = toTargetDir * gap * approachWeight;
-                    }
-
-                    if (isInFront)
-                    {
-                        strafeDir *= settings.StrafeMultiplierWhenInFront;
-                    }
-
-                    var finalMoveDir = (strafeDir + approachDir).normalized;
-                    navigator.SetDestination(selfPos + finalMoveDir);
-
-                    actor.Move(navigator.NextSteeringDirection);
-
-                    await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
-                }
-            }
-            finally
-            {
-                navigator.Stop();
-            }
+            await context.Actor.ExecuteManeuverAsync(
+                maneuver,
+                static state => state.worldState.TargetPosition,
+                static state => state.worldState.TargetForward,
+                (context.Actor, worldState),
+                duration,
+                cancellationToken);
         }
     }
 }

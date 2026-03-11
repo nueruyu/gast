@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Cryst.Features.CharacterAI.Common;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 using UnityEngine;
@@ -9,11 +10,11 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
     [Serializable]
     public class BackOffActionSettings
     {
-        [SerializeField] float backOffDistance = 3.0f;
         [SerializeField] float duration = 1.5f;
+        [SerializeField] BackOffManeuverSettings maneuver = new();
 
-        public float BackOffDistance => backOffDistance;
         public float Duration => duration;
+        public BackOffManeuverSettings Maneuver => maneuver;
     }
 
     public class BackOffAction : IAction<ActorContext<CombatState>, CombatState>
@@ -39,41 +40,15 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
         {
             var actor = context.Actor;
             var worldState = context.WorldState;
-            var navigator = actor.NavigationProvider;
+            var maneuver = new BackOffManeuver(settings.Maneuver);
 
-            var selfPos = actor.Body.Position;
-            var targetPos = worldState.TargetPosition;
-
-            var targetToSelf = selfPos - targetPos;
-            targetToSelf.y = 0;
-            var dirAway = targetToSelf.normalized;
-            var dest = selfPos + dirAway * settings.BackOffDistance;
-
-            navigator.SetDestination(dest);
-
-            try
-            {
-                var timer = 0f;
-                while (timer < settings.Duration && !cancellationToken.IsCancellationRequested)
-                {
-                    timer += Time.deltaTime;
-
-                    var moveDir = navigator.NextSteeringDirection;
-                    if (moveDir != Vector3.zero)
-                    {
-                        actor.Move(moveDir);
-                    }
-
-                    if (navigator.HasArrived)
-                        break;
-
-                    await UniTask.Yield(cancellationToken);
-                }
-            }
-            finally
-            {
-                navigator.Stop();
-            }
+            await actor.ExecuteManeuverAsync(
+                maneuver,
+                static state => state.worldState.TargetPosition,
+                static state => state.worldState.TargetForward,
+                (actor, worldState),
+                settings.Duration,
+                cancellationToken);
         }
     }
 }
