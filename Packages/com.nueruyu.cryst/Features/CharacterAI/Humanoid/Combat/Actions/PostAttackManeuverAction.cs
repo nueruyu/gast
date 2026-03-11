@@ -11,8 +11,11 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
     [Serializable]
     public class PostAttackManeuverActionSettings
     {
-        [SerializeField] Rate guardChance = 0.3f;
-        [SerializeField] Rate strafeChance = 0.4f;
+        [SerializeField]
+        Rate guardChance = 0.3f;
+
+        [SerializeField]
+        Rate strafeChance = 0.4f;
 
         public Rate GuardChance => guardChance;
         public Rate StrafeChance => strafeChance;
@@ -20,10 +23,10 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 
     public class PostAttackManeuverAction : IAction<ActorContext<CombatState>, CombatState>
     {
-        readonly GuardAction guardAction;
-        readonly StrafeAction strafeAction;
         readonly BackOffAction backOffAction;
+        readonly GuardAction guardAction;
         readonly PostAttackManeuverActionSettings settings;
+        readonly StrafeAction strafeAction;
 
         public PostAttackManeuverAction(
             GuardAction guardAction,
@@ -47,22 +50,18 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
             backOffAction.Simulate(worldState);
         }
 
-        public async UniTask ExecuteAsync(ActorContext<CombatState> context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(
+            ActorContext<CombatState> context,
+            CancellationToken cancellationToken)
         {
             var rand = Random.value;
 
             if (context.WorldState.CanGuard && rand < settings.GuardChance.Value)
-            {
                 await guardAction.ExecuteAsync(context, cancellationToken);
-            }
             else if (rand < settings.GuardChance.Value + settings.StrafeChance.Value)
-            {
                 await strafeAction.ExecuteAsync(context, cancellationToken);
-            }
             else
-            {
                 await backOffAction.ExecuteAsync(context, cancellationToken);
-            }
         }
     }
 }
