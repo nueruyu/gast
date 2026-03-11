@@ -4,7 +4,6 @@ using Cryst.Domain.Characters.Facets;
 using Cryst.Features.CharacterAI.Common;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
-using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
@@ -21,7 +20,9 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
             worldState.DistanceToTarget = worldState.AttackRange;
         }
 
-        public async UniTask ExecuteAsync(ActorContext<CombatState> context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(
+            ActorContext<CombatState> context,
+            CancellationToken cancellationToken)
         {
             if (context.Character.Is(out SprintableCharacter sprintable))
                 sprintable.SetSprint(true);
@@ -41,8 +42,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
             }
             finally
             {
-                if (context.Character.Is(out SprintableCharacter sprintableOnExit))
-                    sprintableOnExit.SetSprint(false);
+                sprintable?.SetSprint(false);
             }
         }
     }

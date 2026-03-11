@@ -12,8 +12,11 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
     [Serializable]
     public class StrafeActionSettings
     {
-        [SerializeField] FloatRange duration = new(0.5f, 2.5f);
-        [SerializeField] StrafeManeuverSettings maneuver = new();
+        [SerializeField]
+        FloatRange duration = new(0.5f, 2.5f);
+
+        [SerializeField]
+        StrafeManeuverSettings maneuver = new();
 
         public FloatRange Duration => duration;
         public StrafeManeuverSettings Maneuver => maneuver;
@@ -37,7 +40,9 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
         {
         }
 
-        public async UniTask ExecuteAsync(ActorContext<CombatState> context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(
+            ActorContext<CombatState> context,
+            CancellationToken cancellationToken)
         {
             var direction = Random.value > 0.5f ? ManeuverDirection.Left : ManeuverDirection.Right;
             var duration = settings.Duration.Sample();

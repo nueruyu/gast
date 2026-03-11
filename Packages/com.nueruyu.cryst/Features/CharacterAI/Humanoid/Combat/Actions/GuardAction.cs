@@ -10,7 +10,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
     [Serializable]
     public class GuardActionSettings
     {
-        [SerializeField] float duration = 1.5f;
+        [SerializeField]
+        float duration = 1.5f;
 
         public float Duration => duration;
     }
@@ -33,7 +34,9 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
         {
         }
 
-        public async UniTask ExecuteAsync(ActorContext<CombatState> context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(
+            ActorContext<CombatState> context,
+            CancellationToken cancellationToken)
         {
             if (!context.Character.Is(out GuardableCharacter guardable)) return;
 

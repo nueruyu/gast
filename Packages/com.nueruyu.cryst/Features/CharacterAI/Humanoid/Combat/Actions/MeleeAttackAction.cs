@@ -4,15 +4,21 @@ using Cryst.Domain.Characters.Facets;
 using Cryst.Features.CharacterAI.Common;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
+using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
     [Serializable]
     public class MeleeAttackActionSettings
     {
-        [SerializeField] float alignmentTimeout = 1.0f;
-        [SerializeField] float alignmentThreshold = 20.0f;
-        [SerializeField] int postAttackDelayMs = 500;
+        [SerializeField]
+        float alignmentTimeout = 1.0f;
+
+        [SerializeField]
+        float alignmentThreshold = 20.0f;
+
+        [SerializeField]
+        int postAttackDelayMs = 500;
 
         public float AlignmentTimeout => alignmentTimeout;
         public float AlignmentThreshold => alignmentThreshold;
@@ -38,7 +44,9 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
             worldState.IsReadyToAttack = false;
         }
 
-        public async UniTask ExecuteAsync(ActorContext<CombatState> context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(
+            ActorContext<CombatState> context,
+            CancellationToken cancellationToken)
         {
             // 1. Step-in phase: Align facing direction naturally by moving toward target
             await context.Actor.FaceTowardsAsync(

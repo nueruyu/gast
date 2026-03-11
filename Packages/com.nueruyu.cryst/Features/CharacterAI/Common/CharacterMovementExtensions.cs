@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Common
 {
-    public static class CharacterMovementTasks
+    public static class CharacterMovementExtensions
     {
         public static async UniTask MoveToAsync<TState>(
             this BaseCharacter actor,

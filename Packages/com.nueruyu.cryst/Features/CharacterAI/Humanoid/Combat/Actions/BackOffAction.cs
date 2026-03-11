@@ -3,13 +3,16 @@ using System.Threading;
 using Cryst.Features.CharacterAI.Common;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
+using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 {
     [Serializable]
     public class BackOffActionSettings
     {
-        [SerializeField] float duration = 1.5f;
+        [SerializeField]
+        float duration = 1.5f;
+
         public float Duration => duration;
     }
 
@@ -32,7 +35,9 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
             worldState.DistanceToTarget += 2.0f;
         }
 
-        public async UniTask ExecuteAsync(ActorContext<CombatState> context, CancellationToken cancellationToken)
+        public async UniTask ExecuteAsync(
+            ActorContext<CombatState> context,
+            CancellationToken cancellationToken)
         {
             var maneuver = new BackOffManeuver();
 
