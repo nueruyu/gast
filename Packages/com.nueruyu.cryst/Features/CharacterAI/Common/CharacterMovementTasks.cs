@@ -41,8 +41,8 @@ namespace Cryst.Features.CharacterAI.Common
         public static async UniTask FaceTowardsAsync<TState>(
             this BaseCharacter actor,
             Func<TState, Vector3> targetPositionProvider,
-            Func<TState, bool> until,
             TState state,
+            float angleThreshold,
             float timeout,
             CancellationToken cancellationToken)
         {
@@ -52,11 +52,12 @@ namespace Cryst.Features.CharacterAI.Common
             {
                 while (timer < timeout && !cancellationToken.IsCancellationRequested)
                 {
-                    if (until(state)) return;
-
                     var targetPos = targetPositionProvider(state);
                     var toTarget = targetPos - actor.Body.Position;
                     toTarget.y = 0;
+
+                    if (toTarget.sqrMagnitude < 0.01f || Vector3.Angle(actor.Body.Forward, toTarget.normalized) <= angleThreshold)
+                        return;
 
                     navigator.SetDestination(actor.Body.Position + toTarget.normalized);
                     actor.Move(navigator.NextSteeringDirection);
