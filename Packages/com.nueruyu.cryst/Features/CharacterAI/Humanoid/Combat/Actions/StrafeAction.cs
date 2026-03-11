@@ -46,7 +46,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
         {
             var direction = Random.value > 0.5f ? ManeuverDirection.Left : ManeuverDirection.Right;
             var duration = settings.Duration.Sample();
-            var maneuver = new StrafeManeuver(direction, settings.Maneuver, context.WorldState.CombatRange);
+            var maneuver = new StrafeManeuver(direction, settings.Maneuver, context.WorldState.AttackRange);
 
             await context.Actor.ExecuteManeuverAsync(
                 maneuver,

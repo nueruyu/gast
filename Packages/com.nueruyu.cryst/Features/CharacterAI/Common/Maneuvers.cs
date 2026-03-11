@@ -58,17 +58,17 @@ namespace Cryst.Features.CharacterAI.Common
     {
         public readonly ManeuverDirection Direction;
         public readonly StrafeManeuverSettings Settings;
-        public readonly float CombatRange;
-        public StrafeManeuver(ManeuverDirection direction, StrafeManeuverSettings settings, float combatRange)
+        public readonly float ReferenceDistance;
+        public StrafeManeuver(ManeuverDirection direction, StrafeManeuverSettings settings, float referenceDistance)
         {
             Direction = direction;
             Settings = settings;
-            CombatRange = combatRange;
+            ReferenceDistance = referenceDistance;
         }
 
         public Vector3 CalculateMoveDirection(BaseCharacter actor, Vector3 targetPosition, Vector3 targetForward)
         {
-            var idealDist = Mathf.Max(Settings.MinIdealDistance, CombatRange - Settings.IdealDistanceOffset);
+            var idealDist = Mathf.Max(Settings.MinIdealDistance, ReferenceDistance - Settings.IdealDistanceOffset);
             var selfPos = actor.Body.Position;
             var selfToTarget = targetPosition - selfPos;
             selfToTarget.y = 0;
@@ -105,17 +105,17 @@ namespace Cryst.Features.CharacterAI.Common
     {
         public readonly ManeuverDirection Direction;
         public readonly StalkManeuverSettings Settings;
-        public readonly float AttackRange;
-        public StalkManeuver(ManeuverDirection direction, StalkManeuverSettings settings, float attackRange)
+        public readonly float ReferenceDistance;
+        public StalkManeuver(ManeuverDirection direction, StalkManeuverSettings settings, float referenceDistance)
         {
             Direction = direction;
             Settings = settings;
-            AttackRange = attackRange;
+            ReferenceDistance = referenceDistance;
         }
 
         public Vector3 CalculateMoveDirection(BaseCharacter actor, Vector3 targetPosition, Vector3 targetForward)
         {
-            var idealDist = Mathf.Max(Settings.IdealDistanceOffset, AttackRange - Settings.IdealDistanceOffset);
+            var idealDist = Mathf.Max(Settings.IdealDistanceOffset, ReferenceDistance - Settings.IdealDistanceOffset);
             var selfPos = actor.Body.Position;
             var selfToTarget = targetPosition - selfPos;
             selfToTarget.y = 0;
