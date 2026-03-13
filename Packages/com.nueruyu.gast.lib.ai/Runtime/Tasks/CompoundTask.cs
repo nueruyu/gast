@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using UnityEngine;
 
 namespace Gast.Lib.AI.Tasks
 {
@@ -17,6 +16,7 @@ namespace Gast.Lib.AI.Tasks
 
         readonly Method<TActorContext, TWorldState>[] methods;
         readonly IMethodSelector<TActorContext, TWorldState> methodSelector;
+        readonly PlanningContext monitoringPlanningContext = new PlanningContext();
         TWorldState simulationState;
 
         internal CompoundTask(
@@ -30,11 +30,11 @@ namespace Gast.Lib.AI.Tasks
         }
 
         public async UniTask<bool> ValidateAsync(
-            TWorldState worldState,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
             var method = await SelectCurrentMethodAsync(
-                worldState,
+                context,
                 cancellationToken);
 
             return method != null;
@@ -42,12 +42,14 @@ namespace Gast.Lib.AI.Tasks
 
         public async UniTask SimulateAsync(SimulationContext<TWorldState> context, CancellationToken cancellationToken)
         {
-            // Save world state before method selection.
-            // SelectAsync mutates the state as a side effect of subtask validation.
             var worldState = context.WorldState;
             worldState.WriteTo(ref simulationState);
 
-            var method = await methodSelector.SelectAsync(methods, worldState, cancellationToken);
+            var planningContext = new PlanningContext();
+            var validationContext = new ValidationContext<TWorldState>(simulationState, planningContext);
+
+            var method = await methodSelector.SelectAsync(methods, validationContext, cancellationToken);
+
             if (method == null)
             {
                 return;
@@ -67,29 +69,27 @@ namespace Gast.Lib.AI.Tasks
             }
         }
 
-        public async UniTask RunAsync(AIContext<TActorContext> context, CancellationToken cancellationToken)
+        public async UniTask RunAsync(ExecutionContext<TActorContext> context, CancellationToken cancellationToken)
         {
-            var contextKey = context.Key;
-            var actorContext = context.ActorContext;
-
-            DebugLogger.EnterTask(contextKey, Name);
+            DebugLogger.EnterTask(context.Key, Name);
 
             try
             {
-                actorContext.WorldState.WriteTo(ref simulationState);
+                context.ActorContext.WorldState.WriteTo(ref simulationState);
+                var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningContext);
 
                 var method = await SelectCurrentMethodAsync(
-                    simulationState,
+                    validationContext,
                     cancellationToken);
 
                 if (method == null)
                 {
-                    DebugLogger.LogPlanFailed(contextKey, $"No valid method for {Name}");
+                    DebugLogger.LogPlanFailed(context.Key, $"No valid method for {Name}");
                     return;
                 }
 
-                DebugLogger.LogMethodSelected(contextKey, Name, method.Name, actorContext.WorldState);
-                DebugLogger.LogPlan(contextKey, method.SubTasks.Cast<ITask>());
+                DebugLogger.LogMethodSelected(context.Key, Name, method.Name, context.ActorContext.WorldState);
+                DebugLogger.LogPlan(context.Key, method.SubTasks.Cast<ITask>());
 
                 using var localCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
@@ -107,13 +107,13 @@ namespace Gast.Lib.AI.Tasks
             }
             finally
             {
-                DebugLogger.ExitTask(contextKey);
+                DebugLogger.ExitTask(context.Key);
             }
         }
 
         async UniTask RunMethodAsync(
             Method<TActorContext, TWorldState> method,
-            AIContext<TActorContext> context,
+            ExecutionContext<TActorContext> context,
             CancellationToken cancellationToken)
         {
             foreach (var task in method.SubTasks)
@@ -126,37 +126,36 @@ namespace Gast.Lib.AI.Tasks
 
         async UniTask MonitorInterruptsAsync(
             Method<TActorContext, TWorldState> currentMethod,
-            AIContext<TActorContext> context,
+            ExecutionContext<TActorContext> context,
             CancellationToken cancellationToken)
         {
-            var contextKey = context.Key;
-            var actorContext = context.ActorContext;
-
             while (true)
             {
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
 
-                actorContext.WorldState.WriteTo(ref simulationState);
+                monitoringPlanningContext.Clear();
+                context.ActorContext.WorldState.WriteTo(ref simulationState);
+                var validationContext = new ValidationContext<TWorldState>(simulationState, monitoringPlanningContext);
 
                 var interruptsMethod = await methodSelector.SelectInterruptsAsync(
                     methods,
                     currentMethod,
-                    simulationState,
+                    validationContext,
                     cancellationToken);
 
                 if (interruptsMethod != null)
                 {
-                    DebugLogger.LogPlanFailed(contextKey, $"Interrupt: {Name} switching to {interruptsMethod.Name}");
+                    DebugLogger.LogPlanFailed(context.Key, $"Interrupt: {Name} switching to {interruptsMethod.Name}");
                     break;
                 }
             }
         }
 
         UniTask<Method<TActorContext, TWorldState>> SelectCurrentMethodAsync(
-           TWorldState worldState,
+           ValidationContext<TWorldState> context,
            CancellationToken cancellationToken)
         {
-            return methodSelector.SelectAsync(methods, worldState, cancellationToken);
+            return methodSelector.SelectAsync(methods, context, cancellationToken);
         }
     }
 }

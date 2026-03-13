@@ -17,7 +17,9 @@ namespace Gast.Lib.AI
 
         public UniTask RunAsync(AIContext<TActorContext> context, CancellationToken cancellationToken)
         {
-            return rootTask.RunAsync(context, cancellationToken);
+            var planningContext = new PlanningContext();
+            var executionContext = new ExecutionContext<TActorContext>(context.Key, context.ActorContext, planningContext);
+            return rootTask.RunAsync(executionContext, cancellationToken);
         }
     }
 }

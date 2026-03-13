@@ -12,16 +12,17 @@ namespace Gast.Lib.AI.MethodSelectors
 
         public async UniTask<Method<TActorContext, TWorldState>> SelectAsync(
             IReadOnlyList<Method<TActorContext, TWorldState>> methods,
-            TWorldState worldState,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
             foreach (var method in methods)
             {
-                worldState.WriteTo(ref simulationState);
+                context.WorldState.WriteTo(ref simulationState);
+                var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningContext);
 
-                if (await ValidateMethod(method, simulationState, cancellationToken))
+                if (await ValidateMethod(method, validationContext, cancellationToken))
                 {
-                    simulationState.WriteTo(ref worldState);
+                    simulationState.WriteTo(ref context.WorldState);
                     return method;
                 }
             }
@@ -32,12 +33,12 @@ namespace Gast.Lib.AI.MethodSelectors
         public async UniTask<Method<TActorContext, TWorldState>> SelectInterruptsAsync(
             IReadOnlyList<Method<TActorContext, TWorldState>> methods,
             Method<TActorContext, TWorldState> currentMethod,
-            TWorldState worldState,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
             var preferredMethod = await SelectAsync(
                 methods,
-                worldState,
+                context,
                 cancellationToken);
 
             if (preferredMethod != null &&
@@ -49,15 +50,15 @@ namespace Gast.Lib.AI.MethodSelectors
 
         async UniTask<bool> ValidateMethod(
            Method<TActorContext, TWorldState> method,
-           TWorldState worldState,
+           ValidationContext<TWorldState> context,
            CancellationToken cancellationToken)
         {
-            if (!method.CheckCondition(worldState))
+            if (!method.CheckCondition(context.WorldState))
                 return false;
 
             foreach (var task in method.SubTasks)
             {
-                if (!await task.ValidateAsync(worldState, cancellationToken))
+                if (!await task.ValidateAsync(context, cancellationToken))
                 {
                     return false;
                 }

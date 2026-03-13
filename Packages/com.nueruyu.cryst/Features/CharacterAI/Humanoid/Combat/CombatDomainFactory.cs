@@ -29,14 +29,24 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
             var guardAction = new GuardAction(guardSettings);
             var strafeAction = new StrafeAction(strafeSettings);
 
-            var postAttackManeuverAction = new PostAttackManeuverAction(
-                guardAction,
-                strafeAction,
-                backOffAction,
-                postAttackManeuverSettings);
-
             var chaseTargetAction = new ChaseTargetAction();
             var idleAction = new IdleAction();
+
+            var postAttackManeuver = builder.DefineCompound("PostAttackManeuver")
+                .UseSelector(new ProbabilisticSelector<ActorContext<CombatState>, CombatState>());
+
+            postAttackManeuver.AddMethod("Guard")
+                .Condition(s => s.CanGuard)
+                .Score(s => postAttackManeuverSettings.GuardChance.Value)
+                .Do(guardAction);
+
+            postAttackManeuver.AddMethod("Strafe")
+                .Score(s => postAttackManeuverSettings.StrafeChance.Value)
+                .Do(strafeAction);
+
+            postAttackManeuver.AddMethod("BackOff")
+                .Score(s => 1.0f - postAttackManeuverSettings.GuardChance.Value - postAttackManeuverSettings.StrafeChance.Value)
+                .Do(backOffAction);
 
             var engageTarget = builder.DefineCompound("EngageTarget")
                 .UseSelector(new UtilitySelector<ActorContext<CombatState>, CombatState>());
@@ -51,7 +61,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
                 .Condition(s => s.IsInAttackRange)
                 .Score(s => 0.2f + 0.8f * (1.0f - s.SelfHealthRatio))
                 .InterruptCost(s => 0.3f)
-                .Do(postAttackManeuverAction);
+                .Do(postAttackManeuver);
             engageTarget.AddMethod("Approach_Tactical")
                 .Condition(s => !s.IsInAttackRange && s.IsInCombatRange)
                 .Score(s => 0.6f)

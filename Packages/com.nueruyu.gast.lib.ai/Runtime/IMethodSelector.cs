@@ -10,13 +10,13 @@ namespace Gast.Lib.AI
     {
         UniTask<Method<TActorContext, TWorldState>> SelectAsync(
             IReadOnlyList<Method<TActorContext, TWorldState>> methods,
-            TWorldState worldState,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken);
 
         UniTask<Method<TActorContext, TWorldState>> SelectInterruptsAsync(
             IReadOnlyList<Method<TActorContext, TWorldState>> methods,
             Method<TActorContext, TWorldState> currentMethod,
-            TWorldState worldState,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken);
     }
 }
