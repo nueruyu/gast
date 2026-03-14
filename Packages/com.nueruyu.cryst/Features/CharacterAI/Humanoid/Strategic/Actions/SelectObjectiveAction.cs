@@ -14,7 +14,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
 {
     public class SelectObjectiveAction : IAction<ActorContext<StrategicState>, StrategicState>
     {
-        public bool CanExecute(StrategicState worldState)
+        public bool IsAvailable(StrategicState worldState)
         {
             return worldState.AvailableObjectives.Count > 0;
         }
@@ -30,7 +30,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
 
             IAIObjective bestObjective = null;
             BaseCharacter bestTarget = null;
-            float lowestCost = float.MaxValue;
+            var lowestCost = float.MaxValue;
 
             foreach (var objective in objectives)
             {
@@ -51,7 +51,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
             return UniTask.CompletedTask;
         }
 
-        private (float cost, BaseCharacter target) CalculateObjectiveCost(ActorContext<StrategicState> context, BaseCharacter self, IAIObjective objective)
+        (float cost, BaseCharacter target) CalculateObjectiveCost(ActorContext<StrategicState> context,
+            BaseCharacter self, IAIObjective objective)
         {
             switch (objective)
             {
@@ -74,7 +75,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
             }
         }
 
-        private BaseCharacter FindClosestCharacterOfType(ActorContext<StrategicState> context, BaseCharacter self, CharacterTypeId typeId)
+        BaseCharacter FindClosestCharacterOfType(ActorContext<StrategicState> context, BaseCharacter self,
+            CharacterTypeId typeId)
         {
             return context.CharacterRepository.GetAll()
                 .Select(c => c.As<BaseCharacter>())
@@ -83,7 +85,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
                 .FirstOrDefault();
         }
 
-        private IPickup FindClosestPickupOfType(ActorContext<StrategicState> context, BaseCharacter self, ItemId itemId)
+        IPickup FindClosestPickupOfType(ActorContext<StrategicState> context, BaseCharacter self, ItemId itemId)
         {
             return context.PickupRepository.GetAll()
                 .Where(p => p.ItemId == itemId)

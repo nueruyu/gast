@@ -1,5 +1,4 @@
 using System.Threading;
-using Cryst.Features.CharacterAI.Humanoid;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 
@@ -7,7 +6,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
 {
     public class ClearTargetAction : IAction<ActorContext<StrategicState>, StrategicState>
     {
-        public bool CanExecute(StrategicState worldState)
+        public bool IsAvailable(StrategicState worldState)
         {
             return true;
         }

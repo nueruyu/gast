@@ -1,8 +1,8 @@
-using Gast.Lib.AI.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gast.Lib.AI.Tasks;
 
 namespace Gast.Lib.AI.Builders
 {
@@ -11,10 +11,10 @@ namespace Gast.Lib.AI.Builders
         where TActorContext : class, IActorContext<TWorldState>
     {
         readonly string methodName;
-        Func<TWorldState, bool> condition = _ => true;
-        Func<TWorldState, float> scorer;
-        Func<TWorldState, float> interruptionCost;
         readonly List<ITask<TActorContext, TWorldState>> subTasks = new();
+        Func<TWorldState, bool> condition = _ => true;
+        Func<TWorldState, float> interruptionCost;
+        Func<TWorldState, float> scorer;
 
         internal MethodBuilder(string methodName)
         {
@@ -78,7 +78,10 @@ namespace Gast.Lib.AI.Builders
                 this.action = action;
             }
 
-            public bool CanExecute(TWorldState worldState) => true;
+            public bool IsAvailable(TWorldState worldState)
+            {
+                return true;
+            }
 
             public void Simulate(TWorldState worldState)
             {
@@ -86,9 +89,15 @@ namespace Gast.Lib.AI.Builders
 
             public UniTask ExecuteAsync(
                 TActorContext context,
-                CancellationToken cancellationToken) => action.ExecuteAsync(cancellationToken);
+                CancellationToken cancellationToken)
+            {
+                return action.ExecuteAsync(cancellationToken);
+            }
 
-            public override string ToString() => action.ToString();
+            public override string ToString()
+            {
+                return action.ToString();
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading;
 using Cryst.Domain.AI.Objectives;
-using Cryst.Features.CharacterAI.Humanoid;
 using Cysharp.Threading.Tasks;
 using Gast.Domain.Interactions;
 using Gast.Lib.AI;
@@ -11,7 +10,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
 {
     public class FindItemPickupAction : IAction<ActorContext<GatheringState>, GatheringState>
     {
-        public bool CanExecute(GatheringState worldState)
+        public bool IsAvailable(GatheringState worldState)
         {
             return worldState.CurrentGoal is AcquireItemObjective && !worldState.HasInteractableTarget;
         }
@@ -24,24 +23,16 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
         public UniTask ExecuteAsync(ActorContext<GatheringState> context, CancellationToken cancellationToken)
         {
             var memory = context.GetModule<HumanoidMemory>();
-            if (memory.CurrentObjective is not AcquireItemObjective goal)
-            {
-                return UniTask.CompletedTask;
-            }
+            if (memory.CurrentObjective is not AcquireItemObjective goal) return UniTask.CompletedTask;
 
             var targetPickup = context.PickupRepository
                 .GetAll()
-                .Where(x =>
-                {
-                    return x.ItemId == goal.TargetItemId;
-                })
+                .Where(x => { return x.ItemId == goal.TargetItemId; })
                 .OrderBy(x => Vector3.Distance(context.Actor.Body.Position, x.Position))
                 .FirstOrDefault();
 
             if (targetPickup != null)
-            {
                 memory.InteractableTarget = (targetPickup as Component).GetComponentInChildren<IInteractable>();
-            }
 
             return UniTask.CompletedTask;
         }

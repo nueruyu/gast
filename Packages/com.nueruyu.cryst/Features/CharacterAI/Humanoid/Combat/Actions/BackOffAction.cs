@@ -10,8 +10,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
     [Serializable]
     public class BackOffActionSettings
     {
-        [SerializeField]
-        float duration = 1.5f;
+        [SerializeField] float duration = 1.5f;
 
         public float Duration => duration;
     }
@@ -25,7 +24,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
             this.settings = settings ?? new BackOffActionSettings();
         }
 
-        public bool CanExecute(CombatState worldState)
+        public bool IsAvailable(CombatState worldState)
         {
             return worldState.HasTarget;
         }

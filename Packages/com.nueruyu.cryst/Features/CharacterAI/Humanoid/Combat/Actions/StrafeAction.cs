@@ -12,11 +12,9 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
     [Serializable]
     public class StrafeActionSettings
     {
-        [SerializeField]
-        FloatRange duration = new(0.5f, 2.5f);
+        [SerializeField] FloatRange duration = new(0.5f, 2.5f);
 
-        [SerializeField]
-        StrafeManeuverSettings maneuver = new();
+        [SerializeField] StrafeManeuverSettings maneuver = new();
 
         public FloatRange Duration => duration;
         public StrafeManeuverSettings Maneuver => maneuver;
@@ -31,7 +29,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
             this.settings = settings ?? new StrafeActionSettings();
         }
 
-        public bool CanExecute(CombatState worldState)
+        public bool IsAvailable(CombatState worldState)
         {
             return worldState.HasTarget;
         }

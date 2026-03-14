@@ -7,7 +7,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
 {
     public class MoveToInteractableAction : IAction<ActorContext<GatheringState>, GatheringState>
     {
-        public bool CanExecute(GatheringState worldState)
+        public bool IsAvailable(GatheringState worldState)
         {
             return worldState.HasInteractableTarget;
         }
@@ -29,16 +29,10 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
                     var targetPosition = context.WorldState.InteractableTargetPosition;
                     navigator.SetDestination(targetPosition);
 
-                    if (navigator.HasArrived || context.WorldState.IsInRangeToInteract)
-                    {
-                        break;
-                    }
+                    if (navigator.HasArrived || context.WorldState.IsInRangeToInteract) break;
 
                     var direction = navigator.NextSteeringDirection;
-                    if (direction != Vector3.zero)
-                    {
-                        actor.Move(direction);
-                    }
+                    if (direction != Vector3.zero) actor.Move(direction);
 
                     await UniTask.Yield(cancellationToken);
                 }

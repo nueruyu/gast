@@ -10,7 +10,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
     [Serializable]
     public class ChaseTargetAction : IAction<ActorContext<CombatState>, CombatState>
     {
-        public bool CanExecute(CombatState worldState)
+        public bool IsAvailable(CombatState worldState)
         {
             return worldState.HasTarget;
         }

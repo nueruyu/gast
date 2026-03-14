@@ -12,11 +12,9 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
     [Serializable]
     public class StalkActionSettings
     {
-        [SerializeField]
-        FloatRange duration = new(0.2f, 0.6f);
+        [SerializeField] FloatRange duration = new(0.2f, 0.6f);
 
-        [SerializeField]
-        StalkManeuverSettings maneuver = new();
+        [SerializeField] StalkManeuverSettings maneuver = new();
 
         public FloatRange Duration => duration;
         public StalkManeuverSettings Maneuver => maneuver;
@@ -34,7 +32,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
             this.settings = settings ?? new StalkActionSettings();
         }
 
-        public bool CanExecute(CombatState worldState)
+        public bool IsAvailable(CombatState worldState)
         {
             return worldState.HasTarget;
         }

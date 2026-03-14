@@ -7,7 +7,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
 {
     public class InteractWithTargetAction : IAction<ActorContext<GatheringState>, GatheringState>
     {
-        public bool CanExecute(GatheringState worldState)
+        public bool IsAvailable(GatheringState worldState)
         {
             return worldState.HasInteractableTarget && worldState.IsInRangeToInteract;
         }

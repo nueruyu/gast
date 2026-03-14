@@ -12,7 +12,10 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
     [Serializable]
     public class SelectThreatAction : IAction<ActorContext<StrategicState>, StrategicState>
     {
-        public bool CanExecute(StrategicState worldState) => worldState.IsThreatened;
+        public bool IsAvailable(StrategicState worldState)
+        {
+            return worldState.IsThreatened;
+        }
 
         public void Simulate(StrategicState worldState)
         {

@@ -1,5 +1,4 @@
 using System.Threading;
-using Cryst.Features.CharacterAI.Humanoid;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 
@@ -7,7 +6,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
 {
     public class ClearInteractableTargetAction : IAction<ActorContext<GatheringState>, GatheringState>
     {
-        public bool CanExecute(GatheringState worldState)
+        public bool IsAvailable(GatheringState worldState)
         {
             return worldState.HasInteractableTarget;
         }

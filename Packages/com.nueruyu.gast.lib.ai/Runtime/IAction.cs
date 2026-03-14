@@ -12,7 +12,7 @@ namespace Gast.Lib.AI
         where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
-        bool CanExecute(TWorldState worldState);
+        bool IsAvailable(TWorldState worldState);
 
         void Simulate(TWorldState worldState);
 

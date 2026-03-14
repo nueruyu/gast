@@ -11,14 +11,11 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
     [Serializable]
     public class MeleeAttackActionSettings
     {
-        [SerializeField]
-        float alignmentTimeout = 1.0f;
+        [SerializeField] float alignmentTimeout = 1.0f;
 
-        [SerializeField]
-        float alignmentThreshold = 20.0f;
+        [SerializeField] float alignmentThreshold = 20.0f;
 
-        [SerializeField]
-        int postAttackDelayMs = 500;
+        [SerializeField] int postAttackDelayMs = 500;
 
         public float AlignmentTimeout => alignmentTimeout;
         public float AlignmentThreshold => alignmentThreshold;
@@ -34,7 +31,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
             this.settings = settings ?? new MeleeAttackActionSettings();
         }
 
-        public bool CanExecute(CombatState worldState)
+        public bool IsAvailable(CombatState worldState)
         {
             return worldState.IsInAttackRange && worldState.IsReadyToAttack;
         }

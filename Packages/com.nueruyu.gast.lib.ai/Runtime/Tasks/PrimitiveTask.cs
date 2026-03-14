@@ -22,7 +22,7 @@ namespace Gast.Lib.AI.Tasks
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
-            if (!action.CanExecute(context.WorldState))
+            if (!action.IsAvailable(context.WorldState))
                 return UniTask.FromResult(false);
 
             action.Simulate(context.WorldState);
@@ -32,7 +32,7 @@ namespace Gast.Lib.AI.Tasks
 
         public UniTask SimulateAsync(SimulationContext<TWorldState> context, CancellationToken cancellationToken)
         {
-            if (action.CanExecute(context.WorldState))
+            if (action.IsAvailable(context.WorldState))
             {
                 action.Simulate(context.WorldState);
                 context.SimulatedPlan.Add(this);
