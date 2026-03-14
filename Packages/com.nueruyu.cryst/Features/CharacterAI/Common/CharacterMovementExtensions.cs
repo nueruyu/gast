@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
-using Cysharp.Threading.Tasks;
 using Cryst.Domain.Characters;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Common
@@ -20,15 +20,18 @@ namespace Cryst.Features.CharacterAI.Common
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    if (until(state)) return;
+                    if (until(state))
+                        return;
 
                     navigator.SetDestination(destinationProvider(state));
                     var direction = navigator.NextSteeringDirection;
                     if (direction != Vector3.zero)
-                    {
                         actor.Move(direction);
-                    }
+
                     await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+
+                    if (navigator.HasArrived)
+                        return;
                 }
             }
             finally
@@ -56,7 +59,8 @@ namespace Cryst.Features.CharacterAI.Common
                     var toTarget = targetPos - actor.Body.Position;
                     toTarget.y = 0;
 
-                    if (toTarget.sqrMagnitude < 0.01f || Vector3.Angle(actor.Body.Forward, toTarget.normalized) <= angleThreshold)
+                    if (toTarget.sqrMagnitude < 0.01f ||
+                        Vector3.Angle(actor.Body.Forward, toTarget.normalized) <= angleThreshold)
                         return;
 
                     navigator.SetDestination(actor.Body.Position + toTarget.normalized);

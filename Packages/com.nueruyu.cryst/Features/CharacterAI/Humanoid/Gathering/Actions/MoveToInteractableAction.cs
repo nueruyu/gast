@@ -1,7 +1,7 @@
 using System.Threading;
+using Cryst.Features.CharacterAI.Common;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
-using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
 {
@@ -19,29 +19,11 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
 
         public async UniTask ExecuteAsync(ActorContext<GatheringState> context, CancellationToken cancellationToken)
         {
-            var actor = context.Actor;
-            var navigator = actor.NavigationProvider;
-
-            try
-            {
-                while (!cancellationToken.IsCancellationRequested && context.WorldState.HasInteractableTarget)
-                {
-                    var targetPosition = context.WorldState.InteractableTargetPosition;
-                    navigator.SetDestination(targetPosition);
-
-                    if (navigator.HasArrived || context.WorldState.IsInRangeToInteract) break;
-
-                    var direction = navigator.NextSteeringDirection;
-                    if (direction != Vector3.zero) actor.Move(direction);
-
-                    await UniTask.Yield(cancellationToken);
-                }
-            }
-            finally
-            {
-                navigator.Stop();
-                actor.Move(Vector3.zero);
-            }
+            await context.Actor.MoveToAsync(
+                static ctx => ctx.WorldState.InteractableTargetPosition,
+                static ctx => ctx.WorldState.IsInRangeToInteract || !ctx.WorldState.HasInteractableTarget,
+                context,
+                cancellationToken);
         }
     }
 }
