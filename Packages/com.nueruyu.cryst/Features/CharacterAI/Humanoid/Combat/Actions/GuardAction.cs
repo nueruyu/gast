@@ -27,7 +27,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 
         public bool CanExecute(CombatState worldState)
         {
-            return worldState.IsInAttackRange && !worldState.IsReadyToAttack && worldState.CanGuard;
+            return worldState.HasTarget && worldState.CanGuard;
         }
 
         public void Simulate(CombatState worldState)

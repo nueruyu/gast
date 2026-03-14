@@ -58,7 +58,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
                 .Do(stalkAction)
                 .Do(meleeAttackAction);
             engageTarget.AddMethod("Maneuver")
-                .Condition(s => s.IsInAttackRange)
+                .Condition(s => s.IsInAttackRange && !s.IsReadyToAttack)
                 .Score(s => 0.2f + 0.8f * (1.0f - s.SelfHealthRatio))
                 .InterruptCost(s => 0.3f)
                 .Do(postAttackManeuver);
