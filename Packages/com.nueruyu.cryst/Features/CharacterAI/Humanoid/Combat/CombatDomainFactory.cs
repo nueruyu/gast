@@ -8,14 +8,14 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
 {
     public class CombatDomainFactory : IAIDomainFactory<CombatState>
     {
-        readonly StalkActionSettings stalkSettings = new();
-        readonly MeleeAttackActionSettings meleeAttackSettings = new();
-        readonly PostAttackManeuverActionSettings postAttackManeuverSettings = new();
-        readonly StrafeActionSettings strafeSettings = new();
         readonly BackOffActionSettings backOffSettings = new();
-        readonly GuardActionSettings guardSettings = new();
 
         readonly AIDomain<ActorContext<CombatState>, CombatState> domain;
+        readonly GuardActionSettings guardSettings = new();
+        readonly MeleeAttackActionSettings meleeAttackSettings = new();
+        readonly PostAttackManeuverActionSettings postAttackManeuverSettings = new();
+        readonly StalkActionSettings stalkSettings = new();
+        readonly StrafeActionSettings strafeSettings = new();
 
         public CombatDomainFactory()
         {
@@ -45,11 +45,12 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
                 .Do(strafeAction);
 
             postAttackManeuver.AddMethod("BackOff")
-                .Score(s => 1.0f - postAttackManeuverSettings.GuardChance.Value - postAttackManeuverSettings.StrafeChance.Value)
+                .Score(s => 1.0f - postAttackManeuverSettings.GuardChance.Value -
+                            postAttackManeuverSettings.StrafeChance.Value)
                 .Do(backOffAction);
 
             var engageTarget = builder.DefineCompound("EngageTarget")
-                .UseSelector(new UtilitySelector<ActorContext<CombatState>, CombatState>());
+                .UseSelector(new ProbabilisticSelector<ActorContext<CombatState>, CombatState>());
 
             engageTarget.AddMethod("Attack")
                 .Condition(s => s.IsInAttackRange && s.IsReadyToAttack)
@@ -58,7 +59,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
                 .Do(stalkAction)
                 .Do(meleeAttackAction);
             engageTarget.AddMethod("Maneuver")
-                .Condition(s => s.IsInAttackRange && !s.IsReadyToAttack)
+                .Condition(s => s.IsInAttackRange)
                 .Score(s => 0.2f + 0.8f * (1.0f - s.SelfHealthRatio))
                 .InterruptCost(s => 0.3f)
                 .Do(postAttackManeuver);
