@@ -14,6 +14,7 @@ namespace Cryst.Features.CharacterAI
     {
         readonly IContextRegistry contextRegistry;
         readonly AIBrainServices services;
+        readonly ObjectiveManager objectiveManager;
         BaseCharacter actor;
         ICharacter character;
         CancellationTokenSource characterCts;
@@ -22,13 +23,15 @@ namespace Cryst.Features.CharacterAI
 
         protected AIBrainBase(
             IContextRegistry contextRegistry,
-            AIBrainServices services)
+            AIBrainServices services,
+            ObjectiveManager objectiveManager)
         {
             this.contextRegistry = contextRegistry;
             this.services = services;
+            this.objectiveManager = objectiveManager;
         }
 
-        public IReadOnlyList<IAIObjective> CurrentObjectives => services.ObjectiveManager.CurrentObjectives;
+        public IReadOnlyList<IAIObjective> CurrentObjectives => objectiveManager.CurrentObjectives;
 
         public void OnAttached(ICharacter character)
         {
@@ -43,7 +46,7 @@ namespace Cryst.Features.CharacterAI
 
             domainRunner.RunAsync(characterCts.Token).Forget();
 
-            services.ObjectiveManager.BindCharacter(actor.Id)
+            objectiveManager.BindCharacter(actor.Id)
                 .AddTo(characterCts.Token);
         }
 
@@ -62,7 +65,7 @@ namespace Cryst.Features.CharacterAI
 
         public void SetObjectives(IEnumerable<IAIObjective> objectives)
         {
-            services.ObjectiveManager.UpdateObjectives(objectives);
+            objectiveManager.UpdateObjectives(objectives);
         }
 
         protected abstract void RegisterDomains(IDomainRegistrar registrar);
@@ -112,6 +115,7 @@ namespace Cryst.Features.CharacterAI
 
                 var actorContext = new ActorContext<TWorldState>(
                     brain.services,
+                    brain.objectiveManager,
                     brain.actor,
                     brain.character,
                     worldState,

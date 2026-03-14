@@ -17,12 +17,14 @@ namespace Cryst.Features.CharacterAI
 
         public ActorContext(
             AIBrainServices services,
+            ObjectiveManager objectiveManager,
             BaseCharacter actor,
             ICharacter character,
             TWorldState worldState,
             Action<ActorContext<TWorldState>> worldStateUpdater)
         {
             this.services = services;
+            ObjectiveManager = objectiveManager;
             Actor = actor;
             Character = character;
             WorldState = worldState;
@@ -34,7 +36,7 @@ namespace Cryst.Features.CharacterAI
         public ICharacterRepository CharacterRepository => services.CharacterRepository;
         public IPickupRepository PickupRepository => services.PickupRepository;
         public ICommandDispatcher CommandDispatcher => services.CommandDispatcher;
-        public ObjectiveManager ObjectiveManager => services.ObjectiveManager;
+        public ObjectiveManager ObjectiveManager { get; }
 
         public TWorldState WorldState { get; }
 

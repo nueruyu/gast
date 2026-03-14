@@ -15,10 +15,11 @@ namespace Cryst.Features.CharacterAI.Humanoid
         public HumanoidAIBrain(
             IContextRegistry contextRegistry,
             AIBrainServices services,
+            ObjectiveManager objectiveManager,
             CombatDomainConstruct combat,
             StrategicDomainConstruct strategic,
             GatheringDomainConstruct gathering) :
-            base(contextRegistry, services)
+            base(contextRegistry, services, objectiveManager)
         {
             this.combat = combat;
             this.strategic = strategic;
