@@ -44,6 +44,10 @@
         {
           "label": "Game",
           "value": "game.config.json"
+        },
+        {
+          "label": "AI",
+          "value": "ai.config.json"
         }
       ],
       "default": "default.config.json"
