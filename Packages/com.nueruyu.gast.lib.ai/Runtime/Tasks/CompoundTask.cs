@@ -11,9 +11,10 @@ namespace Gast.Lib.AI.Tasks
         where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
+        readonly PlanningStateStore interruptValidationStore = new();
         readonly Method<TActorContext, TWorldState>[] methods;
         readonly IMethodSelector<TActorContext, TWorldState> methodSelector;
-        readonly PlanningStateStore monitoringPlanningStateStore = new();
+        readonly PlanningStateStore planningStateStore = new();
         TWorldState simulationState;
 
         internal CompoundTask(
@@ -49,50 +50,59 @@ namespace Gast.Lib.AI.Tasks
 
             var method = await methodSelector.SelectAsync(methods, validationContext, cancellationToken);
 
-            if (method == null) return;
+            if (method == null)
+                return;
 
             // Restore state to pre-selection so subtask SimulateAsync applies effects exactly once.
             simulationState.WriteTo(ref worldState);
 
-            if (!context.PlanFound) context.RootMethodName = method.Name;
+            if (!context.PlanFound)
+                context.RootMethodName = method.Name;
 
-            foreach (var task in method.SubTasks) await task.SimulateAsync(context, cancellationToken);
+            foreach (var task in method.SubTasks)
+                await task.SimulateAsync(context, cancellationToken);
         }
 
-        public async UniTask RunAsync(ExecutionContext<TActorContext> context, CancellationToken cancellationToken)
+        public async UniTask RunAsync(
+            ExecutionContext<TActorContext> context,
+            CancellationToken cancellationToken)
         {
-            DebugLogger.EnterTask(context.Key, Name);
+            planningStateStore.Clear();
+            interruptValidationStore.Clear();
 
+            DebugLogger.EnterTask(context.Key, Name);
             try
             {
-                context.ActorContext.WorldState.WriteTo(ref simulationState);
-                var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
-
-                var method = await SelectCurrentMethodAsync(
-                    validationContext,
-                    cancellationToken);
-
-                if (method == null)
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    DebugLogger.LogPlanFailed(context.Key, $"No valid method for {Name}");
-                    return;
-                }
+                    context.ActorContext.WorldState.WriteTo(ref simulationState);
 
-                DebugLogger.LogMethodSelected(context.Key, Name, method.Name, context.ActorContext.WorldState);
-                DebugLogger.LogPlan(context.Key, method.SubTasks);
+                    var validationContext = new ValidationContext<TWorldState>(simulationState, planningStateStore);
 
-                using var localCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                    var method = await SelectCurrentMethodAsync(validationContext, cancellationToken);
+                    if (method == null)
+                    {
+                        DebugLogger.LogPlanFailed(context.Key, $"No valid method for {Name}");
+                        break;
+                    }
 
-                try
-                {
-                    await UniTask.WhenAny(
-                        RunMethodAsync(method, context, localCts.Token),
-                        MonitorInterruptsAsync(method, context, localCts.Token)
-                    );
-                }
-                finally
-                {
+                    DebugLogger.LogMethodSelected(context.Key, Name, method.Name, context.ActorContext.WorldState);
+                    DebugLogger.LogPlan(context.Key, method.SubTasks);
+
+                    using var localCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+                    var runMethodTask = RunMethodAsync(method, context, localCts.Token);
+                    var monitorTask = MonitorInterruptsAsync(method, context, interruptValidationStore, localCts.Token);
+
+                    var completedTaskIndex = await UniTask.WhenAny(runMethodTask, monitorTask);
+
                     localCts.Cancel();
+
+                    // Method completed, exit loop to return control to parent.
+                    if (completedTaskIndex == 0) break;
+
+                    // Interrupt occurred, re-plan in the next loop iteration.
+                    planningStateStore.CopyFrom(interruptValidationStore);
                 }
             }
             finally
@@ -109,7 +119,7 @@ namespace Gast.Lib.AI.Tasks
             foreach (var task in method.SubTasks)
             {
                 await task.RunAsync(context, cancellationToken);
-
+                cancellationToken.ThrowIfCancellationRequested();
                 context.ActorContext.UpdateWorldState();
             }
         }
@@ -117,17 +127,17 @@ namespace Gast.Lib.AI.Tasks
         async UniTask MonitorInterruptsAsync(
             Method<TActorContext, TWorldState> currentMethod,
             ExecutionContext<TActorContext> context,
+            PlanningStateStore planningStateStore,
             CancellationToken cancellationToken)
         {
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
 
-                monitoringPlanningStateStore.Clear();
-
                 context.ActorContext.WorldState.WriteTo(ref simulationState);
+
                 var validationContext =
-                    new ValidationContext<TWorldState>(simulationState, monitoringPlanningStateStore);
+                    new ValidationContext<TWorldState>(simulationState, planningStateStore);
 
                 var interruptsMethod = await methodSelector.SelectInterruptsAsync(
                     methods,
@@ -138,7 +148,7 @@ namespace Gast.Lib.AI.Tasks
                 if (interruptsMethod != null)
                 {
                     DebugLogger.LogPlanFailed(context.Key, $"Interrupt: {Name} switching to {interruptsMethod.Name}");
-                    break;
+                    return; // Interrupt detected, complete this task.
                 }
             }
         }

@@ -23,6 +23,13 @@ namespace Gast.Lib.AI
             return false;
         }
 
+        public void CopyFrom(PlanningStateStore source)
+        {
+            state.Clear();
+            foreach (var pair in source.state)
+                state[pair.Key] = pair.Value;
+        }
+
         internal void Clear()
         {
             state.Clear();

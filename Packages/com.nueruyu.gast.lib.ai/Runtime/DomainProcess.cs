@@ -29,14 +29,15 @@ namespace Gast.Lib.AI
 
         public async UniTask RunAsync(CancellationToken cancellationToken)
         {
-            var planningContext = new PlanningStateStore();
             while (!cancellationToken.IsCancellationRequested)
             {
-                await domain.RootTask.RunAsync(
-                    new ExecutionContext<TActorContext>(contextKey, actorContext, planningContext),
-                    cancellationToken);
+                var executionContext = new ExecutionContext<TActorContext>(
+                    contextKey,
+                    actorContext
+                );
 
-                planningContext.Clear();
+                await domain.RootTask.RunAsync(executionContext, cancellationToken);
+
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
         }
