@@ -1,7 +1,7 @@
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI.Debugging;
 using Gast.Lib.AI.Testing;
-using System.Threading;
 
 namespace Gast.Lib.AI.Tasks
 {
@@ -11,12 +11,12 @@ namespace Gast.Lib.AI.Tasks
     {
         readonly IAction<TActorContext, TWorldState> action;
 
-        public string Name => action.ToString();
-
         public PrimitiveTask(IAction<TActorContext, TWorldState> action)
         {
             this.action = action;
         }
+
+        public string Name => action.ToString();
 
         public UniTask<bool> ValidateAsync(
             ValidationContext<TWorldState> context,
@@ -30,13 +30,15 @@ namespace Gast.Lib.AI.Tasks
             return UniTask.FromResult(true);
         }
 
-        public async UniTask SimulateAsync(SimulationContext<TWorldState> context, CancellationToken cancellationToken)
+        public UniTask SimulateAsync(SimulationContext<TWorldState> context, CancellationToken cancellationToken)
         {
             if (action.CanExecute(context.WorldState))
             {
                 action.Simulate(context.WorldState);
                 context.SimulatedPlan.Add(this);
             }
+
+            return UniTask.CompletedTask;
         }
 
         public async UniTask RunAsync(ExecutionContext<TActorContext> context, CancellationToken cancellationToken)

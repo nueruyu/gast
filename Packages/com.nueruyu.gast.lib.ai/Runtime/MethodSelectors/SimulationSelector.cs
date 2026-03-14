@@ -1,7 +1,7 @@
-using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Cysharp.Threading.Tasks;
 
 namespace Gast.Lib.AI.MethodSelectors
 {
@@ -9,11 +9,12 @@ namespace Gast.Lib.AI.MethodSelectors
         where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly Func<TWorldState, float> worldEvaluator;
         readonly IEnvironmentModel<TWorldState> envModel;
+        readonly Func<TWorldState, float> worldEvaluator;
         TWorldState simulationState;
 
-        public SimulationSelector(Func<TWorldState, float> worldEvaluator, IEnvironmentModel<TWorldState> envModel = null)
+        public SimulationSelector(Func<TWorldState, float> worldEvaluator,
+            IEnvironmentModel<TWorldState> envModel = null)
         {
             this.worldEvaluator = worldEvaluator;
             this.envModel = envModel;
@@ -27,12 +28,14 @@ namespace Gast.Lib.AI.MethodSelectors
             Method<TActorContext, TWorldState> bestMethod = null;
             var bestOutcomeScore = float.NegativeInfinity;
 
+            var worldState = context.WorldState;
+
             foreach (var method in methods)
             {
-                if (!method.CheckCondition(context.WorldState))
+                if (!method.CheckCondition(worldState))
                     continue;
 
-                context.WorldState.WriteTo(ref simulationState);
+                worldState.WriteTo(ref simulationState);
                 var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningContext);
 
                 var valid = await SimulateMethodAsync(
@@ -47,7 +50,7 @@ namespace Gast.Lib.AI.MethodSelectors
                     {
                         bestOutcomeScore = outcomeScore;
                         bestMethod = method;
-                        simulationState.WriteTo(ref context.WorldState);
+                        simulationState.WriteTo(ref worldState);
                     }
                 }
             }
@@ -74,16 +77,19 @@ namespace Gast.Lib.AI.MethodSelectors
             Method<TActorContext, TWorldState> bestMethod = null;
             var bestOutcomeScore = currentScore;
 
+            var worldState = context.WorldState;
+
             foreach (var method in methods)
             {
                 if (method == currentMethod)
                     continue;
 
-                if (!method.CheckCondition(context.WorldState))
+                if (!method.CheckCondition(worldState))
                     continue;
 
-                context.WorldState.WriteTo(ref simulationState);
-                var innerValidationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningContext);
+                worldState.WriteTo(ref simulationState);
+                var innerValidationContext =
+                    new ValidationContext<TWorldState>(simulationState, context.PlanningContext);
 
                 var valid = await SimulateMethodAsync(
                     method,
@@ -97,7 +103,7 @@ namespace Gast.Lib.AI.MethodSelectors
                     {
                         bestOutcomeScore = outcomeScore;
                         bestMethod = method;
-                        simulationState.WriteTo(ref context.WorldState);
+                        simulationState.WriteTo(ref worldState);
                     }
                 }
             }
@@ -106,17 +112,14 @@ namespace Gast.Lib.AI.MethodSelectors
         }
 
         async UniTask<bool> SimulateMethodAsync(
-           Method<TActorContext, TWorldState> method,
-           ValidationContext<TWorldState> context,
-           CancellationToken cancellationToken)
+            Method<TActorContext, TWorldState> method,
+            ValidationContext<TWorldState> context,
+            CancellationToken cancellationToken)
         {
             foreach (var subTask in method.SubTasks)
             {
                 var valid = await subTask.ValidateAsync(context, cancellationToken);
-                if (!valid)
-                {
-                    return false;
-                }
+                if (!valid) return false;
 
                 envModel?.Simulate(context.WorldState);
             }

@@ -1,6 +1,6 @@
-using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
+using Cysharp.Threading.Tasks;
 
 namespace Gast.Lib.AI.MethodSelectors
 {
@@ -15,14 +15,16 @@ namespace Gast.Lib.AI.MethodSelectors
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
+            var worldState = context.WorldState;
+
             foreach (var method in methods)
             {
-                context.WorldState.WriteTo(ref simulationState);
+                worldState.WriteTo(ref simulationState);
                 var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningContext);
 
                 if (await ValidateMethod(method, validationContext, cancellationToken))
                 {
-                    simulationState.WriteTo(ref context.WorldState);
+                    simulationState.WriteTo(ref worldState);
                     return method;
                 }
             }
@@ -49,20 +51,16 @@ namespace Gast.Lib.AI.MethodSelectors
         }
 
         async UniTask<bool> ValidateMethod(
-           Method<TActorContext, TWorldState> method,
-           ValidationContext<TWorldState> context,
-           CancellationToken cancellationToken)
+            Method<TActorContext, TWorldState> method,
+            ValidationContext<TWorldState> context,
+            CancellationToken cancellationToken)
         {
             if (!method.CheckCondition(context.WorldState))
                 return false;
 
             foreach (var task in method.SubTasks)
-            {
                 if (!await task.ValidateAsync(context, cancellationToken))
-                {
                     return false;
-                }
-            }
 
             return true;
         }
