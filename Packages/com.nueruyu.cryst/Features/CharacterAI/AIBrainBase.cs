@@ -70,8 +70,13 @@ namespace Cryst.Features.CharacterAI
         protected abstract void RegisterModules<TWorldState>(ActorContext<TWorldState> context)
             where TWorldState : class, IWorldState<TWorldState>;
 
-        protected virtual void OnBrainInitialize() { }
-        protected virtual void OnBrainCleanup() { }
+        protected virtual void OnBrainInitialize()
+        {
+        }
+
+        protected virtual void OnBrainCleanup()
+        {
+        }
 
         class DomainRegistrar : IDomainRegistrar
         {
@@ -114,9 +119,8 @@ namespace Cryst.Features.CharacterAI
 
                 brain.RegisterModules(actorContext);
 
-                var aiContext = new AIContext<ActorContext<TWorldState>>(contextKey, actorContext);
-                var runner = domain.CreateRunner();
-                var process = new DomainProcess<ActorContext<TWorldState>, TWorldState>(runner, aiContext);
+                var process =
+                    new DomainProcess<ActorContext<TWorldState>, TWorldState>(domain, actorContext, contextKey);
                 domainRunner.Register(process);
             }
         }

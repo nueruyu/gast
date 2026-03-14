@@ -14,14 +14,11 @@ namespace Gast.Lib.AI
         where TActorContext : class, IActorContext<TWorldState>
     {
         UniTask<bool> ValidateAsync(
-            TWorldState worldState,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken);
 
-        UniTask RunAsync(AIContext<TActorContext> context, CancellationToken cancellationToken);
+        UniTask RunAsync(ExecutionContext<TActorContext> context, CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Executes a simulation of the task's logic, collecting execution details into the context.
-        /// </summary>
         UniTask SimulateAsync(SimulationContext<TWorldState> context, CancellationToken cancellationToken);
     }
 }

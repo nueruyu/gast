@@ -1,6 +1,6 @@
-using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
+using Cysharp.Threading.Tasks;
 
 namespace Gast.Lib.AI.MethodSelectors
 {
@@ -12,14 +12,17 @@ namespace Gast.Lib.AI.MethodSelectors
 
         public async UniTask<Method<TActorContext, TWorldState>> SelectAsync(
             IReadOnlyList<Method<TActorContext, TWorldState>> methods,
-            TWorldState worldState,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
+            var worldState = context.WorldState;
+
             foreach (var method in methods)
             {
                 worldState.WriteTo(ref simulationState);
+                var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
-                if (await ValidateMethod(method, simulationState, cancellationToken))
+                if (await ValidateMethod(method, validationContext, cancellationToken))
                 {
                     simulationState.WriteTo(ref worldState);
                     return method;
@@ -32,12 +35,12 @@ namespace Gast.Lib.AI.MethodSelectors
         public async UniTask<Method<TActorContext, TWorldState>> SelectInterruptsAsync(
             IReadOnlyList<Method<TActorContext, TWorldState>> methods,
             Method<TActorContext, TWorldState> currentMethod,
-            TWorldState worldState,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
             var preferredMethod = await SelectAsync(
                 methods,
-                worldState,
+                context,
                 cancellationToken);
 
             if (preferredMethod != null &&
@@ -48,20 +51,16 @@ namespace Gast.Lib.AI.MethodSelectors
         }
 
         async UniTask<bool> ValidateMethod(
-           Method<TActorContext, TWorldState> method,
-           TWorldState worldState,
-           CancellationToken cancellationToken)
+            Method<TActorContext, TWorldState> method,
+            ValidationContext<TWorldState> context,
+            CancellationToken cancellationToken)
         {
-            if (!method.CheckCondition(worldState))
+            if (!method.CheckCondition(context.WorldState))
                 return false;
 
             foreach (var task in method.SubTasks)
-            {
-                if (!await task.ValidateAsync(worldState, cancellationToken))
-                {
+                if (!await task.ValidateAsync(context, cancellationToken))
                     return false;
-                }
-            }
 
             return true;
         }

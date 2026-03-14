@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,12 +7,8 @@ namespace Gast.Lib.AI
         where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly ITask<TActorContext, TWorldState>[] tasks;
         readonly Dictionary<string, ITask<TActorContext, TWorldState>> taskMap = new();
-        readonly ITask<TActorContext, TWorldState> rootTask;
-
-        public IReadOnlyList<ITask<TActorContext, TWorldState>> Tasks => tasks;
-        public ITask<TActorContext, TWorldState> RootTask => rootTask;
+        readonly ITask<TActorContext, TWorldState>[] tasks;
 
         public AIDomain(
             IEnumerable<ITask<TActorContext, TWorldState>> tasks,
@@ -21,22 +16,17 @@ namespace Gast.Lib.AI
         {
             this.tasks = tasks.ToArray();
 
-            foreach (var task in this.tasks)
-            {
-                taskMap[task.Name] = task;
-            }
+            foreach (var task in this.tasks) taskMap[task.Name] = task;
 
-            rootTask = taskMap[rootTaskName];
+            RootTask = GetTask(rootTaskName);
         }
+
+        public IReadOnlyList<ITask<TActorContext, TWorldState>> Tasks => tasks;
+        public ITask<TActorContext, TWorldState> RootTask { get; }
 
         public ITask<TActorContext, TWorldState> GetTask(string name)
         {
             return taskMap[name];
-        }
-
-        public AIRunner<TActorContext, TWorldState> CreateRunner()
-        {
-            return new AIRunner<TActorContext, TWorldState>(rootTask);
         }
     }
 }

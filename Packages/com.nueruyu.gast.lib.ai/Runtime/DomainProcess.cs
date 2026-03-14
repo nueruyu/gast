@@ -1,6 +1,5 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 
 namespace Gast.Lib.AI
 {
@@ -14,27 +13,37 @@ namespace Gast.Lib.AI
         where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly AIContext<TActorContext> context;
-        readonly AIRunner<TActorContext, TWorldState> runner;
+        readonly TActorContext actorContext;
+        readonly ContextKey contextKey;
+        readonly AIDomain<TActorContext, TWorldState> domain;
 
-        public DomainProcess(AIRunner<TActorContext, TWorldState> runner, AIContext<TActorContext> context)
+        public DomainProcess(
+            AIDomain<TActorContext, TWorldState> domain,
+            TActorContext actorContext,
+            ContextKey contextKey)
         {
-            this.runner = runner;
-            this.context = context;
+            this.domain = domain;
+            this.actorContext = actorContext;
+            this.contextKey = contextKey;
         }
 
         public async UniTask RunAsync(CancellationToken cancellationToken)
         {
+            var planningContext = new PlanningStateStore();
             while (!cancellationToken.IsCancellationRequested)
             {
-                await runner.RunAsync(context, cancellationToken);
+                await domain.RootTask.RunAsync(
+                    new ExecutionContext<TActorContext>(contextKey, actorContext, planningContext),
+                    cancellationToken);
+
+                planningContext.Clear();
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
         }
 
         public void UpdateState()
         {
-            context.ActorContext.UpdateWorldState();
+            actorContext.UpdateWorldState();
         }
     }
 }
