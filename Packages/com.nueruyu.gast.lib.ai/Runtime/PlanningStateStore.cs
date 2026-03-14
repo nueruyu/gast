@@ -2,16 +2,16 @@ using System.Collections.Generic;
 
 namespace Gast.Lib.AI
 {
-    public class PlanningContext
+    public class PlanningStateStore
     {
-        internal readonly Dictionary<object, object> state = new();
+        readonly Dictionary<object, object> state = new();
 
-        internal void Set(object key, object value)
+        public void Set(object key, object value)
         {
             state[key] = value;
         }
 
-        internal bool TryGet<T>(object key, out T value)
+        public bool TryGet<T>(object key, out T value)
         {
             if (state.TryGetValue(key, out var objValue) && objValue is T typedValue)
             {

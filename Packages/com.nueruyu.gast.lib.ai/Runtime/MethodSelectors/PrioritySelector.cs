@@ -20,7 +20,7 @@ namespace Gast.Lib.AI.MethodSelectors
             foreach (var method in methods)
             {
                 worldState.WriteTo(ref simulationState);
-                var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningContext);
+                var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
                 if (await ValidateMethod(method, validationContext, cancellationToken))
                 {

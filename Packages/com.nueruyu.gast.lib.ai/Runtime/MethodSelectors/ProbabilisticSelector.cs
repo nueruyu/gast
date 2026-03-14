@@ -17,7 +17,7 @@ namespace Gast.Lib.AI.MethodSelectors
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
-            if (context.PlanningContext.TryGet<Method<TActorContext, TWorldState>>(this, out var cachedMethod))
+            if (context.PlanningStateStore.TryGet<Method<TActorContext, TWorldState>>(this, out var cachedMethod))
             {
                 return cachedMethod;
             }
@@ -28,7 +28,7 @@ namespace Gast.Lib.AI.MethodSelectors
             foreach (var method in methods)
             {
                 context.WorldState.WriteTo(ref simulationState);
-                var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningContext);
+                var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
                 if (!await ValidateMethod(method, validationContext, cancellationToken))
                 {
@@ -67,7 +67,7 @@ namespace Gast.Lib.AI.MethodSelectors
                 }
             }
 
-            context.PlanningContext.Set(this, selectedMethod);
+            context.PlanningStateStore.Set(this, selectedMethod);
             return selectedMethod;
         }
 

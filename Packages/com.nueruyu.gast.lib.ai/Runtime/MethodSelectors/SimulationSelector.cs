@@ -36,7 +36,7 @@ namespace Gast.Lib.AI.MethodSelectors
                     continue;
 
                 worldState.WriteTo(ref simulationState);
-                var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningContext);
+                var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
                 var valid = await SimulateMethodAsync(
                     method,
@@ -65,7 +65,7 @@ namespace Gast.Lib.AI.MethodSelectors
             CancellationToken cancellationToken)
         {
             context.WorldState.WriteTo(ref simulationState);
-            var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningContext);
+            var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
             await SimulateMethodAsync(
                 currentMethod,
@@ -89,7 +89,7 @@ namespace Gast.Lib.AI.MethodSelectors
 
                 worldState.WriteTo(ref simulationState);
                 var innerValidationContext =
-                    new ValidationContext<TWorldState>(simulationState, context.PlanningContext);
+                    new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
                 var valid = await SimulateMethodAsync(
                     method,

@@ -3,12 +3,12 @@ namespace Gast.Lib.AI
     public readonly struct ValidationContext<TWorldState> where TWorldState : class
     {
         public TWorldState WorldState { get; }
-        public PlanningContext PlanningContext { get; }
+        public PlanningStateStore PlanningStateStore { get; }
 
-        public ValidationContext(TWorldState worldState, PlanningContext planningContext)
+        public ValidationContext(TWorldState worldState, PlanningStateStore planningStateStore)
         {
             WorldState = worldState;
-            PlanningContext = planningContext;
+            PlanningStateStore = planningStateStore;
         }
     }
 }

@@ -4,13 +4,13 @@ namespace Gast.Lib.AI
     {
         public ContextKey Key { get; }
         public TActorContext ActorContext { get; }
-        public PlanningContext PlanningContext { get; }
+        public PlanningStateStore PlanningStateStore { get; }
 
-        public ExecutionContext(ContextKey key, TActorContext actorContext, PlanningContext planningContext)
+        public ExecutionContext(ContextKey key, TActorContext actorContext, PlanningStateStore planningStateStore)
         {
             Key = key;
             ActorContext = actorContext;
-            PlanningContext = planningContext;
+            PlanningStateStore = planningStateStore;
         }
     }
 }
