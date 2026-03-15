@@ -5,31 +5,39 @@ namespace Gast.Lib.AI.Debugging
 {
     public static class DebugLogger
     {
+        static readonly Dictionary<ContextKey, Stack<string>> taskStacks = new();
         public static bool EnableLogging { get; set; } = true;
 
-        static readonly Dictionary<ContextKey, Stack<string>> taskStacks = new();
-
-        public static void LogMethodSelected<TWorldState>(ContextKey contextKey, string compoundTaskName, string methodName, TWorldState state)
+        public static void Log(ContextKey contextKey, string message)
         {
             if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
-            AIDebuggerBridge.Debugger.AddLog(contextKey, $"{compoundTaskName} -> Selected method '{methodName}'");
+            AIDebuggerBridge.Debugger.AddLog(contextKey, message);
+        }
+
+        public static void LogMethodSelected<TWorldState>(
+            ContextKey contextKey,
+            string compoundTaskName,
+            string methodName,
+            TWorldState state)
+        {
+            Log(contextKey, $"Method selected - [{compoundTaskName}] Selected method: '{methodName}'");
         }
 
         public static void LogPlan(ContextKey contextKey, IEnumerable<ITask> plan)
         {
-            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
+            if (!AIDebuggerBridge.IsInitialized)
                 return;
+
             var planNames = plan.Select(p => p.Name).ToArray();
             AIDebuggerBridge.Debugger.UpdatePlan(contextKey, planNames);
-            AIDebuggerBridge.Debugger.AddLog(contextKey, $"Planning complete. Plan has {planNames.Length} actions.");
+
+            Log(contextKey, $"Planning complete. Plan has {planNames.Length} actions.");
         }
 
         public static void LogPlanFailed(ContextKey contextKey, string reason)
         {
-            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
-                return;
-            AIDebuggerBridge.Debugger.AddLog(contextKey, $"Planning failed: {reason}");
+            Log(contextKey, $"Planning failed: {reason}");
         }
 
         public static void EnterTask(ContextKey contextKey, string taskName)
@@ -42,6 +50,7 @@ namespace Gast.Lib.AI.Debugging
                 stack = new Stack<string>();
                 taskStacks[contextKey] = stack;
             }
+
             stack.Push(taskName);
             UpdateActiveTaskPath(contextKey);
         }
@@ -58,7 +67,7 @@ namespace Gast.Lib.AI.Debugging
             }
         }
 
-        private static void UpdateActiveTaskPath(ContextKey contextKey)
+        static void UpdateActiveTaskPath(ContextKey contextKey)
         {
             if (taskStacks.TryGetValue(contextKey, out var stack) && stack.Count > 0)
             {

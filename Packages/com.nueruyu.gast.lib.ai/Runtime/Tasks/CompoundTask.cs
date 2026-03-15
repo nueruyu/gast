@@ -94,7 +94,8 @@ namespace Gast.Lib.AI.Tasks
                     var currentMethodInfo = new CurrentMethodInfo<TActorContext, TWorldState>(method);
 
                     var runMethodTask = RunMethodAsync(currentMethodInfo, context, localCts.Token);
-                    var monitorTask = MonitorInterruptsAsync(currentMethodInfo, context, interruptValidationStore, localCts.Token);
+                    var monitorTask = MonitorInterruptsAsync(currentMethodInfo, context, interruptValidationStore,
+                        localCts.Token);
 
                     var completedTaskIndex = await UniTask.WhenAny(runMethodTask, monitorTask);
 
@@ -127,6 +128,7 @@ namespace Gast.Lib.AI.Tasks
                 cancellationToken.ThrowIfCancellationRequested();
                 context.ActorContext.UpdateWorldState();
             }
+
             currentMethodInfo.NextSubTaskIndex = subTasks.Count; // Mark as completed
         }
 
@@ -140,10 +142,8 @@ namespace Gast.Lib.AI.Tasks
             {
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
 
-                if (currentMethodInfo.NextSubTaskIndex >= currentMethodInfo.Method.SubTasks.Count)
-                {
-                    break; // Method completed, stop monitoring
-                }
+                if (currentMethodInfo.NextSubTaskIndex >=
+                    currentMethodInfo.Method.SubTasks.Count) break; // Method completed, stop monitoring
 
                 context.ActorContext.WorldState.WriteTo(ref simulationState);
 
@@ -158,7 +158,8 @@ namespace Gast.Lib.AI.Tasks
 
                 if (interruptsMethod != null)
                 {
-                    DebugLogger.LogPlanFailed(context.Key, $"Interrupt: {Name} switching to {interruptsMethod.Name}");
+                    DebugLogger.Log(context.Key,
+                        $"Method interrupted - [{Name}] {currentMethodInfo.Method.Name} -> {interruptsMethod.Name}");
                     return; // Interrupt detected, complete this task.
                 }
             }

@@ -120,7 +120,8 @@ namespace Gast.Lib.AI.MethodSelectors
                     return false;
 
                 var task = method.SubTasks[i];
-                if (!await task.ValidateAsync(context, cancellationToken)) return false;
+                if (!await task.ValidateAsync(context, cancellationToken))
+                    return false;
             }
 
             return true;
