@@ -64,7 +64,7 @@ namespace Gast.Lib.AI.MethodSelectors
         {
             context.WorldState.WriteTo(ref simulationState);
             var currentMethodValidationContext =
-                new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
+                new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore, context.CurrentlyExecutingTask);
 
             var isCurrentMethodStillValid = await SimulateMethodAsync(
                 currentMethodInfo.Method,

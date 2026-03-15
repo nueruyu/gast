@@ -40,7 +40,7 @@ namespace Gast.Lib.AI.MethodSelectors
         {
             // Check if the current method is still valid from its current execution point.
             context.WorldState.WriteTo(ref simulationState);
-            var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
+            var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore, context.CurrentlyExecutingTask);
 
             var isCurrentMethodStillValid = await ValidateMethod(
                 currentMethodInfo.Method,

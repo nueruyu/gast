@@ -75,7 +75,7 @@ namespace Gast.Lib.AI.MethodSelectors
             CancellationToken cancellationToken)
         {
             context.WorldState.WriteTo(ref simulationState);
-            var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
+            var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore, context.CurrentlyExecutingTask);
 
             var isCurrentMethodStillValid = await ValidateMethod(
                 currentMethodInfo.Method,
