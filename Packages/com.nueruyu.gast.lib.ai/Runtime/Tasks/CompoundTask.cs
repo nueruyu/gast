@@ -145,10 +145,13 @@ namespace Gast.Lib.AI.Tasks
                 if (currentMethodInfo.NextSubTaskIndex >=
                     currentMethodInfo.Method.SubTasks.Count) break; // Method completed, stop monitoring
 
+                var currentlyExecutingTask =
+                    currentMethodInfo.Method.SubTasks[currentMethodInfo.NextSubTaskIndex];
+
                 context.ActorContext.WorldState.WriteTo(ref simulationState);
 
                 var validationContext =
-                    new ValidationContext<TWorldState>(simulationState, planningStateStore);
+                    new ValidationContext<TWorldState>(simulationState, planningStateStore, currentlyExecutingTask);
 
                 var interruptsMethod = await methodSelector.SelectInterruptsAsync(
                     methods,

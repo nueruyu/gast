@@ -22,6 +22,12 @@ namespace Gast.Lib.AI.Tasks
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
+            if (ReferenceEquals(this, context.CurrentlyExecutingTask))
+            {
+                action.Simulate(context.WorldState);
+                return UniTask.FromResult(true);
+            }
+
             if (!action.IsAvailable(context.WorldState))
                 return UniTask.FromResult(false);
 

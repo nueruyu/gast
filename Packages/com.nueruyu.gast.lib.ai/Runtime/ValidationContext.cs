@@ -4,11 +4,16 @@ namespace Gast.Lib.AI
     {
         public TWorldState WorldState { get; }
         public PlanningStateStore PlanningStateStore { get; }
+        public ITask CurrentlyExecutingTask { get; }
 
-        public ValidationContext(TWorldState worldState, PlanningStateStore planningStateStore)
+        public ValidationContext(
+            TWorldState worldState,
+            PlanningStateStore planningStateStore,
+            ITask currentlyExecutingTask = null)
         {
             WorldState = worldState;
             PlanningStateStore = planningStateStore;
+            CurrentlyExecutingTask = currentlyExecutingTask;
         }
     }
 }
