@@ -5,6 +5,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
 {
     public class CombatState : IWorldState<CombatState>
     {
+        public AIMode CurrentMode { get; set; }
         public bool HasTarget { get; set; }
         public Vector3 TargetPosition { get; set; }
         public Vector3 TargetForward { get; set; }
@@ -20,6 +21,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
         public void WriteTo(ref CombatState dest)
         {
             dest ??= new();
+            dest.CurrentMode = CurrentMode;
             dest.HasTarget = HasTarget;
             dest.TargetPosition = TargetPosition;
             dest.TargetForward = TargetForward;

@@ -13,6 +13,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
             var actor = context.Actor;
             var state = context.WorldState;
 
+            state.CurrentMode = memory.CurrentMode;
+
             state.AttackRange = 1.5f;
             state.CombatRange = 4.5f;
 

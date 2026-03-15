@@ -77,7 +77,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
             var root = builder.DefineCompound("Root");
 
             root.AddMethod("Combat")
-                .Condition(s => s.HasTarget)
+                .Condition(s => s.CurrentMode == AIMode.Combat)
                 .Do(engageTarget);
             root.AddMethod("Idle")
                 .Do(idleAction);

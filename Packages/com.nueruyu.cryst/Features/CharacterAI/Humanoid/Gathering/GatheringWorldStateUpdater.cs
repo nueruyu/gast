@@ -11,6 +11,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering
             var actor = context.Actor;
             var state = context.WorldState;
 
+            state.CurrentMode = memory.CurrentMode;
+
             var currentGoal = memory.CurrentObjective;
             state.CurrentGoal = currentGoal;
             state.HasGoal = currentGoal != null;

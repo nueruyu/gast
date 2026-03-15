@@ -38,7 +38,7 @@ namespace Cryst.Features.CharacterAI.Actions
             {
                 await context.Actor.MoveToAsync(
                     static c => c.Territory.HomePosition,
-                    static _ => false,
+                    static c => c.HasReturnedToTerritory(),
                     territorialCharacter,
                     cancellationToken);
             }

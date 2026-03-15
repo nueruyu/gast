@@ -10,5 +10,6 @@ namespace Cryst.Features.CharacterAI.Humanoid
         public IInteractable InteractableTarget { get; set; }
         public IAIObjective CurrentObjective { get; set; }
         public bool HasTarget => CombatTarget != null && CombatTarget.Status.IsAlive.Value;
+        public AIMode CurrentMode { get; set; } = AIMode.Idle;
     }
 }
