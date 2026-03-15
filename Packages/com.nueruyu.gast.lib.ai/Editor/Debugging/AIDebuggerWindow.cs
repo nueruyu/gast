@@ -57,9 +57,9 @@ namespace Gast.Lib.AI.Editor.Debugging
 
             actors = allDebugInfo
                 .Select(dict => dict.Values
-                    .Select(info => new ActorInfo { Id = info.ContextKey.ActorId, Name = info.ActorName })
-                    .DistinctBy(a => a.Id)
-                    .OrderBy(a => a.Name)
+                    .GroupBy(info => info.ContextKey.ActorId)
+                    .OrderBy(g => g.Min(info => info.RegistrationIndex))
+                    .Select(g => new ActorInfo { Id = g.Key, Name = g.First().ActorName })
                     .ToArray())
                 .ToReadOnlyReactiveProperty();
 

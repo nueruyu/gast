@@ -7,10 +7,11 @@ namespace Gast.Lib.AI.Debugging
     public class AIDebugger : IContextRegistry, IAIDebugger
     {
         readonly ConcurrentDictionary<ContextKey, AIDebugInfo> debugInfoMap = new();
+        int registrationCounter;
 
         public void Register(ContextKey contextKey, object worldState, string actorName)
         {
-            debugInfoMap.TryAdd(contextKey, new AIDebugInfo(contextKey, actorName, worldState));
+            debugInfoMap.TryAdd(contextKey, new AIDebugInfo(contextKey, actorName, worldState, registrationCounter++));
         }
 
         public void Unregister(ContextKey contextKey)
