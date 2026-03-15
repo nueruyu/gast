@@ -10,7 +10,9 @@ namespace Gast.Lib.AI.Debugging
 
         void UpdateCurrentMethod(ContextKey contextKey, string methodName);
 
-        void UpdateActiveTaskPath(ContextKey contextKey, string taskPath);
+        void EnterTask(ContextKey contextKey, string taskName);
+
+        void ExitTask(ContextKey contextKey);
 
         void AddLog(ContextKey contextKey, string log);
     }

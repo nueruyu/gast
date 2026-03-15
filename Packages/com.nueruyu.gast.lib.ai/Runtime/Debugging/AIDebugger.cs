@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Gast.Lib.AI.Debugging
 {
@@ -11,8 +10,7 @@ namespace Gast.Lib.AI.Debugging
 
         public void Register(ContextKey contextKey, object worldState, string actorName)
         {
-            var added = debugInfoMap.TryAdd(contextKey, new AIDebugInfo(contextKey, actorName, worldState));
-            Debug.Log($"[AIDebugger] Register: {contextKey}, Added: {added}, Total: {debugInfoMap.Count}");
+            debugInfoMap.TryAdd(contextKey, new AIDebugInfo(contextKey, actorName, worldState));
         }
 
         public void Unregister(ContextKey contextKey)
@@ -20,46 +18,35 @@ namespace Gast.Lib.AI.Debugging
             debugInfoMap.TryRemove(contextKey, out _);
         }
 
-        public IReadOnlyDictionary<ContextKey, AIDebugInfo> GetAllDebugInfo()
-        {
-            return debugInfoMap;
-        }
+        public IReadOnlyDictionary<ContextKey, AIDebugInfo> GetAllDebugInfo() => debugInfoMap;
 
-        public void UpdatePlan(ContextKey contextKey, IReadOnlyList<string> plan)
-        {
-            if (debugInfoMap.TryGetValue(contextKey, out var info))
-            {
-                info.CurrentPlan.Value = plan;
-            }
-        }
+        public void UpdatePlan(ContextKey contextKey, IReadOnlyList<string> plan) =>
+            WithInfo(contextKey, info => info.CurrentPlan.Value = plan);
 
-        public void UpdateCurrentMethod(ContextKey contextKey, string methodName)
-        {
-            if (debugInfoMap.TryGetValue(contextKey, out var info))
-            {
-                info.CurrentMethodName.Value = methodName;
-            }
-        }
+        public void UpdateCurrentMethod(ContextKey contextKey, string methodName) =>
+            WithInfo(contextKey, info => info.CurrentMethodName.Value = methodName);
 
-        public void UpdateActiveTaskPath(ContextKey contextKey, string taskPath)
-        {
-            if (debugInfoMap.TryGetValue(contextKey, out var info))
-            {
-                info.ActiveTaskPath.Value = taskPath;
-            }
-        }
+        public void EnterTask(ContextKey contextKey, string taskName) =>
+            WithInfo(contextKey, info => info.EnterTask(taskName));
+
+        public void ExitTask(ContextKey contextKey) =>
+            WithInfo(contextKey, info => info.ExitTask());
 
         public void AddLog(ContextKey contextKey, string log)
         {
-            if (debugInfoMap.TryGetValue(contextKey, out var info))
+            WithInfo(contextKey, info =>
             {
                 var timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
                 info.Logs.Add($"[{timestamp}] {log}");
                 if (info.Logs.Count > 100)
-                {
                     info.Logs.RemoveAt(0);
-                }
-            }
+            });
+        }
+
+        void WithInfo(ContextKey contextKey, Action<AIDebugInfo> action)
+        {
+            if (debugInfoMap.TryGetValue(contextKey, out var info))
+                action(info);
         }
     }
 }

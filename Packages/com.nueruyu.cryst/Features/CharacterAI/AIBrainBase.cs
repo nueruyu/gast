@@ -6,7 +6,6 @@ using Cysharp.Threading.Tasks;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
-using Gast.Lib.AI.Debugging;
 
 namespace Cryst.Features.CharacterAI
 {
@@ -97,10 +96,7 @@ namespace Cryst.Features.CharacterAI
                 brain.characterCts.Token.Register(() =>
                 {
                     foreach (var key in contextKeys.Values)
-                    {
-                        DebugLogger.ClearContext(key);
                         brain.contextRegistry.Unregister(key);
-                    }
                 });
             }
 

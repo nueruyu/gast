@@ -1,11 +1,14 @@
 using ObservableCollections;
 using R3;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Gast.Lib.AI.Debugging
 {
     public class AIDebugInfo
     {
+        readonly Stack<string> taskStack = new();
+
         public ContextKey ContextKey { get; }
         public string ActorName { get; }
         public object WorldState { get; }
@@ -19,6 +22,23 @@ namespace Gast.Lib.AI.Debugging
             ContextKey = contextKey;
             ActorName = actorName;
             WorldState = worldState;
+        }
+
+        public void EnterTask(string taskName)
+        {
+            taskStack.Push(taskName);
+            ActiveTaskPath.Value = string.Join(" / ", taskStack.Reverse());
+        }
+
+        public void ExitTask()
+        {
+            if (taskStack.Count > 0)
+            {
+                taskStack.Pop();
+                ActiveTaskPath.Value = taskStack.Count > 0
+                    ? string.Join(" / ", taskStack.Reverse())
+                    : "";
+            }
         }
     }
 }

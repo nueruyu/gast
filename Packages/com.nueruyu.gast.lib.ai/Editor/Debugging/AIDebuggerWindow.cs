@@ -23,7 +23,6 @@ namespace Gast.Lib.AI.Editor.Debugging
 
         const string ActiveItemClass = "list-item--active";
 
-        [Serializable]
         private struct ActorInfo
         {
             public object Id;
@@ -45,7 +44,6 @@ namespace Gast.Lib.AI.Editor.Debugging
         ReadOnlyReactiveProperty<string[]> domainNameChoices;
         ReadOnlyReactiveProperty<string> selectedDomainName;
 
-        ReadOnlyReactiveProperty<ContextKey?> selectedContextKey;
         ReadOnlyReactiveProperty<AIDebugInfo> selectedDebugInfo;
 
         VisualElement worldStateContainer;
@@ -58,13 +56,10 @@ namespace Gast.Lib.AI.Editor.Debugging
             selectedDomainIndex.Value = -1;
 
             actors = allDebugInfo
-                .Select(dict =>
-                {
-                    return dict.Values
-                        .Select(info => new ActorInfo { Id = info.ContextKey.ActorId, Name = info.ActorName })
-                        .Distinct()
-                        .ToArray();
-                })
+                .Select(dict => dict.Values
+                    .Select(info => new ActorInfo { Id = info.ContextKey.ActorId, Name = info.ActorName })
+                    .DistinctBy(a => a.Id)
+                    .ToArray())
                 .ToReadOnlyReactiveProperty();
 
             selectedActorId = actors
@@ -95,28 +90,13 @@ namespace Gast.Lib.AI.Editor.Debugging
                 })
                 .ToReadOnlyReactiveProperty();
 
-            selectedContextKey = allDebugInfo
+            selectedDebugInfo = allDebugInfo
                 .CombineLatest(selectedActorId, selectedDomainName, (dict, actorId, domain) =>
                 {
                     if (actorId == null || domain == null)
-                        return (ContextKey?)null;
-
-                    return new ContextKey(actorId, domain);
-                })
-                .ToReadOnlyReactiveProperty();
-
-            selectedDebugInfo = selectedContextKey
-                .Select(key =>
-                {
-                    if (!key.HasValue)
                         return null;
-
-                    if (allDebugInfo.CurrentValue.TryGetValue(key.Value, out var info))
-                    {
-                        return info;
-                    }
-
-                    return null;
+                    dict.TryGetValue(new ContextKey(actorId, domain), out var info);
+                    return info;
                 })
                 .ToReadOnlyReactiveProperty();
 
