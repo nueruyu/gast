@@ -16,22 +16,23 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
 
             var root = builder.DefineCompound("Root");
 
-            root.AddMethod("ReturnToHome")
-                .While(s => s.IsOutOfTerritory)
-                .Do(new SetAIModeAction(AIMode.ReturningToHome))
-                .Do(new ReturnToHomeAction());
-            root.AddMethod("RespondToThreat")
-                .While(s => s.IsThreatened)
+            root.AddMethod("SetMode_ReturnToHome")
+                .When(s => s.IsOutOfTerritory)
+                .Do(new ClearTargetAction())
+                .Do(new SetAIModeAction(AIMode.ReturningToHome));
+            root.AddMethod("SetMode_Combat")
+                .When(s => s.IsThreatened)
                 .Do(new SelectThreatAction())
                 .Do(new SetAIModeAction(AIMode.Combat));
-            root.AddMethod("PursueObjective")
+            root.AddMethod("SetMode_FromObjective")
                 .When(s => s.AvailableObjectives.Count > 0)
                 .Do(new SelectObjectiveAction())
                 .Do(new SetAIModeFromObjectiveAction());
-            root.AddMethod("Idle")
+            root.AddMethod("SetMode_Idle")
                 .Do(new ClearTargetAction())
-                .Do(new SetAIModeAction(AIMode.Idle))
-                .Do(new WaitAction(new FloatRange(0.8f, 1.2f)));
+                .Do(new SetAIModeAction(AIMode.Idle));
+            root.AddMethod("Wait")
+                .Do(new WaitAction(new FloatRange(0.2f, 0.3f)));
 
             domain = builder.Build("Root");
         }

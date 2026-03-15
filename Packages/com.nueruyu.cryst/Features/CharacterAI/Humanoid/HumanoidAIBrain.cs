@@ -1,5 +1,6 @@
 using Cryst.Features.CharacterAI.Humanoid.Combat;
 using Cryst.Features.CharacterAI.Humanoid.Gathering;
+using Cryst.Features.CharacterAI.Humanoid.Patrol;
 using Cryst.Features.CharacterAI.Humanoid.Strategic;
 using Gast.Lib.AI.Debugging;
 
@@ -10,6 +11,7 @@ namespace Cryst.Features.CharacterAI.Humanoid
         readonly CombatDomainConstruct combat;
         readonly StrategicDomainConstruct strategic;
         readonly GatheringDomainConstruct gathering;
+        readonly PatrolDomainConstruct patrol;
         HumanoidMemory memory;
 
         public HumanoidAIBrain(
@@ -18,12 +20,14 @@ namespace Cryst.Features.CharacterAI.Humanoid
             ObjectiveManager objectiveManager,
             CombatDomainConstruct combat,
             StrategicDomainConstruct strategic,
-            GatheringDomainConstruct gathering) :
+            GatheringDomainConstruct gathering,
+            PatrolDomainConstruct patrol) :
             base(contextRegistry, services, objectiveManager)
         {
             this.combat = combat;
             this.strategic = strategic;
             this.gathering = gathering;
+            this.patrol = patrol;
         }
 
         protected override void OnBrainInitialize()
@@ -38,9 +42,10 @@ namespace Cryst.Features.CharacterAI.Humanoid
 
         protected override void RegisterDomains(IDomainRegistrar registrar)
         {
-            combat.ApplyTo(registrar);
             strategic.ApplyTo(registrar);
+            combat.ApplyTo(registrar);
             gathering.ApplyTo(registrar);
+            patrol.ApplyTo(registrar);
         }
 
         protected override void RegisterModules<TWorldState>(ActorContext<TWorldState> context)
