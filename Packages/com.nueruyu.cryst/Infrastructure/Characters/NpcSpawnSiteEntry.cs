@@ -8,13 +8,20 @@ namespace Cryst.Infrastructure.Characters
 {
     public class NpcSpawnSiteEntry : SpawnSiteEntryBase
     {
-        [SerializeField]
-        CharacterTypeReference characterTypeReference;
+        [SerializeField] CharacterTypeReference characterTypeReference;
 
-        [SerializeField]
-        Faction faction = Faction.Enemy;
+        [SerializeField] Faction faction = Faction.Enemy;
 
-        public override ICharacterCreationParameters CreationParameters =>
-            new CharacterCreationParameters(characterTypeReference.Id, faction);
+        public override ICharacterCreationParameters CreationParameters
+        {
+            get
+            {
+                var spawnSite = GetComponentInParent<SpawnSite>();
+                var territory = spawnSite != null
+                    ? new Territory(transform.position, spawnSite.TerritoryRadius)
+                    : (Territory?)null;
+                return new CharacterCreationParameters(characterTypeReference.Id, faction, territory);
+            }
+        }
     }
 }

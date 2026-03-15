@@ -51,7 +51,6 @@ namespace Gast.Unity.Features.Navigations
                     return Vector3.zero;
 
                 var direction = agent.desiredVelocity;
-                direction.y = 0; // Flatten Y to prevent tilting
                 return direction.normalized;
             }
         }
@@ -63,6 +62,7 @@ namespace Gast.Unity.Features.Navigations
         {
             if (!agent)
                 return;
+
             agent.SetDestination(target);
         }
 

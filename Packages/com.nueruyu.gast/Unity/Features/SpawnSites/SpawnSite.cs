@@ -15,6 +15,9 @@ namespace Gast.Unity.Features.SpawnSites
         [SerializeField]
         float respawnCooldown = 30f;
 
+        [SerializeField]
+        float territoryRadius = 20f;
+
         ICommandDispatcher commandDispatcher;
 
         void OnDrawGizmosSelected()
@@ -40,6 +43,8 @@ namespace Gast.Unity.Features.SpawnSites
                 Gizmos.DrawLine(transform.position, worldPosition);
             }
         }
+
+        public float TerritoryRadius => territoryRadius;
 
         public void Initialize(ICommandDispatcher commandDispatcher)
         {

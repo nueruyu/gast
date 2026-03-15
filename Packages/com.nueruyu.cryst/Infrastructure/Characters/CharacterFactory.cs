@@ -84,6 +84,11 @@ namespace Cryst.Infrastructure.Characters
                 facets[typeof(ICameraFocusTarget)] = new CameraFocusTarget(characterGo.transform);
                 facets[typeof(IInteractor)] = interactor;
 
+                if (parameters.Territory.HasValue)
+                {
+                    facets[typeof(TerritorialCharacter)] = new TerritorialCharacter(parameters.Territory.Value, context.Resolve<ICharacterBody>());
+                }
+
                 var character = new Character(context, facets);
 
                 var host = characterGo.AddComponent<CharacterHost>();
