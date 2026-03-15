@@ -11,14 +11,14 @@ namespace Gast.Lib.AI.Debugging
 
         public static void Log(ContextKey contextKey, string message)
         {
-            if (CanLog) AIDebuggerBridge.Debugger.AddLog(contextKey, message);
+            if (!CanLog) return;
+            AIDebuggerBridge.Debugger.AddLog(contextKey, message);
         }
 
-        public static void LogMethodSelected<TWorldState>(
+        public static void LogMethodSelected(
             ContextKey contextKey,
             string compoundTaskName,
-            string methodName,
-            TWorldState state)
+            string methodName)
         {
             if (!CanLog) return;
             AIDebuggerBridge.Debugger.UpdateCurrentMethod(contextKey, methodName);
@@ -40,12 +40,14 @@ namespace Gast.Lib.AI.Debugging
 
         public static void EnterTask(ContextKey contextKey, string taskName)
         {
-            if (CanLog) AIDebuggerBridge.Debugger.EnterTask(contextKey, taskName);
+            if (!CanLog) return;
+            AIDebuggerBridge.Debugger.EnterTask(contextKey, taskName);
         }
 
         public static void ExitTask(ContextKey contextKey)
         {
-            if (CanLog) AIDebuggerBridge.Debugger.ExitTask(contextKey);
+            if (!CanLog) return;
+            AIDebuggerBridge.Debugger.ExitTask(contextKey);
         }
     }
 }

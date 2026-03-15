@@ -24,13 +24,13 @@ namespace Gast.Lib.AI.Debugging
             WorldState = worldState;
         }
 
-        public void EnterTask(string taskName)
+        internal void EnterTask(string taskName)
         {
             taskStack.Push(taskName);
             ActiveTaskPath.Value = string.Join(" / ", taskStack.Reverse());
         }
 
-        public void ExitTask()
+        internal void ExitTask()
         {
             if (taskStack.Count > 0)
             {

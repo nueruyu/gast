@@ -83,7 +83,7 @@ namespace Gast.Lib.AI.Tasks
                         break;
                     }
 
-                    DebugLogger.LogMethodSelected(context.Key, Name, method.Name, context.ActorContext.WorldState);
+                    DebugLogger.LogMethodSelected(context.Key, Name, method.Name);
                     DebugLogger.LogPlan(context.Key, method.SubTasks);
 
                     using var localCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
