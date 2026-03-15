@@ -12,7 +12,8 @@ namespace Gast.Lib.AI.Builders
     {
         readonly string methodName;
         readonly List<ITask<TActorContext, TWorldState>> subTasks = new();
-        Func<TWorldState, bool> condition = _ => true;
+        Func<TWorldState, bool> when = _ => true;
+        Func<TWorldState, bool> whileCondition;
         Func<TWorldState, float> interruptionCost;
         Func<TWorldState, float> scorer;
 
@@ -23,7 +24,18 @@ namespace Gast.Lib.AI.Builders
 
         public MethodBuilder<TActorContext, TWorldState> Condition(Func<TWorldState, bool> predicate)
         {
-            condition = predicate ?? throw new ArgumentNullException(nameof(predicate));
+            return When(predicate);
+        }
+
+        public MethodBuilder<TActorContext, TWorldState> When(Func<TWorldState, bool> predicate)
+        {
+            when = predicate ?? throw new ArgumentNullException(nameof(predicate));
+            return this;
+        }
+
+        public MethodBuilder<TActorContext, TWorldState> While(Func<TWorldState, bool> predicate)
+        {
+            whileCondition = predicate ?? throw new ArgumentNullException(nameof(predicate));
             return this;
         }
 
@@ -64,7 +76,8 @@ namespace Gast.Lib.AI.Builders
                 methodName,
                 index,
                 subTasks,
-                condition,
+                when,
+                whileCondition,
                 scorer,
                 interruptionCost);
         }

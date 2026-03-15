@@ -36,15 +36,18 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
                 .UseSelector(new ProbabilisticSelector<ActorContext<CombatState>, CombatState>());
 
             postAttackManeuver.AddMethod("Guard")
-                .Condition(s => s.CanGuard)
+                .When(s => s.CanGuard)
+                .While(s => s.HasTarget)
                 .Score(s => postAttackManeuverSettings.GuardChance.Value)
                 .Do(guardAction);
 
             postAttackManeuver.AddMethod("Strafe")
+                .While(s => s.HasTarget)
                 .Score(s => postAttackManeuverSettings.StrafeChance.Value)
                 .Do(strafeAction);
 
             postAttackManeuver.AddMethod("BackOff")
+                .While(s => s.HasTarget)
                 .Score(s => 1.0f - postAttackManeuverSettings.GuardChance.Value -
                             postAttackManeuverSettings.StrafeChance.Value)
                 .Do(backOffAction);
@@ -53,23 +56,27 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
                 .UseSelector(new ProbabilisticSelector<ActorContext<CombatState>, CombatState>());
 
             engageTarget.AddMethod("Attack")
-                .Condition(s => s.IsInAttackRange && s.IsReadyToAttack)
+                .When(s => s.IsInAttackRange && s.IsReadyToAttack)
+                .While(s => s.HasTarget)
                 .Score(s => 0.5f + 0.5f * s.SelfHealthRatio)
                 .InterruptCost(s => 1.0f)
                 .Do(stalkAction)
                 .Do(meleeAttackAction);
             engageTarget.AddMethod("Maneuver")
-                .Condition(s => s.IsInAttackRange)
+                .When(s => s.IsInAttackRange)
+                .While(s => s.HasTarget)
                 .Score(s => 0.2f + 0.8f * (1.0f - s.SelfHealthRatio))
                 .InterruptCost(s => 0.3f)
                 .Do(postAttackManeuver);
             engageTarget.AddMethod("Approach_Tactical")
-                .Condition(s => !s.IsInAttackRange && s.IsInCombatRange)
+                .When(s => !s.IsInAttackRange && s.IsInCombatRange)
+                .While(s => s.HasTarget)
                 .Score(s => 0.6f)
                 .InterruptCost(s => 0.1f)
                 .Do(strafeAction);
             engageTarget.AddMethod("Chase")
-                .Condition(s => !s.IsInCombatRange)
+                .When(s => !s.IsInCombatRange)
+                .While(s => s.HasTarget)
                 .Score(s => 0.4f)
                 .InterruptCost(s => 0.1f)
                 .Do(chaseTargetAction);
@@ -77,7 +84,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
             var root = builder.DefineCompound("Root");
 
             root.AddMethod("Combat")
-                .Condition(s => s.CurrentMode == AIMode.Combat)
+                .While(s => s.CurrentMode == AIMode.Combat)
                 .Do(engageTarget);
             root.AddMethod("Idle")
                 .Do(idleAction);

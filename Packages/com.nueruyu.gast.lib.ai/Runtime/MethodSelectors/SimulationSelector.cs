@@ -32,9 +32,6 @@ namespace Gast.Lib.AI.MethodSelectors
 
             foreach (var method in methods)
             {
-                if (!method.CheckCondition(worldState))
-                    continue;
-
                 worldState.WriteTo(ref simulationState);
                 var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
@@ -90,9 +87,6 @@ namespace Gast.Lib.AI.MethodSelectors
                 if (method == currentMethodInfo.Method)
                     continue;
 
-                if (!method.CheckCondition(worldState))
-                    continue;
-
                 worldState.WriteTo(ref simulationState);
                 var innerValidationContext =
                     new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
@@ -124,11 +118,17 @@ namespace Gast.Lib.AI.MethodSelectors
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
-            if (!method.CheckCondition(context.WorldState))
-                return false;
+            if (startIndex == 0)
+            {
+                if (!method.CheckStartCondition(context.WorldState))
+                    return false;
+            }
 
             for (var i = startIndex; i < method.SubTasks.Count; i++)
             {
+                if (!method.CheckContinuationCondition(context.WorldState))
+                    return false;
+
                 var subTask = method.SubTasks[i];
                 var valid = await subTask.ValidateAsync(context, cancellationToken);
                 if (!valid) return false;

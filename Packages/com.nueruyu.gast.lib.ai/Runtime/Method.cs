@@ -13,7 +13,8 @@ namespace Gast.Lib.AI
         public int Index { get; }
         public IReadOnlyList<ITask<TActorContext, TWorldState>> SubTasks { get; }
 
-        readonly Func<TWorldState, bool> condition;
+        readonly Func<TWorldState, bool> startCondition;
+        readonly Func<TWorldState, bool> continuationCondition;
         readonly Func<TWorldState, float> scorer;
         readonly Func<TWorldState, float> interruptionCost;
 
@@ -21,21 +22,28 @@ namespace Gast.Lib.AI
             string name,
             int index,
             IEnumerable<ITask<TActorContext, TWorldState>> subTasks,
-            Func<TWorldState, bool> condition,
+            Func<TWorldState, bool> startCondition,
+            Func<TWorldState, bool> continuationCondition,
             Func<TWorldState, float> scorer = null,
             Func<TWorldState, float> interruptionCost = null)
         {
             Name = name;
             Index = index;
             SubTasks = subTasks.ToArray();
-            this.condition = condition;
+            this.startCondition = startCondition;
+            this.continuationCondition = continuationCondition ?? (_ => true);
             this.scorer = scorer ?? (_ => 0f);
             this.interruptionCost = interruptionCost ?? (_ => 0f);
         }
 
-        public bool CheckCondition(TWorldState state)
+        public bool CheckStartCondition(TWorldState state)
         {
-            return condition(state);
+            return startCondition(state);
+        }
+
+        public bool CheckContinuationCondition(TWorldState state)
+        {
+            return continuationCondition(state);
         }
 
         public float GetScore(TWorldState state)

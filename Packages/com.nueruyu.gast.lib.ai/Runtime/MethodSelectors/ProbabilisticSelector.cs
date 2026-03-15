@@ -109,11 +109,17 @@ namespace Gast.Lib.AI.MethodSelectors
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
-            if (!method.CheckCondition(context.WorldState))
-                return false;
+            if (startIndex == 0)
+            {
+                if (!method.CheckStartCondition(context.WorldState))
+                    return false;
+            }
 
             for (var i = startIndex; i < method.SubTasks.Count; i++)
             {
+                if (!method.CheckContinuationCondition(context.WorldState))
+                    return false;
+
                 var task = method.SubTasks[i];
                 if (!await task.ValidateAsync(context, cancellationToken)) return false;
             }

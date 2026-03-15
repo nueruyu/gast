@@ -1,4 +1,3 @@
-using Cryst.Domain.AI.Objectives;
 using Cryst.Features.CharacterAI.Actions;
 using Cryst.Features.CharacterAI.Humanoid.Gathering.Actions;
 using Gast.Core.Values;
@@ -28,7 +27,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering
             var root = builder.DefineCompound("Root");
 
             root.AddMethod("AcquireItemGoal")
-                .Condition(s => s.CurrentMode == AIMode.Gathering)
+                .While(s => s.CurrentMode == AIMode.Gathering)
                 .Do(acquireItem);
             root.AddMethod("Idle")
                 .Do(new WaitAction(0.5f));

@@ -72,13 +72,17 @@ namespace Gast.Lib.AI.MethodSelectors
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
-            // The Condition is always checked as a continuation condition.
-            if (!method.CheckCondition(context.WorldState))
-                return false;
+            if (startIndex == 0)
+            {
+                if (!method.CheckStartCondition(context.WorldState))
+                    return false;
+            }
 
-            // Sub-task validation starts from the given index.
             for (var i = startIndex; i < method.SubTasks.Count; i++)
             {
+                if (!method.CheckContinuationCondition(context.WorldState))
+                    return false;
+
                 var task = method.SubTasks[i];
                 if (!await task.ValidateAsync(context, cancellationToken))
                     return false;
