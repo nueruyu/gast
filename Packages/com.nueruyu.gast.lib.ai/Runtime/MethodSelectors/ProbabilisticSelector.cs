@@ -17,9 +17,6 @@ namespace Gast.Lib.AI.MethodSelectors
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
-            if (context.PlanningStateStore.TryGet<Method<TActorContext, TWorldState>>(this, out var cachedMethod))
-                return cachedMethod;
-
             var candidates = new List<(Method<TActorContext, TWorldState> Method, float Score)>();
             var totalScore = 0f;
 
@@ -48,7 +45,12 @@ namespace Gast.Lib.AI.MethodSelectors
             }
             else
             {
-                var randomValue = Random.Range(0f, totalScore);
+                if (!context.PlanningStateStore.TryGet<float>(this, out var randomValue))
+                {
+                    randomValue = Random.Range(0f, totalScore);
+                    context.PlanningStateStore.Set(this, randomValue);
+                }
+
                 var currentWeight = 0f;
                 selectedMethod = candidates.Last().Method;
 
@@ -63,7 +65,6 @@ namespace Gast.Lib.AI.MethodSelectors
                 }
             }
 
-            context.PlanningStateStore.Set(this, selectedMethod);
             return selectedMethod;
         }
 
@@ -110,10 +111,8 @@ namespace Gast.Lib.AI.MethodSelectors
             CancellationToken cancellationToken)
         {
             if (startIndex == 0)
-            {
                 if (!method.CheckStartCondition(context.WorldState))
                     return false;
-            }
 
             for (var i = startIndex; i < method.SubTasks.Count; i++)
             {
