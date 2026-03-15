@@ -16,22 +16,27 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
 
             var root = builder.DefineCompound("Root");
 
-            root.AddMethod("SetMode_ReturnToHome")
-                .When(s => s.IsOutOfTerritory)
+            root.AddMethod("TransitionTo_ReturningHome")
+                .When(s => s.IsOutOfTerritory && s.CurrentMode != AIMode.ReturningToHome)
                 .Do(new ClearTargetAction())
                 .Do(new SetAIModeAction(AIMode.ReturningToHome));
-            root.AddMethod("SetMode_Combat")
-                .When(s => s.IsThreatened)
+            root.AddMethod("TransitionTo_Combat")
+                .When(s => s.IsThreatened && s.CurrentMode != AIMode.Combat)
                 .Do(new SelectThreatAction())
                 .Do(new SetAIModeAction(AIMode.Combat));
-            root.AddMethod("SetMode_FromObjective")
+            root.AddMethod("TransitionTo_ObjectiveSeeking")
                 .When(s => s.AvailableObjectives.Count > 0)
                 .Do(new SelectObjectiveAction())
-                .Do(new SetAIModeFromObjectiveAction());
-            root.AddMethod("SetMode_Idle")
+                .Do(new SetAIModeFromObjectiveAction())
+                .Do(new WaitAction(0.5f));
+            root.AddMethod("TransitionTo_Idle")
+                .When(s =>
+                    s.CurrentMode != AIMode.Idle &&
+                    !s.IsThreatened &&
+                    s.AvailableObjectives.Count == 0)
                 .Do(new ClearTargetAction())
                 .Do(new SetAIModeAction(AIMode.Idle));
-            root.AddMethod("Wait")
+            root.AddMethod("Maintain_CurrentMode")
                 .Do(new WaitAction(new FloatRange(0.2f, 0.3f)));
 
             domain = builder.Build("Root");

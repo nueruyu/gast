@@ -13,6 +13,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             var actor = context.Actor;
             var state = context.WorldState;
 
+            state.CurrentMode = context.GetModule<HumanoidMemory>().CurrentMode;
+
             state.AvailableObjectives = context.ObjectiveManager.CurrentObjectives
                 .Where(o => !o.IsCompleted.Value)
                 .ToList();
