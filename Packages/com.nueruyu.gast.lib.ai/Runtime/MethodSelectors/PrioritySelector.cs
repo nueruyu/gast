@@ -22,7 +22,7 @@ namespace Gast.Lib.AI.MethodSelectors
                 worldState.WriteTo(ref simulationState);
                 var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
-                if (await ValidateMethod(method, validationContext, cancellationToken))
+                if (await ValidateMethod(method, 0, validationContext, cancellationToken))
                 {
                     simulationState.WriteTo(ref worldState);
                     return method;
@@ -34,17 +34,33 @@ namespace Gast.Lib.AI.MethodSelectors
 
         public async UniTask<Method<TActorContext, TWorldState>> SelectInterruptsAsync(
             IReadOnlyList<Method<TActorContext, TWorldState>> methods,
-            Method<TActorContext, TWorldState> currentMethod,
+            CurrentMethodInfo<TActorContext, TWorldState> currentMethodInfo,
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
+            // Check if the current method is still valid from its current execution point.
+            context.WorldState.WriteTo(ref simulationState);
+            var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
+
+            var isCurrentMethodStillValid = await ValidateMethod(
+                currentMethodInfo.Method,
+                currentMethodInfo.NextSubTaskIndex,
+                validationContext,
+                cancellationToken);
+
+            // Find the best method from the current state.
             var preferredMethod = await SelectAsync(
                 methods,
                 context,
                 cancellationToken);
 
+            // Evaluate interrupt conditions.
+            if (!isCurrentMethodStillValid)
+                return preferredMethod;
+
             if (preferredMethod != null &&
-                preferredMethod.Index < currentMethod.Index)
+                preferredMethod.Index < currentMethodInfo.Method.Index)
+                // Interrupt if a higher-priority method becomes available.
                 return preferredMethod;
 
             return null;
@@ -52,15 +68,21 @@ namespace Gast.Lib.AI.MethodSelectors
 
         async UniTask<bool> ValidateMethod(
             Method<TActorContext, TWorldState> method,
+            int startIndex,
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
+            // The Condition is always checked as a continuation condition.
             if (!method.CheckCondition(context.WorldState))
                 return false;
 
-            foreach (var task in method.SubTasks)
+            // Sub-task validation starts from the given index.
+            for (var i = startIndex; i < method.SubTasks.Count; i++)
+            {
+                var task = method.SubTasks[i];
                 if (!await task.ValidateAsync(context, cancellationToken))
                     return false;
+            }
 
             return true;
         }

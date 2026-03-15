@@ -48,4 +48,18 @@ namespace Gast.Lib.AI
             return interruptionCost(state);
         }
     }
+
+    public class CurrentMethodInfo<TActorContext, TWorldState>
+        where TWorldState : class, IWorldState<TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
+    {
+        public Method<TActorContext, TWorldState> Method { get; }
+        public int NextSubTaskIndex { get; set; }
+
+        public CurrentMethodInfo(Method<TActorContext, TWorldState> method)
+        {
+            Method = method;
+            NextSubTaskIndex = 0;
+        }
+    }
 }

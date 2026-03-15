@@ -91,8 +91,10 @@ namespace Gast.Lib.AI.Tasks
 
                     using var localCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-                    var runMethodTask = RunMethodAsync(method, context, localCts.Token);
-                    var monitorTask = MonitorInterruptsAsync(method, context, interruptValidationStore, localCts.Token);
+                    var currentMethodInfo = new CurrentMethodInfo<TActorContext, TWorldState>(method);
+
+                    var runMethodTask = RunMethodAsync(currentMethodInfo, context, localCts.Token);
+                    var monitorTask = MonitorInterruptsAsync(currentMethodInfo, context, interruptValidationStore, localCts.Token);
 
                     var completedTaskIndex = await UniTask.WhenAny(runMethodTask, monitorTask);
 
@@ -112,20 +114,24 @@ namespace Gast.Lib.AI.Tasks
         }
 
         async UniTask RunMethodAsync(
-            Method<TActorContext, TWorldState> method,
+            CurrentMethodInfo<TActorContext, TWorldState> currentMethodInfo,
             ExecutionContext<TActorContext> context,
             CancellationToken cancellationToken)
         {
-            foreach (var task in method.SubTasks)
+            var subTasks = currentMethodInfo.Method.SubTasks;
+            for (var i = 0; i < subTasks.Count; i++)
             {
+                currentMethodInfo.NextSubTaskIndex = i;
+                var task = subTasks[i];
                 await task.RunAsync(context, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
                 context.ActorContext.UpdateWorldState();
             }
+            currentMethodInfo.NextSubTaskIndex = subTasks.Count; // Mark as completed
         }
 
         async UniTask MonitorInterruptsAsync(
-            Method<TActorContext, TWorldState> currentMethod,
+            CurrentMethodInfo<TActorContext, TWorldState> currentMethodInfo,
             ExecutionContext<TActorContext> context,
             PlanningStateStore planningStateStore,
             CancellationToken cancellationToken)
@@ -134,6 +140,11 @@ namespace Gast.Lib.AI.Tasks
             {
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
 
+                if (currentMethodInfo.NextSubTaskIndex >= currentMethodInfo.Method.SubTasks.Count)
+                {
+                    break; // Method completed, stop monitoring
+                }
+
                 context.ActorContext.WorldState.WriteTo(ref simulationState);
 
                 var validationContext =
@@ -141,7 +152,7 @@ namespace Gast.Lib.AI.Tasks
 
                 var interruptsMethod = await methodSelector.SelectInterruptsAsync(
                     methods,
-                    currentMethod,
+                    currentMethodInfo,
                     validationContext,
                     cancellationToken);
 

@@ -40,6 +40,7 @@ namespace Gast.Lib.AI.MethodSelectors
 
                 var valid = await SimulateMethodAsync(
                     method,
+                    0,
                     validationContext,
                     cancellationToken);
 
@@ -60,17 +61,22 @@ namespace Gast.Lib.AI.MethodSelectors
 
         public async UniTask<Method<TActorContext, TWorldState>> SelectInterruptsAsync(
             IReadOnlyList<Method<TActorContext, TWorldState>> methods,
-            Method<TActorContext, TWorldState> currentMethod,
+            CurrentMethodInfo<TActorContext, TWorldState> currentMethodInfo,
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
             context.WorldState.WriteTo(ref simulationState);
-            var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
+            var currentMethodValidationContext =
+                new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
-            await SimulateMethodAsync(
-                currentMethod,
-                validationContext,
+            var isCurrentMethodStillValid = await SimulateMethodAsync(
+                currentMethodInfo.Method,
+                currentMethodInfo.NextSubTaskIndex,
+                currentMethodValidationContext,
                 cancellationToken);
+
+            if (!isCurrentMethodStillValid)
+                return await SelectAsync(methods, context, cancellationToken);
 
             var currentScore = worldEvaluator(simulationState);
 
@@ -81,7 +87,7 @@ namespace Gast.Lib.AI.MethodSelectors
 
             foreach (var method in methods)
             {
-                if (method == currentMethod)
+                if (method == currentMethodInfo.Method)
                     continue;
 
                 if (!method.CheckCondition(worldState))
@@ -93,6 +99,7 @@ namespace Gast.Lib.AI.MethodSelectors
 
                 var valid = await SimulateMethodAsync(
                     method,
+                    0,
                     innerValidationContext,
                     cancellationToken);
 
@@ -113,11 +120,16 @@ namespace Gast.Lib.AI.MethodSelectors
 
         async UniTask<bool> SimulateMethodAsync(
             Method<TActorContext, TWorldState> method,
+            int startIndex,
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
-            foreach (var subTask in method.SubTasks)
+            if (!method.CheckCondition(context.WorldState))
+                return false;
+
+            for (var i = startIndex; i < method.SubTasks.Count; i++)
             {
+                var subTask = method.SubTasks[i];
                 var valid = await subTask.ValidateAsync(context, cancellationToken);
                 if (!valid) return false;
 

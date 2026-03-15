@@ -23,7 +23,7 @@ namespace Gast.Lib.AI.MethodSelectors
                 context.WorldState.WriteTo(ref simulationState);
                 var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
-                if (await ValidateMethod(method, validationContext, cancellationToken))
+                if (await ValidateMethod(method, 0, validationContext, cancellationToken))
                 {
                     var score = method.GetScore(context.WorldState);
                     if (score > bestScore)
@@ -39,38 +39,55 @@ namespace Gast.Lib.AI.MethodSelectors
 
         public async UniTask<Method<TActorContext, TWorldState>> SelectInterruptsAsync(
             IReadOnlyList<Method<TActorContext, TWorldState>> methods,
-            Method<TActorContext, TWorldState> currentMethod,
+            CurrentMethodInfo<TActorContext, TWorldState> currentMethodInfo,
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
+            context.WorldState.WriteTo(ref simulationState);
+            var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
+
+            var isCurrentMethodStillValid = await ValidateMethod(
+                currentMethodInfo.Method,
+                currentMethodInfo.NextSubTaskIndex,
+                validationContext,
+                cancellationToken);
+
             var preferredMethod = await SelectAsync(
                 methods,
                 context,
                 cancellationToken);
 
-            if (preferredMethod == null || preferredMethod == currentMethod)
+            if (!isCurrentMethodStillValid)
+                return preferredMethod;
+
+            if (preferredMethod == null || preferredMethod == currentMethodInfo.Method)
                 return null;
 
-            var currentScore = currentMethod.GetScore(context.WorldState);
-            var interruptionCost = currentMethod.GetInterruptionCost(context.WorldState);
+            var currentScore = currentMethodInfo.Method.GetScore(context.WorldState);
+            var interruptionCost = currentMethodInfo.Method.GetInterruptionCost(context.WorldState);
             var newScore = preferredMethod.GetScore(context.WorldState);
 
-            if (newScore > currentScore + interruptionCost) return preferredMethod;
+            if (newScore > currentScore + interruptionCost)
+                return preferredMethod;
 
             return null;
         }
 
         async UniTask<bool> ValidateMethod(
             Method<TActorContext, TWorldState> method,
+            int startIndex,
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
             if (!method.CheckCondition(context.WorldState))
                 return false;
 
-            foreach (var task in method.SubTasks)
+            for (var i = startIndex; i < method.SubTasks.Count; i++)
+            {
+                var task = method.SubTasks[i];
                 if (!await task.ValidateAsync(context, cancellationToken))
                     return false;
+            }
 
             return true;
         }
