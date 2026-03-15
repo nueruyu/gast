@@ -8,6 +8,8 @@ namespace Gast.Lib.AI.Debugging
 
         void UpdatePlan(ContextKey contextKey, IReadOnlyList<string> plan);
 
+        void UpdateCurrentMethod(ContextKey contextKey, string methodName);
+
         void UpdateActiveTaskPath(ContextKey contextKey, string taskPath);
 
         void AddLog(ContextKey contextKey, string log);

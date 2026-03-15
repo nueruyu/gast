@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,9 +9,9 @@ namespace Gast.Lib.AI.Debugging
     {
         readonly ConcurrentDictionary<ContextKey, AIDebugInfo> debugInfoMap = new();
 
-        public void Register(ContextKey contextKey, object worldState)
+        public void Register(ContextKey contextKey, object worldState, string actorName)
         {
-            var added = debugInfoMap.TryAdd(contextKey, new AIDebugInfo(contextKey, worldState));
+            var added = debugInfoMap.TryAdd(contextKey, new AIDebugInfo(contextKey, actorName, worldState));
             Debug.Log($"[AIDebugger] Register: {contextKey}, Added: {added}, Total: {debugInfoMap.Count}");
         }
 
@@ -32,6 +33,14 @@ namespace Gast.Lib.AI.Debugging
             }
         }
 
+        public void UpdateCurrentMethod(ContextKey contextKey, string methodName)
+        {
+            if (debugInfoMap.TryGetValue(contextKey, out var info))
+            {
+                info.CurrentMethodName.Value = methodName;
+            }
+        }
+
         public void UpdateActiveTaskPath(ContextKey contextKey, string taskPath)
         {
             if (debugInfoMap.TryGetValue(contextKey, out var info))
@@ -44,7 +53,8 @@ namespace Gast.Lib.AI.Debugging
         {
             if (debugInfoMap.TryGetValue(contextKey, out var info))
             {
-                info.Logs.Add(log);
+                var timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
+                info.Logs.Add($"[{timestamp}] {log}");
                 if (info.Logs.Count > 100)
                 {
                     info.Logs.RemoveAt(0);

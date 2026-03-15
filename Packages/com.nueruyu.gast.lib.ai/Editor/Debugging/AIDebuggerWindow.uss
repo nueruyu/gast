@@ -46,6 +46,21 @@
     margin-top: 10px;
 }
 
+.info-row {
+    flex-direction: row;
+    margin: 5px 5px 0 5px;
+    font-size: 11px;
+}
+
+.info-label {
+    min-width: 60px;
+    color: rgb(150, 150, 150);
+}
+
+.info-value {
+    color: white;
+}
+
 .world-state-container {
     margin: 5px;
     padding: 5px;
@@ -78,8 +93,20 @@
 
 .plan-list {
     flex-grow: 1;
-    min-height: 100px;
+    min-height: 80px;
     margin: 5px;
+}
+
+.log-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 5px;
+}
+
+.log-controls {
+    flex-direction: row;
+    align-items: center;
 }
 
 .log-list {

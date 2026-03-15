@@ -23,6 +23,13 @@ namespace Gast.Lib.AI.Editor.Debugging
 
         const string ActiveItemClass = "list-item--active";
 
+        [Serializable]
+        private struct ActorInfo
+        {
+            public object Id;
+            public string Name;
+        }
+
         [SerializeField] VisualTreeAsset visualTreeAsset;
 
         readonly CompositeDisposable disposables = new();
@@ -30,8 +37,9 @@ namespace Gast.Lib.AI.Editor.Debugging
         readonly ReactiveProperty<IReadOnlyDictionary<ContextKey, AIDebugInfo>> allDebugInfo = new();
         readonly ReactiveProperty<int> selectedActorIndex = new();
         readonly ReactiveProperty<int> selectedDomainIndex = new();
+        readonly ReactiveProperty<bool> logAutoScroll = new(true);
 
-        ReadOnlyReactiveProperty<string[]> actorIdChoices;
+        ReadOnlyReactiveProperty<ActorInfo[]> actors;
         ReadOnlyReactiveProperty<object> selectedActorId;
 
         ReadOnlyReactiveProperty<string[]> domainNameChoices;
@@ -41,6 +49,7 @@ namespace Gast.Lib.AI.Editor.Debugging
         ReadOnlyReactiveProperty<AIDebugInfo> selectedDebugInfo;
 
         VisualElement worldStateContainer;
+        Label currentMethodLabel;
 
         protected virtual void OnEnable()
         {
@@ -48,25 +57,20 @@ namespace Gast.Lib.AI.Editor.Debugging
             selectedActorIndex.Value = -1;
             selectedDomainIndex.Value = -1;
 
-            var actorIds = allDebugInfo
+            actors = allDebugInfo
                 .Select(dict =>
                 {
-                    return dict.Keys
-                        .Select(key => key.ActorId)
+                    return dict.Values
+                        .Select(info => new ActorInfo { Id = info.ContextKey.ActorId, Name = info.ActorName })
                         .Distinct()
-                        .OrderBy(x => x.ToString())
                         .ToArray();
                 })
                 .ToReadOnlyReactiveProperty();
 
-            actorIdChoices = actorIds
-                .Select(ids => ids.Select(id => id.ToString()).ToArray())
-                .ToReadOnlyReactiveProperty();
-
-            selectedActorId = actorIds
-                .CombineLatest(selectedActorIndex, (ids, index) =>
+            selectedActorId = actors
+                .CombineLatest(selectedActorIndex, (actorInfos, index) =>
                 {
-                    return index >= 0 ? ids[index] : null;
+                    return index >= 0 && index < actorInfos.Length ? actorInfos[index].Id : null;
                 })
                 .ToReadOnlyReactiveProperty();
 
@@ -87,7 +91,7 @@ namespace Gast.Lib.AI.Editor.Debugging
             selectedDomainName = domainNameChoices
                 .CombineLatest(selectedDomainIndex, (domains, index) =>
                 {
-                    return index >= 0 ? domains[index] : null;
+                    return index >= 0 && index < domains.Length ? domains[index] : null;
                 })
                 .ToReadOnlyReactiveProperty();
 
@@ -160,13 +164,19 @@ namespace Gast.Lib.AI.Editor.Debugging
             var actorList = root.Q<ListView>("actor-list");
             var domainToolbar = root.Q<VisualElement>("domain-toolbar");
             worldStateContainer = root.Q<VisualElement>("world-state-container");
+            currentMethodLabel = root.Q<Label>("current-method-label");
             var planList = root.Q<ListView>("plan-list");
             var logList = root.Q<ListView>("log-list");
+            var logClearButton = root.Q<Button>("log-clear-button");
+            var logAutoScrollToggle = root.Q<Toggle>("log-autoscroll-toggle");
+
+            logAutoScrollToggle.value = logAutoScroll.Value;
+            logAutoScrollToggle.RegisterValueChangedCallback(evt => logAutoScroll.Value = evt.newValue);
 
             SetupActorList(actorList);
             SetupDomainToolbar(domainToolbar);
             SetupDetailListViews(planList, logList);
-            BindToSelectedInfo(planList, logList);
+            BindToSelectedInfo(planList, logList, logClearButton);
         }
 
         void SetupActorList(ListView actorList)
@@ -178,12 +188,13 @@ namespace Gast.Lib.AI.Editor.Debugging
 
             actorList.bindItem = (element, i) =>
             {
-                ((Label)element).text = actorIdChoices.CurrentValue[i];
+                var actor = actors.CurrentValue[i];
+                ((Label)element).text = $"{actor.Name} ({actor.Id})";
             };
 
-            actorIdChoices.Subscribe(ids =>
+            actors.Subscribe(actorInfos =>
             {
-                actorList.itemsSource = ids;
+                actorList.itemsSource = actorInfos;
                 actorList.Rebuild();
             }).AddTo(disposables);
 
@@ -210,8 +221,18 @@ namespace Gast.Lib.AI.Editor.Debugging
                 toggleDisposables = new CompositeDisposable();
 
                 domainToolbar.Clear();
-                if (domains.Length == 0)
+
+                if (domains.Length > 0)
+                {
+                    if (selectedDomainIndex.Value < 0 || selectedDomainIndex.Value >= domains.Length)
+                    {
+                        selectedDomainIndex.Value = 0;
+                    }
+                }
+                else
+                {
                     selectedDomainIndex.Value = -1;
+                }
 
                 for (var i = 0; i < domains.Length; i++)
                 {
@@ -220,6 +241,8 @@ namespace Gast.Lib.AI.Editor.Debugging
                     {
                         text = domains[i]
                     };
+                    toggle.SetValueWithoutNotify(index == selectedDomainIndex.Value);
+
                     var callback = new EventCallback<ChangeEvent<bool>>(evt =>
                     {
                         if (evt.newValue)
@@ -261,7 +284,7 @@ namespace Gast.Lib.AI.Editor.Debugging
             };
         }
 
-        void BindToSelectedInfo(ListView planList, ListView logList)
+        void BindToSelectedInfo(ListView planList, ListView logList, Button logClearButton)
         {
             IDisposable actorBindings = null;
 
@@ -276,7 +299,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                     return;
                 }
 
-                actorBindings = BindDebugInfo(info, planList, logList);
+                actorBindings = BindDebugInfo(info, planList, logList, logClearButton);
             }).AddTo(disposables);
 
             Disposable.Create(() =>
@@ -288,15 +311,19 @@ namespace Gast.Lib.AI.Editor.Debugging
         void ClearUI(ListView planList, ListView logList)
         {
             worldStateContainer?.Clear();
+            if (currentMethodLabel != null)
+                currentMethodLabel.text = "";
             planList.itemsSource = null;
             planList.Rebuild();
             logList.itemsSource = null;
             logList.Rebuild();
         }
 
-        IDisposable BindDebugInfo(AIDebugInfo info, ListView planList, ListView logList)
+        IDisposable BindDebugInfo(AIDebugInfo info, ListView planList, ListView logList, Button logClearButton)
         {
             var bindings = new CompositeDisposable();
+
+            info.CurrentMethodName.SubscribeToText(currentMethodLabel).AddTo(bindings);
 
             IReadOnlyList<string> currentPlan = null;
             string currentTaskPath = null;
@@ -345,7 +372,10 @@ namespace Gast.Lib.AI.Editor.Debugging
             {
                 logListSource.Insert(e.Index, e.Value);
                 logList.RefreshItems();
-                logList.ScrollToItem(logListSource.Count - 1);
+                if (logAutoScroll.Value)
+                {
+                    logList.ScrollToItem(logListSource.Count - 1);
+                }
             }).AddTo(bindings);
 
             logs.ObserveRemove().Subscribe(e =>
@@ -353,6 +383,16 @@ namespace Gast.Lib.AI.Editor.Debugging
                 logListSource.RemoveAt(e.Index);
                 logList.RefreshItems();
             }).AddTo(bindings);
+
+            logs.ObserveReset().Subscribe(_ =>
+            {
+                logListSource.Clear();
+                logList.RefreshItems();
+            }).AddTo(bindings);
+
+            var logClearCallback = new EventCallback<ClickEvent>(evt => logs.Clear());
+            logClearButton.RegisterCallback(logClearCallback);
+            bindings.Add(Disposable.Create(() => logClearButton.UnregisterCallback(logClearCallback)));
 
             return bindings;
         }

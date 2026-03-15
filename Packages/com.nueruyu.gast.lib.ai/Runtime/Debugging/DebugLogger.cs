@@ -21,18 +21,20 @@ namespace Gast.Lib.AI.Debugging
             string methodName,
             TWorldState state)
         {
-            Log(contextKey, $"Method selected - [{compoundTaskName}] Selected method: '{methodName}'");
+            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
+                return;
+            AIDebuggerBridge.Debugger.UpdateCurrentMethod(contextKey, methodName);
+            AIDebuggerBridge.Debugger.AddLog(contextKey, $"{compoundTaskName} -> Selected method '{methodName}'");
         }
 
         public static void LogPlan(ContextKey contextKey, IEnumerable<ITask> plan)
         {
-            if (!AIDebuggerBridge.IsInitialized)
+            if (!EnableLogging || !AIDebuggerBridge.IsInitialized)
                 return;
 
             var planNames = plan.Select(p => p.Name).ToArray();
             AIDebuggerBridge.Debugger.UpdatePlan(contextKey, planNames);
-
-            Log(contextKey, $"Planning complete. Plan has {planNames.Length} actions.");
+            AIDebuggerBridge.Debugger.AddLog(contextKey, $"Planning complete. Plan has {planNames.Length} actions.");
         }
 
         public static void LogPlanFailed(ContextKey contextKey, string reason)
