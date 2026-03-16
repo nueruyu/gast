@@ -21,14 +21,13 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
 
             if (character.Is(out TerritorialCharacter territorial))
             {
-                if (state.IsOutOfTerritory)
-                    state.IsOutOfTerritory = !territorial.HasReturnedToTerritory();
-                else
-                    state.IsOutOfTerritory = territorial.IsOutOfTerritory();
+                state.IsOutOfTerritory = territorial.IsOutOfTerritory();
+                state.IsOutOfTerritoryCore = !territorial.HasReturnedToTerritory();
             }
             else
             {
                 state.IsOutOfTerritory = false;
+                state.IsOutOfTerritoryCore = false;
             }
 
             state.IsThreatened = actor.VisionSensor.VisibleCharacters

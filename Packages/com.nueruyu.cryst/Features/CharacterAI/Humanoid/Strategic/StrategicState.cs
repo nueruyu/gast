@@ -9,6 +9,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
         public AIMode CurrentMode { get; set; }
         public bool IsThreatened { get; set; }
         public bool IsOutOfTerritory { get; set; }
+        public bool IsOutOfTerritoryCore { get; set; }
         public List<IAIObjective> AvailableObjectives { get; set; } = new();
 
         public void WriteTo(ref StrategicState dest)
@@ -17,6 +18,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             dest.CurrentMode = CurrentMode;
             dest.IsThreatened = IsThreatened;
             dest.IsOutOfTerritory = IsOutOfTerritory;
+            dest.IsOutOfTerritoryCore = IsOutOfTerritoryCore;
             dest.AvailableObjectives = AvailableObjectives;
         }
     }

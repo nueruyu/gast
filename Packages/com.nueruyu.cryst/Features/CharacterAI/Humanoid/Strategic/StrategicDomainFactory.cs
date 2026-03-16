@@ -17,9 +17,11 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             var root = builder.DefineCompound("Root");
 
             root.AddMethod("TransitionTo_ReturningHome")
-                .When(s => s.IsOutOfTerritory && s.CurrentMode != AIMode.ReturningToHome)
+                .When(s => s.IsOutOfTerritory)
+                .While(s => s.IsOutOfTerritoryCore)
                 .Do(new ClearTargetAction())
-                .Do(new SetAIModeAction(AIMode.ReturningToHome));
+                .Do(new SetAIModeAction(AIMode.ReturningToHome))
+                .Do(new IdleAction());
             root.AddMethod("TransitionTo_Combat")
                 .When(s => s.IsThreatened && s.CurrentMode != AIMode.Combat)
                 .Do(new SelectThreatAction())
