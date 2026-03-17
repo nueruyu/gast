@@ -1,0 +1,82 @@
+using System.Reflection;
+using Cysharp.Threading.Tasks;
+using Gast.Lib.AI.Builders;
+using Gast.Lib.AI.Testing;
+using NUnit.Framework;
+using UnityEngine.TestTools;
+
+namespace Gast.Lib.AI.Tests
+{
+    [TestFixture]
+    public class AISimulatorTests
+    {
+        private AIDomain<TestActorContext, TestWorldState> domain;
+
+        [SetUp]
+        public void SetUp()
+        {
+            var builder = new AIDomainBuilder<TestActorContext, TestWorldState>();
+            var openDoorTask = builder.DefineCompound("OpenDoorTask");
+            openDoorTask.AddMethod("FindKeyAndOpen")
+                .Condition(state => !state.HasKey)
+                .Do(new FindKeyAction())
+                .Do(new OpenDoorAction());
+            openDoorTask.AddMethod("OpenImmediately")
+                .Condition(state => state.HasKey)
+                .Do(new OpenDoorAction());
+
+            domain = builder.Build("OpenDoorTask");
+        }
+
+        [UnityTest]
+        public System.Collections.IEnumerator SimulateAsync_WhenKeyIsHeld_ShouldGeneratePlanToOpenDoor()
+        {
+            return Run_SimulateAsync_WhenKeyIsHeld().ToCoroutine();
+        }
+
+        async UniTask Run_SimulateAsync_WhenKeyIsHeld()
+        {
+            var simulator = new AISimulator<TestActorContext, TestWorldState>(domain);
+            var initialState = new TestWorldState { HasKey = true, IsDoorOpen = false };
+
+            var result = await simulator.SimulateAsync(initialState);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(1, result.SimulatedTaskSequence.Count);
+            Assert.IsInstanceOf<OpenDoorAction>(result.SimulatedTaskSequence[0].Unwrap<TestActorContext, TestWorldState>());
+            Assert.IsTrue(result.FinalWorldState.IsDoorOpen);
+        }
+
+        [UnityTest]
+        public System.Collections.IEnumerator SimulateAsync_WhenKeyIsNotHeld_ShouldGeneratePlanToFindKeyAndOpenDoor()
+        {
+            return Run_SimulateAsync_WhenKeyIsNotHeld().ToCoroutine();
+        }
+
+        async UniTask Run_SimulateAsync_WhenKeyIsNotHeld()
+        {
+            var simulator = new AISimulator<TestActorContext, TestWorldState>(domain);
+            var initialState = new TestWorldState { HasKey = false, IsDoorOpen = false };
+
+            var result = await simulator.SimulateAsync(initialState);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.SimulatedTaskSequence.Count);
+            Assert.IsInstanceOf<FindKeyAction>(result.SimulatedTaskSequence[0].Unwrap<TestActorContext, TestWorldState>());
+            Assert.IsInstanceOf<OpenDoorAction>(result.SimulatedTaskSequence[1].Unwrap<TestActorContext, TestWorldState>());
+            Assert.IsTrue(result.FinalWorldState.HasKey);
+            Assert.IsTrue(result.FinalWorldState.IsDoorOpen);
+        }
+    }
+
+    internal static class TaskExtensions
+    {
+        internal static IAction<TActorContext, TWorldState> Unwrap<TActorContext, TWorldState>(this ITask task)
+            where TWorldState : class, IWorldState<TWorldState>
+            where TActorContext : class, IActorContext<TWorldState>
+        {
+            var field = task.GetType().GetField("action", BindingFlags.NonPublic | BindingFlags.Instance);
+            return (IAction<TActorContext, TWorldState>)field.GetValue(task);
+        }
+    }
+}

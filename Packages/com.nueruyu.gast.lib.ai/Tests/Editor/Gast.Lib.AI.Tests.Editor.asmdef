@@ -1,0 +1,23 @@
+{
+    "name": "Gast.Lib.AI.Tests.Editor",
+    "rootNamespace": "Gast.Lib.AI.Tests.Editor",
+    "references": [
+        "Gast.Lib.AI",
+        "UniTask"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
