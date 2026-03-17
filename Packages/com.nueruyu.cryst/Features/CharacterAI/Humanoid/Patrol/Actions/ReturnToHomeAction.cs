@@ -1,12 +1,10 @@
 using System.Threading;
 using Cryst.Domain.Characters.Facets;
 using Cryst.Features.CharacterAI.Common;
-using Cryst.Features.CharacterAI.Humanoid;
-using Cryst.Features.CharacterAI.Humanoid.Patrol;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 
-namespace Cryst.Features.CharacterAI.Actions
+namespace Cryst.Features.CharacterAI.Humanoid.Patrol.Actions
 {
     public class ReturnToHomeAction : IAction<ActorContext<PatrolState>, PatrolState>
     {
@@ -17,7 +15,7 @@ namespace Cryst.Features.CharacterAI.Actions
 
         public void Simulate(PatrolState worldState)
         {
-            worldState.IsOutOfTerritory = false;
+            worldState.EnterTerritory();
         }
 
         public async UniTask ExecuteAsync(ActorContext<PatrolState> context, CancellationToken cancellationToken)

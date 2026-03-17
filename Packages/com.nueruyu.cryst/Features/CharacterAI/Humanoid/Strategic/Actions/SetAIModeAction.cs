@@ -5,7 +5,7 @@ using Gast.Lib.AI;
 namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
 {
     /// <summary>
-    /// An action that sets the AI's operational mode in memory.
+    ///     An action that sets the AI's operational mode in memory.
     /// </summary>
     public class SetAIModeAction : IAction<ActorContext<StrategicState>, StrategicState>
     {
@@ -16,7 +16,10 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
             this.mode = mode;
         }
 
-        public bool IsAvailable(StrategicState worldState) => true;
+        public bool IsAvailable(StrategicState worldState)
+        {
+            return true;
+        }
 
         public void Simulate(StrategicState worldState)
         {
@@ -26,10 +29,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
         public UniTask ExecuteAsync(ActorContext<StrategicState> context, CancellationToken cancellationToken)
         {
             var memory = context.GetModule<HumanoidMemory>();
-            if (memory.CurrentMode != mode)
-            {
-                memory.CurrentMode = mode;
-            }
+            memory.SetMode(mode);
             return UniTask.CompletedTask;
         }
 

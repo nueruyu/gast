@@ -26,7 +26,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 
         public bool IsAvailable(CombatState worldState)
         {
-            return worldState.HasTarget && worldState.CanGuard;
+            return worldState.CanGuard;
         }
 
         public void Simulate(CombatState worldState)

@@ -30,7 +30,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
                 .OrderBy(a => Vector3.Distance(self.VisionSensor.EyePosition, a.Body.Position))
                 .FirstOrDefault();
 
-            context.GetModule<HumanoidMemory>().CombatTarget = closestThreat;
+            context.GetModule<HumanoidMemory>().SetCombatTarget(closestThreat);
             return UniTask.CompletedTask;
         }
     }

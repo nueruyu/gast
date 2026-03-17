@@ -14,14 +14,20 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
 
         public void Simulate(GatheringState worldState)
         {
-            worldState.HasInteractableTarget = false;
-            worldState.IsInRangeToInteract = false;
+            worldState.LostInteractableTarget();
         }
 
         public async UniTask ExecuteAsync(ActorContext<GatheringState> context, CancellationToken cancellationToken)
         {
             var command = new InteractCommand(context.Actor.Id, context.WorldState.InteractableTargetId);
-            await context.CommandDispatcher.DispatchAsync<InteractCommand, bool>(command, cancellationToken);
+            var success =
+                await context.CommandDispatcher.DispatchAsync<InteractCommand, bool>(command, cancellationToken);
+
+            if (success)
+            {
+                var memory = context.GetModule<HumanoidMemory>();
+                memory.SetInteractableTarget(null);
+            }
         }
     }
 }

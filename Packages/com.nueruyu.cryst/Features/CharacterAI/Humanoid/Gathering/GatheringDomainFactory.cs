@@ -21,13 +21,11 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering
                 .Do(new MoveToInteractableAction())
                 .Do(new WaitAction(new FloatRange(0.2f, 0.4f)))
                 .Do(new InteractWithTargetAction());
-            acquireItem.AddMethod("ClearTargetIfNotFound")
-                .Do(new ClearInteractableTargetAction());
 
             var root = builder.DefineCompound("Root");
 
             root.AddMethod("AcquireItemGoal")
-                .While(s => s.CurrentMode == AIMode.Gathering)
+                .While(s => s.IsActive)
                 .Do(acquireItem);
             root.AddMethod("Idle")
                 .Do(new WaitAction(0.5f));

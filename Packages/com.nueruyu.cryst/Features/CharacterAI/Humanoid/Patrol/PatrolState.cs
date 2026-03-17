@@ -1,17 +1,43 @@
+using Cryst.Domain.Characters.Facets;
 using Gast.Lib.AI;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Patrol
 {
     public class PatrolState : IWorldState<PatrolState>
     {
-        public AIMode CurrentMode { get; set; }
-        public bool IsOutOfTerritory { get; set; }
+        public bool IsActive { get; private set; }
+        public bool IsOutOfTerritory { get; private set; }
 
         public void WriteTo(ref PatrolState dest)
         {
             dest ??= new();
-            dest.CurrentMode = CurrentMode;
+            dest.IsActive = IsActive;
             dest.IsOutOfTerritory = IsOutOfTerritory;
+        }
+
+        public void EnterTerritory()
+        {
+            IsOutOfTerritory = false;
+        }
+
+        public void Update(ActorContext<PatrolState> context)
+        {
+            var memory = context.GetModule<HumanoidMemory>();
+            var character = context.Character;
+
+            IsActive = memory.CurrentMode == AIMode.ReturningToHome;
+
+            if (character.Is(out TerritorialCharacter territorial))
+            {
+                if (IsOutOfTerritory)
+                    IsOutOfTerritory = !territorial.HasReturnedToTerritory();
+                else
+                    IsOutOfTerritory = territorial.IsOutOfTerritory();
+            }
+            else
+            {
+                IsOutOfTerritory = false;
+            }
         }
     }
 }

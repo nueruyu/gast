@@ -14,7 +14,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
 
         public void Simulate(GatheringState worldState)
         {
-            worldState.IsInRangeToInteract = true;
+            worldState.MarkInRangeToInteract();
         }
 
         public async UniTask ExecuteAsync(ActorContext<GatheringState> context, CancellationToken cancellationToken)

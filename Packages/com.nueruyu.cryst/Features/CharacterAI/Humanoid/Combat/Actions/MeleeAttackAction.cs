@@ -38,7 +38,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 
         public void Simulate(CombatState worldState)
         {
-            worldState.IsReadyToAttack = false;
+            worldState.SetReadyToAttack(false);
         }
 
         public async UniTask ExecuteAsync(

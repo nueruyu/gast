@@ -1,4 +1,5 @@
 using Cryst.Features.CharacterAI.Actions;
+using Cryst.Features.CharacterAI.Humanoid.Patrol.Actions;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 
@@ -15,7 +16,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Patrol
             var root = builder.DefineCompound("Root");
 
             root.AddMethod("ExecuteReturnToHome")
-                .While(s => s.CurrentMode == AIMode.ReturningToHome)
+                .While(s => s.IsActive)
                 .Do(new ReturnToHomeAction());
             root.AddMethod("Idle")
                 .Do(new IdleAction());
@@ -23,6 +24,9 @@ namespace Cryst.Features.CharacterAI.Humanoid.Patrol
             domain = builder.Build("Root");
         }
 
-        public AIDomain<ActorContext<PatrolState>, PatrolState> CreateDomain() => domain;
+        public AIDomain<ActorContext<PatrolState>, PatrolState> CreateDomain()
+        {
+            return domain;
+        }
     }
 }

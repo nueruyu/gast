@@ -20,9 +20,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
         public UniTask ExecuteAsync(ActorContext<StrategicState> context, CancellationToken cancellationToken)
         {
             var memory = context.GetModule<HumanoidMemory>();
-            memory.CombatTarget = null;
-            memory.CurrentObjective = null;
-            memory.InteractableTarget = null;
+            memory.Clear();
             return UniTask.CompletedTask;
         }
     }

@@ -34,7 +34,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat.Actions
 
         public bool IsAvailable(CombatState worldState)
         {
-            return worldState.HasTarget;
+            return true;
         }
 
         public void Simulate(CombatState worldState)
