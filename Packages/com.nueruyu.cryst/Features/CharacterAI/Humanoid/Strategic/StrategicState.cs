@@ -13,6 +13,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
         public AIMode CurrentMode { get; private set; }
         public bool HasCombatObjective { get; private set; }
         public bool HasGatheringObjective { get; private set; }
+        public bool HasCombatTarget { get; private set; }
         public bool IsThreatened { get; private set; }
         public bool IsOutOfTerritory { get; private set; }
         public bool IsOutOfTerritoryCore { get; private set; }
@@ -23,6 +24,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             dest.CurrentMode = CurrentMode;
             dest.HasCombatObjective = HasCombatObjective;
             dest.HasGatheringObjective = HasGatheringObjective;
+            dest.HasCombatTarget = HasCombatTarget;
             dest.IsThreatened = IsThreatened;
             dest.IsOutOfTerritory = IsOutOfTerritory;
             dest.IsOutOfTerritoryCore = IsOutOfTerritoryCore;
@@ -37,10 +39,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             CurrentMode = memory.CurrentMode;
             HasCombatObjective = memory.CurrentObjective is DefeatCharacterObjective;
             HasGatheringObjective = memory.CurrentObjective is AcquireItemObjective;
-
-            if (CurrentMode == AIMode.Combat)
-                if (!memory.HasTarget)
-                    CurrentMode = AIMode.Idle;
+            HasCombatTarget = memory.HasTarget;
 
             if (character.Is(out TerritorialCharacter territorial))
             {

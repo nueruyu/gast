@@ -17,10 +17,9 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             var processCombat = builder.DefineCompound("ProcessCombat");
             processCombat.AddMethod("InitializeCombat")
                 .When(s => s.CurrentMode != AIMode.Combat)
-                .Do(new SelectThreatAction())
                 .Do(new SetAIModeAction(AIMode.Combat));
             processCombat.AddMethod("EndCombat")
-                .When(s => !s.IsThreatened)
+                .When(s => !s.HasCombatTarget)
                 .Do(new SetAIModeAction(AIMode.Idle));
             processCombat.AddMethod("ContinueCombat")
                 .Do(new IdleAction());
@@ -48,11 +47,11 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
                 .Do(new IdleAction());
 
             // === Process: Idle ===
-            var processDefault = builder.DefineCompound("ProcessIdle");
-            processDefault.AddMethod("InitializeIdle")
+            var processIdle = builder.DefineCompound("ProcessIdle");
+            processIdle.AddMethod("InitializeIdle")
                 .When(s => s.CurrentMode != AIMode.Idle)
                 .Do(new SetAIModeAction(AIMode.Idle));
-            processDefault.AddMethod("ContinueIdle")
+            processIdle.AddMethod("ContinueIdle")
                 .Do(new IdleAction());
 
             // === Root: Dispatcher ===
@@ -62,20 +61,20 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
                 .When(s => s.IsOutOfTerritory)
                 .Do(processReturningHome);
 
-            root.AddMethod("Handle_Combat")
-                .When(s => s.IsThreatened)
-                .Do(processCombat);
+            root.AddMethod("Handle_Threat")
+                .When(s => s.IsThreatened && !s.HasCombatTarget)
+                .Do(new SelectThreatAction());
 
-            root.AddMethod("Handle_CombatObjective")
-                .When(s => s.HasCombatObjective)
-                .Do(processGathering);
+            root.AddMethod("Handle_Combat")
+                .When(s => s.HasCombatTarget)
+                .Do(processCombat);
 
             root.AddMethod("Handle_Gathering")
                 .When(s => s.HasGatheringObjective)
                 .Do(processGathering);
 
             root.AddMethod("Handle_Default")
-                .Do(processDefault);
+                .Do(processIdle);
 
             domain = builder.Build("Root");
         }
