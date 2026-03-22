@@ -4,7 +4,7 @@ using Gast.Lib.AI;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Strategic.Actions
 {
-    public class ClearTargetAction : IAction<ActorContext<StrategicState>, StrategicState>
+    public class ClearObjectiveAction : IAction<ActorContext<StrategicState>, StrategicState>
     {
         public bool IsAvailable(StrategicState worldState)
         {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cryst.Domain.Characters;
+using Cryst.Features.CharacterAI.Humanoid.Objective;
 using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using Gast.Domain.Pickups;
@@ -14,6 +15,7 @@ namespace Cryst.Features.CharacterAI
         readonly AIBrainServices services;
         readonly Action<ActorContext<TWorldState>> worldStateUpdater;
         readonly Dictionary<Type, object> modules = new();
+        IActorInfo selfInfo;
 
         public ActorContext(
             AIBrainServices services,
@@ -37,11 +39,14 @@ namespace Cryst.Features.CharacterAI
         public IPickupRepository PickupRepository => services.PickupRepository;
         public ICommandDispatcher CommandDispatcher => services.CommandDispatcher;
         public ObjectiveManager ObjectiveManager { get; }
+        public IObjectiveQueries ObjectiveQueries => services.ObjectiveQueries;
+        public IActorInfo SelfInfo => selfInfo;
 
         public TWorldState WorldState { get; }
 
         public void UpdateWorldState()
         {
+            selfInfo = new ActorInfo(Actor.Id, Actor.TypeId, Actor.Body.Position, Actor.Faction, Actor.Status.IsAlive.Value);
             worldStateUpdater.Invoke(this);
         }
 
@@ -58,5 +63,12 @@ namespace Cryst.Features.CharacterAI
             }
             throw new KeyNotFoundException($"Module of type '{typeof(T).Name}' not found in ActorContext.");
         }
+
+        record ActorInfo(
+            CharacterId Id,
+            CharacterTypeId TypeId,
+            UnityEngine.Vector3 Position,
+            Faction Faction,
+            bool IsAlive) : IActorInfo;
     }
 }

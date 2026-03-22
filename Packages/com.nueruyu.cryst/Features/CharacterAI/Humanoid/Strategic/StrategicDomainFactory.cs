@@ -1,4 +1,3 @@
-using System.Linq;
 using Cryst.Features.CharacterAI.Actions;
 using Cryst.Features.CharacterAI.Humanoid.Strategic.Actions;
 using Gast.Lib.AI;
@@ -22,7 +21,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
                 .Do(new SetAIModeAction(AIMode.Combat));
             processCombat.AddMethod("EndCombat")
                 .When(s => !s.IsThreatened)
-                .Do(new ClearTargetAction())
+                .Do(new ClearObjectiveAction())
                 .Do(new SetAIModeAction(AIMode.Idle));
             processCombat.AddMethod("ContinueCombat")
                 .Do(new IdleAction());
@@ -31,7 +30,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             var processReturningHome = builder.DefineCompound("ProcessReturningHome");
             processReturningHome.AddMethod("InitializeReturningHome")
                 .When(s => s.CurrentMode != AIMode.ReturningToHome)
-                .Do(new ClearTargetAction())
+                .Do(new ClearObjectiveAction())
                 .Do(new SetAIModeAction(AIMode.ReturningToHome));
             processReturningHome.AddMethod("ArrivedHome")
                 .When(s => !s.IsOutOfTerritoryCore)
@@ -39,29 +38,18 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             processReturningHome.AddMethod("ContinueReturning")
                 .Do(new IdleAction());
 
-            // === Process: Gathering ===
-            var processGathering = builder.DefineCompound("ProcessGathering");
-            processGathering.AddMethod("InitializeGathering")
-                .When(s => s.CurrentMode != AIMode.Gathering)
-                .Do(new SetAIModeAction(AIMode.Gathering));
-            processGathering.AddMethod("EndGathering")
-                .When(s => s.AvailableObjectives.Count == 0 || s.AvailableObjectives.All(o => o.IsCompleted.Value))
+            // === Process: Default Behavior (Idle/Objective-driven) ===
+            var processDefault = builder.DefineCompound("ProcessDefault");
+            processDefault.AddMethod("StartNewObjective")
+                .When(s => s.HasObjective)
+                .Do(new SetAIModeFromObjectiveAction());
+            processDefault.AddMethod("ReturnToIdle")
+                .When(s => s.CurrentMode != AIMode.Idle)
+                .Do(new ClearObjectiveAction())
                 .Do(new SetAIModeAction(AIMode.Idle));
-            processGathering.AddMethod("ContinueGathering")
+            processDefault.AddMethod("ContinueIdle")
                 .Do(new IdleAction());
 
-            // === Process: Idle ===
-            var processIdle = builder.DefineCompound("ProcessIdle");
-            processIdle.AddMethod("InitializeIdle")
-                .When(s => s.CurrentMode != AIMode.Idle)
-                .Do(new ClearTargetAction())
-                .Do(new SetAIModeAction(AIMode.Idle));
-            processIdle.AddMethod("SeekNewObjective")
-                .When(s => s.AvailableObjectives.Count > 0)
-                .Do(new SelectObjectiveAction())
-                .Do(new SetAIModeFromObjectiveAction());
-            processIdle.AddMethod("ContinueIdle")
-                .Do(new IdleAction());
 
             // === Root: Dispatcher ===
             var root = builder.DefineCompound("Root");
@@ -74,12 +62,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
                 .When(s => s.IsThreatened)
                 .Do(processCombat);
 
-            root.AddMethod("Handle_Gathering")
-                .When(s => s.CurrentMode == AIMode.Gathering)
-                .Do(processGathering);
-
-            root.AddMethod("Handle_Idle")
-                .Do(processIdle);
+            root.AddMethod("Handle_Default")
+                .Do(processDefault);
 
             domain = builder.Build("Root");
         }

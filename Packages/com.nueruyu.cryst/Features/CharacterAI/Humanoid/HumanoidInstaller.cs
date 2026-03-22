@@ -1,5 +1,6 @@
 using Cryst.Features.CharacterAI.Humanoid.Combat;
 using Cryst.Features.CharacterAI.Humanoid.Gathering;
+using Cryst.Features.CharacterAI.Humanoid.Objective;
 using Cryst.Features.CharacterAI.Humanoid.Patrol;
 using Cryst.Features.CharacterAI.Humanoid.Strategic;
 using Gast.Core.DI;
@@ -10,10 +11,18 @@ namespace Cryst.Features.CharacterAI.Humanoid
     {
         public void Install(IContainerBuilder builder)
         {
+            // Query Service
+            builder.Register<ObjectiveQueries>(Lifetime.Singleton).As<IObjectiveQueries>();
+
             // Strategic Domain
             builder.Register<StrategicDomainFactory>(Lifetime.Singleton).As<IAIDomainFactory<StrategicState>>();
             builder.Register<StrategicWorldStateUpdater>(Lifetime.Singleton).As<IWorldStateUpdater<StrategicState>>();
             builder.Register<StrategicDomainConstruct>(Lifetime.Singleton);
+
+            // Objective Domain
+            builder.Register<ObjectiveDomainFactory>(Lifetime.Singleton).As<IAIDomainFactory<ObjectiveState>>();
+            builder.Register<ObjectiveWorldStateUpdater>(Lifetime.Singleton).As<IWorldStateUpdater<ObjectiveState>>();
+            builder.Register<ObjectiveDomainConstruct>(Lifetime.Singleton);
 
             // Combat Domain
             builder.Register<CombatDomainFactory>(Lifetime.Singleton).As<IAIDomainFactory<CombatState>>();
