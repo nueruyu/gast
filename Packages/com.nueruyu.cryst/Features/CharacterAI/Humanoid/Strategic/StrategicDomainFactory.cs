@@ -69,7 +69,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             domain = builder.Build("Root");
         }
 
-        public AIDomain<ActorContext<StrategicState>, StrategicState> CreateDomain()
+        public AIDomain<ActorContext<StrategicState>, StrategicState> GetDomain()
         {
             return domain;
         }

@@ -15,7 +15,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering
         {
             registrar.Register(
                 "Gathering",
-                factory.CreateDomain(),
+                factory,
                 new GatheringState(),
                 updater.Update);
         }

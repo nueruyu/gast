@@ -24,7 +24,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Patrol
             domain = builder.Build("Root");
         }
 
-        public AIDomain<ActorContext<PatrolState>, PatrolState> CreateDomain()
+        public AIDomain<ActorContext<PatrolState>, PatrolState> GetDomain()
         {
             return domain;
         }

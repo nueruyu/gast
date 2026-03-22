@@ -15,14 +15,14 @@ namespace Gast.Lib.AI
     {
         readonly TActorContext actorContext;
         readonly ContextKey contextKey;
-        readonly AIDomain<TActorContext, TWorldState> domain;
+        readonly IDomainProvider<TActorContext, TWorldState> domainProvider;
 
         public DomainProcess(
-            AIDomain<TActorContext, TWorldState> domain,
+            IDomainProvider<TActorContext, TWorldState> domainProvider,
             TActorContext actorContext,
             ContextKey contextKey)
         {
-            this.domain = domain;
+            this.domainProvider = domainProvider;
             this.actorContext = actorContext;
             this.contextKey = contextKey;
         }
@@ -35,6 +35,13 @@ namespace Gast.Lib.AI
                     contextKey,
                     actorContext
                 );
+
+                var domain = domainProvider.GetDomain();
+                if (domain?.RootTask == null)
+                {
+                    await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+                    continue;
+                }
 
                 await domain.RootTask.RunAsync(executionContext, cancellationToken);
 

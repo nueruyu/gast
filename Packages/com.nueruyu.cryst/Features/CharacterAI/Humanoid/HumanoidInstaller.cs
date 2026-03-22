@@ -20,7 +20,6 @@ namespace Cryst.Features.CharacterAI.Humanoid
             builder.Register<StrategicDomainConstruct>(Lifetime.Singleton);
 
             // Objective Domain
-            builder.Register<ObjectiveDomainFactory>(Lifetime.Singleton).As<IAIDomainFactory<ObjectiveState>>();
             builder.Register<ObjectiveWorldStateUpdater>(Lifetime.Singleton).As<IWorldStateUpdater<ObjectiveState>>();
             builder.Register<ObjectiveDomainConstruct>(Lifetime.Singleton);
 

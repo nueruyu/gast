@@ -33,7 +33,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering
             domain = builder.Build("Root");
         }
 
-        public AIDomain<ActorContext<GatheringState>, GatheringState> CreateDomain()
+        public AIDomain<ActorContext<GatheringState>, GatheringState> GetDomain()
         {
             return domain;
         }

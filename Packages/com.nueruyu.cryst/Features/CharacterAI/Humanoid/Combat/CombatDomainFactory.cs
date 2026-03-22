@@ -86,7 +86,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
             domain = builder.Build("Root");
         }
 
-        public AIDomain<ActorContext<CombatState>, CombatState> CreateDomain()
+        public AIDomain<ActorContext<CombatState>, CombatState> GetDomain()
         {
             return domain;
         }

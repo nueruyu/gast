@@ -2,20 +2,19 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
 {
     public class ObjectiveDomainConstruct
     {
-        readonly IAIDomainFactory<ObjectiveState> factory;
         readonly IWorldStateUpdater<ObjectiveState> updater;
 
-        public ObjectiveDomainConstruct(IAIDomainFactory<ObjectiveState> factory, IWorldStateUpdater<ObjectiveState> updater)
+        public ObjectiveDomainConstruct(IWorldStateUpdater<ObjectiveState> updater)
         {
-            this.factory = factory;
             this.updater = updater;
         }
 
-        public void ApplyTo(IDomainRegistrar registrar)
+        public void ApplyTo(IDomainRegistrar registrar, ObjectiveManager objectiveManager)
         {
+            var factory = new ObjectiveDomainFactory(objectiveManager);
             registrar.Register(
                 "Objective",
-                factory.CreateDomain(),
+                factory,
                 new ObjectiveState(),
                 updater.Update);
         }

@@ -15,7 +15,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Patrol
         {
             registrar.Register(
                 "Patrol",
-                factory.CreateDomain(),
+                factory,
                 new PatrolState(),
                 updater.Update);
         }

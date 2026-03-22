@@ -47,7 +47,7 @@ namespace Cryst.Features.CharacterAI.Humanoid
         protected override void RegisterDomains(IDomainRegistrar registrar)
         {
             strategic.ApplyTo(registrar);
-            objective.ApplyTo(registrar);
+            objective.ApplyTo(registrar, ObjectiveManager);
             combat.ApplyTo(registrar);
             gathering.ApplyTo(registrar);
             patrol.ApplyTo(registrar);

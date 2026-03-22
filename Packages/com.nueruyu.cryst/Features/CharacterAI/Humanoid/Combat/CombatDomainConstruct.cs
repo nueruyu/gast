@@ -15,7 +15,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
         {
             registrar.Register(
                 "Combat",
-                factory.CreateDomain(),
+                factory,
                 new CombatState(),
                 updater.Update);
         }

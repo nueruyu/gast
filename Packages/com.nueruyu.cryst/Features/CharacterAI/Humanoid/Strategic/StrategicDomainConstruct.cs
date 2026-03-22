@@ -15,7 +15,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
         {
             registrar.Register(
                 "Strategic",
-                factory.CreateDomain(),
+                factory,
                 new StrategicState(),
                 updater.Update);
         }

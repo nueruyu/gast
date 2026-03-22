@@ -14,7 +14,8 @@ namespace Cryst.Features.CharacterAI
     {
         readonly IContextRegistry contextRegistry;
         readonly AIBrainServices services;
-        readonly ObjectiveManager objectiveManager;
+
+        protected ObjectiveManager ObjectiveManager { get; }
         BaseCharacter actor;
         ICharacter character;
         CancellationTokenSource characterCts;
@@ -28,10 +29,10 @@ namespace Cryst.Features.CharacterAI
         {
             this.contextRegistry = contextRegistry;
             this.services = services;
-            this.objectiveManager = objectiveManager;
+            ObjectiveManager = objectiveManager;
         }
 
-        public IReadOnlyList<IAIObjective> CurrentObjectives => objectiveManager.CurrentObjectives;
+        public IReadOnlyList<IAIObjective> CurrentObjectives => ObjectiveManager.CurrentObjectives;
 
         public void OnAttached(ICharacter character)
         {
@@ -46,7 +47,7 @@ namespace Cryst.Features.CharacterAI
 
             domainRunner.RunAsync(characterCts.Token).Forget();
 
-            objectiveManager.BindCharacter(actor.Id)
+            ObjectiveManager.BindCharacter(actor.Id)
                 .AddTo(characterCts.Token);
         }
 
@@ -65,7 +66,7 @@ namespace Cryst.Features.CharacterAI
 
         public void SetObjectives(IEnumerable<IAIObjective> objectives)
         {
-            objectiveManager.UpdateObjectives(objectives);
+            ObjectiveManager.UpdateObjectives(objectives);
         }
 
         protected abstract void RegisterDomains(IDomainRegistrar registrar);
@@ -104,7 +105,7 @@ namespace Cryst.Features.CharacterAI
 
             public void Register<TWorldState>(
                 string domainName,
-                AIDomain<ActorContext<TWorldState>, TWorldState> domain,
+                IDomainProvider<ActorContext<TWorldState>, TWorldState> domainProvider,
                 TWorldState worldState,
                 Action<ActorContext<TWorldState>> worldStateUpdater)
                 where TWorldState : class, IWorldState<TWorldState>
@@ -115,7 +116,7 @@ namespace Cryst.Features.CharacterAI
 
                 var actorContext = new ActorContext<TWorldState>(
                     brain.services,
-                    brain.objectiveManager,
+                    brain.ObjectiveManager,
                     brain.actor,
                     brain.character,
                     worldState,
@@ -124,7 +125,7 @@ namespace Cryst.Features.CharacterAI
                 brain.RegisterModules(actorContext);
 
                 var process =
-                    new DomainProcess<ActorContext<TWorldState>, TWorldState>(domain, actorContext, contextKey);
+                    new DomainProcess<ActorContext<TWorldState>, TWorldState>(domainProvider, actorContext, contextKey);
                 domainRunner.Register(process);
             }
         }
