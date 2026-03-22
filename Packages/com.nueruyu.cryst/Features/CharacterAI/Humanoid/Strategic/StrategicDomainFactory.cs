@@ -1,3 +1,4 @@
+using System;
 using Cryst.Features.CharacterAI.Actions;
 using Cryst.Features.CharacterAI.Humanoid.Strategic.Actions;
 using Gast.Lib.AI;
@@ -13,57 +14,35 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
         {
             var builder = new AIDomainBuilder<ActorContext<StrategicState>, StrategicState>();
 
-            // === Process: ThreatCombat ===
-            var processThreatCombat = builder.DefineCompound("ProcessThreatCombat");
-            processThreatCombat.AddMethod("InitializeThreatCombat")
-                .When(s => s.CurrentMode != AIMode.Combat)
-                .Do(new SetAIModeAction(AIMode.Combat));
-            processThreatCombat.AddMethod("EndThreatCombat")
-                .When(s => !s.IsThreatened)
-                .Do(new SetAIModeAction(AIMode.Idle));
-            processThreatCombat.AddMethod("ContinueThreatCombat")
-                .Do(new IdleAction());
+            var processThreatCombat = DefineProcess(
+                builder,
+                "ThreatCombat",
+                AIMode.Combat,
+                s => s.IsThreatened);
 
-            // === Process: ObjectiveCombat ===
-            var processObjectiveCombat = builder.DefineCompound("ProcessObjectiveCombat");
-            processObjectiveCombat.AddMethod("InitializeObjectiveCombat")
-                .When(s => s.CurrentMode != AIMode.Combat)
-                .Do(new SetAIModeAction(AIMode.Combat));
-            processObjectiveCombat.AddMethod("EndObjectiveCombat")
-                .When(s => !s.HasObjectiveCombatTarget)
-                .Do(new SetAIModeAction(AIMode.Idle));
-            processObjectiveCombat.AddMethod("ContinueObjectiveCombat")
-                .Do(new IdleAction());
+            var processObjectiveCombat = DefineProcess(
+                builder,
+                "ObjectiveCombat",
+                AIMode.Combat,
+                s => s.HasObjectiveCombatTarget);
 
-            // === Process: ReturningHome ===
-            var processReturningHome = builder.DefineCompound("ProcessReturningHome");
-            processReturningHome.AddMethod("InitializeReturningHome")
-                .When(s => s.CurrentMode != AIMode.ReturningToHome)
-                .Do(new SetAIModeAction(AIMode.ReturningToHome));
-            processReturningHome.AddMethod("ArrivedHome")
-                .When(s => !s.IsOutOfTerritoryCore)
-                .Do(new SetAIModeAction(AIMode.Idle));
-            processReturningHome.AddMethod("ContinueReturning")
-                .Do(new IdleAction());
+            var processReturningHome = DefineProcess(
+                builder,
+                "ReturningHome",
+                AIMode.ReturningToHome,
+                s => s.IsOutOfTerritoryCore);
 
-            // === Process: Gathering ===
-            var processGathering = builder.DefineCompound("ProcessGathering");
-            processGathering.AddMethod("InitializeGathering")
-                .When(s => s.CurrentMode != AIMode.Gathering)
-                .Do(new SetAIModeAction(AIMode.Gathering));
-            processGathering.AddMethod("EndGathering")
-                .When(s => !s.HasGatheringObjective)
-                .Do(new SetAIModeAction(AIMode.Idle));
-            processGathering.AddMethod("ContinueGathering")
-                .Do(new IdleAction());
+            var processGathering = DefineProcess(
+                builder,
+                "Gathering",
+                AIMode.Gathering,
+                s => s.HasGatheringObjective);
 
-            // === Process: Idle ===
-            var processIdle = builder.DefineCompound("ProcessIdle");
-            processIdle.AddMethod("InitializeIdle")
-                .When(s => s.CurrentMode != AIMode.Idle)
-                .Do(new SetAIModeAction(AIMode.Idle));
-            processIdle.AddMethod("ContinueIdle")
-                .Do(new IdleAction());
+            var processIdle = DefineProcess(
+                builder,
+                "Idle",
+                AIMode.Idle,
+                _ => true);
 
             // === Root: Dispatcher ===
             var root = builder.DefineCompound("Root");
@@ -97,6 +76,24 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
         public AIDomain<ActorContext<StrategicState>, StrategicState> CreateDomain()
         {
             return domain;
+        }
+
+        static CompoundTaskBuilder<ActorContext<StrategicState>, StrategicState> DefineProcess(
+            AIDomainBuilder<ActorContext<StrategicState>, StrategicState> builder,
+            string name,
+            AIMode mode,
+            Func<StrategicState, bool> continueCondition)
+        {
+            var process = builder.DefineCompound($"Process{name}");
+            process.AddMethod($"Initialize{name}")
+                .When(s => s.CurrentMode != mode)
+                .Do(new SetAIModeAction(mode));
+            process.AddMethod($"End{name}")
+                .When(s => !continueCondition(s))
+                .Do(new SetAIModeAction(AIMode.Idle));
+            process.AddMethod($"Continue{name}")
+                .Do(new IdleAction());
+            return process;
         }
     }
 }
