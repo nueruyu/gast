@@ -1,4 +1,5 @@
 using System.Linq;
+using Cryst.Domain.AI.Objectives;
 using Cryst.Domain.Characters;
 using Cryst.Domain.Characters.Facets;
 using Gast.Domain.AI;
@@ -10,7 +11,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
     public class StrategicState : IWorldState<StrategicState>
     {
         public AIMode CurrentMode { get; private set; }
-        public bool HasObjective { get; private set; }
+        public bool HasCombatObjective { get; private set; }
+        public bool HasGatheringObjective { get; private set; }
         public bool IsThreatened { get; private set; }
         public bool IsOutOfTerritory { get; private set; }
         public bool IsOutOfTerritoryCore { get; private set; }
@@ -19,7 +21,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
         {
             dest ??= new();
             dest.CurrentMode = CurrentMode;
-            dest.HasObjective = HasObjective;
+            dest.HasCombatObjective = HasCombatObjective;
+            dest.HasGatheringObjective = HasGatheringObjective;
             dest.IsThreatened = IsThreatened;
             dest.IsOutOfTerritory = IsOutOfTerritory;
             dest.IsOutOfTerritoryCore = IsOutOfTerritoryCore;
@@ -32,7 +35,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             var memory = context.GetModule<HumanoidMemory>();
 
             CurrentMode = memory.CurrentMode;
-            HasObjective = memory.CurrentObjective != null;
+            HasCombatObjective = memory.CurrentObjective is DefeatCharacterObjective;
+            HasGatheringObjective = memory.CurrentObjective is AcquireItemObjective;
 
             if (CurrentMode == AIMode.Combat)
                 if (!memory.HasTarget)
