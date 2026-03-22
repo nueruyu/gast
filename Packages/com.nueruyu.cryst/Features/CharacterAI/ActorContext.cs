@@ -6,16 +6,16 @@ using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using Gast.Domain.Pickups;
 using Gast.Lib.AI;
+using UnityEngine;
 
 namespace Cryst.Features.CharacterAI
 {
     public class ActorContext<TWorldState> : IActorContext<TWorldState>
         where TWorldState : class, IWorldState<TWorldState>
     {
+        readonly Dictionary<Type, object> modules = new();
         readonly AIBrainServices services;
         readonly Action<ActorContext<TWorldState>> worldStateUpdater;
-        readonly Dictionary<Type, object> modules = new();
-        IActorInfo selfInfo;
 
         public ActorContext(
             AIBrainServices services,
@@ -40,13 +40,11 @@ namespace Cryst.Features.CharacterAI
         public ICommandDispatcher CommandDispatcher => services.CommandDispatcher;
         public ObjectiveManager ObjectiveManager { get; }
         public IObjectiveQueries ObjectiveQueries => services.ObjectiveQueries;
-        public IActorInfo SelfInfo => selfInfo;
 
         public TWorldState WorldState { get; }
 
         public void UpdateWorldState()
         {
-            selfInfo = new ActorInfo(Actor.Id, Actor.TypeId, Actor.Body.Position, Actor.Faction, Actor.Status.IsAlive.Value);
             worldStateUpdater.Invoke(this);
         }
 
@@ -57,17 +55,14 @@ namespace Cryst.Features.CharacterAI
 
         public T GetModule<T>() where T : class
         {
-            if (modules.TryGetValue(typeof(T), out var module))
-            {
-                return (T)module;
-            }
+            if (modules.TryGetValue(typeof(T), out var module)) return (T)module;
             throw new KeyNotFoundException($"Module of type '{typeof(T).Name}' not found in ActorContext.");
         }
 
         record ActorInfo(
             CharacterId Id,
             CharacterTypeId TypeId,
-            UnityEngine.Vector3 Position,
+            Vector3 Position,
             Faction Faction,
             bool IsAlive) : IActorInfo;
     }

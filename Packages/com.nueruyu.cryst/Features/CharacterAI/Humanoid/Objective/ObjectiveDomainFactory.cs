@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Cryst.Domain.AI.Objectives;
 using Cryst.Features.CharacterAI.Actions;
 using Cryst.Features.CharacterAI.Humanoid.Objective.Actions;
@@ -42,39 +41,46 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
             var root = builder.DefineCompound("Root")
                 .UseSelector(new UtilitySelector<ActorContext<ObjectiveState>, ObjectiveState>());
 
-            if (objectives.OfType<DefeatCharacterObjective>().Any())
-                root.AddMethod("SelectCombatObjective")
-                    .When(s => !s.HasActiveObjective && s.AvailableCombatObjectives.Any())
-                    .Score(CalculateBestCombatScore)
-                    .Do(new SelectBestCombatObjectiveAction());
-
-            if (objectives.OfType<AcquireItemObjective>().Any())
-                root.AddMethod("SelectGatheringObjective")
-                    .When(s => !s.HasActiveObjective && s.AvailableGatheringObjectives.Any())
-                    .Score(CalculateBestGatheringScore)
-                    .Do(new SelectBestGatheringObjectiveAction());
+            foreach (var objective in objectives)
+                switch (objective)
+                {
+                    case DefeatCharacterObjective combatObjective:
+                        root.AddMethod($"SelectCombat_{combatObjective.TargetTypeId}")
+                            .When(s => !s.HasActiveObjective && !combatObjective.IsCompleted.Value)
+                            .Score(state => CalculateCombatScore(state, combatObjective))
+                            .Do(new SelectObjectiveAction(combatObjective));
+                        break;
+                    case AcquireItemObjective gatheringObjective:
+                        root.AddMethod($"SelectGathering_{gatheringObjective.TargetItemId}")
+                            .When(s => !s.HasActiveObjective && !gatheringObjective.IsCompleted.Value)
+                            .Score(state => CalculateGatheringScore(state, gatheringObjective))
+                            .Do(new SelectObjectiveAction(gatheringObjective));
+                        break;
+                }
 
             root.AddMethod("Idle")
-                .Score(s => 0.1f) // Low score, serves as a fallback.
+                .Score(s => 0)
                 .Do(new IdleAction());
 
             domain = builder.Build("Root");
         }
 
-        static float CalculateBestCombatScore(ObjectiveState state)
+        static float CalculateCombatScore(ObjectiveState state, DefeatCharacterObjective objective)
         {
-            var (_, target) = state.Queries.FindBestCombatObjective(state);
-            if (target == null) return 0f;
+            var target = state.Queries.FindBestTargetFor(objective, state);
+            if (target == null)
+                return float.NegativeInfinity;
 
             var distance = Vector3.Distance(state.Self.Position, target.Position);
             // Higher score for closer targets.
             return 100f / (1f + distance);
         }
 
-        static float CalculateBestGatheringScore(ObjectiveState state)
+        static float CalculateGatheringScore(ObjectiveState state, AcquireItemObjective objective)
         {
-            var (_, target) = state.Queries.FindBestGatheringObjective(state);
-            if (target == null) return 0f;
+            var target = state.Queries.FindBestTargetFor(objective, state);
+            if (target == null)
+                return float.NegativeInfinity;
 
             var distance = Vector3.Distance(state.Self.Position, target.Position);
             // Combat is generally prioritized over gathering.

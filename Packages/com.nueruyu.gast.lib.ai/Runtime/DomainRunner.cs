@@ -1,7 +1,6 @@
-using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
+using Cysharp.Threading.Tasks;
 
 namespace Gast.Lib.AI
 {
@@ -16,8 +15,11 @@ namespace Gast.Lib.AI
 
         public UniTask RunAsync(CancellationToken cancellationToken)
         {
-            var tasks = processes.Select(d => d.RunAsync(cancellationToken)).ToList();
-            tasks.Add(StateUpdateLoop(cancellationToken));
+            var tasks = new List<UniTask>
+            {
+                StateUpdateLoop(cancellationToken)
+            };
+            tasks.AddRange(processes.Select(d => d.RunAsync(cancellationToken)));
             return UniTask.WhenAll(tasks);
         }
 
@@ -26,9 +28,7 @@ namespace Gast.Lib.AI
             while (!cancellationToken.IsCancellationRequested)
             {
                 foreach (var domain in processes)
-                {
                     domain.UpdateState();
-                }
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
         }

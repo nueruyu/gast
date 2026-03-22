@@ -1,10 +1,10 @@
-using Gast.Domain.AI;
+using Cryst.Domain.AI.Objectives;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Objective
 {
     public interface IObjectiveQueries
     {
-        (IAIObjective objective, IActorInfo target) FindBestCombatObjective(ObjectiveState state);
-        (IAIObjective objective, IPickupInfo target) FindBestGatheringObjective(ObjectiveState state);
+        IActorInfo FindBestTargetFor(DefeatCharacterObjective objective, ObjectiveState state);
+        IPickupInfo FindBestTargetFor(AcquireItemObjective objective, ObjectiveState state);
     }
 }
