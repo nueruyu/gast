@@ -20,7 +20,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
                 .Do(new SetAIModeAction(AIMode.Combat));
             processThreatCombat.AddMethod("EndThreatCombat")
                 .When(s => !s.IsThreatened)
-                .Do(new ClearObjectiveAction())
+                .Do(new ClearThreatAction())
                 .Do(new SetAIModeAction(AIMode.Idle));
             processThreatCombat.AddMethod("ContinueThreatCombat")
                 .Do(new IdleAction());
@@ -41,6 +41,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             var processReturningHome = builder.DefineCompound("ProcessReturningHome");
             processReturningHome.AddMethod("InitializeReturningHome")
                 .When(s => s.CurrentMode != AIMode.ReturningToHome)
+                .Do(new ClearThreatAction())
+                .Do(new ClearObjectiveAction())
                 .Do(new SetAIModeAction(AIMode.ReturningToHome));
             processReturningHome.AddMethod("ArrivedHome")
                 .When(s => !s.IsOutOfTerritoryCore)
@@ -55,6 +57,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
                 .Do(new SetAIModeAction(AIMode.Gathering));
             processGathering.AddMethod("EndGathering")
                 .When(s => !s.HasGatheringObjective)
+                .Do(new ClearObjectiveAction())
                 .Do(new SetAIModeAction(AIMode.Idle));
             processGathering.AddMethod("ContinueGathering")
                 .Do(new IdleAction());

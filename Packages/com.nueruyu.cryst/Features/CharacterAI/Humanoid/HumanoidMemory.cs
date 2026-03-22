@@ -47,6 +47,18 @@ namespace Cryst.Features.CharacterAI.Humanoid
                 InteractableTarget = null;
         }
 
+        public void ClearThreat()
+        {
+            ThreatTarget = null;
+        }
+
+        public void ClearObjective()
+        {
+            CurrentObjective = null;
+            ObjectiveCombatTarget = null;
+            InteractableTarget = null;
+        }
+
         public void Clear()
         {
             ThreatTarget = null;
