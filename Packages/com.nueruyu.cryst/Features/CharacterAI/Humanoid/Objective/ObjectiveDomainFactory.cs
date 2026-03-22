@@ -46,15 +46,17 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
                 {
                     case DefeatCharacterObjective combatObjective:
                         root.AddMethod($"SelectCombat_{combatObjective.TargetTypeId}")
-                            .When(s => !s.HasActiveObjective && !combatObjective.IsCompleted.Value)
+                            .While(s => !combatObjective.IsCompleted.Value)
                             .Score(state => CalculateCombatScore(state, combatObjective))
-                            .Do(new SelectObjectiveAction(combatObjective));
+                            .Do(new SelectCombatObjectiveAction(combatObjective))
+                            .Do(new IdleAction());
                         break;
                     case AcquireItemObjective gatheringObjective:
                         root.AddMethod($"SelectGathering_{gatheringObjective.TargetItemId}")
-                            .When(s => !s.HasActiveObjective && !gatheringObjective.IsCompleted.Value)
+                            .While(s => !gatheringObjective.IsCompleted.Value)
                             .Score(state => CalculateGatheringScore(state, gatheringObjective))
-                            .Do(new SelectObjectiveAction(gatheringObjective));
+                            .Do(new SelectGatheringObjectiveAction(gatheringObjective))
+                            .Do(new IdleAction());
                         break;
                 }
 
