@@ -48,18 +48,17 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
             var character = context.Character;
             var actor = context.Actor;
 
-            IsActive = memory.CurrentMode == AIMode.Combat && memory.HasTarget;
+            var combatTarget = memory.ThreatTarget ?? memory.ObjectiveCombatTarget;
+            IsActive = memory.CurrentMode == AIMode.Combat && combatTarget != null;
 
             AttackRange = 1.5f;
             CombatRange = 4.5f;
 
-            if (memory.HasTarget)
+            if (combatTarget != null)
             {
-                var target = memory.CombatTarget;
-                TargetPosition = target.Body.Position;
-                TargetForward = target.Body.Forward;
-                DistanceToTarget = Vector3.Distance(actor.Body.Position,
-                    target.Body.Position);
+                TargetPosition = combatTarget.Body.Position;
+                TargetForward = combatTarget.Body.Forward;
+                DistanceToTarget = Vector3.Distance(actor.Body.Position, combatTarget.Body.Position);
             }
             else
             {

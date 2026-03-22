@@ -31,7 +31,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective.Actions
             if (targetCharacter != null)
             {
                 memory.SetObjective(objective);
-                memory.SetCombatTarget(targetCharacter);
+                memory.SetObjectiveCombatTarget(targetCharacter);
             }
 
             return UniTask.CompletedTask;

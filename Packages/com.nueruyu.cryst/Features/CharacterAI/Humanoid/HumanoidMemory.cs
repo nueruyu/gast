@@ -8,10 +8,12 @@ namespace Cryst.Features.CharacterAI.Humanoid
     public class HumanoidMemory
     {
         public AIMode CurrentMode { get; private set; } = AIMode.Idle;
-        public BaseCharacter CombatTarget { get; private set; }
+        public BaseCharacter ThreatTarget { get; private set; }
+        public BaseCharacter ObjectiveCombatTarget { get; private set; }
         public IInteractable InteractableTarget { get; private set; }
         public IAIObjective CurrentObjective { get; private set; }
-        public bool HasTarget => CombatTarget != null && CombatTarget.Status.IsAlive.Value;
+        public bool HasThreatTarget => ThreatTarget != null && ThreatTarget.Status.IsAlive.Value;
+        public bool HasObjectiveCombatTarget => ObjectiveCombatTarget != null && ObjectiveCombatTarget.Status.IsAlive.Value;
 
         public void SetMode(AIMode mode)
         {
@@ -23,9 +25,14 @@ namespace Cryst.Features.CharacterAI.Humanoid
             CurrentObjective = objective;
         }
 
-        public void SetCombatTarget(BaseCharacter character)
+        public void SetThreatTarget(BaseCharacter character)
         {
-            CombatTarget = character;
+            ThreatTarget = character;
+        }
+
+        public void SetObjectiveCombatTarget(BaseCharacter character)
+        {
+            ObjectiveCombatTarget = character;
         }
 
         public void SetInteractableTarget(IInteractable interactable)
@@ -42,7 +49,8 @@ namespace Cryst.Features.CharacterAI.Humanoid
 
         public void Clear()
         {
-            CombatTarget = null;
+            ThreatTarget = null;
+            ObjectiveCombatTarget = null;
             CurrentObjective = null;
             InteractableTarget = null;
         }

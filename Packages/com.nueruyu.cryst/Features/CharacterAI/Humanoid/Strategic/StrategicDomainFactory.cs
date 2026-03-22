@@ -13,15 +13,28 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
         {
             var builder = new AIDomainBuilder<ActorContext<StrategicState>, StrategicState>();
 
-            // === Process: Combat ===
-            var processCombat = builder.DefineCompound("ProcessCombat");
-            processCombat.AddMethod("InitializeCombat")
+            // === Process: ThreatCombat ===
+            var processThreatCombat = builder.DefineCompound("ProcessThreatCombat");
+            processThreatCombat.AddMethod("InitializeThreatCombat")
                 .When(s => s.CurrentMode != AIMode.Combat)
                 .Do(new SetAIModeAction(AIMode.Combat));
-            processCombat.AddMethod("EndCombat")
-                .When(s => !s.HasCombatTarget)
+            processThreatCombat.AddMethod("EndThreatCombat")
+                .When(s => !s.IsThreatened)
+                .Do(new ClearObjectiveAction())
                 .Do(new SetAIModeAction(AIMode.Idle));
-            processCombat.AddMethod("ContinueCombat")
+            processThreatCombat.AddMethod("ContinueThreatCombat")
+                .Do(new IdleAction());
+
+            // === Process: ObjectiveCombat ===
+            var processObjectiveCombat = builder.DefineCompound("ProcessObjectiveCombat");
+            processObjectiveCombat.AddMethod("InitializeObjectiveCombat")
+                .When(s => s.CurrentMode != AIMode.Combat)
+                .Do(new SetAIModeAction(AIMode.Combat));
+            processObjectiveCombat.AddMethod("EndObjectiveCombat")
+                .When(s => !s.HasObjectiveCombatTarget)
+                .Do(new ClearObjectiveAction())
+                .Do(new SetAIModeAction(AIMode.Idle));
+            processObjectiveCombat.AddMethod("ContinueObjectiveCombat")
                 .Do(new IdleAction());
 
             // === Process: ReturningHome ===
@@ -62,12 +75,16 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
                 .Do(processReturningHome);
 
             root.AddMethod("Handle_Threat")
-                .When(s => s.IsThreatened && !s.HasCombatTarget)
+                .When(s => s.IsThreatened && !s.HasThreatTarget)
                 .Do(new SelectThreatAction());
 
-            root.AddMethod("Handle_Combat")
-                .When(s => s.HasCombatTarget)
-                .Do(processCombat);
+            root.AddMethod("Handle_ThreatCombat")
+                .When(s => s.HasThreatTarget)
+                .Do(processThreatCombat);
+
+            root.AddMethod("Handle_CombatObjective")
+                .When(s => s.HasObjectiveCombatTarget)
+                .Do(processObjectiveCombat);
 
             root.AddMethod("Handle_Gathering")
                 .When(s => s.HasGatheringObjective)
