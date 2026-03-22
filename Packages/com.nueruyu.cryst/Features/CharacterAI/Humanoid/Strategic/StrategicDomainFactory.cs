@@ -51,12 +51,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
                 .When(s => s.IsOutOfTerritory)
                 .Do(processReturningHome);
 
-            root.AddMethod("Handle_Threat")
-                .When(s => s.IsThreatened && !s.HasThreatTarget)
-                .Do(new SelectThreatAction());
-
             root.AddMethod("Handle_ThreatCombat")
-                .When(s => s.HasThreatTarget)
+                .When(s => s.IsThreatened)
                 .Do(processThreatCombat);
 
             root.AddMethod("Handle_CombatObjective")

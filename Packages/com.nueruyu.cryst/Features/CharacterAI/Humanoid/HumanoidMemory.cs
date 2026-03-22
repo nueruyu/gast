@@ -12,8 +12,9 @@ namespace Cryst.Features.CharacterAI.Humanoid
         public BaseCharacter ObjectiveCombatTarget { get; private set; }
         public IInteractable InteractableTarget { get; private set; }
         public IAIObjective CurrentObjective { get; private set; }
-        public bool HasThreatTarget => ThreatTarget != null && ThreatTarget.Status.IsAlive.Value;
-        public bool HasObjectiveCombatTarget => ObjectiveCombatTarget != null && ObjectiveCombatTarget.Status.IsAlive.Value;
+
+        public bool HasObjectiveCombatTarget =>
+            ObjectiveCombatTarget != null && ObjectiveCombatTarget.Status.IsAlive.Value;
 
         public void SetMode(AIMode mode)
         {
@@ -47,23 +48,10 @@ namespace Cryst.Features.CharacterAI.Humanoid
                 InteractableTarget = null;
         }
 
-        public void ClearThreat()
-        {
-            ThreatTarget = null;
-        }
-
         public void ClearObjective()
         {
             CurrentObjective = null;
             ObjectiveCombatTarget = null;
-            InteractableTarget = null;
-        }
-
-        public void Clear()
-        {
-            ThreatTarget = null;
-            ObjectiveCombatTarget = null;
-            CurrentObjective = null;
             InteractableTarget = null;
         }
     }
