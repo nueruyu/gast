@@ -38,6 +38,16 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             var actor = context.Actor;
             var memory = context.GetModule<HumanoidMemory>();
 
+            IsThreatened = actor.VisionSensor.VisibleCharacters
+                .Select(c => c.As<BaseCharacter>())
+                .Any(otherActor => otherActor.IsThreatTo(actor));
+
+            if (!IsThreatened)
+                memory.ClearThreat();
+
+            if (memory.CurrentObjective != null && memory.CurrentObjective.IsCompleted.Value)
+                memory.ClearObjective();
+
             CurrentMode = memory.CurrentMode;
             HasCombatObjective = memory.CurrentObjective is DefeatCharacterObjective;
             HasGatheringObjective = memory.CurrentObjective is AcquireItemObjective;
@@ -54,10 +64,6 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
                 IsOutOfTerritory = false;
                 IsOutOfTerritoryCore = false;
             }
-
-            IsThreatened = actor.VisionSensor.VisibleCharacters
-                .Select(c => c.As<BaseCharacter>())
-                .Any(otherActor => otherActor.IsThreatTo(actor));
         }
     }
 }
