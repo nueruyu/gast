@@ -1,6 +1,5 @@
 using Cryst.Features.CharacterAI.Actions;
 using Cryst.Features.CharacterAI.Humanoid.Strategic.Actions;
-using Gast.Core.Values;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 
@@ -14,32 +13,57 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
         {
             var builder = new AIDomainBuilder<ActorContext<StrategicState>, StrategicState>();
 
-            var root = builder.DefineCompound("Root");
-
-            root.AddMethod("TransitionTo_ReturningHome")
-                .When(s => s.IsOutOfTerritory)
-                .While(s => s.IsOutOfTerritoryCore)
-                .Do(new ClearTargetAction())
-                .Do(new SetAIModeAction(AIMode.ReturningToHome))
-                .Do(new IdleAction());
-            root.AddMethod("TransitionTo_Combat")
-                .When(s => s.IsThreatened && s.CurrentMode != AIMode.Combat)
+            // === Process: Combat ===
+            var processCombat = builder.DefineCompound("ProcessCombat");
+            processCombat.AddMethod("InitializeCombat")
+                .When(s => s.CurrentMode != AIMode.Combat)
                 .Do(new SelectThreatAction())
                 .Do(new SetAIModeAction(AIMode.Combat));
-            root.AddMethod("TransitionTo_ObjectiveSeeking")
-                .When(s => s.AvailableObjectives.Count > 0)
-                .Do(new SelectObjectiveAction())
-                .Do(new SetAIModeFromObjectiveAction())
-                .Do(new WaitAction(0.5f));
-            root.AddMethod("TransitionTo_Idle")
-                .When(s =>
-                    s.CurrentMode != AIMode.Idle &&
-                    !s.IsThreatened &&
-                    s.AvailableObjectives.Count == 0)
+            processCombat.AddMethod("EndCombat")
+                .When(s => !s.IsThreatened)
                 .Do(new ClearTargetAction())
                 .Do(new SetAIModeAction(AIMode.Idle));
-            root.AddMethod("Maintain_CurrentMode")
-                .Do(new WaitAction(new FloatRange(0.2f, 0.3f)));
+            processCombat.AddMethod("ContinueCombat")
+                .Do(new IdleAction());
+
+            // === Process: ReturningHome ===
+            var processReturningHome = builder.DefineCompound("ProcessReturningHome");
+            processReturningHome.AddMethod("InitializeReturningHome")
+                .When(s => s.CurrentMode != AIMode.ReturningToHome)
+                .Do(new ClearTargetAction())
+                .Do(new SetAIModeAction(AIMode.ReturningToHome));
+            processReturningHome.AddMethod("ArrivedHome")
+                .When(s => !s.IsOutOfTerritoryCore)
+                .Do(new SetAIModeAction(AIMode.Idle));
+            processReturningHome.AddMethod("ContinueReturning")
+                .Do(new IdleAction());
+
+            // === Process: Idle ===
+            var processIdle = builder.DefineCompound("ProcessIdle");
+            processIdle.AddMethod("InitializeIdle")
+                .When(s => s.CurrentMode != AIMode.Idle)
+                .Do(new ClearTargetAction())
+                .Do(new SetAIModeAction(AIMode.Idle));
+            processIdle.AddMethod("SeekNewObjective")
+                .When(s => s.AvailableObjectives.Count > 0)
+                .Do(new SelectObjectiveAction())
+                .Do(new SetAIModeFromObjectiveAction());
+            processIdle.AddMethod("ContinueIdle")
+                .Do(new IdleAction());
+
+            // === Root: Dispatcher ===
+            var root = builder.DefineCompound("Root");
+
+            root.AddMethod("Handle_ReturningHome")
+                .When(s => s.IsOutOfTerritory)
+                .Do(processReturningHome);
+
+            root.AddMethod("Handle_Combat")
+                .When(s => s.IsThreatened)
+                .Do(processCombat);
+
+            root.AddMethod("Handle_Idle")
+                .Do(processIdle);
 
             domain = builder.Build("Root");
         }
