@@ -36,7 +36,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
                 builder,
                 "Gathering",
                 AIMode.Gathering,
-                s => s.HasGatheringObjective);
+                s => s.HasGatheringTarget);
 
             var processIdle = DefineProcess(
                 builder,
@@ -60,7 +60,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
                 .Do(processObjectiveCombat);
 
             root.AddMethod("Handle_Gathering")
-                .When(s => s.HasGatheringObjective)
+                .When(s => s.HasGatheringTarget)
                 .Do(processGathering);
 
             root.AddMethod("Handle_Default")

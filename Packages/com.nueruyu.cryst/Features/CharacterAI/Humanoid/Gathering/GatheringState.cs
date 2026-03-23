@@ -49,8 +49,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering
 
             IsActive = memory.CurrentMode == AIMode.Gathering;
 
-            var acquireItemObjective = memory.CurrentObjective as AcquireItemObjective;
-            CurrentTargetItemId = acquireItemObjective?.TargetItemId;
+            CurrentTargetItemId = memory.TargetItemId;
 
             var interactableTarget = memory.InteractableTarget;
 

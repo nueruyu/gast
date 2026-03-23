@@ -7,7 +7,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
     public class StrategicState : IWorldState<StrategicState>
     {
         public AIMode CurrentMode { get; private set; }
-        public bool HasGatheringObjective { get; private set; }
+        public bool HasGatheringTarget { get; private set; }
         public bool HasObjectiveCombatTarget { get; private set; }
         public bool IsThreatened { get; private set; }
         public bool IsOutOfTerritory { get; private set; }
@@ -17,7 +17,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
         {
             dest ??= new();
             dest.CurrentMode = CurrentMode;
-            dest.HasGatheringObjective = HasGatheringObjective;
+            dest.HasGatheringTarget = HasGatheringTarget;
             dest.HasObjectiveCombatTarget = HasObjectiveCombatTarget;
             dest.IsThreatened = IsThreatened;
             dest.IsOutOfTerritory = IsOutOfTerritory;
@@ -31,7 +31,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
 
             IsThreatened = memory.IsThreatened;
             CurrentMode = memory.CurrentMode;
-            HasGatheringObjective = memory.CurrentObjective is AcquireItemObjective;
+            HasGatheringTarget = memory.HasGatheringTarget;
             HasObjectiveCombatTarget = memory.HasObjectiveCombatTarget;
 
             if (character.Is(out TerritorialCharacter territorial))
