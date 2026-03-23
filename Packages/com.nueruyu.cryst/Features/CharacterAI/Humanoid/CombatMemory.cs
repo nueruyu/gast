@@ -8,7 +8,7 @@ namespace Cryst.Features.CharacterAI.Humanoid
 {
     public class CombatMemory
     {
-        public DefeatCharacterObjective CurrentObjective { get; private set; }
+        DefeatCharacterObjective CurrentObjective { get; set; }
         public BaseCharacter ObjectiveCombatTarget { get; private set; }
         public BaseCharacter ThreatTarget { get; private set; }
 
