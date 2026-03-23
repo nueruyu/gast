@@ -46,6 +46,8 @@ namespace Cryst.Features.CharacterAI.Humanoid
 
         protected override void RegisterDomains(IDomainRegistrar registrar)
         {
+            registrar.RegisterPreUpdate(() => memory.UpdatePerception(Actor));
+
             strategic.ApplyTo(registrar);
             objective.ApplyTo(registrar, ObjectiveManager);
             combat.ApplyTo(registrar);

@@ -1,5 +1,7 @@
+using System.Linq;
 using Cryst.Domain.Characters;
 using Gast.Domain.AI;
+using Gast.Domain.Characters;
 using Gast.Domain.Interactions;
 using UnityEngine;
 
@@ -8,13 +10,32 @@ namespace Cryst.Features.CharacterAI.Humanoid
     public class HumanoidMemory
     {
         public AIMode CurrentMode { get; private set; } = AIMode.Idle;
-        public BaseCharacter ThreatTarget { get; private set; }
+        public IAIObjective CurrentObjective { get; private set; }
         public BaseCharacter ObjectiveCombatTarget { get; private set; }
         public IInteractable InteractableTarget { get; private set; }
-        public IAIObjective CurrentObjective { get; private set; }
+
+        public BaseCharacter ThreatTarget { get; private set; }
 
         public bool HasObjectiveCombatTarget =>
             ObjectiveCombatTarget != null && ObjectiveCombatTarget.Status.IsAlive.Value;
+
+        public bool IsThreatened =>
+            ThreatTarget != null && ThreatTarget.Status.IsAlive.Value;
+
+        public void UpdatePerception(BaseCharacter actor)
+        {
+            ThreatTarget = actor.VisionSensor.VisibleCharacters
+                .Select(c => c.As<BaseCharacter>())
+                .Where(a => a.IsThreatTo(actor))
+                .OrderBy(a => Vector3.Distance(actor.VisionSensor.EyePosition, a.Body.Position))
+                .FirstOrDefault();
+
+            if (CurrentObjective?.IsCompleted.Value == true)
+                ClearObjective();
+
+            if (InteractableTarget is Component interactableComponent && !interactableComponent)
+                InteractableTarget = null;
+        }
 
         public void SetMode(AIMode mode)
         {
@@ -24,11 +45,6 @@ namespace Cryst.Features.CharacterAI.Humanoid
         public void SetObjective(IAIObjective objective)
         {
             CurrentObjective = objective;
-        }
-
-        public void SetThreatTarget(BaseCharacter character)
-        {
-            ThreatTarget = character;
         }
 
         public void SetObjectiveCombatTarget(BaseCharacter character)
@@ -41,14 +57,7 @@ namespace Cryst.Features.CharacterAI.Humanoid
             InteractableTarget = interactable;
         }
 
-        public void PurgeInteractableTarget()
-        {
-            if (InteractableTarget is Component interactableTargetComponent &&
-                !interactableTargetComponent)
-                InteractableTarget = null;
-        }
-
-        public void ClearObjective()
+        void ClearObjective()
         {
             CurrentObjective = null;
             ObjectiveCombatTarget = null;

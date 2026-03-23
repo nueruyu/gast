@@ -16,6 +16,7 @@ namespace Cryst.Features.CharacterAI
         readonly AIBrainServices services;
 
         protected ObjectiveManager ObjectiveManager { get; }
+        protected BaseCharacter Actor => actor;
         BaseCharacter actor;
         ICharacter character;
         CancellationTokenSource characterCts;
@@ -101,6 +102,11 @@ namespace Cryst.Features.CharacterAI
                         brain.contextRegistry.Unregister(key);
                     }
                 });
+            }
+
+            public void RegisterPreUpdate(Action action)
+            {
+                domainRunner.RegisterPreUpdate(action);
             }
 
             public void Register<TWorldState>(

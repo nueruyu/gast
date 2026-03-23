@@ -11,5 +11,7 @@ namespace Cryst.Features.CharacterAI
             TWorldState worldState,
             Action<ActorContext<TWorldState>> worldStateUpdater)
             where TWorldState : class, IWorldState<TWorldState>;
+
+        void RegisterPreUpdate(Action action);
     }
 }

@@ -52,8 +52,6 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering
             var acquireItemObjective = memory.CurrentObjective as AcquireItemObjective;
             CurrentTargetItemId = acquireItemObjective?.TargetItemId;
 
-            memory.PurgeInteractableTarget();
-
             var interactableTarget = memory.InteractableTarget;
 
             HasInteractableTarget = interactableTarget != null;

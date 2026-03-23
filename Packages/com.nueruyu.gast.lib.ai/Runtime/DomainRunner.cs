@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -7,10 +8,16 @@ namespace Gast.Lib.AI
     public class DomainRunner
     {
         readonly List<IDomainProcess> processes = new();
+        readonly List<Action> preUpdates = new();
 
         public void Register(IDomainProcess process)
         {
             processes.Add(process);
+        }
+
+        public void RegisterPreUpdate(Action action)
+        {
+            preUpdates.Add(action);
         }
 
         public UniTask RunAsync(CancellationToken cancellationToken)
@@ -27,6 +34,8 @@ namespace Gast.Lib.AI
         {
             while (!cancellationToken.IsCancellationRequested)
             {
+                foreach (var preUpdate in preUpdates)
+                    preUpdate();
                 foreach (var domain in processes)
                     domain.UpdateState();
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
