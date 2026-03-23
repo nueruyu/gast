@@ -27,12 +27,14 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
         public void Update(ActorContext<StrategicState> context)
         {
             var character = context.Character;
-            var memory = context.GetModule<HumanoidMemory>();
+            var aiModeMemory = context.GetModule<AIModeMemory>();
+            var combatMemory = context.GetModule<CombatMemory>();
+            var gatheringMemory = context.GetModule<GatheringMemory>();
 
-            IsThreatened = memory.IsThreatened;
-            CurrentMode = memory.CurrentMode;
-            HasGatheringTarget = memory.HasGatheringTarget;
-            HasObjectiveCombatTarget = memory.HasObjectiveCombatTarget;
+            IsThreatened = combatMemory.IsThreatened;
+            CurrentMode = aiModeMemory.CurrentMode;
+            HasGatheringTarget = gatheringMemory.HasGatheringTarget;
+            HasObjectiveCombatTarget = combatMemory.HasObjectiveCombatTarget;
 
             if (character.Is(out TerritorialCharacter territorial))
             {

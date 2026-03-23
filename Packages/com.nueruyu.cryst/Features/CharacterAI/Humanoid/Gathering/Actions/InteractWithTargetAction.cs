@@ -25,7 +25,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
 
             if (success)
             {
-                var memory = context.GetModule<HumanoidMemory>();
+                var memory = context.GetModule<GatheringMemory>();
                 memory.SetInteractableTarget(null);
             }
         }

@@ -14,7 +14,9 @@ namespace Cryst.Features.CharacterAI.Humanoid
         readonly GatheringDomainConstruct gathering;
         readonly PatrolDomainConstruct patrol;
         readonly ObjectiveDomainConstruct objective;
-        HumanoidMemory memory;
+        readonly AIModeMemory aiModeMemory;
+        readonly CombatMemory combatMemory;
+        readonly GatheringMemory gatheringMemory;
 
         public HumanoidAIBrain(
             IContextRegistry contextRegistry,
@@ -32,21 +34,24 @@ namespace Cryst.Features.CharacterAI.Humanoid
             this.gathering = gathering;
             this.patrol = patrol;
             this.objective = objective;
+
+            aiModeMemory = new AIModeMemory();
+            combatMemory = new CombatMemory();
+            gatheringMemory = new GatheringMemory();
         }
 
         protected override void OnBrainInitialize()
         {
-            memory = new HumanoidMemory();
         }
 
         protected override void OnBrainCleanup()
         {
-            memory = null;
         }
 
         protected override void RegisterDomains(IDomainRegistrar registrar)
         {
-            registrar.RegisterPreUpdate(() => memory.Update(Actor));
+            registrar.RegisterPreUpdate(() => combatMemory.Update(Actor));
+            registrar.RegisterPreUpdate(() => gatheringMemory.Update());
 
             strategic.ApplyTo(registrar);
             objective.ApplyTo(registrar, ObjectiveManager);
@@ -57,7 +62,9 @@ namespace Cryst.Features.CharacterAI.Humanoid
 
         protected override void RegisterModules<TWorldState>(ActorContext<TWorldState> context)
         {
-            context.RegisterModule(memory);
+            context.RegisterModule(aiModeMemory);
+            context.RegisterModule(combatMemory);
+            context.RegisterModule(gatheringMemory);
         }
     }
 }

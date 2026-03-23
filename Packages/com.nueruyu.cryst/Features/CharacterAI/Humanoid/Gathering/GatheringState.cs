@@ -44,14 +44,13 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering
 
         public void Update(ActorContext<GatheringState> context)
         {
-            var memory = context.GetModule<HumanoidMemory>();
+            var aiModeMemory = context.GetModule<AIModeMemory>();
+            var gatheringMemory = context.GetModule<GatheringMemory>();
             var actor = context.Actor;
 
-            IsActive = memory.CurrentMode == AIMode.Gathering;
-
-            CurrentTargetItemId = memory.TargetItemId;
-
-            var interactableTarget = memory.InteractableTarget;
+            IsActive = aiModeMemory.CurrentMode == AIMode.Gathering;
+            CurrentTargetItemId = gatheringMemory.TargetItemId;
+            var interactableTarget = gatheringMemory.InteractableTarget;
 
             HasInteractableTarget = interactableTarget != null;
             if (interactableTarget != null)

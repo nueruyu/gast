@@ -19,9 +19,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective.Actions
             var targetCharacter = context.CharacterRepository.Get(targetInfo.Id).As<BaseCharacter>();
             if (targetCharacter != null)
             {
-                var memory = context.GetModule<HumanoidMemory>();
-                memory.SetObjective(objective);
-                memory.SetObjectiveCombatTarget(targetCharacter);
+                var memory = context.GetModule<CombatMemory>();
+                memory.SetObjective(objective, targetCharacter);
             }
 
             return UniTask.CompletedTask;

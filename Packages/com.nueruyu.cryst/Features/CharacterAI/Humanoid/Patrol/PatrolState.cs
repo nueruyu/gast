@@ -22,10 +22,10 @@ namespace Cryst.Features.CharacterAI.Humanoid.Patrol
 
         public void Update(ActorContext<PatrolState> context)
         {
-            var memory = context.GetModule<HumanoidMemory>();
+            var aiModeMemory = context.GetModule<AIModeMemory>();
             var character = context.Character;
 
-            IsActive = memory.CurrentMode == AIMode.ReturningToHome;
+            IsActive = aiModeMemory.CurrentMode == AIMode.ReturningToHome;
 
             if (character.Is(out TerritorialCharacter territorial))
             {

@@ -35,7 +35,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
             if (targetPickup != null)
             {
                 var targetPickupComponent = (Component)targetPickup;
-                var memory = context.GetModule<HumanoidMemory>();
+                var memory = context.GetModule<GatheringMemory>();
                 memory.SetInteractableTarget(targetPickupComponent.GetComponentInChildren<IInteractable>());
             }
 

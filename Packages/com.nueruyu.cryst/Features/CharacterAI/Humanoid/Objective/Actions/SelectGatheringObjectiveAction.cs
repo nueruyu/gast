@@ -20,7 +20,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective.Actions
             var interactable = ((Component)pickup)?.GetComponentInChildren<IInteractable>();
             if (interactable != null)
             {
-                var memory = context.GetModule<HumanoidMemory>();
+                var memory = context.GetModule<GatheringMemory>();
                 memory.SetObjective(objective);
                 memory.SetInteractableTarget(interactable);
             }

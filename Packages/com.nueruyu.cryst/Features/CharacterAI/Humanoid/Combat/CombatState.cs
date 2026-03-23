@@ -44,12 +44,13 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
 
         public void Update(ActorContext<CombatState> context)
         {
-            var memory = context.GetModule<HumanoidMemory>();
+            var aiModeMemory = context.GetModule<AIModeMemory>();
+            var combatMemory = context.GetModule<CombatMemory>();
             var character = context.Character;
             var actor = context.Actor;
 
-            var combatTarget = memory.ThreatTarget ?? memory.ObjectiveCombatTarget;
-            IsActive = memory.CurrentMode == AIMode.Combat && combatTarget != null;
+            var combatTarget = combatMemory.ThreatTarget ?? combatMemory.ObjectiveCombatTarget;
+            IsActive = aiModeMemory.CurrentMode == AIMode.Combat && combatTarget != null;
 
             AttackRange = 1.5f;
             CombatRange = 4.5f;
