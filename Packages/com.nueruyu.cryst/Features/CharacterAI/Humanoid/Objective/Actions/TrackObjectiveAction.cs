@@ -5,12 +5,12 @@ using Gast.Lib.AI;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Objective.Actions
 {
-    public abstract class SelectObjectiveAction<TObjective> : IAction<ActorContext<ObjectiveState>, ObjectiveState>
+    public abstract class TrackObjectiveAction<TObjective> : IAction<ActorContext<ObjectiveState>, ObjectiveState>
         where TObjective : IAIObjective
     {
         protected readonly TObjective objective;
 
-        protected SelectObjectiveAction(TObjective objective)
+        protected TrackObjectiveAction(TObjective objective)
         {
             this.objective = objective;
         }

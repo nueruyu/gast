@@ -20,14 +20,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering.Actions
         public async UniTask ExecuteAsync(ActorContext<GatheringState> context, CancellationToken cancellationToken)
         {
             var command = new InteractCommand(context.Actor.Id, context.WorldState.InteractableTargetId);
-            var success =
-                await context.CommandDispatcher.DispatchAsync<InteractCommand, bool>(command, cancellationToken);
-
-            if (success)
-            {
-                var memory = context.GetModule<GatheringMemory>();
-                memory.SetInteractableTarget(null);
-            }
+            await context.CommandDispatcher.DispatchAsync<InteractCommand, bool>(command, cancellationToken);
         }
     }
 }

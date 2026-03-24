@@ -45,18 +45,16 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
                 switch (objective)
                 {
                     case DefeatCharacterObjective combatObjective:
-                        root.AddMethod($"SelectCombat_{combatObjective.TargetTypeId}")
+                        root.AddMethod($"TrackCombat_{combatObjective.TargetTypeId}")
                             .While(s => !combatObjective.IsCompleted.Value)
                             .Score(state => CalculateCombatScore(state, combatObjective))
-                            .Do(new SelectCombatObjectiveAction(combatObjective))
-                            .Do(new IdleAction());
+                            .Do(new TrackCombatObjectiveAction(combatObjective));
                         break;
                     case AcquireItemObjective gatheringObjective:
-                        root.AddMethod($"SelectGathering_{gatheringObjective.TargetItemId}")
+                        root.AddMethod($"TrackGathering_{gatheringObjective.TargetItemId}")
                             .While(s => !gatheringObjective.IsCompleted.Value)
                             .Score(state => CalculateGatheringScore(state, gatheringObjective))
-                            .Do(new SelectGatheringObjectiveAction(gatheringObjective))
-                            .Do(new IdleAction());
+                            .Do(new TrackGatheringObjectiveAction(gatheringObjective));
                         break;
                 }
 
@@ -70,7 +68,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
         static float CalculateCombatScore(ObjectiveState state, DefeatCharacterObjective objective)
         {
             var target = state.Queries.FindBestTargetFor(objective, state);
-            if (target == null)
+            if (!target.HasValue)
                 return float.NegativeInfinity;
 
             var distance = Vector3.Distance(state.Self.Position, target.Value.Position);
@@ -81,7 +79,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
         static float CalculateGatheringScore(ObjectiveState state, AcquireItemObjective objective)
         {
             var target = state.Queries.FindBestTargetFor(objective, state);
-            if (target == null)
+            if (!target.HasValue)
                 return float.NegativeInfinity;
 
             var distance = Vector3.Distance(state.Self.Position, target.Value.Position);

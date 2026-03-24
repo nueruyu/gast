@@ -29,6 +29,9 @@ namespace Cryst.Features.CharacterAI.Humanoid
                 .OrderBy(a => Vector3.Distance(actor.VisionSensor.EyePosition, a.Body.Position))
                 .FirstOrDefault();
 
+            if (ObjectiveCombatTarget != null && !ObjectiveCombatTarget.Status.IsAlive.Value)
+                ObjectiveCombatTarget = null;
+
             if (CurrentObjective?.IsCompleted.Value == true)
             {
                 CurrentObjective = null;
