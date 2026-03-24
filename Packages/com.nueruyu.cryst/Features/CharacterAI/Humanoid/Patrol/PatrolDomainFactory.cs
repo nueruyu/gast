@@ -15,9 +15,15 @@ namespace Cryst.Features.CharacterAI.Humanoid.Patrol
 
             var root = builder.DefineCompound("Root");
 
+            var returnToHome = builder.DefineCompound("ReturnToHome");
+
+            returnToHome.AddMethod("Return")
+                .While(s => s.IsOutOfInnerTerritory)
+                .Do(new ReturnToHomeAction());
+
             root.AddMethod("ExecuteReturnToHome")
                 .While(s => s.IsActive)
-                .Do(new ReturnToHomeAction());
+                .Do(returnToHome);
             root.AddMethod("Idle")
                 .Do(new IdleAction());
 

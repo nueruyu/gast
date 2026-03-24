@@ -10,17 +10,16 @@ namespace Cryst.Features.CharacterAI.Humanoid.Patrol
             var character = context.Character;
 
             var isActive = aiModeMemory.CurrentMode == AIMode.ReturningToHome;
-            var isOutOfTerritory = false;
+            var isOutOfOuterTerritory = false;
+            var isOutOfInnerTerritory = false;
 
             if (character.Is(out TerritorialCharacter territorial))
             {
-                // Use the existing state to decide which condition to check.
-                isOutOfTerritory = context.WorldState.IsOutOfTerritory
-                    ? !territorial.HasReturnedToTerritory()
-                    : territorial.IsOutOfTerritory();
+                isOutOfOuterTerritory = territorial.IsOutOfTerritory();
+                isOutOfInnerTerritory = !territorial.HasReturnedToTerritory();
             }
 
-            context.WorldState.Update(isActive, isOutOfTerritory);
+            context.WorldState.Update(isActive, isOutOfOuterTerritory, isOutOfInnerTerritory);
         }
     }
 }

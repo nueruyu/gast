@@ -10,7 +10,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Patrol.Actions
     {
         public bool IsAvailable(PatrolState worldState)
         {
-            return worldState.IsOutOfTerritory;
+            return worldState.IsOutOfOuterTerritory;
         }
 
         public void Simulate(PatrolState worldState)

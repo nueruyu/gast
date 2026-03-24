@@ -11,21 +11,21 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             var combatMemory = context.GetModule<CombatMemory>();
             var gatheringMemory = context.GetModule<GatheringMemory>();
 
-            bool isOutOfTerritory = false;
-            bool isOutOfTerritoryCore = false;
+            var isOutOfOuterTerritory = false;
+            var isOutOfInnerTerritory = false;
             if (character.Is(out TerritorialCharacter territorial))
             {
-                isOutOfTerritory = territorial.IsOutOfTerritory();
-                isOutOfTerritoryCore = !territorial.HasReturnedToTerritory();
+                isOutOfOuterTerritory = territorial.IsOutOfTerritory();
+                isOutOfInnerTerritory = !territorial.HasReturnedToTerritory();
             }
 
             context.WorldState.Update(
-                currentMode: aiModeMemory.CurrentMode,
-                isThreatened: combatMemory.IsThreatened,
-                hasGatheringTarget: gatheringMemory.HasGatheringTarget,
-                hasObjectiveCombatTarget: combatMemory.HasObjectiveCombatTarget,
-                isOutOfTerritory: isOutOfTerritory,
-                isOutOfTerritoryCore: isOutOfTerritoryCore);
+                aiModeMemory.CurrentMode,
+                combatMemory.IsThreatened,
+                gatheringMemory.HasGatheringTarget,
+                combatMemory.HasObjectiveCombatTarget,
+                isOutOfOuterTerritory,
+                isOutOfInnerTerritory);
         }
     }
 }

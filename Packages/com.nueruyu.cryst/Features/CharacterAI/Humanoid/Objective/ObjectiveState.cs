@@ -1,7 +1,4 @@
-using Cryst.Domain.Characters;
-using Gast.Domain.Characters;
 using Gast.Lib.AI;
-using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Objective
 {
@@ -22,12 +19,5 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
             Queries = queries;
             Self = self;
         }
-
-        record ActorInfo(
-            CharacterId Id,
-            CharacterTypeId TypeId,
-            Vector3 Position,
-            Faction Faction,
-            bool IsAlive) : IActorInfo;
     }
 }

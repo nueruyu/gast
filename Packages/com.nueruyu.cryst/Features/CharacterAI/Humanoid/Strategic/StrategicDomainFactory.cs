@@ -16,25 +16,25 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             var root = builder.DefineCompound("Root");
 
             RegisterProcess(root, builder,
-                name: "ReturningHome",
-                mode: AIMode.ReturningToHome,
-                startCondition: s => s.IsOutOfTerritory,
-                continueCondition: s => s.IsOutOfTerritoryCore);
+                "ReturningHome",
+                AIMode.ReturningToHome,
+                s => s.IsOutOfOuterTerritory,
+                s => s.IsOutOfInnerTerritory);
 
             RegisterProcess(root, builder,
-                name: "ThreatCombat",
-                mode: AIMode.Combat,
-                startCondition: s => s.IsThreatened);
+                "ThreatCombat",
+                AIMode.Combat,
+                s => s.IsThreatened);
 
             RegisterProcess(root, builder,
-                name: "ObjectiveCombat",
-                mode: AIMode.Combat,
-                startCondition: s => s.HasObjectiveCombatTarget);
+                "ObjectiveCombat",
+                AIMode.Combat,
+                s => s.HasObjectiveCombatTarget);
 
             RegisterProcess(root, builder,
-                name: "Gathering",
-                mode: AIMode.Gathering,
-                startCondition: s => s.HasGatheringTarget);
+                "Gathering",
+                AIMode.Gathering,
+                s => s.HasGatheringTarget);
 
             var idleProcess = DefineProcess(builder, "Idle", AIMode.Idle, _ => true);
             root.AddMethod("Handle_Default")

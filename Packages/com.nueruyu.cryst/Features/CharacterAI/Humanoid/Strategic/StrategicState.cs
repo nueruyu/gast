@@ -10,8 +10,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
         public bool HasGatheringTarget { get; private set; }
         public bool HasObjectiveCombatTarget { get; private set; }
         public bool IsThreatened { get; private set; }
-        public bool IsOutOfTerritory { get; private set; }
-        public bool IsOutOfTerritoryCore { get; private set; }
+        public bool IsOutOfOuterTerritory { get; private set; }
+        public bool IsOutOfInnerTerritory { get; private set; }
 
         public void WriteTo(ref StrategicState dest)
         {
@@ -20,8 +20,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             dest.HasGatheringTarget = HasGatheringTarget;
             dest.HasObjectiveCombatTarget = HasObjectiveCombatTarget;
             dest.IsThreatened = IsThreatened;
-            dest.IsOutOfTerritory = IsOutOfTerritory;
-            dest.IsOutOfTerritoryCore = IsOutOfTerritoryCore;
+            dest.IsOutOfOuterTerritory = IsOutOfOuterTerritory;
+            dest.IsOutOfInnerTerritory = IsOutOfInnerTerritory;
         }
 
         public void Update(
@@ -29,15 +29,15 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             bool isThreatened,
             bool hasGatheringTarget,
             bool hasObjectiveCombatTarget,
-            bool isOutOfTerritory,
-            bool isOutOfTerritoryCore)
+            bool isOutOfOuterTerritory,
+            bool isOutOfInnerTerritory)
         {
             CurrentMode = currentMode;
             IsThreatened = isThreatened;
             HasGatheringTarget = hasGatheringTarget;
             HasObjectiveCombatTarget = hasObjectiveCombatTarget;
-            IsOutOfTerritory = isOutOfTerritory;
-            IsOutOfTerritoryCore = isOutOfTerritoryCore;
+            IsOutOfOuterTerritory = isOutOfOuterTerritory;
+            IsOutOfInnerTerritory = isOutOfInnerTerritory;
         }
     }
 }

@@ -1,7 +1,3 @@
-using Cryst.Domain.Characters;
-using Gast.Domain.Characters;
-using UnityEngine;
-
 namespace Cryst.Features.CharacterAI.Humanoid.Objective
 {
     public class ObjectiveWorldStateUpdater : IWorldStateUpdater<ObjectiveState>
@@ -19,12 +15,5 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
 
             context.WorldState.Update(context.ObjectiveQueries, selfInfo);
         }
-
-        record ActorInfo(
-            CharacterId Id,
-            CharacterTypeId TypeId,
-            Vector3 Position,
-            Faction Faction,
-            bool IsAlive) : IActorInfo;
     }
 }
