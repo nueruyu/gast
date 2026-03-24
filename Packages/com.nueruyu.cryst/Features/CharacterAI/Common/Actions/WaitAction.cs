@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Core.Values;
 using Gast.Lib.AI;
 
-namespace Cryst.Features.CharacterAI.Actions
+namespace Cryst.Features.CharacterAI.Common.Actions
 {
     public class WaitAction : IAction
     {

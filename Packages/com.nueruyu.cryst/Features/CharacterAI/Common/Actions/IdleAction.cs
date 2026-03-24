@@ -2,7 +2,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI;
 
-namespace Cryst.Features.CharacterAI.Actions
+namespace Cryst.Features.CharacterAI.Common.Actions
 {
     public class IdleAction : IAction
     {

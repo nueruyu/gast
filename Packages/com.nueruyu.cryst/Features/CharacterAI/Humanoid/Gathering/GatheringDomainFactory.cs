@@ -1,4 +1,4 @@
-using Cryst.Features.CharacterAI.Actions;
+using Cryst.Features.CharacterAI.Common.Actions;
 using Cryst.Features.CharacterAI.Humanoid.Gathering.Actions;
 using Gast.Core.Values;
 using Gast.Lib.AI;

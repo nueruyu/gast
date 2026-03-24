@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cryst.Domain.AI.Objectives;
-using Cryst.Features.CharacterAI.Actions;
+using Cryst.Features.CharacterAI.Common.Actions;
 using Cryst.Features.CharacterAI.Humanoid.Objective.Actions;
 using Gast.Domain.AI;
 using Gast.Lib.AI;

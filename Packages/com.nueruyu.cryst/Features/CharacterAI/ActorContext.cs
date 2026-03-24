@@ -6,7 +6,6 @@ using Gast.Core.Commands;
 using Gast.Domain.Characters;
 using Gast.Domain.Pickups;
 using Gast.Lib.AI;
-using UnityEngine;
 
 namespace Cryst.Features.CharacterAI
 {
@@ -58,12 +57,5 @@ namespace Cryst.Features.CharacterAI
             if (modules.TryGetValue(typeof(T), out var module)) return (T)module;
             throw new KeyNotFoundException($"Module of type '{typeof(T).Name}' not found in ActorContext.");
         }
-
-        record ActorInfo(
-            CharacterId Id,
-            CharacterTypeId TypeId,
-            Vector3 Position,
-            Faction Faction,
-            bool IsAlive) : IActorInfo;
     }
 }
