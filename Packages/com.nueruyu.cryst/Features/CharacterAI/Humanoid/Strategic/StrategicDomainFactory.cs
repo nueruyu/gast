@@ -13,58 +13,32 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
         public StrategicDomainFactory()
         {
             var builder = new AIDomainBuilder<ActorContext<StrategicState>, StrategicState>();
-
-            var processThreatCombat = DefineProcess(
-                builder,
-                "ThreatCombat",
-                AIMode.Combat,
-                s => s.IsThreatened);
-
-            var processObjectiveCombat = DefineProcess(
-                builder,
-                "ObjectiveCombat",
-                AIMode.Combat,
-                s => s.HasObjectiveCombatTarget);
-
-            var processReturningHome = DefineProcess(
-                builder,
-                "ReturningHome",
-                AIMode.ReturningToHome,
-                s => s.IsOutOfTerritoryCore);
-
-            var processGathering = DefineProcess(
-                builder,
-                "Gathering",
-                AIMode.Gathering,
-                s => s.HasGatheringTarget);
-
-            var processIdle = DefineProcess(
-                builder,
-                "Idle",
-                AIMode.Idle,
-                _ => true);
-
-            // === Root: Dispatcher ===
             var root = builder.DefineCompound("Root");
 
-            root.AddMethod("Handle_ReturningHome")
-                .When(s => s.IsOutOfTerritory)
-                .Do(processReturningHome);
+            RegisterProcess(root, builder,
+                name: "ReturningHome",
+                mode: AIMode.ReturningToHome,
+                startCondition: s => s.IsOutOfTerritory,
+                continueCondition: s => s.IsOutOfTerritoryCore);
 
-            root.AddMethod("Handle_ThreatCombat")
-                .When(s => s.IsThreatened)
-                .Do(processThreatCombat);
+            RegisterProcess(root, builder,
+                name: "ThreatCombat",
+                mode: AIMode.Combat,
+                startCondition: s => s.IsThreatened);
 
-            root.AddMethod("Handle_CombatObjective")
-                .When(s => s.HasObjectiveCombatTarget)
-                .Do(processObjectiveCombat);
+            RegisterProcess(root, builder,
+                name: "ObjectiveCombat",
+                mode: AIMode.Combat,
+                startCondition: s => s.HasObjectiveCombatTarget);
 
-            root.AddMethod("Handle_Gathering")
-                .When(s => s.HasGatheringTarget)
-                .Do(processGathering);
+            RegisterProcess(root, builder,
+                name: "Gathering",
+                mode: AIMode.Gathering,
+                startCondition: s => s.HasGatheringTarget);
 
+            var idleProcess = DefineProcess(builder, "Idle", AIMode.Idle, _ => true);
             root.AddMethod("Handle_Default")
-                .Do(processIdle);
+                .Do(idleProcess);
 
             domain = builder.Build("Root");
         }
@@ -74,7 +48,24 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             return domain;
         }
 
-        static CompoundTaskBuilder<ActorContext<StrategicState>, StrategicState> DefineProcess(
+        void RegisterProcess(
+            CompoundTaskBuilder<ActorContext<StrategicState>, StrategicState> root,
+            AIDomainBuilder<ActorContext<StrategicState>, StrategicState> builder,
+            string name,
+            AIMode mode,
+            Func<StrategicState, bool> startCondition,
+            Func<StrategicState, bool> continueCondition = null)
+        {
+            continueCondition ??= startCondition;
+
+            var processTask = DefineProcess(builder, name, mode, continueCondition);
+
+            root.AddMethod($"Handle_{name}")
+                .When(startCondition)
+                .Do(processTask);
+        }
+
+        CompoundTaskBuilder<ActorContext<StrategicState>, StrategicState> DefineProcess(
             AIDomainBuilder<ActorContext<StrategicState>, StrategicState> builder,
             string name,
             AIMode mode,

@@ -24,28 +24,20 @@ namespace Cryst.Features.CharacterAI.Humanoid.Strategic
             dest.IsOutOfTerritoryCore = IsOutOfTerritoryCore;
         }
 
-        public void Update(ActorContext<StrategicState> context)
+        public void Update(
+            AIMode currentMode,
+            bool isThreatened,
+            bool hasGatheringTarget,
+            bool hasObjectiveCombatTarget,
+            bool isOutOfTerritory,
+            bool isOutOfTerritoryCore)
         {
-            var character = context.Character;
-            var aiModeMemory = context.GetModule<AIModeMemory>();
-            var combatMemory = context.GetModule<CombatMemory>();
-            var gatheringMemory = context.GetModule<GatheringMemory>();
-
-            IsThreatened = combatMemory.IsThreatened;
-            CurrentMode = aiModeMemory.CurrentMode;
-            HasGatheringTarget = gatheringMemory.HasGatheringTarget;
-            HasObjectiveCombatTarget = combatMemory.HasObjectiveCombatTarget;
-
-            if (character.Is(out TerritorialCharacter territorial))
-            {
-                IsOutOfTerritory = territorial.IsOutOfTerritory();
-                IsOutOfTerritoryCore = !territorial.HasReturnedToTerritory();
-            }
-            else
-            {
-                IsOutOfTerritory = false;
-                IsOutOfTerritoryCore = false;
-            }
+            CurrentMode = currentMode;
+            IsThreatened = isThreatened;
+            HasGatheringTarget = hasGatheringTarget;
+            HasObjectiveCombatTarget = hasObjectiveCombatTarget;
+            IsOutOfTerritory = isOutOfTerritory;
+            IsOutOfTerritoryCore = isOutOfTerritoryCore;
         }
     }
 }

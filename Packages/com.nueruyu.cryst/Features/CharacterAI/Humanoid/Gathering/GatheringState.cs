@@ -42,22 +42,21 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering
             IsInRangeToInteract = false;
         }
 
-        public void Update(ActorContext<GatheringState> context)
+        public void Update(
+            bool isActive,
+            ItemId? currentTargetItemId,
+            IInteractable interactableTarget,
+            Vector3 actorPosition)
         {
-            var aiModeMemory = context.GetModule<AIModeMemory>();
-            var gatheringMemory = context.GetModule<GatheringMemory>();
-            var actor = context.Actor;
-
-            IsActive = aiModeMemory.CurrentMode == AIMode.Gathering;
-            CurrentTargetItemId = gatheringMemory.TargetItemId;
-            var interactableTarget = gatheringMemory.InteractableTarget;
+            IsActive = isActive;
+            CurrentTargetItemId = currentTargetItemId;
 
             HasInteractableTarget = interactableTarget != null;
             if (interactableTarget != null)
             {
                 InteractableTargetId = interactableTarget.Id;
                 InteractableTargetPosition = interactableTarget.Position;
-                var distance = Vector3.Distance(actor.Body.Position,
+                var distance = Vector3.Distance(actorPosition,
                     interactableTarget.Position);
                 IsInRangeToInteract = distance <= 1.5f;
             }

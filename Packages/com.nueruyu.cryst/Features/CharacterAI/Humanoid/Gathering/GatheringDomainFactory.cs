@@ -16,8 +16,8 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering
 
             var acquireItem = builder.DefineCompound("AcquireItem");
 
-            acquireItem.AddMethod("FindAndCollect")
-                .Do(new FindItemPickupAction())
+            acquireItem.AddMethod("CollectTarget")
+                .When(s => s.HasInteractableTarget)
                 .Do(new MoveToInteractableAction())
                 .Do(new WaitAction(new FloatRange(0.2f, 0.4f)))
                 .Do(new InteractWithTargetAction());

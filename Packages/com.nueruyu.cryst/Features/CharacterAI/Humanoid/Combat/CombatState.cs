@@ -1,3 +1,4 @@
+using Cryst.Domain.Characters;
 using Cryst.Domain.Characters.Facets;
 using Gast.Lib.AI;
 using UnityEngine;
@@ -42,16 +43,15 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
             IsReadyToAttack = isReady;
         }
 
-        public void Update(ActorContext<CombatState> context)
+        public void Update(
+            bool isActive,
+            BaseCharacter combatTarget,
+            Vector3 actorPosition,
+            bool isReadyToAttack,
+            bool canGuard,
+            float selfHealthRatio)
         {
-            var aiModeMemory = context.GetModule<AIModeMemory>();
-            var combatMemory = context.GetModule<CombatMemory>();
-            var character = context.Character;
-            var actor = context.Actor;
-
-            var combatTarget = combatMemory.ThreatTarget ?? combatMemory.ObjectiveCombatTarget;
-            IsActive = aiModeMemory.CurrentMode == AIMode.Combat && combatTarget != null;
-
+            IsActive = isActive;
             AttackRange = 1.5f;
             CombatRange = 4.5f;
 
@@ -59,19 +59,16 @@ namespace Cryst.Features.CharacterAI.Humanoid.Combat
             {
                 TargetPosition = combatTarget.Body.Position;
                 TargetForward = combatTarget.Body.Forward;
-                DistanceToTarget = Vector3.Distance(actor.Body.Position, combatTarget.Body.Position);
+                DistanceToTarget = Vector3.Distance(actorPosition, combatTarget.Body.Position);
             }
             else
             {
                 DistanceToTarget = float.PositiveInfinity;
             }
 
-            IsReadyToAttack = character.Is(out AttackableCharacter attackable) && attackable.CanAttack();
-            CanGuard = character.Is(out GuardableCharacter guardable) && guardable.CanGuard();
-
-            var currentHealth = actor.Status.Health.Value;
-            var maxHealth = actor.Status.MaxHealth.Value;
-            SelfHealthRatio = maxHealth > 0 ? currentHealth / maxHealth : 1f;
+            IsReadyToAttack = isReadyToAttack;
+            CanGuard = canGuard;
+            SelfHealthRatio = selfHealthRatio;
         }
 
         public override string ToString()

@@ -20,24 +20,16 @@ namespace Cryst.Features.CharacterAI.Humanoid.Patrol
             IsOutOfTerritory = false;
         }
 
-        public void Update(ActorContext<PatrolState> context)
+        public void Update(bool isActive, bool isOutOfTerritory)
         {
-            var aiModeMemory = context.GetModule<AIModeMemory>();
-            var character = context.Character;
+            IsActive = isActive;
 
-            IsActive = aiModeMemory.CurrentMode == AIMode.ReturningToHome;
-
-            if (character.Is(out TerritorialCharacter territorial))
-            {
-                if (IsOutOfTerritory)
-                    IsOutOfTerritory = !territorial.HasReturnedToTerritory();
-                else
-                    IsOutOfTerritory = territorial.IsOutOfTerritory();
-            }
+            // If we are already out of territory, we stay out until we have returned.
+            // This prevents flipping back and forth if the condition logic is complex.
+            if (IsOutOfTerritory)
+                IsOutOfTerritory = isOutOfTerritory;
             else
-            {
-                IsOutOfTerritory = false;
-            }
+                IsOutOfTerritory = isOutOfTerritory;
         }
     }
 }

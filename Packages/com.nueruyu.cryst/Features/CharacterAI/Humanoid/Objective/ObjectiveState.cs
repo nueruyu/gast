@@ -17,13 +17,10 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
             dest.Self = Self;
         }
 
-        public void Update(ActorContext<ObjectiveState> context)
+        public void Update(IObjectiveQueries queries, IActorInfo self)
         {
-            var actor = context.Actor;
-
-            Queries = context.ObjectiveQueries;
-            Self = new ActorInfo(actor.Id, actor.TypeId, actor.Body.Position, actor.Faction,
-                actor.Status.IsAlive.Value);
+            Queries = queries;
+            Self = self;
         }
 
         record ActorInfo(

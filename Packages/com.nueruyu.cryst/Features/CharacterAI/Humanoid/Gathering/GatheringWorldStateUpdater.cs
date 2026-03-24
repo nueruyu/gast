@@ -4,7 +4,15 @@ namespace Cryst.Features.CharacterAI.Humanoid.Gathering
     {
         public void Update(ActorContext<GatheringState> context)
         {
-            context.WorldState.Update(context);
+            var aiModeMemory = context.GetModule<AIModeMemory>();
+            var gatheringMemory = context.GetModule<GatheringMemory>();
+            var actor = context.Actor;
+
+            context.WorldState.Update(
+                isActive: aiModeMemory.CurrentMode == AIMode.Gathering,
+                currentTargetItemId: gatheringMemory.TargetItemId,
+                interactableTarget: gatheringMemory.InteractableTarget,
+                actorPosition: actor.Body.Position);
         }
     }
 }
