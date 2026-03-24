@@ -35,6 +35,9 @@ namespace Gast.Unity.Features.Inputs
         readonly Signal hideMenu = new();
         readonly Signal<int> useItemSlot = new();
 
+        Keyboard cachedKeyboard;
+        KeyControl[] cachedDigitKeys;
+
         public Vector2 Move { get; private set; }
         public Vector2 Look { get; private set; }
         public bool Jump { get; private set; }
@@ -121,16 +124,26 @@ namespace Gast.Unity.Features.Inputs
             var keyboard = Keyboard.current;
             if (keyboard == null) return;
 
-            if (keyboard.digit1Key.wasPressedThisFrame) useItemSlot.Publish(0);
-            else if (keyboard.digit2Key.wasPressedThisFrame) useItemSlot.Publish(1);
-            else if (keyboard.digit3Key.wasPressedThisFrame) useItemSlot.Publish(2);
-            else if (keyboard.digit4Key.wasPressedThisFrame) useItemSlot.Publish(3);
-            else if (keyboard.digit5Key.wasPressedThisFrame) useItemSlot.Publish(4);
-            else if (keyboard.digit6Key.wasPressedThisFrame) useItemSlot.Publish(5);
-            else if (keyboard.digit7Key.wasPressedThisFrame) useItemSlot.Publish(6);
-            else if (keyboard.digit8Key.wasPressedThisFrame) useItemSlot.Publish(7);
-            else if (keyboard.digit9Key.wasPressedThisFrame) useItemSlot.Publish(8);
-            else if (keyboard.digit0Key.wasPressedThisFrame) useItemSlot.Publish(9);
+            if (keyboard != cachedKeyboard)
+            {
+                cachedKeyboard = keyboard;
+                cachedDigitKeys = new[]
+                {
+                    keyboard.digit1Key, keyboard.digit2Key, keyboard.digit3Key,
+                    keyboard.digit4Key, keyboard.digit5Key, keyboard.digit6Key,
+                    keyboard.digit7Key, keyboard.digit8Key, keyboard.digit9Key,
+                    keyboard.digit0Key
+                };
+            }
+
+            for (var i = 0; i < cachedDigitKeys.Length; i++)
+            {
+                if (cachedDigitKeys[i].wasPressedThisFrame)
+                {
+                    useItemSlot.Publish(i);
+                    return;
+                }
+            }
         }
 
         void OnJumpPerformed(InputAction.CallbackContext _)

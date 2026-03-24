@@ -41,10 +41,14 @@ namespace Cryst.Composition
         [SerializeField]
         HitFeedbackSettings meleeAttackEffectSettings;
 
+        [SerializeField]
+        VitalsSettings vitalsSettings;
+
         public override void Install(IContainerBuilder builder)
         {
             // Settings
             builder.RegisterInstance(meleeAttackEffectSettings);
+            builder.RegisterInstance(vitalsSettings);
 
             // Reflection
             builder.Register<CrystReflectionAssemblyProvider>().As<IReflectionAssemblyProvider>();
