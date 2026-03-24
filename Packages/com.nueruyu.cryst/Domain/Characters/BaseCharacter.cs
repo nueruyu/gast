@@ -75,6 +75,18 @@ namespace Cryst.Domain.Characters
             return TakeDamageResult.Alive;
         }
 
+        public void ApplyPassiveDamage(float amount)
+        {
+            if (!Status.IsAlive.Value) return;
+
+            Status.SetHealth(Status.Health.Value - amount);
+
+            if (Status.Health.Value <= 0)
+            {
+                Die();
+            }
+        }
+
         void Hit(DamageInfo damageInfo) => actionController.ExecuteAction(new HitCommand(damageInfo));
 
         void Die() => actionController.ExecuteAction(new DieCommand());

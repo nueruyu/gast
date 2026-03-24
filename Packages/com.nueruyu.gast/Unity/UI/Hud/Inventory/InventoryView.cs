@@ -6,7 +6,7 @@ namespace Gast.Unity.UI.Hud.Inventory
 {
     public class InventoryView : VisualElement
     {
-        const int SlotCount = 10;
+        const int SlotCount = InventoryViewModel.HotbarSize;
         const string ItemSlotUssClassName = "inventory__item-slot";
         const string SlotNumberUssClassName = "inventory__slot-number";
         const string ItemTextUssClassName = "inventory__item-text";

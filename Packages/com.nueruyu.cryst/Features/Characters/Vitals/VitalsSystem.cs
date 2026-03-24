@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Cryst.Domain.Characters;
@@ -14,6 +15,7 @@ namespace Cryst.Features.Characters.Vitals
         const float StarvationDamage = 2.0f;   // per second
 
         readonly ICharacterRepository characterRepository;
+        readonly List<ICharacter> characterBuffer = new();
 
         public VitalsSystem(ICharacterRepository characterRepository)
         {
@@ -26,19 +28,21 @@ namespace Cryst.Features.Characters.Vitals
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: cancellationToken);
 
-                foreach (var character in characterRepository.GetAll())
+                characterBuffer.Clear();
+                characterBuffer.AddRange(characterRepository.GetAll());
+
+                foreach (var character in characterBuffer)
                 {
                     if (!character.Is(out BaseCharacter baseCharacter)) continue;
 
                     var status = baseCharacter.Status;
                     if (!status.IsAlive.Value) continue;
 
-                    var newHunger = status.Hunger.Value - HungerDecreaseRate;
-                    status.SetHunger(newHunger);
+                    status.SetHunger(status.Hunger.Value - HungerDecreaseRate);
 
                     if (status.Hunger.Value <= 0)
                     {
-                        status.SetHealth(status.Health.Value - StarvationDamage);
+                        baseCharacter.ApplyPassiveDamage(StarvationDamage);
                     }
                 }
             }

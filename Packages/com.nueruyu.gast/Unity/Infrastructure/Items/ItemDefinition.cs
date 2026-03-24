@@ -40,6 +40,6 @@ namespace Gast.Unity.Infrastructure.Items
         public string Description => description;
         public GameObject Prefab => prefab;
         public Sprite Icon => icon;
-        public IReadOnlyList<ItemEffect> Effects => effects;
+        public IReadOnlyList<IItemEffect> Effects => effects.ConvertAll(e => (IItemEffect)e);
     }
 }

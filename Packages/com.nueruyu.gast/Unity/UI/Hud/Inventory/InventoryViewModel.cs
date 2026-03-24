@@ -10,6 +10,8 @@ namespace Gast.Unity.UI.Hud.Inventory
 {
     public class InventoryViewModel : IDisposable
     {
+        public const int HotbarSize = 10;
+
         private readonly CompositeDisposable disposables = new();
 
         public ReadOnlyReactiveProperty<IReadOnlyList<ItemStackViewModel>> InventoryItems { get; }
@@ -28,7 +30,7 @@ namespace Gast.Unity.UI.Hud.Inventory
                         .Prepend(Unit.Default)
                         .Select(_ => (IReadOnlyList<ItemStackViewModel>)inventoryHost.Inventory.Items
                             .Select(itemStackViewModelFactory.Create)
-                            .Take(10)
+                            .Take(HotbarSize)
                             .ToArray());
                 })
                 .Switch()
