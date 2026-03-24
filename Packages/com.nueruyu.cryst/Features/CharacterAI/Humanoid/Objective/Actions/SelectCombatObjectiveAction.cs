@@ -13,10 +13,10 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective.Actions
         public override UniTask ExecuteAsync(ActorContext<ObjectiveState> context, CancellationToken cancellationToken)
         {
             var targetInfo = context.ObjectiveQueries.FindBestTargetFor(objective, context.WorldState);
-            if (targetInfo == null)
+            if (!targetInfo.HasValue)
                 return UniTask.CompletedTask;
 
-            var targetCharacter = context.CharacterRepository.Get(targetInfo.Id).As<BaseCharacter>();
+            var targetCharacter = context.CharacterRepository.Get(targetInfo.Value.Id).As<BaseCharacter>();
             if (targetCharacter != null)
             {
                 var memory = context.GetModule<CombatMemory>();

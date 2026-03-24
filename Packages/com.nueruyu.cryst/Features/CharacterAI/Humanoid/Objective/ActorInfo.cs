@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Objective
 {
-    public readonly struct ActorInfo : IActorInfo
+    public readonly struct ActorInfo
     {
         public CharacterId Id { get; }
         public CharacterTypeId TypeId { get; }
@@ -20,14 +20,5 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
             Faction = faction;
             IsAlive = isAlive;
         }
-    }
-
-    public interface IActorInfo
-    {
-        CharacterId Id { get; }
-        CharacterTypeId TypeId { get; }
-        Vector3 Position { get; }
-        Faction Faction { get; }
-        bool IsAlive { get; }
     }
 }

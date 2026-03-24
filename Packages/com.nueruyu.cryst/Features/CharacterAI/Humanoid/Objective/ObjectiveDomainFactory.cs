@@ -73,7 +73,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
             if (target == null)
                 return float.NegativeInfinity;
 
-            var distance = Vector3.Distance(state.Self.Position, target.Position);
+            var distance = Vector3.Distance(state.Self.Position, target.Value.Position);
             // Higher score for closer targets.
             return 100f / (1f + distance);
         }
@@ -84,7 +84,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
             if (target == null)
                 return float.NegativeInfinity;
 
-            var distance = Vector3.Distance(state.Self.Position, target.Position);
+            var distance = Vector3.Distance(state.Self.Position, target.Value.Position);
             // Combat is generally prioritized over gathering.
             return 50f / (1f + distance);
         }

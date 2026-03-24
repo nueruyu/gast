@@ -5,7 +5,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
     public class ObjectiveState : IWorldState<ObjectiveState>
     {
         public IObjectiveQueries Queries { get; private set; }
-        public IActorInfo Self { get; private set; }
+        public ActorInfo Self { get; private set; }
 
         public void WriteTo(ref ObjectiveState dest)
         {
@@ -14,7 +14,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
             dest.Self = Self;
         }
 
-        public void Update(IObjectiveQueries queries, IActorInfo self)
+        public void Update(IObjectiveQueries queries, ActorInfo self)
         {
             Queries = queries;
             Self = self;

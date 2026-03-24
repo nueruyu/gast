@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Cryst.Features.CharacterAI.Humanoid.Objective
 {
-    public readonly struct PickupInfo : IPickupInfo
+    public readonly struct PickupInfo
     {
         public PickupId Id { get; }
         public ItemId ItemId { get; }
@@ -16,12 +16,5 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
             ItemId = itemId;
             Position = position;
         }
-    }
-
-    public interface IPickupInfo
-    {
-        PickupId Id { get; }
-        ItemId ItemId { get; }
-        Vector3 Position { get; }
     }
 }

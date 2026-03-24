@@ -4,7 +4,7 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective
 {
     public interface IObjectiveQueries
     {
-        IActorInfo FindBestTargetFor(DefeatCharacterObjective objective, ObjectiveState state);
-        IPickupInfo FindBestTargetFor(AcquireItemObjective objective, ObjectiveState state);
+        ActorInfo? FindBestTargetFor(DefeatCharacterObjective objective, ObjectiveState state);
+        PickupInfo? FindBestTargetFor(AcquireItemObjective objective, ObjectiveState state);
     }
 }

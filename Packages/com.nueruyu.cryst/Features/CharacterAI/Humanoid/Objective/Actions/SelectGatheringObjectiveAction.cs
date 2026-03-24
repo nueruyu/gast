@@ -13,10 +13,10 @@ namespace Cryst.Features.CharacterAI.Humanoid.Objective.Actions
         public override UniTask ExecuteAsync(ActorContext<ObjectiveState> context, CancellationToken cancellationToken)
         {
             var pickupInfo = context.ObjectiveQueries.FindBestTargetFor(objective, context.WorldState);
-            if (pickupInfo == null)
+            if (!pickupInfo.HasValue)
                 return UniTask.CompletedTask;
 
-            var pickup = context.PickupRepository.Find(pickupInfo.Id);
+            var pickup = context.PickupRepository.Find(pickupInfo.Value.Id);
             var interactable = ((Component)pickup)?.GetComponentInChildren<IInteractable>();
             if (interactable != null)
             {
