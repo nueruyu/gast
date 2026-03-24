@@ -3,7 +3,7 @@ using Gast.Domain.Characters;
 using Gast.Unity.Infrastructure.Items;
 using UnityEngine;
 
-namespace Cryst.Infrastructure.Items.Effects
+namespace Cryst.Features.Economy.Effects
 {
     [CreateAssetMenu(fileName = "RestoreHungerEffect", menuName = "Cryst/Item Effects/Restore Hunger")]
     public class RestoreHungerEffect : ItemEffect
