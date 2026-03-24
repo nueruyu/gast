@@ -15,6 +15,8 @@ namespace Cryst.UI.Hud.PlayerStatus
 
         public ReadOnlyReactiveProperty<float> HpRatio { get; }
         public ReadOnlyReactiveProperty<string> HpText { get; }
+        public ReadOnlyReactiveProperty<float> HungerRatio { get; }
+        public ReadOnlyReactiveProperty<string> HungerText { get; }
         public ReadOnlyReactiveProperty<int> CurrentMoney { get; }
 
         public PlayerStatusViewModel(IPlayerManager playerManager)
@@ -23,32 +25,36 @@ namespace Cryst.UI.Hud.PlayerStatus
                 .ToObservable()
                 .Where(x => x != null);
 
-            var healthInfo = currentCharacter
+            var statusInfo = currentCharacter
                 .Select(character =>
                 {
                     var status = character.As<BaseCharacter>().Status;
                     return status.Health.ToObservable()
                         .CombineLatest(status.MaxHealth.ToObservable(),
-                            (health, maxHealth) => (health, maxHealth));
+                            status.Hunger.ToObservable(),
+                            status.MaxHunger.ToObservable(),
+                            (h, mh, hu, mhu) => new { Health = h, MaxHealth = mh, Hunger = hu, MaxHunger = mhu });
                 })
                 .Switch()
                 .Share();
 
-            HpRatio = healthInfo
-                .Select(info =>
-                {
-                    var (health, maxHealth) = info;
-                    return maxHealth > 0 ? Mathf.Clamp01(health / maxHealth) : 0f;
-                })
+            HpRatio = statusInfo
+                .Select(info => info.MaxHealth > 0 ? Mathf.Clamp01(info.Health / info.MaxHealth) : 0f)
                 .ToReadOnlyReactiveProperty()
                 .AddTo(disposables);
 
-            HpText = healthInfo
-                .Select(info =>
-                {
-                    var (health, maxHealth) = info;
-                    return $"{Mathf.CeilToInt(health)} / {maxHealth}";
-                })
+            HpText = statusInfo
+                .Select(info => $"{Mathf.CeilToInt(info.Health)} / {info.MaxHealth}")
+                .ToReadOnlyReactiveProperty()
+                .AddTo(disposables);
+
+            HungerRatio = statusInfo
+                .Select(info => info.MaxHunger > 0 ? Mathf.Clamp01(info.Hunger / info.MaxHunger) : 0f)
+                .ToReadOnlyReactiveProperty()
+                .AddTo(disposables);
+
+            HungerText = statusInfo
+                .Select(info => $"{Mathf.CeilToInt(info.Hunger)} / {info.MaxHunger}")
                 .ToReadOnlyReactiveProperty()
                 .AddTo(disposables);
 

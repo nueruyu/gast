@@ -8,6 +8,10 @@ namespace Cryst.Infrastructure.Characters
         [SerializeField]
         float initialMaxHealth = 100f;
 
+        [SerializeField]
+        float initialMaxHunger = 100f;
+
         public float InitialMaxHealth => initialMaxHealth;
+        public float InitialMaxHunger => initialMaxHunger;
     }
 }

@@ -30,6 +30,7 @@ using Gast.Unity.Features.Characters;
 using Gast.Unity.Shared.DI;
 using Gast.Unity.UI.Hud.Objectives;
 using Gast.Unity.UI.Hud.PlayerStatus;
+using Cryst.Features.Characters.Vitals;
 using GuardAction = Cryst.Features.CharacterActions.Actions.Guard.GuardAction;
 
 namespace Cryst.Composition
@@ -88,6 +89,9 @@ namespace Cryst.Composition
 
             // Player
             builder.Register<PlayerCharacterController>().As<IPlayerCharacterController>();
+
+            // Vitals
+            builder.Register<VitalsSystem>(Lifetime.Singleton).As<ILifecycleTask>();
 
             // Feedbacks
             builder.Register<CharacterFeedbackService>(Lifetime.Singleton);

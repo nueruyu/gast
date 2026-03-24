@@ -19,6 +19,7 @@ namespace Gast.Application
             // Economy
             builder.Register<BuyItemUseCase>().AsImplementedInterfaces();
             builder.Register<PickUpItemUseCase>().AsImplementedInterfaces();
+            builder.Register<UseItemUseCase>().AsImplementedInterfaces();
 
             // Items
             builder.Register<SpawnItemUseCase>().AsImplementedInterfaces();

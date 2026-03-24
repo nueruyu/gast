@@ -28,6 +28,7 @@ namespace Gast.Unity.UI.Hud.Inventory
                         .Prepend(Unit.Default)
                         .Select(_ => (IReadOnlyList<ItemStackViewModel>)inventoryHost.Inventory.Items
                             .Select(itemStackViewModelFactory.Create)
+                            .Take(10)
                             .ToArray());
                 })
                 .Switch()

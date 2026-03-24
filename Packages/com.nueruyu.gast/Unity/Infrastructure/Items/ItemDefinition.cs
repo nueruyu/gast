@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Gast.Domain.Economy;
 using Gast.Unity.Features.Economy;
 using UnityEngine;
@@ -29,6 +30,9 @@ namespace Gast.Unity.Infrastructure.Items
         [SerializeField]
         Sprite icon;
 
+        [SerializeField]
+        List<ItemEffect> effects = new();
+
         public ItemId Id => itemReference.Id;
         public string Name => displayName;
         public int Price => price;
@@ -36,5 +40,6 @@ namespace Gast.Unity.Infrastructure.Items
         public string Description => description;
         public GameObject Prefab => prefab;
         public Sprite Icon => icon;
+        public IReadOnlyList<ItemEffect> Effects => effects;
     }
 }

@@ -20,5 +20,6 @@ namespace Gast.Domain.Inputs
         bool IsCursorOverridePressed { get; }
         ISignal ShowMenu { get; }
         ISignal HideMenu { get; }
+        ISignal<int> UseItemSlot { get; }
     }
 }

@@ -1,23 +1,33 @@
 .inventory {
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
-    max-height: 400px;
-    width: 250px;
 }
 
 .inventory__item-slot {
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 4px;
-    padding: 8px;
-    margin-top: 4px;
-    flex-direction: row;
-    width: 100%;
-    border-left-width: 4px;
-    border-left-color: rgb(100, 149, 237);
+    margin-right: 4px;
+    width: 64px;
+    height: 64px;
+    justify-content: space-between;
+    align-items: stretch;
+    border-width: 2px;
+    border-color: #444;
+}
+
+.inventory__slot-number {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 12px;
+    color: #aaa;
+    -unity-font-style: bold;
 }
 
 .inventory__item-text {
     color: white;
-    font-size: 14px;
-    white-space: nowrap;
+    font-size: 12px;
+    white-space: normal;
+    -unity-text-align: lower-right;
+    padding: 4px;
 }

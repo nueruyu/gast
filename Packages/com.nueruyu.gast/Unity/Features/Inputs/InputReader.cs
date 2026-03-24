@@ -33,6 +33,7 @@ namespace Gast.Unity.Features.Inputs
 
         readonly Signal showMenu = new();
         readonly Signal hideMenu = new();
+        readonly Signal<int> useItemSlot = new();
 
         public Vector2 Move { get; private set; }
         public Vector2 Look { get; private set; }
@@ -46,6 +47,7 @@ namespace Gast.Unity.Features.Inputs
         public bool IsCursorOverridePressed { get; private set; }
         public ISignal ShowMenu => showMenu;
         public ISignal HideMenu => hideMenu;
+        public ISignal<int> UseItemSlot => useItemSlot;
 
         public InputReader(
             IInputModeManager inputModeManager,
@@ -94,6 +96,8 @@ namespace Gast.Unity.Features.Inputs
                     GuardHeld = guardAction.IsPressed();
                     IsCursorOverridePressed = Keyboard.current != null && Keyboard.current.leftAltKey.isPressed;
 
+                    CheckItemUsageInput();
+
                     // Reset flags at end of frame
                     await UniTask.WaitForEndOfFrame(cancellationToken);
 
@@ -110,6 +114,23 @@ namespace Gast.Unity.Features.Inputs
                 playerActionMap.Disable();
                 menuActionMap.Disable();
             }
+        }
+
+        void CheckItemUsageInput()
+        {
+            var keyboard = Keyboard.current;
+            if (keyboard == null) return;
+
+            if (keyboard.digit1Key.wasPressedThisFrame) useItemSlot.Publish(0);
+            else if (keyboard.digit2Key.wasPressedThisFrame) useItemSlot.Publish(1);
+            else if (keyboard.digit3Key.wasPressedThisFrame) useItemSlot.Publish(2);
+            else if (keyboard.digit4Key.wasPressedThisFrame) useItemSlot.Publish(3);
+            else if (keyboard.digit5Key.wasPressedThisFrame) useItemSlot.Publish(4);
+            else if (keyboard.digit6Key.wasPressedThisFrame) useItemSlot.Publish(5);
+            else if (keyboard.digit7Key.wasPressedThisFrame) useItemSlot.Publish(6);
+            else if (keyboard.digit8Key.wasPressedThisFrame) useItemSlot.Publish(7);
+            else if (keyboard.digit9Key.wasPressedThisFrame) useItemSlot.Publish(8);
+            else if (keyboard.digit0Key.wasPressedThisFrame) useItemSlot.Publish(9);
         }
 
         void OnJumpPerformed(InputAction.CallbackContext _)

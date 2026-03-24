@@ -4,5 +4,8 @@
     <ui:VisualElement name="HpContainer" class="player-status__hp-container" >
         <Gast.Unity.UI.Controls.Gauge label-text="100/100" name="HpGauge"/>
     </ui:VisualElement>
+    <ui:VisualElement name="HungerContainer" class="player-status__hunger-container" >
+        <Gast.Unity.UI.Controls.Gauge label-text="100/100" name="HungerGauge"/>
+    </ui:VisualElement>
     <ui:Label name="MoneyLabel" text="000G" class="player-status__money-label"/>
 </ui:UXML>

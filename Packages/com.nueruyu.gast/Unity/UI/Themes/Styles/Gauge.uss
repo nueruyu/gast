@@ -19,6 +19,10 @@
     transition-timing-function: ease-out;
 }
 
+#HungerGauge .gauge__progress-bar {
+    background-color: rgb(218, 165, 32);
+}
+
 .gauge__label {
     color: rgb(255, 255, 255);
     font-size: 14px;
