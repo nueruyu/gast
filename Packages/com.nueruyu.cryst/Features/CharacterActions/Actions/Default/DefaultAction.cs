@@ -1,5 +1,4 @@
 using Cryst.Domain.Characters;
-using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
 using UnityEngine;
 
@@ -9,18 +8,18 @@ namespace Cryst.Features.CharacterActions.Actions.Default
     {
         readonly CharacterActionStateStore stateStore;
         readonly CharacterMovement movement;
-        readonly ICharacterTypeDefinition typeDefinition;
+        readonly CharacterMovementSettings movementSettings;
 
         public int Priority => 0;
 
         public DefaultAction(
             CharacterActionStateStore stateStore,
             CharacterMovement movement,
-            ICharacterTypeDefinition typeDefinition)
+            CharacterMovementSettings movementSettings)
         {
             this.stateStore = stateStore;
             this.movement = movement;
-            this.typeDefinition = typeDefinition;
+            this.movementSettings = movementSettings;
         }
 
         public bool OnUpdate()
@@ -33,7 +32,7 @@ namespace Cryst.Features.CharacterActions.Actions.Default
             float targetSpeed;
             if (direction.sqrMagnitude > 0.01f)
             {
-                targetSpeed = stateStore.IsSprinting ? typeDefinition.SprintSpeed : typeDefinition.WalkSpeed;
+                targetSpeed = stateStore.IsSprinting ? movementSettings.SprintSpeed : movementSettings.WalkSpeed;
             }
             else
             {

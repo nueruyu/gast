@@ -1,51 +1,47 @@
 using Gast.Lib.AI.Tasks;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Gast.Lib.AI.Builders
 {
-    public class AIDomainBuilder<TWorldState, TContext>
-        where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+    public class AIDomainBuilder<TActorContext, TWorldState>
+        where TWorldState : class, IWorldState<TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly Dictionary<string, object> registry = new();
+        readonly Dictionary<string, CompoundTaskBuilder<TActorContext, TWorldState>> builders = new();
+        readonly Dictionary<string, ITask<TActorContext, TWorldState>> builtTasks = new();
 
-        public AIDomainBuilder<TWorldState, TContext> RegisterAction(string name, IAction<TWorldState, TContext> action)
+        public CompoundTaskBuilder<TActorContext, TWorldState> DefineCompound(string name)
         {
-            registry[name] = action;
-            return this;
+            var builder = new CompoundTaskBuilder<TActorContext, TWorldState>(this, name);
+            builders[name] = builder;
+            return builder;
         }
 
-        public AIDomainBuilder<TWorldState, TContext> RegisterAction<TParam>(string name, IAction<TWorldState, TContext, TParam> action)
+        internal ITask<TActorContext, TWorldState> GetTask(string name)
         {
-            registry[name] = action;
-            return this;
+            if (builtTasks.TryGetValue(name, out var task))
+            {
+                return task;
+            }
+
+            if (builders.TryGetValue(name, out var builder))
+            {
+                var builtTask = builder.Build();
+                builtTasks[name] = builtTask;
+                return builtTask;
+            }
+
+            throw new InvalidOperationException($"Task '{name}' is not defined.");
         }
 
-        public CompoundTaskBuilder<TWorldState, TContext> DefineCompound(string name)
+        public AIDomain<TActorContext, TWorldState> Build(string rootTaskName)
         {
-            return new CompoundTaskBuilder<TWorldState, TContext>(this, name);
-        }
-
-        internal AIDomainBuilder<TWorldState, TContext> CompleteCompound(
-            CompoundTask<TWorldState, TContext> task)
-        {
-            registry[task.Name] = task;
-            return this;
-        }
-
-        internal object GetRegisteredItem(string name)
-        {
-            registry.TryGetValue(name, out var item);
-            return item;
-        }
-
-        public AIDomain<TWorldState, TContext> Build(string rootTaskName)
-        {
-            return new AIDomain<TWorldState, TContext>(
-                registry.Values.OfType<ITask<TWorldState, TContext>>(),
-                rootTaskName);
+            foreach (var name in builders.Keys)
+            {
+                GetTask(name);
+            }
+            return new AIDomain<TActorContext, TWorldState>(builtTasks.Values, rootTaskName);
         }
     }
 }

@@ -1,26 +1,21 @@
+using System.Threading;
 using Cysharp.Threading.Tasks;
 
 namespace Gast.Lib.AI
 {
-    public interface IAction<in TWorldState, in TContext>
-        where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+    public interface IAction
     {
-        bool CanExecute(TWorldState worldState);
+        UniTask ExecuteAsync(CancellationToken cancellationToken);
+    }
+
+    public interface IAction<in TActorContext, in TWorldState>
+        where TWorldState : class, IWorldState<TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
+    {
+        bool IsAvailable(TWorldState worldState);
 
         void Simulate(TWorldState worldState);
 
-        UniTask ExecuteAsync(TContext context);
-    }
-
-    public interface IAction<in TWorldState, in TContext, in TParam>
-        where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
-    {
-        bool CanExecute(TWorldState worldState, TParam param);
-
-        void Simulate(TWorldState worldState, TParam param);
-
-        UniTask ExecuteAsync(TContext context, TParam param);
+        UniTask ExecuteAsync(TActorContext context, CancellationToken cancellationToken);
     }
 }

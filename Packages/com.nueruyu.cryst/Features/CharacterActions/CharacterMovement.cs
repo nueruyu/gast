@@ -1,4 +1,3 @@
-using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
 using UnityEngine;
 
@@ -12,13 +11,13 @@ namespace Cryst.Features.CharacterActions
     {
         readonly CharacterAnimator animator;
         readonly CharacterBody body;
-        readonly ICharacterTypeDefinition typeDefinition;
+        readonly CharacterMovementSettings movementSettings;
 
-        public CharacterMovement(CharacterAnimator animator, CharacterBody body, ICharacterTypeDefinition typeDefinition)
+        public CharacterMovement(CharacterAnimator animator, CharacterBody body, CharacterMovementSettings movementSettings)
         {
             this.animator = animator;
             this.body = body;
-            this.typeDefinition = typeDefinition;
+            this.movementSettings = movementSettings;
         }
 
         /// <summary>
@@ -39,7 +38,7 @@ namespace Cryst.Features.CharacterActions
                 body.SetInputVelocity(Vector3.zero);
             }
 
-            var normalizedSpeed = targetSpeed / typeDefinition.SprintSpeed;
+            var normalizedSpeed = targetSpeed / movementSettings.SprintSpeed;
             if (animator)
             {
                 animator.SetMoveSpeed(normalizedSpeed);

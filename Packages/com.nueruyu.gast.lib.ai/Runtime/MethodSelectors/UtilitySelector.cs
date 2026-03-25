@@ -1,116 +1,98 @@
-using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 namespace Gast.Lib.AI.MethodSelectors
 {
-    public class UtilitySelector<TWorldState, TContext> : IMethodSelector<TWorldState, TContext>
-        where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+    public class UtilitySelector<TActorContext, TWorldState> : IMethodSelector<TActorContext, TWorldState>
+        where TWorldState : class, IWorldState<TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly TWorldState simulationState = new();
+        TWorldState simulationState;
 
-        public async UniTask<Method<TWorldState, TContext>> SelectAsync(
-            IReadOnlyList<Method<TWorldState, TContext>> methods,
-            TWorldState worldState,
+        public async UniTask<Method<TActorContext, TWorldState>> SelectAsync(
+            IReadOnlyList<Method<TActorContext, TWorldState>> methods,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
-            var candidates = new List<(Method<TWorldState, TContext> Method, float Score)>();
-            var totalScore = 0f;
+            Method<TActorContext, TWorldState> bestMethod = null;
+            var bestScore = float.MinValue;
 
-            // 1. Validate methods and calculate scores
             foreach (var method in methods)
             {
-                simulationState.CopyFrom(worldState);
+                context.WorldState.WriteTo(ref simulationState);
+                var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
-                if (!await ValidateMethod(method, simulationState, cancellationToken))
+                if (await ValidateMethod(method, 0, validationContext, cancellationToken))
                 {
-                    continue;
-                }
-
-                // Treat negative scores as zero for probability calculation
-                var score = Mathf.Max(0f, method.GetScore(worldState));
-                candidates.Add((method, score));
-                totalScore += score;
-            }
-
-            if (candidates.Count == 0)
-            {
-                return null;
-            }
-
-            // 2. Fallback if total score is zero (all zero or negative)
-            // In this case, choose the one with the highest raw score to ensure somewhat rational behavior.
-            if (totalScore <= 0f)
-            {
-                return candidates
-                    .OrderByDescending(x => x.Method.GetScore(worldState))
-                    .FirstOrDefault().Method;
-            }
-
-            // 3. Weighted Random Selection (Roulette Wheel Selection)
-            var randomValue = Random.Range(0f, totalScore);
-            var currentWeight = 0f;
-
-            foreach (var (method, score) in candidates)
-            {
-                currentWeight += score;
-                if (randomValue <= currentWeight)
-                {
-                    return method;
+                    var score = method.GetScore(context.WorldState);
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        bestMethod = method;
+                    }
                 }
             }
 
-            // Should not happen, but return the last one just in case
-            return candidates.Last().Method;
+            return bestMethod;
         }
 
-        public async UniTask<Method<TWorldState, TContext>> SelectInterruptsAsync(
-            IReadOnlyList<Method<TWorldState, TContext>> methods,
-            Method<TWorldState, TContext> currentMethod,
-            TWorldState worldState,
+        public async UniTask<Method<TActorContext, TWorldState>> SelectInterruptsAsync(
+            IReadOnlyList<Method<TActorContext, TWorldState>> methods,
+            CurrentMethodInfo<TActorContext, TWorldState> currentMethodInfo,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
-            // Select a candidate using the same probabilistic logic
-            var preferredMethod = await SelectAsync(
-                methods,
-                worldState,
+            context.WorldState.WriteTo(ref simulationState);
+            var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore, context.CurrentlyExecutingTask);
+
+            var isCurrentMethodStillValid = await ValidateMethod(
+                currentMethodInfo.Method,
+                currentMethodInfo.NextSubTaskIndex,
+                validationContext,
                 cancellationToken);
 
-            if (preferredMethod == null || preferredMethod == currentMethod)
+            var preferredMethod = await SelectAsync(
+                methods,
+                context,
+                cancellationToken);
+
+            if (!isCurrentMethodStillValid)
+                return preferredMethod;
+
+            if (preferredMethod == null || preferredMethod == currentMethodInfo.Method)
                 return null;
 
-            var currentScore = currentMethod.GetScore(worldState);
-            var interruptionCost = currentMethod.GetInterruptionCost(worldState);
-            var newScore = preferredMethod.GetScore(worldState);
+            var currentScore = currentMethodInfo.Method.GetScore(context.WorldState);
+            var interruptionCost = currentMethodInfo.Method.GetInterruptionCost(context.WorldState);
+            var newScore = preferredMethod.GetScore(context.WorldState);
 
-            // Switch only if the new score exceeds the current score plus the cost to interrupt
-            // Note: Since SelectAsync is probabilistic, a lower-score method might be selected as 'preferredMethod'.
-            // However, this check prevents switching to a lower-score method, ensuring stability.
             if (newScore > currentScore + interruptionCost)
-            {
                 return preferredMethod;
-            }
 
             return null;
         }
 
         async UniTask<bool> ValidateMethod(
-           Method<TWorldState, TContext> method,
-           TWorldState worldState,
-           CancellationToken cancellationToken)
+            Method<TActorContext, TWorldState> method,
+            int startIndex,
+            ValidationContext<TWorldState> context,
+            CancellationToken cancellationToken)
         {
-            if (!method.CheckCondition(worldState))
-                return false;
-
-            foreach (var task in method.SubTasks)
+            if (startIndex == 0)
             {
-                if (!await task.ValidateAsync(worldState, cancellationToken))
-                {
+                if (!method.CheckStartCondition(context.WorldState))
                     return false;
-                }
+            }
+
+            for (var i = startIndex; i < method.SubTasks.Count; i++)
+            {
+                if (!method.CheckContinuationCondition(context.WorldState))
+                    return false;
+
+                var task = method.SubTasks[i];
+                if (!await task.ValidateAsync(context, cancellationToken))
+                    return false;
             }
 
             return true;

@@ -5,6 +5,7 @@
 - Slash2.ogg by wesleyextreme_gamer -- https://freesound.org/s/574820/ -- License: Creative Commons 0
 - Hiking Boot Footsteps on Wooden Planks by Fission9 -- https://freesound.org/s/521589/ -- License: Creative Commons 0
 - Knife/sword swing by spycrah -- https://freesound.org/s/471097/ -- License: Creative Commons 0
+- blast Mining.wav by WaveAdventurer -- https://freesound.org/s/127943/ -- License: Creative Commons 0
 
 ## Particles
 

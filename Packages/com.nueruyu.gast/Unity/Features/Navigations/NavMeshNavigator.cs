@@ -9,22 +9,6 @@ namespace Gast.Unity.Features.Navigations
     {
         NavMeshAgent agent;
 
-        public Vector3 NextSteeringDirection
-        {
-            get
-            {
-                if (!agent.hasPath)
-                    return Vector3.zero;
-
-                var direction = agent.steeringTarget - transform.position;
-                direction.y = 0; // Flatten Y to prevent tilting
-                return direction.normalized;
-            }
-        }
-
-        public float RemainingDistance => agent.remainingDistance;
-        public bool HasArrived => !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance;
-
         public float StoppingDistance
         {
             get => agent.stoppingDistance;
@@ -46,10 +30,39 @@ namespace Gast.Unity.Features.Navigations
             agent.nextPosition = transform.position;
         }
 
+        void OnDrawGizmosSelected()
+        {
+            if (agent == null || !agent.hasPath)
+                return;
+
+            Gizmos.color = Color.cyan;
+            var path = agent.path;
+            for (var i = 0; i < path.corners.Length - 1; i++) Gizmos.DrawLine(path.corners[i], path.corners[i + 1]);
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(agent.destination, 0.3f);
+        }
+
+        public Vector3 NextSteeringDirection
+        {
+            get
+            {
+                if (!agent.hasPath || agent.pathPending)
+                    return Vector3.zero;
+
+                var direction = agent.desiredVelocity;
+                return direction.normalized;
+            }
+        }
+
+        public float RemainingDistance => agent.remainingDistance;
+        public bool HasArrived => !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance;
+
         public void SetDestination(Vector3 target)
         {
             if (!agent)
                 return;
+
             agent.SetDestination(target);
         }
 
@@ -65,22 +78,6 @@ namespace Gast.Unity.Features.Navigations
             if (!agent)
                 return;
             agent.Warp(position);
-        }
-
-        void OnDrawGizmosSelected()
-        {
-            if (agent == null || !agent.hasPath)
-                return;
-
-            Gizmos.color = Color.cyan;
-            var path = agent.path;
-            for (var i = 0; i < path.corners.Length - 1; i++)
-            {
-                Gizmos.DrawLine(path.corners[i], path.corners[i + 1]);
-            }
-
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(agent.destination, 0.3f);
         }
     }
 }

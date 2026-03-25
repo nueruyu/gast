@@ -13,24 +13,8 @@ MonoBehaviour:
   m_Name: TypeDefinition_DefaultBot
   m_EditorClassIdentifier: Gast.Systems.Characters::Gast.Systems.Characters.CharacterTypeDefinitionSO
   reference: {fileID: 11400000, guid: 74743be7f3db9d647b1ca2d8167fc767, type: 2}
+  archetype: {fileID: 11400000, guid: f82d4f62c2b82df4288df91c79577115, type: 2}
   displayName: Default Bot
-  walkSpeed: 4
-  sprintSpeed: 7
-  actionSettings:
-  - {fileID: 11400000, guid: 937026f66d2b03e459f021892ffd5744, type: 2}
-  - {fileID: 11400000, guid: 483a7dcaec60a744d8b94dc74af2728c, type: 2}
-  - {fileID: 11400000, guid: 744704839dee8b344bb522c82fa0be24, type: 2}
-  - {fileID: 11400000, guid: 4b340309f10e76c418d7902b318351ad, type: 2}
-  - {fileID: 11400000, guid: bd985741294605e4f9de1ef0add5cd44, type: 2}
-  - {fileID: 11400000, guid: f75472bdb23fe4e4a9420f1002140572, type: 2}
-  - {fileID: 11400000, guid: c716adfd088046244b0b717060e21c3f, type: 2}
-  initialMoney: 100
-  slotCapacity: 20
-  characterPrefab: {fileID: 2658092247619174625, guid: 0b12064fcc816e540a373842a74f91ce, type: 3}
-  visualPrefab: {fileID: 4611385902212945303, guid: 83a0f84d8da1cd94aaa2b845714f3889, type: 3}
-  lootTable: {fileID: 11400000, guid: f054d0ee758f72c4683543530e0a076b, type: 2}
-  extensions:
-  - {fileID: 11400000, guid: f0dc487c825578f4bbf87c21123919c2, type: 2}
-  - {fileID: 11400000, guid: 74cfe9ce56ec3b64a96c2ed7861480ba, type: 2}
-  - {fileID: 11400000, guid: 9ab2792c0b559804ca5f161181b4f9b3, type: 2}
+  settings:
+  - {fileID: 11400000, guid: d05926db438469045a327fbbfc2e2137, type: 2}
   - {fileID: 11400000, guid: d13f3d488c514f0419560625a24e698b, type: 2}

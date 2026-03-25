@@ -1,104 +1,116 @@
-using Gast.Lib.AI.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using Gast.Lib.AI.Tasks;
 
 namespace Gast.Lib.AI.Builders
 {
-    public class MethodBuilder<TWorldState, TContext>
-        where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+    public class MethodBuilder<TActorContext, TWorldState>
+        where TWorldState : class, IWorldState<TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly CompoundTaskBuilder<TWorldState, TContext> compoundBuilder;
         readonly string methodName;
-        Func<TWorldState, bool> condition = _ => true;
-        Func<TWorldState, float> scorer = null;
-        Func<TWorldState, float> interruptionCost = null;
-        readonly List<ITask<TWorldState, TContext>> subTasks = new();
+        readonly List<ITask<TActorContext, TWorldState>> subTasks = new();
+        Func<TWorldState, bool> when = _ => true;
+        Func<TWorldState, bool> whileCondition;
+        Func<TWorldState, float> interruptionCost;
+        Func<TWorldState, float> scorer;
 
-        internal MethodBuilder(
-            CompoundTaskBuilder<TWorldState, TContext> compoundBuilder,
-            string methodName)
+        internal MethodBuilder(string methodName)
         {
-            this.compoundBuilder = compoundBuilder;
             this.methodName = methodName;
         }
 
-        public MethodBuilder<TWorldState, TContext> Condition(Func<TWorldState, bool> predicate)
+        public MethodBuilder<TActorContext, TWorldState> Condition(Func<TWorldState, bool> predicate)
         {
-            condition = predicate ?? throw new ArgumentNullException(nameof(predicate));
+            return When(predicate);
+        }
+
+        public MethodBuilder<TActorContext, TWorldState> When(Func<TWorldState, bool> predicate)
+        {
+            when = predicate ?? throw new ArgumentNullException(nameof(predicate));
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> Score(Func<TWorldState, float> scoreFunc)
+        public MethodBuilder<TActorContext, TWorldState> While(Func<TWorldState, bool> predicate)
+        {
+            whileCondition = predicate ?? throw new ArgumentNullException(nameof(predicate));
+            return this;
+        }
+
+        public MethodBuilder<TActorContext, TWorldState> Score(Func<TWorldState, float> scoreFunc)
         {
             scorer = scoreFunc ?? throw new ArgumentNullException(nameof(scoreFunc));
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> InterruptCost(Func<TWorldState, float> costFunc)
+        public MethodBuilder<TActorContext, TWorldState> InterruptCost(Func<TWorldState, float> costFunc)
         {
             interruptionCost = costFunc ?? throw new ArgumentNullException(nameof(costFunc));
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> Do(params string[] taskNames)
+        public MethodBuilder<TActorContext, TWorldState> Do(IAction<TActorContext, TWorldState> action)
         {
-            foreach (var name in taskNames)
-            {
-                var item = GetRegisteredItem(name);
-
-                if (item is ITask<TWorldState, TContext> task)
-                {
-                    subTasks.Add(task);
-                }
-                else if (item is IAction<TWorldState, TContext> action)
-                {
-                    subTasks.Add(new PrimitiveTask<TWorldState, TContext>(name, action));
-                }
-                else
-                {
-                    throw new InvalidOperationException($"'{name}' requires parameters. Use Do(\"{name}\", param) instead.");
-                }
-            }
+            subTasks.Add(new PrimitiveTask<TActorContext, TWorldState>(action));
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> Do<TParam>(string taskName, TParam param)
+        public MethodBuilder<TActorContext, TWorldState> Do(IAction action)
         {
-            var item = GetRegisteredItem(taskName);
-
-            if (item is IAction<TWorldState, TContext, TParam> action)
-            {
-                subTasks.Add(new ParametricPrimitiveTask<TWorldState, TContext, TParam>(taskName, action, param));
-            }
-            else
-            {
-                throw new InvalidOperationException($"'{taskName}' is not registered as a parametric action with type '{typeof(TParam).Name}'.");
-            }
+            subTasks.Add(new PrimitiveTask<TActorContext, TWorldState>(new ActionAdapter(action)));
             return this;
         }
 
-        object GetRegisteredItem(string name)
+        public MethodBuilder<TActorContext, TWorldState> Do(CompoundTaskBuilder<TActorContext, TWorldState> builder)
         {
-            var item = compoundBuilder.DomainBuilder.GetRegisteredItem(name);
-            if (item == null)
-            {
-                throw new InvalidOperationException($"'{name}' is not registered.");
-            }
-            return item;
+            var task = builder.DomainBuilder.GetTask(builder.Name);
+            subTasks.Add(task);
+            return this;
         }
 
-        public CompoundTaskBuilder<TWorldState, TContext> End()
+        internal Method<TActorContext, TWorldState> Build(int index)
         {
-            var method = new Method<TWorldState, TContext>(
+            return new Method<TActorContext, TWorldState>(
                 methodName,
-                compoundBuilder.CurrentMethodCount,
+                index,
                 subTasks,
-                condition,
+                when,
+                whileCondition,
                 scorer,
                 interruptionCost);
+        }
 
-            return compoundBuilder.CompleteMethod(method);
+        class ActionAdapter : IAction<TActorContext, TWorldState>
+        {
+            readonly IAction action;
+
+            public ActionAdapter(IAction action)
+            {
+                this.action = action;
+            }
+
+            public bool IsAvailable(TWorldState worldState)
+            {
+                return true;
+            }
+
+            public void Simulate(TWorldState worldState)
+            {
+            }
+
+            public UniTask ExecuteAsync(
+                TActorContext context,
+                CancellationToken cancellationToken)
+            {
+                return action.ExecuteAsync(cancellationToken);
+            }
+
+            public override string ToString()
+            {
+                return action.ToString();
+            }
         }
     }
 }

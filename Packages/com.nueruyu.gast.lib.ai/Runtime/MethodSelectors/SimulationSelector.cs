@@ -1,42 +1,44 @@
-using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Cysharp.Threading.Tasks;
 
 namespace Gast.Lib.AI.MethodSelectors
 {
-    public class SimulationSelector<TWorldState, TContext> : IMethodSelector<TWorldState, TContext>
-        where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+    public class SimulationSelector<TActorContext, TWorldState> : IMethodSelector<TActorContext, TWorldState>
+        where TWorldState : class, IWorldState<TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly Func<TWorldState, float> worldEvaluator;
         readonly IEnvironmentModel<TWorldState> envModel;
-        readonly TWorldState simulationState = new();
+        readonly Func<TWorldState, float> worldEvaluator;
+        TWorldState simulationState;
 
-        public SimulationSelector(Func<TWorldState, float> worldEvaluator, IEnvironmentModel<TWorldState> envModel = null)
+        public SimulationSelector(Func<TWorldState, float> worldEvaluator,
+            IEnvironmentModel<TWorldState> envModel = null)
         {
             this.worldEvaluator = worldEvaluator;
             this.envModel = envModel;
         }
 
-        public async UniTask<Method<TWorldState, TContext>> SelectAsync(
-            IReadOnlyList<Method<TWorldState, TContext>> methods,
-            TWorldState worldState,
+        public async UniTask<Method<TActorContext, TWorldState>> SelectAsync(
+            IReadOnlyList<Method<TActorContext, TWorldState>> methods,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
-            Method<TWorldState, TContext> bestMethod = null;
+            Method<TActorContext, TWorldState> bestMethod = null;
             var bestOutcomeScore = float.NegativeInfinity;
+
+            var worldState = context.WorldState;
 
             foreach (var method in methods)
             {
-                if (!method.CheckCondition(worldState))
-                    continue;
-
-                simulationState.CopyFrom(worldState);
+                worldState.WriteTo(ref simulationState);
+                var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
                 var valid = await SimulateMethodAsync(
                     method,
-                    simulationState,
+                    0,
+                    validationContext,
                     cancellationToken);
 
                 if (valid)
@@ -46,7 +48,7 @@ namespace Gast.Lib.AI.MethodSelectors
                     {
                         bestOutcomeScore = outcomeScore;
                         bestMethod = method;
-                        worldState.CopyFrom(simulationState);
+                        simulationState.WriteTo(ref worldState);
                     }
                 }
             }
@@ -54,37 +56,45 @@ namespace Gast.Lib.AI.MethodSelectors
             return bestMethod;
         }
 
-        public async UniTask<Method<TWorldState, TContext>> SelectInterruptsAsync(
-            IReadOnlyList<Method<TWorldState, TContext>> methods,
-            Method<TWorldState, TContext> currentMethod,
-            TWorldState worldState,
+        public async UniTask<Method<TActorContext, TWorldState>> SelectInterruptsAsync(
+            IReadOnlyList<Method<TActorContext, TWorldState>> methods,
+            CurrentMethodInfo<TActorContext, TWorldState> currentMethodInfo,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
-            simulationState.CopyFrom(worldState);
+            context.WorldState.WriteTo(ref simulationState);
+            var currentMethodValidationContext =
+                new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore, context.CurrentlyExecutingTask);
 
-            await SimulateMethodAsync(
-                currentMethod,
-                simulationState,
+            var isCurrentMethodStillValid = await SimulateMethodAsync(
+                currentMethodInfo.Method,
+                currentMethodInfo.NextSubTaskIndex,
+                currentMethodValidationContext,
                 cancellationToken);
+
+            if (!isCurrentMethodStillValid)
+                return await SelectAsync(methods, context, cancellationToken);
 
             var currentScore = worldEvaluator(simulationState);
 
-            Method<TWorldState, TContext> bestMethod = null;
+            Method<TActorContext, TWorldState> bestMethod = null;
             var bestOutcomeScore = currentScore;
+
+            var worldState = context.WorldState;
 
             foreach (var method in methods)
             {
-                if (method == currentMethod)
+                if (method == currentMethodInfo.Method)
                     continue;
 
-                if (!method.CheckCondition(worldState))
-                    continue;
-
-                simulationState.CopyFrom(worldState);
+                worldState.WriteTo(ref simulationState);
+                var innerValidationContext =
+                    new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
                 var valid = await SimulateMethodAsync(
                     method,
-                    simulationState,
+                    0,
+                    innerValidationContext,
                     cancellationToken);
 
                 if (valid)
@@ -94,7 +104,7 @@ namespace Gast.Lib.AI.MethodSelectors
                     {
                         bestOutcomeScore = outcomeScore;
                         bestMethod = method;
-                        worldState.CopyFrom(simulationState);
+                        simulationState.WriteTo(ref worldState);
                     }
                 }
             }
@@ -103,19 +113,27 @@ namespace Gast.Lib.AI.MethodSelectors
         }
 
         async UniTask<bool> SimulateMethodAsync(
-           Method<TWorldState, TContext> method,
-           TWorldState worldState,
-           CancellationToken cancellationToken)
+            Method<TActorContext, TWorldState> method,
+            int startIndex,
+            ValidationContext<TWorldState> context,
+            CancellationToken cancellationToken)
         {
-            foreach (var subTask in method.SubTasks)
+            if (startIndex == 0)
             {
-                var valid = await subTask.ValidateAsync(worldState, cancellationToken);
-                if (!valid)
-                {
+                if (!method.CheckStartCondition(context.WorldState))
                     return false;
-                }
+            }
 
-                envModel?.Simulate(worldState);
+            for (var i = startIndex; i < method.SubTasks.Count; i++)
+            {
+                if (!method.CheckContinuationCondition(context.WorldState))
+                    return false;
+
+                var subTask = method.SubTasks[i];
+                var valid = await subTask.ValidateAsync(context, cancellationToken);
+                if (!valid) return false;
+
+                envModel?.Simulate(context.WorldState);
             }
 
             return true;

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fa473e4719453f44b454d40e00742e9, type: 3}
   m_Name: GameInitializationSettings
   m_EditorClassIdentifier: Gast.App::Gast.App.GameInitializationSettings
-  playerCreationParameters: {fileID: 11400000, guid: 6b0ccc61065061d44aa9a1fc1d69426b, type: 2}
+  playerCreationParameters: {fileID: 11400000, guid: 8cd5dd81b07739c4897ef2196f6d6bfe, type: 2}

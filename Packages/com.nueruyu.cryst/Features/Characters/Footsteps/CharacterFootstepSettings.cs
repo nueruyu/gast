@@ -1,3 +1,4 @@
+using Gast.Unity.Shared.Animations;
 using UnityEngine;
 
 namespace Cryst.Features.Characters.Footsteps
@@ -10,6 +11,9 @@ namespace Cryst.Features.Characters.Footsteps
     public class CharacterFootstepSettings : ScriptableObject
     {
         [Header("Footsteps")]
+        [SerializeField]
+        AnimationEventSymbol footstepEvent;
+
         [SerializeField]
         AudioClip[] footstepClips = { };
 
@@ -25,6 +29,7 @@ namespace Cryst.Features.Characters.Footsteps
         [SerializeField, Range(0f, 0.5f)]
         float pitchVariance = 0.15f;
 
+        public AnimationEventSymbol FootstepEvent => footstepEvent;
         public AudioClip[] FootstepClips => footstepClips;
         public float FootstepVolume => footstepVolume;
         public float VolumeVariance => volumeVariance;

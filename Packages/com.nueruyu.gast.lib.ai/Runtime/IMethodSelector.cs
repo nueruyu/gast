@@ -4,19 +4,19 @@ using System.Threading;
 
 namespace Gast.Lib.AI
 {
-    public interface IMethodSelector<TWorldState, TContext>
-        where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+    public interface IMethodSelector<TActorContext, TWorldState>
+        where TWorldState : class, IWorldState<TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
-        UniTask<Method<TWorldState, TContext>> SelectAsync(
-            IReadOnlyList<Method<TWorldState, TContext>> methods,
-            TWorldState worldState,
+        UniTask<Method<TActorContext, TWorldState>> SelectAsync(
+            IReadOnlyList<Method<TActorContext, TWorldState>> methods,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken);
 
-        UniTask<Method<TWorldState, TContext>> SelectInterruptsAsync(
-            IReadOnlyList<Method<TWorldState, TContext>> methods,
-            Method<TWorldState, TContext> currentMethod,
-            TWorldState worldState,
+        UniTask<Method<TActorContext, TWorldState>> SelectInterruptsAsync(
+            IReadOnlyList<Method<TActorContext, TWorldState>> methods,
+            CurrentMethodInfo<TActorContext, TWorldState> currentMethodInfo,
+            ValidationContext<TWorldState> context,
             CancellationToken cancellationToken);
     }
 }

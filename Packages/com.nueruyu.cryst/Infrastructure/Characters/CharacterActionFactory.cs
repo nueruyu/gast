@@ -8,6 +8,7 @@ using Cryst.Features.CharacterActions.Actions.Guard;
 using Cryst.Features.CharacterActions.Actions.Hit;
 using Cryst.Features.CharacterActions.Actions.Jump;
 using Cysharp.Threading.Tasks;
+using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
 using VContainer;
 
@@ -28,11 +29,19 @@ namespace Cryst.Infrastructure.Characters
             {
                 builder.RegisterInstance(context);
                 builder.RegisterInstance(settings, settings.GetType());
+                builder.RegisterInstance(context.CharacaterId);
 
                 foreach (var (type, module) in context.GetModules())
                 {
                     builder.RegisterInstance(module, type);
                 }
+
+                var typeDefinition = context.Resolve<ICharacterTypeDefinition>();
+                var movementSettings = typeDefinition.GetSettings<CharacterMovementSettings>();
+                builder.RegisterInstance(movementSettings);
+
+                builder.Register<CharacterMovement>(Lifetime.Transient);
+                builder.Register<CharacterActionEffectDispatcher>(Lifetime.Transient);
             });
 
             scope.AddTo(context.CancellationToken);

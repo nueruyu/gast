@@ -1,32 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gast.Domain.AI;
 using Cryst.Domain.AI.Objectives;
-using Gast.Core.Events;
-using Gast.Domain.Characters;
-using R3;
-using Gast.Domain.Economy;
 using Cryst.Domain.Characters;
+using Gast.Core.Events;
+using Gast.Domain.AI;
+using Gast.Domain.Characters;
+using Gast.Domain.Economy;
+using R3;
 
 namespace Cryst.Features.CharacterAI
 {
     public class ObjectiveManager
     {
         readonly IDomainEventSubscriber eventSubscriber;
-        readonly List<IAIObjective> currentObjectives = new();
-
-        public IReadOnlyList<IAIObjective> CurrentObjectives => currentObjectives;
+        readonly ReactiveProperty<IReadOnlyList<IAIObjective>> currentObjectives = new(Array.Empty<IAIObjective>());
 
         public ObjectiveManager(IDomainEventSubscriber eventSubscriber)
         {
             this.eventSubscriber = eventSubscriber;
         }
 
+        public IReadOnlyList<IAIObjective> CurrentObjectives => currentObjectives.Value;
+        public ReadOnlyReactiveProperty<IReadOnlyList<IAIObjective>> CurrentObjectivesObservable => currentObjectives;
+
         public void UpdateObjectives(IEnumerable<IAIObjective> objectives)
         {
-            currentObjectives.Clear();
-            currentObjectives.AddRange(objectives);
+            currentObjectives.Value = objectives.ToList();
         }
 
         public IDisposable BindCharacter(CharacterId characterId)
@@ -41,26 +41,18 @@ namespace Cryst.Features.CharacterAI
 
             void OnCharacterDefeated(CharacterDefeatedEvent e)
             {
-                foreach (var goal in currentObjectives.OfType<DefeatCharacterObjective>())
-                {
+                foreach (var goal in currentObjectives.Value.OfType<DefeatCharacterObjective>())
                     if (e.AttackerId == characterId &&
-                        goal.TargetTypeId == e.DefeatedCharacter.As<CrystCharacter>().TypeId)
-                    {
+                        goal.TargetTypeId == e.DefeatedCharacter.As<BaseCharacter>().TypeId)
                         goal.IncrementCount();
-                    }
-                }
             }
 
             void OnItemAcquired(ItemAcquiredEvent e)
             {
-                foreach (var goal in currentObjectives.OfType<AcquireItemObjective>())
-                {
+                foreach (var goal in currentObjectives.Value.OfType<AcquireItemObjective>())
                     if (e.AcquirerId == characterId &&
                         goal.TargetItemId == e.AcquiredItemId)
-                    {
                         goal.AddQuantity(e.AcquiredQuantity);
-                    }
-                }
             }
         }
     }

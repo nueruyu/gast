@@ -1,5 +1,6 @@
 using Gast.Domain.AI;
 using Cryst.Features.CharacterAI;
+using Cryst.Features.CharacterAI.Humanoid;
 using VContainer;
 
 namespace Cryst.Infrastructure.CharacterAI
@@ -15,7 +16,7 @@ namespace Cryst.Infrastructure.CharacterAI
 
         public ICharacterAIBrain Create()
         {
-            return resolver.Resolve<AIBrain>();
+            return resolver.Resolve<HumanoidAIBrain>();
         }
     }
 }

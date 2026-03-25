@@ -1,72 +1,70 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using Gast.Domain.Characters;
-using Gast.Domain.Loot;
 using Gast.Unity.Features.Characters;
-using Gast.Unity.Infrastructure.Pickups;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Gast.Unity.Infrastructure.Characters
 {
     [CreateAssetMenu(fileName = "CharacterType", menuName = "Gast/Characters/Type Definition")]
     public class CharacterTypeDefinition : ScriptableObject, ICharacterTypeDefinition
     {
-        [SerializeField]
-        CharacterTypeReference reference;
+        [SerializeField] CharacterTypeReference reference;
 
-        [SerializeField]
-        string displayName;
+        [SerializeField] CharacterArchetype archetype;
 
-        [Header("Movement")]
-        [SerializeField]
-        float walkSpeed = 4f;
+        [SerializeField] string displayName;
 
-        [SerializeField]
-        float sprintSpeed = 7f;
+        [SerializeField] Object[] settings = { };
 
-        [Header("Actions")]
-        [SerializeField]
-        List<CharacterActionSettings> actionSettings = new();
+        [NonSerialized] Dictionary<Type, object> settingsCache;
 
-        [Header("Economy")]
-        [SerializeField]
-        int initialMoney = 100;
-
-        [SerializeField]
-        int slotCapacity = 20;
-
-        [Header("Prefabs")]
-        [SerializeField]
-        GameObject characterPrefab;
-
-        [SerializeField]
-        GameObject visualPrefab;
-
-        [Header("Loot")]
-        [SerializeField]
-        LootTable lootTable;
-
-        [Header("Extensions")]
-        [SerializeField]
-        UnityEngine.Object[] extensions = { };
-
-        public CharacterTypeId TypeId => reference.Id;
-        public string DisplayName => displayName;
-        public float WalkSpeed => walkSpeed;
-        public float SprintSpeed => sprintSpeed;
-        public IReadOnlyList<CharacterActionSettings> ActionSettings => actionSettings;
-        public int InitialMoney => initialMoney;
-        public int SlotCapacity => slotCapacity;
-        public GameObject CharacterPrefab => characterPrefab;
-        public GameObject VisualPrefab => visualPrefab;
-
-        ILootTable ICharacterTypeDefinition.LootTable => lootTable;
-
-        public T GetExtension<T>()
+        void OnValidate()
         {
-            return extensions.OfType<T>().FirstOrDefault();
+            settingsCache = null;
         }
 
-        public IReadOnlyList<UnityEngine.Object> Extensions => extensions;
+        public CharacterTypeId TypeId => reference.Id;
+        public CharacterArchetypeId ArchetypeId => archetype != null ? archetype.Id : default;
+        public string DisplayName => displayName;
+
+        public bool TryGetSettings<T>(out T value)
+        {
+            EnsureCache();
+
+            if (settingsCache.TryGetValue(typeof(T), out var setting))
+            {
+                value = (T)setting;
+                return true;
+            }
+
+            foreach (var s in settings)
+            {
+                if (s is T match)
+                {
+                    settingsCache[typeof(T)] = match;
+                    value = match;
+                    return true;
+                }
+            }
+
+            if (archetype != null) return archetype.TryGetSettings(out value);
+
+            value = default;
+            return false;
+        }
+
+        void EnsureCache()
+        {
+            if (settingsCache != null) return;
+
+            settingsCache = new Dictionary<Type, object>();
+            foreach (var s in settings)
+            {
+                if (s == null) continue;
+                settingsCache[s.GetType()] = s;
+            }
+        }
     }
 }

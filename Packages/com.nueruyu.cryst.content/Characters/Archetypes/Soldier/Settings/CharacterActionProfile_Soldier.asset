@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1addd8df582482149b4e3c09d61d1d30, type: 3}
+  m_Name: CharacterActionProfile_Soldier
+  m_EditorClassIdentifier: Gast.Unity.Features::Gast.Unity.Features.Characters.CharacterActionProfile
+  actionSettings:
+  - {fileID: 11400000, guid: 937026f66d2b03e459f021892ffd5744, type: 2}
+  - {fileID: 11400000, guid: 4b340309f10e76c418d7902b318351ad, type: 2}
+  - {fileID: 11400000, guid: f75472bdb23fe4e4a9420f1002140572, type: 2}
+  - {fileID: 11400000, guid: 744704839dee8b344bb522c82fa0be24, type: 2}
+  - {fileID: 11400000, guid: bd985741294605e4f9de1ef0add5cd44, type: 2}
+  - {fileID: 11400000, guid: c716adfd088046244b0b717060e21c3f, type: 2}
+  - {fileID: 11400000, guid: 483a7dcaec60a744d8b94dc74af2728c, type: 2}

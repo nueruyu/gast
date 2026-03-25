@@ -19,7 +19,17 @@ namespace Cryst.Features.Characters.Feedbacks
             if (clip == null)
                 return;
 
-            AudioSource.PlayClipAtPoint(clip, position, volume);
+            var gameObject = new GameObject("One shot audio");
+            gameObject.transform.position = position;
+            var audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.clip = clip;
+            audioSource.spatialBlend = 1f;
+            audioSource.rolloffMode = AudioRolloffMode.Linear;
+            audioSource.minDistance = 10;
+            audioSource.maxDistance = 50;
+            audioSource.volume = volume;
+            audioSource.Play();
+            Object.Destroy(gameObject, clip.length);
         }
     }
 }

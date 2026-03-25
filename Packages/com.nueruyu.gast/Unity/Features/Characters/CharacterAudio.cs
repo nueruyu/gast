@@ -5,8 +5,13 @@ namespace Gast.Unity.Features.Characters
     public class CharacterAudio : MonoBehaviour
     {
         [SerializeField]
-        AudioSource audioSource;
+        AudioSource oneShotAudioSource;
+        
+        [SerializeField]
+        AudioSource footStepAudioSource;
 
-        public AudioSource AudioSource => audioSource;
+        public AudioSource OneShotAudioSource => oneShotAudioSource;
+
+        public AudioSource FootStepAudioSource => footStepAudioSource;
     }
 }

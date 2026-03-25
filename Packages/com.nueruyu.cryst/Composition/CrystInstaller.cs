@@ -1,15 +1,9 @@
-using Gast.Core.DI;
-using Cryst.Features.CharacterAI.Combat;
-using Cryst.Features.CharacterAI.Combat.Actions;
-using Cryst.Features.CharacterAI.Gathering;
-using Cryst.Features.CharacterAI.Gathering.Actions;
-using Cryst.Features.CharacterAI.Strategic.Actions;
+﻿using Gast.Core.DI;
 using UnityEngine;
 using Cryst.Infrastructure.CharacterAI;
 using Cryst.Infrastructure.Characters;
 using Cryst.Features.Players;
 using Cryst.Features.CharacterAI;
-using Cryst.Features.CharacterAI.Strategic;
 using Gast.Domain.Characters;
 using Gast.Domain.Players;
 using Gast.Core.Tasks;
@@ -28,6 +22,8 @@ using Cryst.Features.CharacterActions.Actions.Default;
 using Cryst.Features.CharacterActions.Actions.Die;
 using Cryst.Features.CharacterActions.Actions.Hit;
 using Cryst.Features.CharacterActions.Actions.Jump;
+using Cryst.Domain.Characters.Facets;
+using Cryst.Features.CharacterActions.Effects;
 using Cryst.UI.Hud.PlayerStatus;
 using Gast.Application.Reflection;
 using Gast.Unity.Features.Characters;
@@ -68,10 +64,20 @@ namespace Cryst.Composition
             builder.Register<HitAction>(Lifetime.Transient);
             builder.Register<JumpAction>(Lifetime.Transient);
 
-            // AI Brain
-            builder.Register<ObjectiveManager>(Lifetime.Transient);
-            builder.Register<AIBrain>(Lifetime.Transient);
-            builder.Register<CharacterAIBrainFactory>().AsImplementedInterfaces();
+            // Character Action Effects
+            builder.Register<PlaySoundEffectHandler>(Lifetime.Transient).As<ICharacterActionEffectHandler>();
+            builder.Register<SpawnHitAreaEffectHandler>(Lifetime.Transient).As<ICharacterActionEffectHandler>();
+            builder.Register<SpawnVfxEffectHandler>(Lifetime.Transient).As<ICharacterActionEffectHandler>();
+
+            // Character Facets (Transient)
+            builder.Register<AttackableCharacter>(Lifetime.Transient);
+            builder.Register<DashableCharacter>(Lifetime.Transient);
+            builder.Register<GuardableCharacter>(Lifetime.Transient);
+            builder.Register<JumpableCharacter>(Lifetime.Transient);
+            builder.Register<SprintableCharacter>(Lifetime.Transient);
+
+            // AI
+            new CharacterAIInstaller().Install(builder);
 
             // UI
             builder.Register<PlayerStatusViewModel>(Lifetime.Singleton);
@@ -91,29 +97,6 @@ namespace Cryst.Composition
             builder.Register<HitFeedbackHandler>(Lifetime.Singleton);
             builder.Register<HitEffectHandler>(Lifetime.Singleton);
             builder.Register<CharacterDecompositionHandler>(Lifetime.Singleton);
-
-            // Combat AI
-            builder.Register<CombatDomain>(Lifetime.Transient);
-            builder.Register<ChaseTargetAction>(Lifetime.Transient);
-            builder.Register<MeleeAttackAction>(Lifetime.Transient);
-            builder.Register<BackOffAction>(Lifetime.Transient);
-            builder.Register<StrafeAction>(Lifetime.Transient);
-            builder.Register<Features.CharacterAI.Combat.Actions.GuardAction>(Lifetime.Transient);
-            builder.Register<StalkAction>(Lifetime.Transient);
-            builder.Register<PostAttackManeuverAction>(Lifetime.Transient);
-
-            // Strategic AI
-            builder.Register<StrategicDomain>(Lifetime.Transient);
-            builder.Register<SelectObjectiveAction>(Lifetime.Transient);
-            builder.Register<SelectThreatAction>(Lifetime.Transient);
-            builder.Register<ClearTargetAction>(Lifetime.Transient);
-
-            // Gathering AI
-            builder.Register<GatheringDomain>(Lifetime.Transient);
-            builder.Register<FindItemPickupAction>(Lifetime.Transient);
-            builder.Register<MoveToInteractableAction>(Lifetime.Transient);
-            builder.Register<InteractWithTargetAction>(Lifetime.Transient);
-            builder.Register<ClearInteractableTargetAction>(Lifetime.Transient);
         }
     }
 }

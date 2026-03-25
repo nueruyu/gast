@@ -1,54 +1,49 @@
 using Gast.Lib.AI.Tasks;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Gast.Lib.AI.Builders
 {
-    public class CompoundTaskBuilder<TWorldState, TContext>
-        where TWorldState : class, IWorldState<TWorldState>, new()
-        where TContext : struct, IContext<TContext, TWorldState>
+    public class CompoundTaskBuilder<TActorContext, TWorldState>
+        where TWorldState : class, IWorldState<TWorldState>
+        where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly AIDomainBuilder<TWorldState, TContext> domainBuilder;
-        readonly string taskName;
-        readonly List<Method<TWorldState, TContext>> methods = new();
+        readonly List<MethodBuilder<TActorContext, TWorldState>> methodBuilders = new();
+        IMethodSelector<TActorContext, TWorldState> selector;
 
-        IMethodSelector<TWorldState, TContext> selector;
+        internal AIDomainBuilder<TActorContext, TWorldState> DomainBuilder { get; }
+        public string Name { get; }
 
-        internal int CurrentMethodCount => methods.Count;
-
-        internal CompoundTaskBuilder(AIDomainBuilder<TWorldState, TContext> domainBuilder, string taskName)
+        internal CompoundTaskBuilder(AIDomainBuilder<TActorContext, TWorldState> domainBuilder, string name)
         {
-            this.domainBuilder = domainBuilder;
-            this.taskName = taskName;
+            DomainBuilder = domainBuilder;
+            Name = name;
         }
 
-        public CompoundTaskBuilder<TWorldState, TContext> UseSelector(IMethodSelector<TWorldState, TContext> selector)
+        public CompoundTaskBuilder<TActorContext, TWorldState> UseSelector(IMethodSelector<TActorContext, TWorldState> selector)
         {
             this.selector = selector;
             return this;
         }
 
-        public MethodBuilder<TWorldState, TContext> AddMethod(string methodName)
+        public MethodBuilder<TActorContext, TWorldState> AddMethod(string methodName)
         {
-            return new MethodBuilder<TWorldState, TContext>(this, methodName);
+            var builder = new MethodBuilder<TActorContext, TWorldState>(methodName);
+            methodBuilders.Add(builder);
+            return builder;
         }
 
-        internal CompoundTaskBuilder<TWorldState, TContext> CompleteMethod(Method<TWorldState, TContext> method)
+        internal CompoundTask<TActorContext, TWorldState> Build()
         {
-            methods.Add(method);
-            return this;
+            var builtMethods = new List<Method<TActorContext, TWorldState>>();
+            for (var i = 0; i < methodBuilders.Count; i++)
+            {
+                builtMethods.Add(methodBuilders[i].Build(i));
+            }
+
+            return new CompoundTask<TActorContext, TWorldState>(
+                Name,
+                builtMethods,
+                selector ?? new MethodSelectors.PrioritySelector<TActorContext, TWorldState>());
         }
-
-        public AIDomainBuilder<TWorldState, TContext> End()
-        {
-            var compoundTask = new CompoundTask<TWorldState, TContext>(
-                taskName,
-                methods,
-                selector ?? new MethodSelectors.PrioritySelector<TWorldState, TContext>());
-
-            return domainBuilder.CompleteCompound(compoundTask);
-        }
-
-        internal AIDomainBuilder<TWorldState, TContext> DomainBuilder => domainBuilder;
     }
 }

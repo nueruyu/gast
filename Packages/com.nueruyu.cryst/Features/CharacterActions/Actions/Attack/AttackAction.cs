@@ -1,25 +1,20 @@
 using System;
-using System.Threading;
+using System.Linq;
 using Cryst.Domain.Characters.Commands;
-using Cryst.Domain.Combat;
-using Cysharp.Threading.Tasks;
-using Gast.Domain.Characters;
+using Cryst.Features.CharacterActions.Effects;
 using Gast.Unity.Features.Characters;
-using Gast.Unity.Features.HitDetection;
+using Gast.Unity.Shared.Animations;
 using UnityEngine;
 
 namespace Cryst.Features.CharacterActions.Actions.Attack
 {
     public class AttackAction : ICharacterExecutableAction<AttackCommand>
     {
-        readonly CharacterContext context;
         readonly AttackActionSettings settings;
-        readonly CharacterBody body;
         readonly CharacterAnimator animator;
-        readonly CharacterAudio audio;
         readonly CharacterMovement movement;
-        readonly ICharacterTypeDefinition typeDefinition;
-        readonly IHitAreaFactory hitAreaFactory;
+        readonly CharacterMovementSettings movementSettings;
+        readonly CharacterActionEffectDispatcher effectDispatcher;
 
         float startTime;
         float lastAttackTime = float.NegativeInfinity;
@@ -28,23 +23,17 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
         public int Priority => 5;
 
         public AttackAction(
-            CharacterContext context,
             AttackActionSettings settings,
-            CharacterBody body,
             CharacterAnimator animator,
-            CharacterAudio audio,
             CharacterMovement movement,
-            ICharacterTypeDefinition typeDefinition,
-            IHitAreaFactory hitAreaFactory)
+            CharacterMovementSettings movementSettings,
+            CharacterActionEffectDispatcher effectDispatcher)
         {
-            this.context = context;
             this.settings = settings;
-            this.body = body;
             this.animator = animator;
-            this.audio = audio;
             this.movement = movement;
-            this.typeDefinition = typeDefinition;
-            this.hitAreaFactory = hitAreaFactory;
+            this.movementSettings = movementSettings;
+            this.effectDispatcher = effectDispatcher;
 
             if (animator)
             {
@@ -52,14 +41,12 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
             }
         }
 
-        void OnAnimationEvent(string name)
+        void OnAnimationEvent(AnimationEventSymbol eventSymbol)
         {
-            if (name == "WeaponSwing")
+            var timedEffect = settings.TimedEffects.FirstOrDefault(e => e.EventSymbol == eventSymbol);
+            if (timedEffect?.Effect != null)
             {
-                var audioSource = audio.AudioSource;
-                audioSource.volume = settings.SfxVolume;
-                audioSource.pitch = 1.0f;
-                audioSource.PlayOneShot(settings.Sfx);
+                effectDispatcher.Dispatch(timedEffect.Effect);
             }
         }
 
@@ -73,34 +60,7 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
             startTime = Time.time;
             lastAttackTime = startTime;
 
-            ExecuteAttackAsync(context.CancellationToken).Forget();
-        }
-
-        async UniTaskVoid ExecuteAttackAsync(CancellationToken cancellationToken)
-        {
             animator.PlayAttack();
-
-            await UniTask.Delay(
-                TimeSpan.FromSeconds(settings.AnimationTriggerDelay),
-                cancellationToken: cancellationToken);
-
-            var attackerTransform = body.transform;
-            var forward = attackerTransform.forward;
-            var spawnPosition = attackerTransform.position + settings.Offset + forward * settings.Range;
-            var spawnRotation = attackerTransform.rotation;
-            var pose = new Pose(spawnPosition, spawnRotation);
-            var knockbackDirection = spawnRotation * Vector3.forward;
-
-            var attackInfo = new AttackInfo(
-                context.CharacaterId,
-                settings.Damage,
-                settings.KnockbackForce * knockbackDirection);
-
-            hitAreaFactory.Create(
-                pose,
-                settings.HitboxSize,
-                settings.DamageAreaDuration,
-                attackInfo);
         }
 
         public bool OnUpdate()
@@ -110,7 +70,7 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
 
         public void Move(Vector3 direction)
         {
-            var speed = typeDefinition.WalkSpeed;
+            var speed = movementSettings.WalkSpeed;
             movement.Move(direction, speed);
         }
 

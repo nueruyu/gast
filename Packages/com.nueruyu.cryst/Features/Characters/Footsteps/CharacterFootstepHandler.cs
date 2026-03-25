@@ -20,7 +20,7 @@ namespace Cryst.Features.Characters.Footsteps
         {
             animator.AnimationEventReceiver.EventReceived
                 .ToObservable()
-                .Where(name => name == "Footstep")
+                .Where(symbol => symbol == settings.FootstepEvent)
                 .Subscribe(_ => PlayFootstep(audio, settings))
                 .AddTo(disposableBag);
         }
@@ -32,13 +32,14 @@ namespace Cryst.Features.Characters.Footsteps
 
         void PlayFootstep(CharacterAudio audio, CharacterFootstepSettings settings)
         {
-            var audioSource = audio.AudioSource;
+            var audioSource = audio.FootStepAudioSource;
 
             // Select random footstep clip
             var clip = settings.FootstepClips[Random.Range(0, settings.FootstepClips.Length)];
 
             // Apply volume and pitch variation for natural sound
-            audioSource.volume = settings.FootstepVolume + Random.Range(-settings.VolumeVariance, settings.VolumeVariance);
+            audioSource.volume = settings.FootstepVolume +
+                                 Random.Range(-settings.VolumeVariance, settings.VolumeVariance);
             audioSource.pitch = 1.0f + Random.Range(-settings.PitchVariance, settings.PitchVariance);
 
             audioSource.PlayOneShot(clip);

@@ -1,0 +1,12 @@
+{
+  "include": [
+    "AGENTS.md",
+    "Packages/com.nueruyu.gast.lib.ai/**/*.cs",
+    "Packages/com.nueruyu.gast.lib.ai/**/*.asmdef",
+    "Packages/com.nueruyu.cryst/Features/CharacterAI/**/*.cs"
+  ],
+  "output": {
+    "filePath": "./out/repomix/gast-ai.md",
+    "style": "markdown"
+  }
+}
