@@ -2,7 +2,7 @@ using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using UnityEngine;
 
-namespace Gast.Unity.Infrastructure.Items
+namespace Gast.Unity.Features.Economy
 {
     public abstract class ItemEffect : ScriptableObject, IItemEffect
     {

@@ -1,6 +1,6 @@
 using Cryst.Domain.Characters;
 using Gast.Domain.Characters;
-using Gast.Unity.Infrastructure.Items;
+using Gast.Unity.Features.Economy;
 using UnityEngine;
 
 namespace Cryst.Features.Economy.Effects

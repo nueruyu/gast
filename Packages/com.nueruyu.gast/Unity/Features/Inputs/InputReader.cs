@@ -7,6 +7,7 @@ using Gast.Domain.Inputs;
 using Gast.Unity.Shared.UnityExtensions;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 namespace Gast.Unity.Features.Inputs
 {
