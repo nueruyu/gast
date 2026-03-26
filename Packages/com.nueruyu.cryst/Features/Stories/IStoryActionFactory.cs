@@ -1,10 +1,11 @@
+using System;
 using Gast.Lib.AI;
 
 namespace Cryst.Features.Stories
 {
     /// <summary>
-    /// Factory for creating a single named story action from its JSON parameters string.
-    /// Implement this interface and register with DI to add new story actions.
+    /// Factory for creating a single named story action from its deserialized parameters object.
+    /// Implement <see cref="StoryActionFactory{TParams}"/> instead of this interface directly.
     /// </summary>
     public interface IStoryActionFactory
     {
@@ -14,10 +15,15 @@ namespace Cryst.Features.Stories
         string ActionName { get; }
 
         /// <summary>
-        /// Creates the action. <paramref name="parametersJson"/> is the raw JSON object string
-        /// of the "parameters" field from the primitive task definition.
-        /// Implementations are responsible for deserializing their own parameters.
+        /// The type that the "parameters" JSON object will be deserialized into before being
+        /// passed to <see cref="Create"/>. Must match the concrete type accepted by <see cref="Create"/>.
         /// </summary>
-        IAction<StoryActorContext, StoryWorldState> Create(string parametersJson);
+        Type ParameterType { get; }
+
+        /// <summary>
+        /// Creates the action from already-deserialized parameters.
+        /// <paramref name="parameters"/> is guaranteed to be an instance of <see cref="ParameterType"/>.
+        /// </summary>
+        IAction<StoryActorContext, StoryWorldState> Create(object parameters);
     }
 }

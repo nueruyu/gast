@@ -25,10 +25,8 @@ namespace Cryst.Features.Stories.Actions
         {
             foreach (var assignment in assignments)
             {
-                var character = context.CharacterRepository.Get(assignment.CharacterId);
                 var brain = context.AIBrainFactory.Create();
-                var objective = CreateObjective(assignment);
-                brain.SetObjectives(new[] { objective });
+                brain.SetObjectives(new[] { CreateObjective(assignment) });
                 context.BrainManager.AttachBrain(assignment.CharacterId, brain);
             }
 
@@ -48,18 +46,19 @@ namespace Cryst.Features.Stories.Actions
 
         IAIObjective CreateDefeatCharacterObjective(Assignment assignment)
         {
-            var typeIdStr = assignment.Parameters.TryGetValue("target_type_id", out var raw) ? raw : string.Empty;
+            var typeIdStr = assignment.ObjectiveParameters.TryGetValue("target_type_id", out var raw)
+                ? raw as string ?? string.Empty
+                : string.Empty;
             return new DefeatCharacterObjective(new CharacterTypeId(typeIdStr), 1);
         }
 
         IAIObjective CreateDefendTerritoryObjective(Assignment assignment)
         {
             CharacterId? priorityTargetId = null;
-            if (assignment.Parameters.TryGetValue("priority_target_id", out var raw)
-                && raw is string guidStr
-                && System.Guid.TryParse(guidStr, out var guid))
+            if (assignment.ObjectiveParameters.TryGetValue("priority_target_id", out var raw)
+                && raw is CharacterId cid)
             {
-                priorityTargetId = CharacterId.FromGuid(guid);
+                priorityTargetId = cid;
             }
 
             return new DefendTerritoryObjective(priorityTargetId);
@@ -69,7 +68,11 @@ namespace Cryst.Features.Stories.Actions
         {
             public CharacterId CharacterId { get; set; }
             public string ObjectiveType { get; set; }
-            public Dictionary<string, object> Parameters { get; set; } = new();
+
+            /// <summary>
+            /// Mapped from "objective_parameters" in the story JSON.
+            /// </summary>
+            public Dictionary<string, object> ObjectiveParameters { get; set; } = new();
         }
     }
 }

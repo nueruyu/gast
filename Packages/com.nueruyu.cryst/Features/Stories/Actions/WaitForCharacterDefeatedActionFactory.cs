@@ -1,25 +1,17 @@
-using System;
 using Gast.Domain.Characters;
-using Gast.Lib.AI;
-using Newtonsoft.Json;
 
 namespace Cryst.Features.Stories.Actions
 {
-    public class WaitForCharacterDefeatedActionFactory : IStoryActionFactory
+    public class WaitForCharacterDefeatedActionFactory : StoryActionFactory<WaitForCharacterDefeatedActionFactory.Params>
     {
-        public string ActionName => "WaitForCharacterDefeated";
+        public override string ActionName => "WaitForCharacterDefeated";
 
-        public IAction<StoryActorContext, StoryWorldState> Create(string parametersJson)
-        {
-            var p = JsonConvert.DeserializeObject<Params>(parametersJson);
-            var characterId = CharacterId.FromGuid(Guid.Parse(p.CharacterId));
-            return new WaitForCharacterDefeatedAction(characterId);
-        }
+        protected override WaitForCharacterDefeatedAction Create(Params parameters)
+            => new WaitForCharacterDefeatedAction(parameters.CharacterId);
 
-        class Params
+        public class Params
         {
-            [JsonProperty("character_id")]
-            public string CharacterId { get; set; }
+            public CharacterId CharacterId { get; set; }
         }
     }
 }

@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
+using Cryst.Features.Stories.Converters;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 using Gast.Lib.Gaia;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using UnityEngine;
 
 namespace Cryst.Features.Stories
@@ -12,11 +14,15 @@ namespace Cryst.Features.Stories
     /// <summary>
     /// Parses a story definition JSON string and builds an <see cref="AIDomain{TActorContext,TWorldState}"/>
     /// using <see cref="AIDomainBuilder{TActorContext,TWorldState}"/>.
-    /// All JSON token manipulation is contained here; action classes are JSON-free.
+    ///
+    /// All JSON token manipulation is contained here. Action parameters are deserialized to typed
+    /// objects (using <see cref="IStoryActionFactory.ParameterType"/>) before being passed to each
+    /// factory — action classes themselves remain JSON-free.
     /// </summary>
     public class DynamicStoryDomainFactory
     {
         readonly IReadOnlyDictionary<string, IStoryActionFactory> actionRegistry;
+        readonly JsonSerializer parameterSerializer;
 
         public DynamicStoryDomainFactory(IEnumerable<IStoryActionFactory> actionFactories)
         {
@@ -24,6 +30,19 @@ namespace Cryst.Features.Stories
                 f => f.ActionName,
                 f => f,
                 System.StringComparer.OrdinalIgnoreCase);
+
+            parameterSerializer = JsonSerializer.Create(new JsonSerializerSettings
+            {
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new SnakeCaseNamingStrategy()
+                },
+                Converters =
+                {
+                    new CharacterIdJsonConverter(),
+                    new ItemIdJsonConverter()
+                }
+            });
         }
 
         public AIDomain<StoryActorContext, StoryWorldState> CreateDomain(string storyJson)
@@ -49,20 +68,17 @@ namespace Cryst.Features.Stories
                     {
                         if (taskRef.Type == JTokenType.String)
                         {
-                            // Reference to another compound task by name
                             var referencedName = taskRef.Value<string>();
                             if (!compoundBuilders.TryGetValue(referencedName, out var referencedBuilder))
                             {
-                                Debug.LogError($"[DynamicStoryDomainFactory] Compound task '{referencedName}' not found.");
+                                Debug.LogError($"[DynamicStoryDomainFactory] Unknown compound task reference: '{referencedName}'.");
                                 continue;
                             }
                             methodBuilder.Do(referencedBuilder);
                         }
                         else if (taskRef.Type == JTokenType.Object)
                         {
-                            // Inline primitive task definition
-                            var primitiveObj = (JObject)taskRef;
-                            var action = BuildPrimitiveAction(primitiveObj);
+                            var action = BuildPrimitiveAction((JObject)taskRef);
                             if (action != null)
                                 methodBuilder.Do(action);
                         }
@@ -88,9 +104,9 @@ namespace Cryst.Features.Stories
                 return null;
             }
 
-            var parametersToken = primitiveObj["parameters"];
-            var parametersJson = parametersToken?.ToString(Formatting.None) ?? "{}";
-            return factory.Create(parametersJson);
+            var parametersToken = primitiveObj["parameters"] ?? new JObject();
+            var parameters = parametersToken.ToObject(factory.ParameterType, parameterSerializer);
+            return factory.Create(parameters);
         }
     }
 }
