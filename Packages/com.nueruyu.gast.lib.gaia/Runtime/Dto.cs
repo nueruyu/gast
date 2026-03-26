@@ -83,4 +83,23 @@ namespace Gast.Lib.Gaia
         public string Engagement { get; set; }
         public Dictionary<string, object> RetreatCondition { get; set; }
     }
+
+    // --- Story Generation ---
+    public class CreateStoryRequest
+    {
+        public string Instruction { get; set; }
+        public List<CharacterContextDto> AvailableCharacters { get; set; }
+    }
+
+    public class CharacterContextDto
+    {
+        public string Id { get; set; }
+        public string Type { get; set; }
+        public string Faction { get; set; }
+    }
+
+    public class StoryResponse
+    {
+        public string StoryJson { get; set; }
+    }
 }

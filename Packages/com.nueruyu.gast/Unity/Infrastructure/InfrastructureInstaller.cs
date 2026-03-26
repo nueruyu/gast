@@ -18,10 +18,14 @@ namespace Gast.Unity.Infrastructure
     public class InfrastructureInstaller : IInstaller
     {
         readonly MockAIPlanningSettings mockAIPlanningSettings;
+        readonly MockStoryGenerationSettings mockStoryGenerationSettings;
 
-        public InfrastructureInstaller(MockAIPlanningSettings mockAIPlanningSettings)
+        public InfrastructureInstaller(
+            MockAIPlanningSettings mockAIPlanningSettings,
+            MockStoryGenerationSettings mockStoryGenerationSettings)
         {
             this.mockAIPlanningSettings = mockAIPlanningSettings;
+            this.mockStoryGenerationSettings = mockStoryGenerationSettings;
         }
 
         public void Install(IContainerBuilder builder)
@@ -31,15 +35,31 @@ namespace Gast.Unity.Infrastructure
             builder.Register<JsonCommandSerializer>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<DomainEventPublisher>().AsImplementedInterfaces();
 
-            // AI Server Client / Mock
+            // Register GaiaPlanningClient only when at least one service needs the real API
+            bool needsRealGaiaClient = !mockAIPlanningSettings.IsEnabled || !mockStoryGenerationSettings.IsEnabled;
+            if (needsRealGaiaClient)
+            {
+                builder.Register<GaiaPlanningClient>().As<IGaiaPlanningClient>();
+            }
+
+            // AI Planning
             if (mockAIPlanningSettings.IsEnabled)
             {
                 builder.Register<MockAIPlanningService>().As<IAIPlanningService>();
             }
             else
             {
-                builder.Register<GaiaPlanningClient>().As<IGaiaPlanningClient>();
                 builder.Register<AIPlanningService>().As<IAIPlanningService>();
+            }
+
+            // Story Generation
+            if (mockStoryGenerationSettings.IsEnabled)
+            {
+                builder.Register<MockStoryGenerationService>().As<IStoryGenerationService>();
+            }
+            else
+            {
+                builder.Register<StoryGenerationService>().As<IStoryGenerationService>();
             }
 
             // Character

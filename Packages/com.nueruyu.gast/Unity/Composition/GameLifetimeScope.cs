@@ -51,6 +51,9 @@ namespace Gast.Unity.Composition
         MockAIPlanningSettings mockAIPlanningSettings;
 
         [SerializeField]
+        MockStoryGenerationSettings mockStoryGenerationSettings;
+
+        [SerializeField]
         HitAreaSettings damageAreaSettings;
 
         [SerializeField]
@@ -89,7 +92,7 @@ namespace Gast.Unity.Composition
             // Install registrations from each assembly
             new ApplicationInstaller().Install(builderAdapter);
             new FeaturesInstaller().Install(builderAdapter);
-            new InfrastructureInstaller(mockAIPlanningSettings).Install(builderAdapter);
+            new InfrastructureInstaller(mockAIPlanningSettings, mockStoryGenerationSettings).Install(builderAdapter);
             new UIInstaller().Install(builderAdapter);
 
             // Install additional/override registrations from external assemblies
@@ -112,6 +115,7 @@ namespace Gast.Unity.Composition
             RegisterInstance(builder, itemDatabase, nameof(itemDatabase));
             RegisterInstance(builder, gaiaServerSettings, nameof(gaiaServerSettings));
             RegisterInstance(builder, mockAIPlanningSettings, nameof(mockAIPlanningSettings));
+            RegisterInstance(builder, mockStoryGenerationSettings, nameof(mockStoryGenerationSettings));
             RegisterInstance(builder, damageAreaSettings, nameof(damageAreaSettings));
             RegisterInstance(builder, uiAssetSettings, nameof(uiAssetSettings));
         }

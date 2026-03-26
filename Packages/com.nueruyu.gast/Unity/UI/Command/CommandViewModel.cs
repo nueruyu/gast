@@ -15,7 +15,7 @@ namespace Gast.Unity.UI.Command
         readonly CancellationTokenSource cts = new();
 
         public ReactiveProperty<bool> IsVisible { get; } = new(false);
-        public ReactiveProperty<string> InstructionText { get; } = new("Explore the current area, eliminate any enemies, and collect healing items.");
+        public ReactiveProperty<string> InstructionText { get; } = new("/story The local mine has been overrun by goblins. The blacksmith needs someone to clear them out, especially their shaman leader.");
         public ReactiveProperty<bool> IsLoading { get; } = new(false);
         public ReactiveProperty<string> StatusMessage { get; } = new("");
         public ReactiveProperty<bool> HasError { get; } = new(false);
@@ -53,13 +53,13 @@ namespace Gast.Unity.UI.Command
 
                 if (result.IsSuccess)
                 {
-                    StatusMessage.Value = $"Assigned {result.GoalCount} goal(s) to NPC";
+                    StatusMessage.Value = result.Message ?? $"Assigned {result.GoalCount} goal(s) to NPC";
                     HasError.Value = false;
                     IsVisible.Value = false;
                 }
                 else
                 {
-                    StatusMessage.Value = result.ErrorMessage;
+                    StatusMessage.Value = result.Message;
                     HasError.Value = true;
                 }
             }

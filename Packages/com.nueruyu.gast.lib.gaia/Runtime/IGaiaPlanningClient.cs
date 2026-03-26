@@ -13,5 +13,9 @@ namespace Gast.Lib.Gaia
             string sessionId,
             SubmitToolOutputsRequest request,
             CancellationToken cancellationToken);
+
+        Task<StoryResponse> CreateStoryAsync(
+            CreateStoryRequest request,
+            CancellationToken cancellationToken);
     }
 }

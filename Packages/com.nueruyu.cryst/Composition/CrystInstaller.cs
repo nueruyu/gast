@@ -31,6 +31,8 @@ using Gast.Unity.Shared.DI;
 using Gast.Unity.UI.Hud.Objectives;
 using Gast.Unity.UI.Hud.PlayerStatus;
 using GuardAction = Cryst.Features.CharacterActions.Actions.Guard.GuardAction;
+using Cryst.Features.Stories;
+using Cryst.Features.Stories.Actions;
 
 namespace Cryst.Composition
 {
@@ -97,6 +99,14 @@ namespace Cryst.Composition
             builder.Register<HitFeedbackHandler>(Lifetime.Singleton);
             builder.Register<HitEffectHandler>(Lifetime.Singleton);
             builder.Register<CharacterDecompositionHandler>(Lifetime.Singleton);
+
+            // Story
+            builder.Register<StoryActorContext>(Lifetime.Singleton);
+            builder.Register<DynamicStoryDomainFactory>(Lifetime.Singleton);
+            builder.Register<StorySystem>(Lifetime.Singleton).As<ILifecycleTask>();
+            builder.Register<SetObjectivesActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
+            builder.Register<WaitForCharacterDefeatedActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
+            builder.Register<WaitForItemAcquiredActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
         }
     }
 }

@@ -28,6 +28,8 @@ namespace Gast.Application
 
             // AI
             builder.Register<CommandAIUseCase>().AsImplementedInterfaces();
+            builder.Register<GenerateStoryUseCase>().AsImplementedInterfaces();
+            builder.Register<StorySlashCommandHandler>().As<ISlashCommandHandler>();
         }
     }
 }
