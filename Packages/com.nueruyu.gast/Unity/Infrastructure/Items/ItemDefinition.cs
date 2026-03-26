@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Gast.Domain.Economy;
 using Gast.Unity.Features.Economy;
@@ -33,6 +34,9 @@ namespace Gast.Unity.Infrastructure.Items
         [SerializeField]
         List<ItemEffect> effects = new();
 
+        [NonSerialized]
+        IReadOnlyList<IItemEffect> effectsCache;
+
         public ItemId Id => itemReference.Id;
         public string Name => displayName;
         public int Price => price;
@@ -40,6 +44,18 @@ namespace Gast.Unity.Infrastructure.Items
         public string Description => description;
         public GameObject Prefab => prefab;
         public Sprite Icon => icon;
-        public IReadOnlyList<IItemEffect> Effects => effects.ConvertAll(e => (IItemEffect)e);
+        public IReadOnlyList<IItemEffect> Effects
+        {
+            get
+            {
+                effectsCache ??= effects.ConvertAll(e => (IItemEffect)e);
+                return effectsCache;
+            }
+        }
+
+        void OnValidate()
+        {
+            effectsCache = null;
+        }
     }
 }

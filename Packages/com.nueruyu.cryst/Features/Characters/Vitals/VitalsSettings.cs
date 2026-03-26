@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Cryst.Infrastructure.Characters
+namespace Cryst.Features.Characters.Vitals
 {
     [CreateAssetMenu(fileName = "VitalsSettings", menuName = "Cryst/Vitals Settings")]
     public class VitalsSettings : ScriptableObject

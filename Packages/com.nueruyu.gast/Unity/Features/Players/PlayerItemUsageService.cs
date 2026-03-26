@@ -10,13 +10,13 @@ using R3;
 
 namespace Gast.Unity.Features.Players
 {
-    public class PlayerItemUsageController : ILifecycleTask
+    public class PlayerItemUsageService : ILifecycleTask
     {
         readonly IInputProvider inputProvider;
         readonly IPlayerManager playerManager;
         readonly ICommandDispatcher commandDispatcher;
 
-        public PlayerItemUsageController(
+        public PlayerItemUsageService(
             IInputProvider inputProvider,
             IPlayerManager playerManager,
             ICommandDispatcher commandDispatcher)

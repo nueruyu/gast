@@ -10,9 +10,9 @@ namespace Gast.Unity.UI.Hud.Inventory
 {
     public class InventoryViewModel : IDisposable
     {
-        public const int HotbarSize = 10;
+        readonly CompositeDisposable disposables = new();
 
-        private readonly CompositeDisposable disposables = new();
+        public int HotbarSize => 10;
 
         public ReadOnlyReactiveProperty<IReadOnlyList<ItemStackViewModel>> InventoryItems { get; }
 
@@ -36,6 +36,15 @@ namespace Gast.Unity.UI.Hud.Inventory
                 .Switch()
                 .ToReadOnlyReactiveProperty()
                 .AddTo(disposables);
+        }
+
+        public string GetSlotNumberText(int index)
+        {
+            if (HotbarSize == 10 && index == 9)
+            {
+                return "0";
+            }
+            return (index + 1).ToString();
         }
 
         public void Dispose()

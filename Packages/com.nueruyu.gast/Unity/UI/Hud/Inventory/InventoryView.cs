@@ -6,7 +6,6 @@ namespace Gast.Unity.UI.Hud.Inventory
 {
     public class InventoryView : VisualElement
     {
-        const int SlotCount = InventoryViewModel.HotbarSize;
         const string ItemSlotUssClassName = "inventory__item-slot";
         const string SlotNumberUssClassName = "inventory__slot-number";
         const string ItemTextUssClassName = "inventory__item-text";
@@ -21,21 +20,20 @@ namespace Gast.Unity.UI.Hud.Inventory
             return viewModel.InventoryItems.Subscribe(items =>
             {
                 Clear();
-                for (var i = 0; i < SlotCount; i++)
+                for (var i = 0; i < viewModel.HotbarSize; i++)
                 {
                     var stack = i < items.Count ? items[i] : null;
-                    CreateItemSlot(stack, i);
+                    CreateItemSlot(viewModel, stack, i);
                 }
             });
         }
 
-        void CreateItemSlot(ItemStackViewModel stackViewModel, int slotIndex)
+        void CreateItemSlot(InventoryViewModel viewModel, ItemStackViewModel stackViewModel, int slotIndex)
         {
             var slot = new VisualElement();
             slot.AddToClassList(ItemSlotUssClassName);
 
-            var slotNumber = (slotIndex + 1) % 10;
-            var numberLabel = new Label(slotNumber.ToString());
+            var numberLabel = new Label(viewModel.GetSlotNumberText(slotIndex));
             numberLabel.AddToClassList(SlotNumberUssClassName);
             slot.Add(numberLabel);
 
