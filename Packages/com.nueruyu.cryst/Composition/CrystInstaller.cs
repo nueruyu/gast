@@ -33,6 +33,7 @@ using Gast.Unity.UI.Hud.PlayerStatus;
 using GuardAction = Cryst.Features.CharacterActions.Actions.Guard.GuardAction;
 using Cryst.Features.Stories;
 using Cryst.Features.Stories.Actions;
+using Cryst.Features.Stories.Objectives;
 
 namespace Cryst.Composition
 {
@@ -107,6 +108,8 @@ namespace Cryst.Composition
             builder.Register<SetObjectivesActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
             builder.Register<WaitForCharacterDefeatedActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
             builder.Register<WaitForItemAcquiredActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
+            builder.Register<DefeatCharacterObjectiveFactory>(Lifetime.Singleton).As<IStoryObjectiveFactory>();
+            builder.Register<DefendTerritoryObjectiveFactory>(Lifetime.Singleton).As<IStoryObjectiveFactory>();
         }
     }
 }

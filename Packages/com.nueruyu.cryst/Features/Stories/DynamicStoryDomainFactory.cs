@@ -40,6 +40,7 @@ namespace Cryst.Features.Stories
                 Converters =
                 {
                     new CharacterIdJsonConverter(),
+                    new CharacterTypeIdJsonConverter(),
                     new ItemIdJsonConverter()
                 }
             });
