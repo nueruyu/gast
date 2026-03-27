@@ -1,56 +1,48 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Gast.Lib.Gaia
 {
     public class StoryDefinition
     {
-        [JsonProperty("domain_name")]
         public string DomainName { get; set; }
-
-        [JsonProperty("root_task")]
         public string RootTask { get; set; }
-
-        [JsonProperty("tasks")]
         public List<TaskDefinition> Tasks { get; set; }
     }
 
     public class TaskDefinition
     {
-        [JsonProperty("name")]
         public string Name { get; set; }
-
-        [JsonProperty("type")]
         public string Type { get; set; }
-
-        [JsonProperty("selector")]
         public string Selector { get; set; }
-
-        [JsonProperty("methods")]
         public List<MethodDefinition> Methods { get; set; }
     }
 
     public class MethodDefinition
     {
-        [JsonProperty("name")]
         public string Name { get; set; }
 
         /// <summary>
-        /// Each element is either a string (reference to a compound task by name)
-        /// or a JObject (inline primitive task definition with "action" and "parameters").
-        /// JSON parsing is intentionally kept within this DTO layer.
+        /// Each element is either a compound-task reference (by name) or an inline primitive task.
+        /// Deserialization of the string/object polymorphism is handled by TaskReferenceJsonConverter.
         /// </summary>
-        [JsonProperty("tasks")]
-        public List<JToken> TaskReferences { get; set; }
+        public List<TaskReference> Tasks { get; set; }
     }
 
-    public class PrimitiveTaskDefinition
+    /// <summary>
+    /// Represents one entry in a method's task list.
+    /// Exactly one of <see cref="CompoundTaskName"/> or <see cref="Action"/> is set.
+    /// </summary>
+    public class TaskReference
     {
-        [JsonProperty("action")]
+        /// <summary>Name of a compound task to call (when the JSON value is a plain string).</summary>
+        public string CompoundTaskName { get; set; }
+
+        /// <summary>Action name of an inline primitive task (when the JSON value is an object).</summary>
         public string Action { get; set; }
 
-        [JsonProperty("parameters")]
-        public JObject Parameters { get; set; }
+        /// <summary>Raw JSON string of the action parameters object. Null when this is a compound reference.</summary>
+        public string ParametersJson { get; set; }
+
+        public bool IsCompound => CompoundTaskName != null;
     }
 }

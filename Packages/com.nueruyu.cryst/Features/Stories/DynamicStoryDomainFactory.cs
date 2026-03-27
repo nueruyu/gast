@@ -1,11 +1,12 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Cryst.Features.Stories.Converters;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 using Gast.Lib.Gaia;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using UnityEngine;
 
@@ -23,20 +24,23 @@ namespace Cryst.Features.Stories
     {
         readonly IReadOnlyDictionary<string, IStoryActionFactory> actionRegistry;
         readonly JsonSerializer parameterSerializer;
+        readonly JsonSerializerSettings definitionSettings;
 
         public DynamicStoryDomainFactory(IEnumerable<IStoryActionFactory> actionFactories)
         {
             actionRegistry = actionFactories.ToDictionary(
                 f => f.ActionName,
                 f => f,
-                System.StringComparer.OrdinalIgnoreCase);
+                StringComparer.OrdinalIgnoreCase);
+
+            var contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new SnakeCaseNamingStrategy()
+            };
 
             parameterSerializer = JsonSerializer.Create(new JsonSerializerSettings
             {
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new SnakeCaseNamingStrategy()
-                },
+                ContractResolver = contractResolver,
                 Converters =
                 {
                     new CharacterIdJsonConverter(),
@@ -44,11 +48,17 @@ namespace Cryst.Features.Stories
                     new ItemIdJsonConverter()
                 }
             });
+
+            definitionSettings = new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Converters = { new TaskReferenceJsonConverter() }
+            };
         }
 
         public AIDomain<StoryActorContext, StoryWorldState> CreateDomain(string storyJson)
         {
-            var definition = JsonConvert.DeserializeObject<StoryDefinition>(storyJson);
+            var definition = JsonConvert.DeserializeObject<StoryDefinition>(storyJson, definitionSettings);
             var domainBuilder = new AIDomainBuilder<StoryActorContext, StoryWorldState>();
 
             // Pass 1: register all compound task builders so cross-references can be resolved
@@ -65,21 +75,20 @@ namespace Cryst.Features.Stories
                 foreach (var methodDef in taskDef.Methods)
                 {
                     var methodBuilder = compoundBuilder.AddMethod(methodDef.Name);
-                    foreach (var taskRef in methodDef.TaskReferences)
+                    foreach (var taskRef in methodDef.Tasks)
                     {
-                        if (taskRef.Type == JTokenType.String)
+                        if (taskRef.IsCompound)
                         {
-                            var referencedName = taskRef.Value<string>();
-                            if (!compoundBuilders.TryGetValue(referencedName, out var referencedBuilder))
+                            if (!compoundBuilders.TryGetValue(taskRef.CompoundTaskName, out var referencedBuilder))
                             {
-                                Debug.LogError($"[DynamicStoryDomainFactory] Unknown compound task reference: '{referencedName}'.");
+                                Debug.LogError($"[DynamicStoryDomainFactory] Unknown compound task reference: '{taskRef.CompoundTaskName}'.");
                                 continue;
                             }
                             methodBuilder.Do(referencedBuilder);
                         }
-                        else if (taskRef.Type == JTokenType.Object)
+                        else
                         {
-                            var action = BuildPrimitiveAction((JObject)taskRef);
+                            var action = BuildPrimitiveAction(taskRef);
                             if (action != null)
                                 methodBuilder.Do(action);
                         }
@@ -90,23 +99,23 @@ namespace Cryst.Features.Stories
             return domainBuilder.Build(definition.RootTask);
         }
 
-        IAction<StoryActorContext, StoryWorldState> BuildPrimitiveAction(JObject primitiveObj)
+        IAction<StoryActorContext, StoryWorldState> BuildPrimitiveAction(TaskReference taskRef)
         {
-            var actionName = primitiveObj["action"]?.Value<string>();
-            if (string.IsNullOrEmpty(actionName))
+            if (string.IsNullOrEmpty(taskRef.Action))
             {
                 Debug.LogError("[DynamicStoryDomainFactory] Primitive task is missing 'action' field.");
                 return null;
             }
 
-            if (!actionRegistry.TryGetValue(actionName, out var factory))
+            if (!actionRegistry.TryGetValue(taskRef.Action, out var factory))
             {
-                Debug.LogError($"[DynamicStoryDomainFactory] No factory registered for action '{actionName}'.");
+                Debug.LogError($"[DynamicStoryDomainFactory] No factory registered for action '{taskRef.Action}'.");
                 return null;
             }
 
-            var parametersToken = primitiveObj["parameters"] ?? new JObject();
-            var parameters = parametersToken.ToObject(factory.ParameterType, parameterSerializer);
+            var parametersJson = taskRef.ParametersJson ?? "{}";
+            using var reader = new JsonTextReader(new StringReader(parametersJson));
+            var parameters = parameterSerializer.Deserialize(reader, factory.ParameterType);
             return factory.Create(parameters);
         }
     }

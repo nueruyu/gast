@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Cryst.Features.Stories.Converters;
 using Gast.Domain.Characters;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Cryst.Features.Stories.Actions
@@ -45,8 +45,9 @@ namespace Cryst.Features.Stories.Actions
                     throw new NotSupportedException(
                         $"[SetObjectivesActionFactory] Unknown objective type '{def.ObjectiveType}'.");
 
-                var objectiveParams = (def.ObjectiveParameters ?? new JObject())
-                    .ToObject(factory.ParameterType, objectiveSerializer);
+                var objectiveParamsJson = def.ObjectiveParameters ?? "{}";
+                using var reader = new JsonTextReader(new StringReader(objectiveParamsJson));
+                var objectiveParams = objectiveSerializer.Deserialize(reader, factory.ParameterType);
                 var objective = factory.Create(objectiveParams);
                 return new SetObjectivesAction.Assignment(def.CharacterId, objective);
             }).ToList();
@@ -63,7 +64,9 @@ namespace Cryst.Features.Stories.Actions
         {
             public CharacterId CharacterId { get; set; }
             public string ObjectiveType { get; set; }
-            public JObject ObjectiveParameters { get; set; }
+
+            [JsonConverter(typeof(RawJsonStringConverter))]
+            public string ObjectiveParameters { get; set; }
         }
     }
 }
