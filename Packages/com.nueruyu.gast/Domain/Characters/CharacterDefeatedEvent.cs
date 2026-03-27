@@ -1,7 +1,7 @@
 using Gast.Core.Events;
 using Gast.Domain.Characters;
 
-namespace Cryst.Domain.Characters
+namespace Gast.Domain.Characters
 {
     public readonly struct CharacterDefeatedEvent : IDomainEvent
     {

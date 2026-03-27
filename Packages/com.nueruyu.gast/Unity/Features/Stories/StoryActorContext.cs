@@ -4,7 +4,7 @@ using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
 
-namespace Cryst.Features.Stories
+namespace Gast.Unity.Features.Stories
 {
     /// <summary>
     /// Actor context for the story HTN domain.

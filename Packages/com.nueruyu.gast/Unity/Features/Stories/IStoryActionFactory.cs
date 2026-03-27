@@ -1,7 +1,7 @@
 using System;
 using Gast.Lib.AI;
 
-namespace Cryst.Features.Stories
+namespace Gast.Unity.Features.Stories
 {
     /// <summary>
     /// Factory for creating a single named story action from its deserialized parameters object.

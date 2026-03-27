@@ -1,7 +1,9 @@
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
+using Gast.Unity.Features.Stories;
+using Gast.Unity.Features.Stories.Actions;
 
-namespace Cryst.Features.Stories.Actions
+namespace Gast.Unity.Infrastructure.Stories.Factories
 {
     public class WaitForItemAcquiredActionFactory : StoryActionFactory<WaitForItemAcquiredActionFactory.Params>
     {

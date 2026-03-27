@@ -1,7 +1,7 @@
 using System;
 using Gast.Lib.AI;
 
-namespace Cryst.Features.Stories
+namespace Gast.Unity.Features.Stories
 {
     /// <summary>
     /// Convenience base class for <see cref="IStoryActionFactory"/> implementations.

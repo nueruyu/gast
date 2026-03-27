@@ -1,7 +1,7 @@
 using System;
 using Gast.Domain.AI;
 
-namespace Cryst.Features.Stories
+namespace Gast.Unity.Features.Stories
 {
     public abstract class StoryObjectiveFactory<TParams> : IStoryObjectiveFactory where TParams : class
     {

@@ -31,10 +31,8 @@ using Gast.Unity.Shared.DI;
 using Gast.Unity.UI.Hud.Objectives;
 using Gast.Unity.UI.Hud.PlayerStatus;
 using GuardAction = Cryst.Features.CharacterActions.Actions.Guard.GuardAction;
-using Cryst.Features.Stories;
-using Cryst.Features.Stories.Actions;
 using Cryst.Features.Stories.Objectives;
-using Gast.Application.AIPlanning;
+using Gast.Unity.Features.Stories;
 
 namespace Cryst.Composition
 {
@@ -102,13 +100,7 @@ namespace Cryst.Composition
             builder.Register<HitEffectHandler>(Lifetime.Singleton);
             builder.Register<CharacterDecompositionHandler>(Lifetime.Singleton);
 
-            // Story
-            builder.Register<StoryActorContext>(Lifetime.Singleton);
-            builder.Register<DynamicStoryDomainFactory>(Lifetime.Singleton);
-            builder.Register<StorySystem>(Lifetime.Singleton).As<IStoryRunner>();
-            builder.Register<SetObjectivesActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
-            builder.Register<WaitForCharacterDefeatedActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
-            builder.Register<WaitForItemAcquiredActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
+            // Story (Cryst-specific objective factories)
             builder.Register<DefeatCharacterObjectiveFactory>(Lifetime.Singleton).As<IStoryObjectiveFactory>();
             builder.Register<DefendTerritoryObjectiveFactory>(Lifetime.Singleton).As<IStoryObjectiveFactory>();
         }

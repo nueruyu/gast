@@ -2,15 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Cryst.Features.Stories.Converters;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 using Gast.Lib.Gaia;
+using Gast.Unity.Features.Stories;
+using Gast.Unity.Infrastructure.Stories.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using UnityEngine;
 
-namespace Cryst.Features.Stories
+namespace Gast.Unity.Infrastructure.Stories
 {
     /// <summary>
     /// Parses a story definition JSON string and builds an <see cref="AIDomain{TActorContext,TWorldState}"/>

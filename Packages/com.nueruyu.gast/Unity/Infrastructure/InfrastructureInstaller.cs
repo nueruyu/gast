@@ -5,6 +5,7 @@ using Gast.Core.DI;
 using Gast.Domain.Characters;
 using Gast.Lib.AI.Debugging;
 using Gast.Lib.Gaia;
+using Gast.Unity.Features.Stories;
 using Gast.Unity.Infrastructure.AI;
 using Gast.Unity.Infrastructure.Characters;
 using Gast.Unity.Infrastructure.HitDetection;
@@ -12,6 +13,8 @@ using Gast.Unity.Infrastructure.Items;
 using Gast.Unity.Infrastructure.Pickups;
 using Gast.Unity.Infrastructure.Remoting.AI;
 using Gast.Unity.Infrastructure.Services;
+using Gast.Unity.Infrastructure.Stories;
+using Gast.Unity.Infrastructure.Stories.Factories;
 
 namespace Gast.Unity.Infrastructure
 {
@@ -89,6 +92,14 @@ namespace Gast.Unity.Infrastructure
             builder.Register<ReflectionObjectiveRegistry>(Lifetime.Singleton).As<IObjectiveRegistry>();
             builder.Register<GoalInstantiator>(Lifetime.Singleton);
             builder.Register<PlanConverter>(Lifetime.Singleton);
+
+            // Story
+            builder.Register<StoryActorContext>(Lifetime.Singleton);
+            builder.Register<DynamicStoryDomainFactory>(Lifetime.Singleton);
+            builder.Register<StorySystem>(Lifetime.Singleton).As<IStoryRunner>();
+            builder.Register<SetObjectivesActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
+            builder.Register<WaitForCharacterDefeatedActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
+            builder.Register<WaitForItemAcquiredActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
         }
     }
 }

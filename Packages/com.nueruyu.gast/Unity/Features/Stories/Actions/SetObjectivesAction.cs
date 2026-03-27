@@ -5,7 +5,7 @@ using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
 
-namespace Cryst.Features.Stories.Actions
+namespace Gast.Unity.Features.Stories.Actions
 {
     public class SetObjectivesAction : IAction<StoryActorContext, StoryWorldState>
     {

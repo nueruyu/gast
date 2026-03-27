@@ -1,6 +1,8 @@
 using Gast.Domain.Characters;
+using Gast.Unity.Features.Stories;
+using Gast.Unity.Features.Stories.Actions;
 
-namespace Cryst.Features.Stories.Actions
+namespace Gast.Unity.Infrastructure.Stories.Factories
 {
     public class WaitForCharacterDefeatedActionFactory : StoryActionFactory<WaitForCharacterDefeatedActionFactory.Params>
     {

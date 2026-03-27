@@ -1,6 +1,6 @@
 using Gast.Lib.AI;
 
-namespace Cryst.Features.Stories
+namespace Gast.Unity.Features.Stories
 {
     /// <summary>
     /// Provides a fixed <see cref="AIDomain{TActorContext,TWorldState}"/> to a

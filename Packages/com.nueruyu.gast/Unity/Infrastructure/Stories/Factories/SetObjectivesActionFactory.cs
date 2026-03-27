@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Cryst.Features.Stories.Converters;
 using Gast.Domain.Characters;
+using Gast.Unity.Features.Stories;
+using Gast.Unity.Features.Stories.Actions;
+using Gast.Unity.Infrastructure.Stories.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Cryst.Features.Stories.Actions
+namespace Gast.Unity.Infrastructure.Stories.Factories
 {
     public class SetObjectivesActionFactory : StoryActionFactory<SetObjectivesActionFactory.Params>
     {

@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace Cryst.Features.Stories.Converters
+namespace Gast.Unity.Infrastructure.Stories.Converters
 {
     /// <summary>
     /// Stores any JSON value (object, array, primitive) as a raw JSON string.

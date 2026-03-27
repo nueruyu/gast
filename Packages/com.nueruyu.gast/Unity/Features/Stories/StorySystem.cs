@@ -3,9 +3,10 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Application.AIPlanning;
 using Gast.Lib.AI;
+using Gast.Unity.Infrastructure.Stories;
 using UnityEngine;
 
-namespace Cryst.Features.Stories
+namespace Gast.Unity.Features.Stories
 {
     /// <summary>
     /// Executes HTN story domains on demand. Starting a new story cancels any currently running one.

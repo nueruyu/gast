@@ -1,20 +1,17 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
-using Gast.Domain.Economy;
 using Gast.Lib.AI;
 
-namespace Cryst.Features.Stories.Actions
+namespace Gast.Unity.Features.Stories.Actions
 {
-    public class WaitForItemAcquiredAction : IAction<StoryActorContext, StoryWorldState>
+    public class WaitForCharacterDefeatedAction : IAction<StoryActorContext, StoryWorldState>
     {
-        readonly CharacterId acquirerCharacterId;
-        readonly ItemId itemId;
+        readonly CharacterId characterId;
 
-        public WaitForItemAcquiredAction(CharacterId acquirerCharacterId, ItemId itemId)
+        public WaitForCharacterDefeatedAction(CharacterId characterId)
         {
-            this.acquirerCharacterId = acquirerCharacterId;
-            this.itemId = itemId;
+            this.characterId = characterId;
         }
 
         public bool IsAvailable(StoryWorldState worldState) => true;
@@ -25,9 +22,9 @@ namespace Cryst.Features.Stories.Actions
         {
             var tcs = new UniTaskCompletionSource();
 
-            using var subscription = context.EventSubscriber.Subscribe<ItemAcquiredEvent>(e =>
+            using var subscription = context.EventSubscriber.Subscribe<CharacterDefeatedEvent>(e =>
             {
-                if (e.AcquirerId == acquirerCharacterId && e.AcquiredItemId == itemId)
+                if (e.DefeatedCharacter.Id == characterId)
                     tcs.TrySetResult();
             });
 
