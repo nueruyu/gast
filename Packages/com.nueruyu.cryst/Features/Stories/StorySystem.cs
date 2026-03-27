@@ -1,49 +1,42 @@
+using System;
 using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using Gast.Core.Events;
-using Gast.Core.Tasks;
-using Gast.Domain.Stories;
+using Gast.Application.AIPlanning;
 using Gast.Lib.AI;
 using UnityEngine;
 
 namespace Cryst.Features.Stories
 {
     /// <summary>
-    /// Lifecycle task that listens for <see cref="StoryGeneratedEvent"/> and runs the
-    /// resulting HTN domain as a <see cref="DomainProcess{TActorContext,TWorldState}"/>.
-    /// Starting a new story cancels any currently running one.
+    /// Executes HTN story domains on demand. Starting a new story cancels any currently running one.
     /// </summary>
-    public class StorySystem : ILifecycleTask
+    public class StorySystem : IStoryRunner, IDisposable
     {
-        readonly IDomainEventSubscriber eventSubscriber;
         readonly DynamicStoryDomainFactory domainFactory;
         readonly StoryActorContext actorContext;
 
         CancellationTokenSource storyCts;
 
         public StorySystem(
-            IDomainEventSubscriber eventSubscriber,
             DynamicStoryDomainFactory domainFactory,
             StoryActorContext actorContext)
         {
-            this.eventSubscriber = eventSubscriber;
             this.domainFactory = domainFactory;
             this.actorContext = actorContext;
         }
 
-        public async Task RunAsync(CancellationToken cancellationToken)
-        {
-            eventSubscriber.Subscribe<StoryGeneratedEvent>(HandleStoryGenerated).AddTo(cancellationToken);
-            await UniTask.WaitUntilCanceled(cancellationToken);
-        }
-
-        void HandleStoryGenerated(StoryGeneratedEvent e)
+        public void StartStory(string storyJson)
         {
             storyCts?.Cancel();
             storyCts?.Dispose();
             storyCts = new CancellationTokenSource();
-            RunStoryAsync(e.StoryJson, storyCts.Token).Forget();
+            RunStoryAsync(storyJson, storyCts.Token).Forget();
+        }
+
+        public void Dispose()
+        {
+            storyCts?.Cancel();
+            storyCts?.Dispose();
         }
 
         async UniTaskVoid RunStoryAsync(string storyJson, CancellationToken cancellationToken)
@@ -61,7 +54,7 @@ namespace Cryst.Features.Stories
 
                 Debug.Log($"[StorySystem] Story domain '{domainName}' completed.");
             }
-            catch (System.OperationCanceledException)
+            catch (OperationCanceledException)
             {
                 Debug.Log("[StorySystem] Story cancelled.");
             }
