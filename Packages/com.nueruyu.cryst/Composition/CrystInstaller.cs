@@ -31,7 +31,7 @@ using Gast.Unity.Shared.DI;
 using Gast.Unity.UI.Hud.Objectives;
 using Gast.Unity.UI.Hud.PlayerStatus;
 using GuardAction = Cryst.Features.CharacterActions.Actions.Guard.GuardAction;
-using Cryst.Features.Stories.Objectives;
+using Cryst.Infrastructure.Stories;
 using Gast.Unity.Features.Stories;
 
 namespace Cryst.Composition

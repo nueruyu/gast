@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Application.AIPlanning;
+using Gast.Domain.Stories;
 using Gast.Lib.AI;
 using Gast.Unity.Infrastructure.Stories;
 using UnityEngine;
@@ -26,12 +27,12 @@ namespace Gast.Unity.Features.Stories
             this.actorContext = actorContext;
         }
 
-        public void StartStory(string storyJson)
+        public void StartStory(StoryBlueprint blueprint)
         {
             storyCts?.Cancel();
             storyCts?.Dispose();
             storyCts = new CancellationTokenSource();
-            RunStoryAsync(storyJson, storyCts.Token).Forget();
+            RunStoryAsync(blueprint, storyCts.Token).Forget();
         }
 
         public void Dispose()
@@ -40,11 +41,11 @@ namespace Gast.Unity.Features.Stories
             storyCts?.Dispose();
         }
 
-        async UniTaskVoid RunStoryAsync(string storyJson, CancellationToken cancellationToken)
+        async UniTaskVoid RunStoryAsync(StoryBlueprint blueprint, CancellationToken cancellationToken)
         {
             try
             {
-                var domain = domainFactory.CreateDomain(storyJson);
+                var domain = domainFactory.CreateDomain(blueprint);
                 var domainName = domain.RootTask.Name;
                 Debug.Log($"[StorySystem] Starting story domain: {domainName}");
 

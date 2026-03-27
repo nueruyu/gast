@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Gast.Domain.Stories;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
-using Gast.Lib.Gaia;
 using Gast.Unity.Features.Stories;
 using Gast.Unity.Infrastructure.Stories.Converters;
 using Newtonsoft.Json;
@@ -14,18 +14,17 @@ using UnityEngine;
 namespace Gast.Unity.Infrastructure.Stories
 {
     /// <summary>
-    /// Parses a story definition JSON string and builds an <see cref="AIDomain{TActorContext,TWorldState}"/>
-    /// using <see cref="AIDomainBuilder{TActorContext,TWorldState}"/>.
+    /// Builds an <see cref="AIDomain{TActorContext,TWorldState}"/> from a <see cref="StoryBlueprint"/>.
     ///
-    /// All JSON token manipulation is contained here. Action parameters are deserialized to typed
-    /// objects (using <see cref="IStoryActionFactory.ParameterType"/>) before being passed to each
-    /// factory — action classes themselves remain JSON-free.
+    /// JSON deserialization is no longer performed here — the blueprint is a plain domain model
+    /// produced by <see cref="StoryBlueprintParser"/>. Action parameters (stored as raw JSON strings
+    /// on <see cref="BlueprintTaskRef.ParametersJson"/>) are deserialized here to typed objects
+    /// using <see cref="IStoryActionFactory.ParameterType"/>.
     /// </summary>
     public class DynamicStoryDomainFactory
     {
         readonly IReadOnlyDictionary<string, IStoryActionFactory> actionRegistry;
         readonly JsonSerializer parameterSerializer;
-        readonly JsonSerializerSettings definitionSettings;
 
         public DynamicStoryDomainFactory(IEnumerable<IStoryActionFactory> actionFactories)
         {
@@ -34,14 +33,12 @@ namespace Gast.Unity.Infrastructure.Stories
                 f => f,
                 StringComparer.OrdinalIgnoreCase);
 
-            var contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new SnakeCaseNamingStrategy()
-            };
-
             parameterSerializer = JsonSerializer.Create(new JsonSerializerSettings
             {
-                ContractResolver = contractResolver,
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new SnakeCaseNamingStrategy()
+                },
                 Converters =
                 {
                     new CharacterIdJsonConverter(),
@@ -49,28 +46,21 @@ namespace Gast.Unity.Infrastructure.Stories
                     new ItemIdJsonConverter()
                 }
             });
-
-            definitionSettings = new JsonSerializerSettings
-            {
-                ContractResolver = contractResolver,
-                Converters = { new TaskReferenceJsonConverter() }
-            };
         }
 
-        public AIDomain<StoryActorContext, StoryWorldState> CreateDomain(string storyJson)
+        public AIDomain<StoryActorContext, StoryWorldState> CreateDomain(StoryBlueprint blueprint)
         {
-            var definition = JsonConvert.DeserializeObject<StoryDefinition>(storyJson, definitionSettings);
             var domainBuilder = new AIDomainBuilder<StoryActorContext, StoryWorldState>();
 
             // Pass 1: register all compound task builders so cross-references can be resolved
             var compoundBuilders = new Dictionary<string, CompoundTaskBuilder<StoryActorContext, StoryWorldState>>();
-            foreach (var taskDef in definition.Tasks.Where(t => t.Type == "compound"))
+            foreach (var taskDef in blueprint.Tasks.Where(t => t.Type == "compound"))
             {
                 compoundBuilders[taskDef.Name] = domainBuilder.DefineCompound(taskDef.Name);
             }
 
             // Pass 2: populate each compound task with its methods and subtasks
-            foreach (var taskDef in definition.Tasks.Where(t => t.Type == "compound"))
+            foreach (var taskDef in blueprint.Tasks.Where(t => t.Type == "compound"))
             {
                 var compoundBuilder = compoundBuilders[taskDef.Name];
                 foreach (var methodDef in taskDef.Methods)
@@ -97,20 +87,20 @@ namespace Gast.Unity.Infrastructure.Stories
                 }
             }
 
-            return domainBuilder.Build(definition.RootTask);
+            return domainBuilder.Build(blueprint.RootTask);
         }
 
-        IAction<StoryActorContext, StoryWorldState> BuildPrimitiveAction(TaskReference taskRef)
+        IAction<StoryActorContext, StoryWorldState> BuildPrimitiveAction(BlueprintTaskRef taskRef)
         {
-            if (string.IsNullOrEmpty(taskRef.Action))
+            if (string.IsNullOrEmpty(taskRef.ActionName))
             {
                 Debug.LogError("[DynamicStoryDomainFactory] Primitive task is missing 'action' field.");
                 return null;
             }
 
-            if (!actionRegistry.TryGetValue(taskRef.Action, out var factory))
+            if (!actionRegistry.TryGetValue(taskRef.ActionName, out var factory))
             {
-                Debug.LogError($"[DynamicStoryDomainFactory] No factory registered for action '{taskRef.Action}'.");
+                Debug.LogError($"[DynamicStoryDomainFactory] No factory registered for action '{taskRef.ActionName}'.");
                 return null;
             }
 

@@ -1,7 +1,9 @@
+using Gast.Domain.Stories;
+
 namespace Gast.Application.AIPlanning
 {
     public interface IStoryRunner
     {
-        void StartStory(string storyJson);
+        void StartStory(StoryBlueprint blueprint);
     }
 }

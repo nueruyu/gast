@@ -3,7 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Gast.Application.AIPlanning;
 using Gast.Domain.Characters;
+using Gast.Domain.Stories;
 using Gast.Lib.Gaia;
+using Gast.Unity.Infrastructure.Stories;
 
 namespace Gast.Unity.Infrastructure.Remoting.AI
 {
@@ -18,7 +20,7 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
             this.characterRepository = characterRepository;
         }
 
-        public async Task<string> GenerateStoryAsync(string instruction, CancellationToken cancellationToken)
+        public async Task<StoryBlueprint> GenerateStoryAsync(string instruction, CancellationToken cancellationToken)
         {
             var characters = characterRepository.GetAll()
                 .Select(c => new CharacterContextDto { Id = c.Id.ToString() })
@@ -31,7 +33,10 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
             };
 
             var response = await gaiaClient.CreateStoryAsync(request, cancellationToken);
-            return response?.StoryJson;
+            if (string.IsNullOrWhiteSpace(response?.StoryJson))
+                return null;
+
+            return StoryBlueprintParser.Parse(response.StoryJson);
         }
     }
 }

@@ -3,7 +3,7 @@ using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Unity.Features.Stories;
 
-namespace Cryst.Features.Stories.Objectives
+namespace Cryst.Infrastructure.Stories
 {
     public class DefendTerritoryObjectiveFactory : StoryObjectiveFactory<DefendTerritoryObjectiveFactory.Params>
     {
