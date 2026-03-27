@@ -1,5 +1,4 @@
 using Gast.Domain.Characters;
-using Gast.Domain.Characters;
 using Gast.Domain.Loot;
 using Cryst.Domain.Combat;
 using Gast.Core.Events;
