@@ -13,11 +13,16 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
     {
         readonly IGaiaPlanningClient gaiaClient;
         readonly ICharacterRepository characterRepository;
+        readonly StoryBlueprintParser parser;
 
-        public StoryGenerationService(IGaiaPlanningClient gaiaClient, ICharacterRepository characterRepository)
+        public StoryGenerationService(
+            IGaiaPlanningClient gaiaClient,
+            ICharacterRepository characterRepository,
+            StoryBlueprintParser parser)
         {
             this.gaiaClient = gaiaClient;
             this.characterRepository = characterRepository;
+            this.parser = parser;
         }
 
         public async Task<StoryBlueprint> GenerateStoryAsync(string instruction, CancellationToken cancellationToken)
@@ -36,7 +41,7 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
             if (string.IsNullOrWhiteSpace(response?.StoryJson))
                 return null;
 
-            return StoryBlueprintParser.Parse(response.StoryJson);
+            return parser.Parse(response.StoryJson);
         }
     }
 }

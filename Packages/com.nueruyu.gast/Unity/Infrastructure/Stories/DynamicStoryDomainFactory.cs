@@ -1,30 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Gast.Domain.Stories;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 using Gast.Unity.Features.Stories;
-using Gast.Unity.Infrastructure.Stories.Converters;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using UnityEngine;
 
 namespace Gast.Unity.Infrastructure.Stories
 {
     /// <summary>
     /// Builds an <see cref="AIDomain{TActorContext,TWorldState}"/> from a <see cref="StoryBlueprint"/>.
-    ///
-    /// JSON deserialization is no longer performed here — the blueprint is a plain domain model
-    /// produced by <see cref="StoryBlueprintParser"/>. Action parameters (stored as raw JSON strings
-    /// on <see cref="BlueprintTaskRef.ParametersJson"/>) are deserialized here to typed objects
-    /// using <see cref="IStoryActionFactory.ParameterType"/>.
+    /// Parameters on each <see cref="BlueprintTaskRef"/> are already fully deserialized by
+    /// <see cref="StoryBlueprintParser"/> — no JSON handling occurs here.
     /// </summary>
     public class DynamicStoryDomainFactory
     {
         readonly IReadOnlyDictionary<string, IStoryActionFactory> actionRegistry;
-        readonly JsonSerializer parameterSerializer;
 
         public DynamicStoryDomainFactory(IEnumerable<IStoryActionFactory> actionFactories)
         {
@@ -32,20 +24,6 @@ namespace Gast.Unity.Infrastructure.Stories
                 f => f.ActionName,
                 f => f,
                 StringComparer.OrdinalIgnoreCase);
-
-            parameterSerializer = JsonSerializer.Create(new JsonSerializerSettings
-            {
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new SnakeCaseNamingStrategy()
-                },
-                Converters =
-                {
-                    new CharacterIdJsonConverter(),
-                    new CharacterTypeIdJsonConverter(),
-                    new ItemIdJsonConverter()
-                }
-            });
         }
 
         public AIDomain<StoryActorContext, StoryWorldState> CreateDomain(StoryBlueprint blueprint)
@@ -104,10 +82,7 @@ namespace Gast.Unity.Infrastructure.Stories
                 return null;
             }
 
-            var parametersJson = taskRef.ParametersJson ?? "{}";
-            using var reader = new JsonTextReader(new StringReader(parametersJson));
-            var parameters = parameterSerializer.Deserialize(reader, factory.ParameterType);
-            return factory.Create(parameters);
+            return factory.Create(taskRef.Parameters);
         }
     }
 }

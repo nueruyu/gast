@@ -95,11 +95,12 @@ namespace Gast.Unity.Infrastructure
 
             // Story
             builder.Register<StoryActorContext>(Lifetime.Singleton);
-            builder.Register<DynamicStoryDomainFactory>(Lifetime.Singleton);
-            builder.Register<StorySystem>(Lifetime.Singleton).As<IStoryRunner>();
             builder.Register<SetObjectivesActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
             builder.Register<WaitForCharacterDefeatedActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
             builder.Register<WaitForItemAcquiredActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
+            builder.Register<StoryBlueprintParser>(Lifetime.Singleton);
+            builder.Register<DynamicStoryDomainFactory>(Lifetime.Singleton);
+            builder.Register<StorySystem>(Lifetime.Singleton).As<IStoryRunner>();
         }
     }
 }

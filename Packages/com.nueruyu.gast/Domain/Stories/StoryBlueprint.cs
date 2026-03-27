@@ -55,21 +55,21 @@ namespace Gast.Domain.Stories
     {
         public string CompoundTaskName { get; }
         public string ActionName { get; }
-        /// <summary>Raw JSON string of action parameters. Null for compound references.</summary>
-        public string ParametersJson { get; }
+        /// <summary>Pre-deserialized action parameters. Null for compound references.</summary>
+        public object Parameters { get; }
         public bool IsCompound => CompoundTaskName != null;
 
-        BlueprintTaskRef(string compoundTaskName, string actionName, string parametersJson)
+        BlueprintTaskRef(string compoundTaskName, string actionName, object parameters)
         {
             CompoundTaskName = compoundTaskName;
             ActionName = actionName;
-            ParametersJson = parametersJson;
+            Parameters = parameters;
         }
 
         public static BlueprintTaskRef ForCompound(string taskName)
             => new(taskName, null, null);
 
-        public static BlueprintTaskRef ForPrimitive(string actionName, string parametersJson)
-            => new(null, actionName, parametersJson);
+        public static BlueprintTaskRef ForPrimitive(string actionName, object parameters)
+            => new(null, actionName, parameters);
     }
 }

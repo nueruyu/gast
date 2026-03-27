@@ -1,6 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Gast.Domain.Stories;
 using Gast.Lib.Gaia;
+using Gast.Unity.Features.Stories;
 using Gast.Unity.Infrastructure.Stories.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -9,44 +13,82 @@ namespace Gast.Unity.Infrastructure.Stories
 {
     /// <summary>
     /// Parses a Gaia story JSON string into a <see cref="StoryBlueprint"/> domain model.
-    /// Newtonsoft deserialization is contained here; callers receive a plain domain object.
+    /// All Newtonsoft knowledge is contained here: structural deserialization (StoryDefinition),
+    /// action parameter deserialization (typed via <see cref="IStoryActionFactory.ParameterType"/>),
+    /// and value-object converters.
     /// </summary>
-    public static class StoryBlueprintParser
+    public class StoryBlueprintParser
     {
-        static readonly JsonSerializerSettings Settings = new()
+        readonly IReadOnlyDictionary<string, Type> actionParameterTypes;
+        readonly JsonSerializer parameterSerializer;
+        readonly JsonSerializerSettings definitionSettings;
+
+        public StoryBlueprintParser(IEnumerable<IStoryActionFactory> actionFactories)
         {
-            ContractResolver = new DefaultContractResolver
+            actionParameterTypes = actionFactories.ToDictionary(
+                f => f.ActionName,
+                f => f.ParameterType,
+                StringComparer.OrdinalIgnoreCase);
+
+            var contractResolver = new DefaultContractResolver
             {
                 NamingStrategy = new SnakeCaseNamingStrategy()
-            },
-            Converters = { new TaskReferenceJsonConverter() }
-        };
+            };
 
-        public static StoryBlueprint Parse(string json)
+            parameterSerializer = JsonSerializer.Create(new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Converters =
+                {
+                    new CharacterIdJsonConverter(),
+                    new CharacterTypeIdJsonConverter(),
+                    new ItemIdJsonConverter()
+                }
+            });
+
+            definitionSettings = new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Converters = { new TaskReferenceJsonConverter() }
+            };
+        }
+
+        public StoryBlueprint Parse(string json)
         {
-            var def = JsonConvert.DeserializeObject<StoryDefinition>(json, Settings);
+            var def = JsonConvert.DeserializeObject<StoryDefinition>(json, definitionSettings);
             return Map(def);
         }
 
-        static StoryBlueprint Map(StoryDefinition def) => new(
+        StoryBlueprint Map(StoryDefinition def) => new(
             def.DomainName,
             def.RootTask,
             def.Tasks.Select(MapTask).ToList()
         );
 
-        static BlueprintTask MapTask(TaskDefinition t) => new(
+        BlueprintTask MapTask(TaskDefinition t) => new(
             t.Name, t.Type, t.Selector,
             t.Methods?.Select(MapMethod).ToList()
         );
 
-        static BlueprintMethod MapMethod(MethodDefinition m) => new(
+        BlueprintMethod MapMethod(MethodDefinition m) => new(
             m.Name,
             m.Tasks?.Select(MapTaskRef).ToList()
         );
 
-        static BlueprintTaskRef MapTaskRef(TaskReference r) =>
-            r.IsCompound
-                ? BlueprintTaskRef.ForCompound(r.CompoundTaskName)
-                : BlueprintTaskRef.ForPrimitive(r.Action, r.ParametersJson);
+        BlueprintTaskRef MapTaskRef(TaskReference r)
+        {
+            if (r.IsCompound)
+                return BlueprintTaskRef.ForCompound(r.CompoundTaskName);
+
+            object parameters = null;
+            if (actionParameterTypes.TryGetValue(r.Action, out var paramType))
+            {
+                var json = r.ParametersJson ?? "{}";
+                using var reader = new JsonTextReader(new StringReader(json));
+                parameters = parameterSerializer.Deserialize(reader, paramType);
+            }
+
+            return BlueprintTaskRef.ForPrimitive(r.Action, parameters);
+        }
     }
 }
