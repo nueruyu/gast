@@ -8,6 +8,11 @@
 
 .player-status__hp-container {
     width: 100%;
+    margin-bottom: 4px;
+}
+
+.player-status__hunger-container {
+    width: 100%;
     margin-bottom: 8px;
 }
 

@@ -22,6 +22,7 @@ namespace Gast.Unity.Features
             // Player
             builder.Register<PlayerAIControlMonitorService>();
             builder.Register<PlayerInteractionFocusService>().AsImplementedInterfaces().AsSelf();
+            builder.Register<PlayerItemUsageService>().AsImplementedInterfaces();
             builder.Register<PlayerBrain>();
             builder.Register<PlayerManager>().AsImplementedInterfaces().AsSelf();
 

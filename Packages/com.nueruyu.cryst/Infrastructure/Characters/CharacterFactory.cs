@@ -140,7 +140,8 @@ namespace Cryst.Infrastructure.Characters
                 navigationProvider.StoppingDistance = navSettings.StoppingDistance;
 
                 var statusSettings = typeDefinition.GetSettings<CharacterStatusSettings>();
-                var status = new CharacterStatus(statusSettings.InitialMaxHealth);
+                var maxHunger = statusSettings.InitialMaxHunger;
+                var status = new CharacterStatus(statusSettings.InitialMaxHealth, maxHunger);
                 context.Register(status);
 
                 context.Register(typeDefinition);

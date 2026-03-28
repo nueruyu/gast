@@ -7,6 +7,7 @@ using Gast.Domain.Inputs;
 using Gast.Unity.Shared.UnityExtensions;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 namespace Gast.Unity.Features.Inputs
 {
@@ -33,6 +34,10 @@ namespace Gast.Unity.Features.Inputs
 
         readonly Signal showMenu = new();
         readonly Signal hideMenu = new();
+        readonly Signal<int> useItemSlot = new();
+
+        Keyboard cachedKeyboard;
+        KeyControl[] cachedDigitKeys;
 
         public Vector2 Move { get; private set; }
         public Vector2 Look { get; private set; }
@@ -46,6 +51,7 @@ namespace Gast.Unity.Features.Inputs
         public bool IsCursorOverridePressed { get; private set; }
         public ISignal ShowMenu => showMenu;
         public ISignal HideMenu => hideMenu;
+        public ISignal<int> UseItemSlot => useItemSlot;
 
         public InputReader(
             IInputModeManager inputModeManager,
@@ -94,6 +100,8 @@ namespace Gast.Unity.Features.Inputs
                     GuardHeld = guardAction.IsPressed();
                     IsCursorOverridePressed = Keyboard.current != null && Keyboard.current.leftAltKey.isPressed;
 
+                    CheckItemUsageInput();
+
                     // Reset flags at end of frame
                     await UniTask.WaitForEndOfFrame(cancellationToken);
 
@@ -109,6 +117,33 @@ namespace Gast.Unity.Features.Inputs
             {
                 playerActionMap.Disable();
                 menuActionMap.Disable();
+            }
+        }
+
+        void CheckItemUsageInput()
+        {
+            var keyboard = Keyboard.current;
+            if (keyboard == null) return;
+
+            if (keyboard != cachedKeyboard)
+            {
+                cachedKeyboard = keyboard;
+                cachedDigitKeys = new[]
+                {
+                    keyboard.digit1Key, keyboard.digit2Key, keyboard.digit3Key,
+                    keyboard.digit4Key, keyboard.digit5Key, keyboard.digit6Key,
+                    keyboard.digit7Key, keyboard.digit8Key, keyboard.digit9Key,
+                    keyboard.digit0Key
+                };
+            }
+
+            for (var i = 0; i < cachedDigitKeys.Length; i++)
+            {
+                if (cachedDigitKeys[i].wasPressedThisFrame)
+                {
+                    useItemSlot.Publish(i);
+                    return;
+                }
             }
         }
 

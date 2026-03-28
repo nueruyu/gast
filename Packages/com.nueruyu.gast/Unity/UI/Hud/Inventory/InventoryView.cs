@@ -6,8 +6,9 @@ namespace Gast.Unity.UI.Hud.Inventory
 {
     public class InventoryView : VisualElement
     {
-        private const string ItemSlotUssClassName = "inventory__item-slot";
-        private const string ItemTextUssClassName = "inventory__item-text";
+        const string ItemSlotUssClassName = "inventory__item-slot";
+        const string SlotNumberUssClassName = "inventory__slot-number";
+        const string ItemTextUssClassName = "inventory__item-text";
 
         public InventoryView(VisualTreeAsset asset)
         {
@@ -19,22 +20,31 @@ namespace Gast.Unity.UI.Hud.Inventory
             return viewModel.InventoryItems.Subscribe(items =>
             {
                 Clear();
-                foreach (var stack in items)
+                for (var i = 0; i < viewModel.HotbarSize; i++)
                 {
-                    CreateItemSlot(stack);
+                    var stack = i < items.Count ? items[i] : null;
+                    CreateItemSlot(viewModel, stack, i);
                 }
             });
         }
 
-        private void CreateItemSlot(ItemStackViewModel stackViewModel)
+        void CreateItemSlot(InventoryViewModel viewModel, ItemStackViewModel stackViewModel, int slotIndex)
         {
             var slot = new VisualElement();
             slot.AddToClassList(ItemSlotUssClassName);
 
-            var text = new Label($"{stackViewModel.ItemDefinition.Name} x{stackViewModel.ItemStack.Quantity}");
-            text.AddToClassList(ItemTextUssClassName);
+            var numberLabel = new Label(viewModel.GetSlotNumberText(slotIndex));
+            numberLabel.AddToClassList(SlotNumberUssClassName);
+            slot.Add(numberLabel);
 
-            slot.Add(text);
+            if (stackViewModel != null)
+            {
+                var text = new Label(
+                    $"{stackViewModel.ItemDefinition.Name}\nx{stackViewModel.ItemStack.Quantity}");
+                text.AddToClassList(ItemTextUssClassName);
+                slot.Add(text);
+            }
+
             Add(slot);
         }
     }
