@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c34f16205a8ed3249a2ec5e28ee132ea, type: 3}
-  m_Name: RedStone
+  m_Name: Meat
   m_EditorClassIdentifier: Gast.Features.Economy::Gast.Features.Economy.ItemDefinitionSO
-  itemReference: {fileID: 11400000, guid: f2a41c6867124424bb778f1dab2586dd, type: 2}
-  displayName: Red Stone
+  itemReference: {fileID: 11400000, guid: de173561946f6964893c897bebf5da93, type: 2}
+  displayName: Meat
   price: 100
   maxStack: 99
   description: 
-  prefab: {fileID: 7542561166855248392, guid: c7467fad3fab2b74ea7ef52cfdc2865e, type: 3}
+  prefab: {fileID: 7542561166855248392, guid: c9e743ba3c5da7c48934f21c2acd679d, type: 3}
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: a82876a55744d774ea2614bbd3ebe4ee, type: 2}
