@@ -22,6 +22,9 @@ namespace Gast.Lib.AI.MethodSelectors
 
             foreach (var method in methods)
             {
+                if (!method.CheckStartCondition(context.WorldState))
+                    continue;
+
                 context.WorldState.WriteTo(ref simulationState);
                 var validationContext = new ValidationContext<TWorldState>(simulationState, context.PlanningStateStore);
 
@@ -110,10 +113,6 @@ namespace Gast.Lib.AI.MethodSelectors
             ValidationContext<TWorldState> context,
             CancellationToken cancellationToken)
         {
-            if (startIndex == 0)
-                if (!method.CheckStartCondition(context.WorldState))
-                    return false;
-
             for (var i = startIndex; i < method.SubTasks.Count; i++)
             {
                 if (!method.CheckContinuationCondition(context.WorldState))
