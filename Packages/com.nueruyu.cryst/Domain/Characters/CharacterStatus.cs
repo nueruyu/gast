@@ -7,23 +7,33 @@ namespace Cryst.Domain.Characters
     {
         readonly Live<float> health;
         readonly Live<float> maxHealth;
+        readonly Live<float> hunger;
+        readonly Live<float> maxHunger;
 
         public ILive<float> Health => health;
-
         public ILive<float> MaxHealth => maxHealth;
+        public ILive<float> Hunger => hunger;
+        public ILive<float> MaxHunger => maxHunger;
         public ILive<bool> IsAlive { get; }
 
-        public CharacterStatus(float maxHealth)
+        public CharacterStatus(float maxHealth, float maxHunger)
         {
             health = new Live<float>(maxHealth);
             this.maxHealth = new Live<float>(maxHealth);
+            hunger = new Live<float>(maxHunger);
+            this.maxHunger = new Live<float>(maxHunger);
 
             IsAlive = health.Select(h => h > 0);
         }
 
         public void SetHealth(float newHealth)
         {
-            health.Value = Mathf.Max(newHealth, 0);
+            health.Value = Mathf.Clamp(newHealth, 0, maxHealth.Value);
+        }
+
+        public void SetHunger(float newHunger)
+        {
+            hunger.Value = Mathf.Clamp(newHunger, 0, maxHunger.Value);
         }
     }
 }

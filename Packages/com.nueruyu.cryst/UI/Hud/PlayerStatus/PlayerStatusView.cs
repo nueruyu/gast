@@ -9,12 +9,14 @@ namespace Cryst.UI.Hud.PlayerStatus
     {
         readonly Label moneyLabel;
         readonly Gauge hpGauge;
+        readonly Gauge hungerGauge;
 
         public PlayerStatusView(VisualTreeAsset asset)
         {
             asset.CloneTree(this);
 
             hpGauge = this.Q<Gauge>("HpGauge");
+            hungerGauge = this.Q<Gauge>("HungerGauge");
             moneyLabel = this.Q<Label>("MoneyLabel");
         }
 
@@ -28,6 +30,14 @@ namespace Cryst.UI.Hud.PlayerStatus
 
             viewModel.HpText
                 .Subscribe(text => hpGauge.LabelText = text)
+                .AddTo(d);
+
+            viewModel.HungerRatio
+                .Subscribe(ratio => hungerGauge.Value = ratio * hungerGauge.MaxValue)
+                .AddTo(d);
+
+            viewModel.HungerText
+                .Subscribe(text => hungerGauge.LabelText = text)
                 .AddTo(d);
 
             viewModel.CurrentMoney

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Gast.Domain.Economy
 {
     /// <summary>
@@ -10,5 +12,6 @@ namespace Gast.Domain.Economy
         public int Price { get; }
         public int MaxStack { get; }
         public string Description { get; }
+        IReadOnlyList<IItemEffect> Effects { get; }
     }
 }

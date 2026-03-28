@@ -30,6 +30,8 @@ using Gast.Unity.Features.Characters;
 using Gast.Unity.Shared.DI;
 using Gast.Unity.UI.Hud.Objectives;
 using Gast.Unity.UI.Hud.PlayerStatus;
+using Cryst.Application.Characters;
+using Cryst.Features.Characters.Vitals;
 using GuardAction = Cryst.Features.CharacterActions.Actions.Guard.GuardAction;
 using Cryst.Infrastructure.Stories;
 using Gast.Unity.Features.Stories;
@@ -42,10 +44,14 @@ namespace Cryst.Composition
         [SerializeField]
         HitFeedbackSettings meleeAttackEffectSettings;
 
+        [SerializeField]
+        VitalsSettings vitalsSettings;
+
         public override void Install(IContainerBuilder builder)
         {
             // Settings
             builder.RegisterInstance(meleeAttackEffectSettings);
+            builder.RegisterInstance(vitalsSettings);
 
             // Reflection
             builder.Register<CrystReflectionAssemblyProvider>().As<IReflectionAssemblyProvider>();
@@ -56,6 +62,7 @@ namespace Cryst.Composition
             // Character
             builder.Register<CharacterActionFactory>().As<ICharacterActionFactory>();
             builder.Register<CharacterFactory>(Lifetime.Singleton).As<ICharacterFactory>();
+            builder.Register<CharacterDeathService>(Lifetime.Singleton).As<ICharacterDeathService>();
 
             // Character Actions (Transient)
             builder.Register<AttackAction>(Lifetime.Transient);
@@ -90,6 +97,9 @@ namespace Cryst.Composition
 
             // Player
             builder.Register<PlayerCharacterController>().As<IPlayerCharacterController>();
+
+            // Vitals
+            builder.Register<VitalsSystem>(Lifetime.Singleton).As<ILifecycleTask>();
 
             // Feedbacks
             builder.Register<CharacterFeedbackService>(Lifetime.Singleton);

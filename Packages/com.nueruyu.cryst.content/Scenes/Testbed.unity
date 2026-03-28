@@ -1487,7 +1487,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 250c095a896a6eb488bcb3ee87b0c014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Gast.Features.Gathering::Gast.Features.Gathering.GatheringSpotAnchor
-  itemReference: {fileID: 11400000, guid: f2a41c6867124424bb778f1dab2586dd, type: 2}
+  itemReference: {fileID: 11400000, guid: de173561946f6964893c897bebf5da93, type: 2}
   quantity: 1
   respawnTime: 10
   spawnOnStart: 1
@@ -2672,6 +2672,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gast.Systems.SpawnSites::Gast.Systems.SpawnSites.SpawnSiteAnchor
   respawnCooldown: 10
+  territoryRadius: 20
 --- !u!1 &2080562600
 GameObject:
   m_ObjectHideFlags: 0
@@ -2829,6 +2830,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Gast.Systems.SpawnSites::Gast.Systems.SpawnSites.SpawnSiteAnchor
   respawnCooldown: 10
+  territoryRadius: 20
 --- !u!4 &2084794415
 Transform:
   m_ObjectHideFlags: 0
