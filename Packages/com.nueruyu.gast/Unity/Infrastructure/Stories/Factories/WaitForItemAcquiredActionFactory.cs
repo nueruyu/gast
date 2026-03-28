@@ -6,11 +6,11 @@ using Gast.Unity.Features.Stories.Actions;
 
 namespace Gast.Unity.Infrastructure.Stories.Factories
 {
-    public class WaitForItemAcquiredActionFactory : StoryActionFactory<WaitForItemAcquiredActionFactory.Params>
+    public class WaitForItemAcquiredActionFactory : IStoryActionFactory<WaitForItemAcquiredActionFactory.Params>
     {
-        public override string ActionName => "WaitForItemAcquired";
+        public string ActionName => "WaitForItemAcquired";
 
-        protected override IAction<StoryActorContext, StoryWorldState>  Create(Params parameters)
+        public IAction<StoryActorContext, StoryWorldState> Create(Params parameters)
             => new WaitForItemAcquiredAction(parameters.AcquirerCharacterId, parameters.ItemId);
 
         public class Params

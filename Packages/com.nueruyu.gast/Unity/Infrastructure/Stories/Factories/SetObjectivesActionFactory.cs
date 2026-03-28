@@ -12,7 +12,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace Gast.Unity.Infrastructure.Stories.Factories
 {
-    public class SetObjectivesActionFactory : StoryActionFactory<SetObjectivesActionFactory.Params>
+    public class SetObjectivesActionFactory : IStoryActionFactory<SetObjectivesActionFactory.Params>
     {
         readonly IReadOnlyDictionary<string, IStoryObjectiveFactory> objectiveRegistry;
         readonly JsonSerializer objectiveSerializer;
@@ -38,9 +38,9 @@ namespace Gast.Unity.Infrastructure.Stories.Factories
             });
         }
 
-        public override string ActionName => "SetObjectives";
+        public string ActionName => "SetObjectives";
 
-        protected override IAction<StoryActorContext, StoryWorldState>  Create(Params parameters)
+        public IAction<StoryActorContext, StoryWorldState> Create(Params parameters)
         {
             var assignments = parameters.Assignments.Select(def =>
             {

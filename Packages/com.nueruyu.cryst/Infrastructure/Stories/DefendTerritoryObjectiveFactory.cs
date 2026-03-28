@@ -5,11 +5,11 @@ using Gast.Unity.Features.Stories;
 
 namespace Cryst.Infrastructure.Stories
 {
-    public class DefendTerritoryObjectiveFactory : StoryObjectiveFactory<DefendTerritoryObjectiveFactory.Params>
+    public class DefendTerritoryObjectiveFactory : IStoryObjectiveFactory<DefendTerritoryObjectiveFactory.Params>
     {
-        public override string ObjectiveType => "DefendTerritory";
+        public string ObjectiveType => "DefendTerritory";
 
-        protected override IAIObjective Create(Params parameters)
+        public IAIObjective Create(Params parameters)
             => new DefendTerritoryObjective(parameters.PriorityTargetId);
 
         public class Params

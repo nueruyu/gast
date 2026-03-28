@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Gast.Application.AIPlanning;
-using Gast.Domain.Stories;
 using Gast.Unity.Infrastructure.Stories;
 
 namespace Gast.Unity.Infrastructure.Remoting.AI

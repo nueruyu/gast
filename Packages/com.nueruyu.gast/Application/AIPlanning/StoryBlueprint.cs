@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Gast.Domain.Stories
+namespace Gast.Application.AIPlanning
 {
     /// <summary>
     /// Domain model representing a parsed story definition.

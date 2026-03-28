@@ -5,11 +5,11 @@ using Gast.Unity.Features.Stories;
 
 namespace Cryst.Infrastructure.Stories
 {
-    public class DefeatCharacterObjectiveFactory : StoryObjectiveFactory<DefeatCharacterObjectiveFactory.Params>
+    public class DefeatCharacterObjectiveFactory : IStoryObjectiveFactory<DefeatCharacterObjectiveFactory.Params>
     {
-        public override string ObjectiveType => "DefeatCharacter";
+        public string ObjectiveType => "DefeatCharacter";
 
-        protected override IAIObjective Create(Params parameters)
+        public IAIObjective Create(Params parameters)
             => new DefeatCharacterObjective(parameters.TargetTypeId, 1);
 
         public class Params

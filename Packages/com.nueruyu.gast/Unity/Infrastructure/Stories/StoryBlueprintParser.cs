@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Gast.Domain.Stories;
+using Gast.Application.AIPlanning;
 using Gast.Lib.Gaia;
 using Gast.Unity.Features.Stories;
 using Gast.Unity.Infrastructure.Stories.Converters;

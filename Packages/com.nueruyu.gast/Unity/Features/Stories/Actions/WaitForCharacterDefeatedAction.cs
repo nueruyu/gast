@@ -28,7 +28,7 @@ namespace Gast.Unity.Features.Stories.Actions
                     tcs.TrySetResult();
             });
 
-            using var _ = cancellationToken.Register(() => tcs.TrySetCanceled());
+            await using var ctr = cancellationToken.Register(() => tcs.TrySetCanceled());
 
             await tcs.Task;
         }

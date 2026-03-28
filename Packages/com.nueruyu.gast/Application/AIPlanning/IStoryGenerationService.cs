@@ -1,6 +1,5 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Gast.Domain.Stories;
 
 namespace Gast.Application.AIPlanning
 {

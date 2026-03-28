@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Gast.Application.AIPlanning;
 using Gast.Domain.Characters;
-using Gast.Domain.Stories;
 using Gast.Lib.Gaia;
 using Gast.Unity.Infrastructure.Stories;
 

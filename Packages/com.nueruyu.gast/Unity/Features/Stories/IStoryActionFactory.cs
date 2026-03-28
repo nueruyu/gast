@@ -5,7 +5,7 @@ namespace Gast.Unity.Features.Stories
 {
     /// <summary>
     /// Factory for creating a single named story action from its deserialized parameters object.
-    /// Implement <see cref="StoryActionFactory{TParams}"/> instead of this interface directly.
+    /// Implement <see cref="IStoryActionFactory{TParams}"/> instead of this interface directly.
     /// </summary>
     public interface IStoryActionFactory
     {
@@ -25,5 +25,22 @@ namespace Gast.Unity.Features.Stories
         /// <paramref name="parameters"/> is guaranteed to be an instance of <see cref="ParameterType"/>.
         /// </summary>
         IAction<StoryActorContext, StoryWorldState> Create(object parameters);
+    }
+
+    /// <summary>
+    /// Convenience base class for <see cref="IStoryActionFactory"/> implementations.
+    /// Handles the <see cref="IStoryActionFactory.ParameterType"/> property
+    /// and the untyped <see cref="IStoryActionFactory.Create(object)"/>
+    /// overload so subclasses only need to implement the typed <see cref="Create(TParams)"/> method.
+    /// </summary>
+    public interface IStoryActionFactory<in TParams> : IStoryActionFactory
+        where TParams : class
+    {
+        Type IStoryActionFactory.ParameterType => typeof(TParams);
+
+        IAction<StoryActorContext, StoryWorldState> IStoryActionFactory.Create(object parameters)
+            => Create((TParams)parameters);
+
+        IAction<StoryActorContext, StoryWorldState> Create(TParams parameters);
     }
 }

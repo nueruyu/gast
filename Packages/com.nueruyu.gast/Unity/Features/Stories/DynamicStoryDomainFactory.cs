@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gast.Domain.Stories;
+using Gast.Application.AIPlanning;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
 using UnityEngine;
@@ -48,9 +48,12 @@ namespace Gast.Unity.Features.Stories
                         {
                             if (!compoundBuilders.TryGetValue(taskRef.CompoundTaskName, out var referencedBuilder))
                             {
-                                Debug.LogError($"[DynamicStoryDomainFactory] Unknown compound task reference: '{taskRef.CompoundTaskName}'.");
+                                Debug.LogError(
+                                    "[DynamicStoryDomainFactory] Unknown " +
+                                    $"compound task reference: '{taskRef.CompoundTaskName}'.");
                                 continue;
                             }
+
                             methodBuilder.Do(referencedBuilder);
                         }
                         else

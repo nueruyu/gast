@@ -5,11 +5,12 @@ using Gast.Unity.Features.Stories.Actions;
 
 namespace Gast.Unity.Infrastructure.Stories.Factories
 {
-    public class WaitForCharacterDefeatedActionFactory : StoryActionFactory<WaitForCharacterDefeatedActionFactory.Params>
+    public class WaitForCharacterDefeatedActionFactory :
+        IStoryActionFactory<WaitForCharacterDefeatedActionFactory.Params>
     {
-        public override string ActionName => "WaitForCharacterDefeated";
+        public string ActionName => "WaitForCharacterDefeated";
 
-        protected override IAction<StoryActorContext, StoryWorldState>  Create(Params parameters)
+        public IAction<StoryActorContext, StoryWorldState> Create(Params parameters)
             => new WaitForCharacterDefeatedAction(parameters.CharacterId);
 
         public class Params
