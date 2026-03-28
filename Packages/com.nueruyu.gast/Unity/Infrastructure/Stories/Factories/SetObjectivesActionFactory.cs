@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Gast.Domain.Characters;
+using Gast.Lib.AI;
 using Gast.Unity.Features.Stories;
 using Gast.Unity.Features.Stories.Actions;
 using Gast.Unity.Infrastructure.Stories.Converters;
@@ -39,7 +40,7 @@ namespace Gast.Unity.Infrastructure.Stories.Factories
 
         public override string ActionName => "SetObjectives";
 
-        protected override SetObjectivesAction Create(Params parameters)
+        protected override IAction<StoryActorContext, StoryWorldState>  Create(Params parameters)
         {
             var assignments = parameters.Assignments.Select(def =>
             {

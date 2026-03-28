@@ -1,6 +1,5 @@
 using Gast.Core.DI;
 using Gast.Unity.Features.Cameras;
-using Gast.Unity.Features.Characters;
 using Gast.Unity.Features.Gameplay;
 using Gast.Unity.Features.Gathering;
 using Gast.Unity.Features.Inputs;

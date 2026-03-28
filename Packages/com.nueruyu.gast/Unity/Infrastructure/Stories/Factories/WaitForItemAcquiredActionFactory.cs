@@ -1,5 +1,6 @@
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
+using Gast.Lib.AI;
 using Gast.Unity.Features.Stories;
 using Gast.Unity.Features.Stories.Actions;
 
@@ -9,7 +10,7 @@ namespace Gast.Unity.Infrastructure.Stories.Factories
     {
         public override string ActionName => "WaitForItemAcquired";
 
-        protected override WaitForItemAcquiredAction Create(Params parameters)
+        protected override IAction<StoryActorContext, StoryWorldState>  Create(Params parameters)
             => new WaitForItemAcquiredAction(parameters.AcquirerCharacterId, parameters.ItemId);
 
         public class Params

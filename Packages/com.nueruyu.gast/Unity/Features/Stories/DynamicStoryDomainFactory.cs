@@ -4,15 +4,13 @@ using System.Linq;
 using Gast.Domain.Stories;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
-using Gast.Unity.Features.Stories;
 using UnityEngine;
 
-namespace Gast.Unity.Infrastructure.Stories
+namespace Gast.Unity.Features.Stories
 {
     /// <summary>
     /// Builds an <see cref="AIDomain{TActorContext,TWorldState}"/> from a <see cref="StoryBlueprint"/>.
     /// Parameters on each <see cref="BlueprintTaskRef"/> are already fully deserialized by
-    /// <see cref="StoryBlueprintParser"/> — no JSON handling occurs here.
     /// </summary>
     public class DynamicStoryDomainFactory
     {

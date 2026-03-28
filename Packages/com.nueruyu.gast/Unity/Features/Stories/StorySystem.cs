@@ -4,7 +4,6 @@ using Cysharp.Threading.Tasks;
 using Gast.Application.AIPlanning;
 using Gast.Domain.Stories;
 using Gast.Lib.AI;
-using Gast.Unity.Infrastructure.Stories;
 using UnityEngine;
 
 namespace Gast.Unity.Features.Stories

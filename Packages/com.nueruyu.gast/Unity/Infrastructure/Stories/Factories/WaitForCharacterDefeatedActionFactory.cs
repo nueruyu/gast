@@ -1,4 +1,5 @@
 using Gast.Domain.Characters;
+using Gast.Lib.AI;
 using Gast.Unity.Features.Stories;
 using Gast.Unity.Features.Stories.Actions;
 
@@ -8,7 +9,7 @@ namespace Gast.Unity.Infrastructure.Stories.Factories
     {
         public override string ActionName => "WaitForCharacterDefeated";
 
-        protected override WaitForCharacterDefeatedAction Create(Params parameters)
+        protected override IAction<StoryActorContext, StoryWorldState>  Create(Params parameters)
             => new WaitForCharacterDefeatedAction(parameters.CharacterId);
 
         public class Params

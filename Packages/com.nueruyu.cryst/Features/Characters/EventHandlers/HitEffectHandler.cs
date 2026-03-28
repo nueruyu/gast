@@ -1,3 +1,4 @@
+using Cryst.Domain.Characters;
 using Gast.Domain.Characters;
 using Gast.Domain.Loot;
 using Cryst.Domain.Combat;
