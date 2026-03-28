@@ -2,11 +2,13 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Domain.AI;
+using Gast.Domain.AI.Attributes;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
 
 namespace Gast.Unity.Features.Stories.Actions
 {
+    [AIAction("SetObjectives")]
     public class SetObjectivesAction : IAction<StoryActorContext, StoryWorldState>
     {
         readonly List<Assignment> assignments;

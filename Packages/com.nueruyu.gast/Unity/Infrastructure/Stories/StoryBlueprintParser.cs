@@ -6,6 +6,7 @@ using Gast.Application.AIPlanning;
 using Gast.Lib.AI;
 using Gast.Lib.Gaia;
 using Gast.Unity.Features.Stories;
+using Gast.Unity.Infrastructure.AI;
 using Gast.Unity.Infrastructure.JsonConverters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -13,24 +14,15 @@ using UnityEngine;
 
 namespace Gast.Unity.Infrastructure.Stories
 {
-    /// <summary>
-    /// Parses a Gaia story JSON string into a <see cref="StoryBlueprint"/> domain model.
-    /// All Newtonsoft knowledge is contained here: structural deserialization (StoryDefinition),
-    /// action parameter deserialization (typed via <see cref="IStoryActionFactory.ParameterType"/>),
-    /// and value-object converters.
-    /// </summary>
     public class StoryBlueprintParser
     {
-        readonly IReadOnlyDictionary<string, IStoryActionFactory> actionRegistry;
+        readonly AIActionTypeResolver actionTypeResolver;
         readonly JsonSerializer parameterSerializer;
         readonly JsonSerializerSettings definitionSettings;
 
-        public StoryBlueprintParser(IEnumerable<IStoryActionFactory> actionFactories)
+        public StoryBlueprintParser(AIActionTypeResolver actionTypeResolver)
         {
-            actionRegistry = actionFactories.ToDictionary(
-                f => f.ActionName,
-                f => f,
-                StringComparer.OrdinalIgnoreCase);
+            this.actionTypeResolver = actionTypeResolver;
 
             var contractResolver = new DefaultContractResolver
             {
@@ -83,7 +75,7 @@ namespace Gast.Unity.Infrastructure.Stories
                 return new CompoundTaskRef(r.CompoundTaskName);
 
             var action = BuildPrimitiveAction(r);
-            if (action == null) 
+            if (action == null)
                 return null;
 
             return new PrimitiveTaskRef(action);
@@ -97,17 +89,19 @@ namespace Gast.Unity.Infrastructure.Stories
                 return null;
             }
 
-            if (!actionRegistry.TryGetValue(taskRef.Action, out var factory))
+            try
             {
-                Debug.LogError($"[StoryBlueprintParser] No factory registered for action '{taskRef.Action}'.");
+                var actionType = actionTypeResolver.Resolve(taskRef.Action);
+                var json = taskRef.ParametersJson ?? "{}";
+                using var reader = new JsonTextReader(new StringReader(json));
+                var actionInstance = parameterSerializer.Deserialize(reader, actionType);
+                return (IAction<StoryActorContext, StoryWorldState>)actionInstance;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[StoryBlueprintParser] Failed to create action '{taskRef.Action}': {ex.Message}");
                 return null;
             }
-
-            var json = taskRef.ParametersJson ?? "{}";
-            using var reader = new JsonTextReader(new StringReader(json));
-            var parameters = parameterSerializer.Deserialize(reader, factory.ParameterType);
-
-            return factory.Create(parameters);
         }
     }
 }

@@ -14,7 +14,6 @@ using Gast.Unity.Infrastructure.Pickups;
 using Gast.Unity.Infrastructure.Remoting.AI;
 using Gast.Unity.Infrastructure.Services;
 using Gast.Unity.Infrastructure.Stories;
-using Gast.Unity.Infrastructure.Stories.Factories;
 
 namespace Gast.Unity.Infrastructure
 {
@@ -92,12 +91,10 @@ namespace Gast.Unity.Infrastructure
             builder.Register<ReflectionObjectiveRegistry>(Lifetime.Singleton).As<IObjectiveRegistry>();
             builder.Register<ObjectiveTypeResolver>(Lifetime.Singleton);
             builder.Register<PlanConverter>(Lifetime.Singleton);
+            builder.Register<AIActionTypeResolver>(Lifetime.Singleton);
 
             // Story
             builder.Register<StoryActorContext>(Lifetime.Singleton);
-            builder.Register<SetObjectivesActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
-            builder.Register<WaitForCharacterDefeatedActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
-            builder.Register<WaitForItemAcquiredActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
             builder.Register<StoryBlueprintParser>(Lifetime.Singleton);
             builder.Register<StoryDomainFactory>(Lifetime.Singleton);
             builder.Register<StorySystem>(Lifetime.Singleton).As<IStoryRunner>();

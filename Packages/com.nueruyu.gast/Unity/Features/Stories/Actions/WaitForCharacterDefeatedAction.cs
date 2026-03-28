@@ -1,10 +1,12 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gast.Domain.AI.Attributes;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
 
 namespace Gast.Unity.Features.Stories.Actions
 {
+    [AIAction("WaitForCharacterDefeated")]
     public class WaitForCharacterDefeatedAction : IAction<StoryActorContext, StoryWorldState>
     {
         readonly CharacterId characterId;
