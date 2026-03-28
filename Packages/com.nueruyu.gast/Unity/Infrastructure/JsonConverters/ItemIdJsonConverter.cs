@@ -2,7 +2,7 @@ using System;
 using Gast.Domain.Economy;
 using Newtonsoft.Json;
 
-namespace Gast.Unity.Infrastructure.Stories.Converters
+namespace Gast.Unity.Infrastructure.JsonConverters
 {
     public class ItemIdJsonConverter : JsonConverter<ItemId>
     {

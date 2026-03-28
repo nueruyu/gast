@@ -6,7 +6,7 @@ using Gast.Application.AIPlanning;
 using Gast.Lib.AI;
 using Gast.Lib.Gaia;
 using Gast.Unity.Features.Stories;
-using Gast.Unity.Infrastructure.Stories.Converters;
+using Gast.Unity.Infrastructure.JsonConverters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using UnityEngine;

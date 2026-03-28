@@ -3,7 +3,7 @@ using System.IO;
 using Gast.Lib.Gaia;
 using Newtonsoft.Json;
 
-namespace Gast.Unity.Infrastructure.Stories.Converters
+namespace Gast.Unity.Infrastructure.JsonConverters
 {
     /// <summary>
     /// Deserializes a task reference that is either a plain string (compound task name)

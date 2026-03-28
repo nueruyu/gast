@@ -112,7 +112,6 @@ namespace Cryst.Composition
 
             // Story (Cryst-specific objective factories)
             builder.Register<DefeatCharacterObjectiveFactory>(Lifetime.Singleton).As<IStoryObjectiveFactory>();
-            builder.Register<DefendTerritoryObjectiveFactory>(Lifetime.Singleton).As<IStoryObjectiveFactory>();
         }
     }
 }

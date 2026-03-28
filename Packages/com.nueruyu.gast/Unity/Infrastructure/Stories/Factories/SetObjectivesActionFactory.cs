@@ -6,7 +6,7 @@ using Gast.Domain.Characters;
 using Gast.Lib.AI;
 using Gast.Unity.Features.Stories;
 using Gast.Unity.Features.Stories.Actions;
-using Gast.Unity.Infrastructure.Stories.Converters;
+using Gast.Unity.Infrastructure.JsonConverters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 

@@ -2,7 +2,7 @@ using System;
 using Gast.Domain.Characters;
 using Newtonsoft.Json;
 
-namespace Gast.Unity.Infrastructure.Stories.Converters
+namespace Gast.Unity.Infrastructure.JsonConverters
 {
     public class CharacterTypeIdJsonConverter : JsonConverter<CharacterTypeId>
     {
