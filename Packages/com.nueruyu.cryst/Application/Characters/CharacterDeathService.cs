@@ -24,7 +24,6 @@ namespace Cryst.Application.Characters
         public void Kill(ICharacter character, CharacterId? attackerId)
         {
             var baseCharacter = character.As<BaseCharacter>();
-            if (!baseCharacter.Status.IsAlive.Value) return;
 
             baseCharacter.Status.SetHealth(0);
             baseCharacter.Die();

@@ -37,7 +37,7 @@ namespace Cryst.Features.Characters.EventHandlers
 
             var result = hitActor.TakeDamage(damageInfo);
 
-            if (result == TakeDamageResult.Defeated)
+            if (result == CharacterDamageResult.Defeated)
             {
                 characterDeathService.Kill(e.HitCharacter, damageInfo.AttackerId);
             }

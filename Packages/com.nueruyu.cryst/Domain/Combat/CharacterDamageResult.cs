@@ -1,6 +1,6 @@
 namespace Cryst.Domain.Combat
 {
-    public enum TakeDamageResult
+    public enum CharacterDamageResult
     {
         /// <summary>
         /// Damage was not applied (e.g. the character is already dead).

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cryst.Application.Characters;
 using Cryst.Domain.Characters;
-using Cryst.Infrastructure.Characters;
+using Cryst.Domain.Combat;
 using Cysharp.Threading.Tasks;
 using Gast.Core.Tasks;
 using Gast.Domain.Characters;
@@ -39,19 +39,22 @@ namespace Cryst.Features.Characters.Vitals
 
                 foreach (var character in characterBuffer)
                 {
-                    if (!character.Is(out BaseCharacter baseCharacter)) continue;
+                    if (!character.Is(out BaseCharacter baseCharacter))
+                        continue;
 
                     var status = baseCharacter.Status;
-                    if (!status.IsAlive.Value) continue;
+                    if (!status.IsAlive.Value)
+                        continue;
 
                     status.SetHunger(status.Hunger.Value - settings.HungerDecreaseRate);
 
-                    if (status.Hunger.Value <= 0)
+                    if (status.Hunger.Value > 0)
+                        continue;
+
+                    if (baseCharacter.ApplyPassiveDamage(settings.StarvationDamage) ==
+                        CharacterDamageResult.Defeated)
                     {
-                        if (baseCharacter.ApplyPassiveDamage(settings.StarvationDamage))
-                        {
-                            characterDeathService.Kill(character, null);
-                        }
+                        characterDeathService.Kill(character, null);
                     }
                 }
             }
