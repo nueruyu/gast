@@ -12,13 +12,13 @@ namespace Gast.Unity.Features.Stories
     /// </summary>
     public class StorySystem : IStoryRunner, IDisposable
     {
-        readonly DynamicStoryDomainFactory domainFactory;
+        readonly StoryDomainFactory domainFactory;
         readonly StoryActorContext actorContext;
 
         CancellationTokenSource storyCts;
 
         public StorySystem(
-            DynamicStoryDomainFactory domainFactory,
+            StoryDomainFactory domainFactory,
             StoryActorContext actorContext)
         {
             this.domainFactory = domainFactory;

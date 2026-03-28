@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Gast.Application.AIPlanning;
+using Gast.Lib.AI;
 using Gast.Lib.Gaia;
 using Gast.Unity.Features.Stories;
 using Gast.Unity.Infrastructure.Stories.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using UnityEngine;
 
 namespace Gast.Unity.Infrastructure.Stories
 {
@@ -19,15 +21,15 @@ namespace Gast.Unity.Infrastructure.Stories
     /// </summary>
     public class StoryBlueprintParser
     {
-        readonly IReadOnlyDictionary<string, Type> actionParameterTypes;
+        readonly IReadOnlyDictionary<string, IStoryActionFactory> actionRegistry;
         readonly JsonSerializer parameterSerializer;
         readonly JsonSerializerSettings definitionSettings;
 
         public StoryBlueprintParser(IEnumerable<IStoryActionFactory> actionFactories)
         {
-            actionParameterTypes = actionFactories.ToDictionary(
+            actionRegistry = actionFactories.ToDictionary(
                 f => f.ActionName,
-                f => f.ParameterType,
+                f => f,
                 StringComparer.OrdinalIgnoreCase);
 
             var contractResolver = new DefaultContractResolver
@@ -72,23 +74,40 @@ namespace Gast.Unity.Infrastructure.Stories
 
         BlueprintMethod MapMethod(MethodDefinition m) => new(
             m.Name,
-            m.Tasks?.Select(MapTaskRef).ToList()
+            m.Tasks?.Select(MapTaskRef).Where(x => x != null).ToList()
         );
 
-        BlueprintTaskRef MapTaskRef(TaskReference r)
+        IBlueprintTaskRef MapTaskRef(TaskReference r)
         {
             if (r.IsCompound)
-                return BlueprintTaskRef.ForCompound(r.CompoundTaskName);
+                return new CompoundTaskRef(r.CompoundTaskName);
 
-            object parameters = null;
-            if (actionParameterTypes.TryGetValue(r.Action, out var paramType))
+            var action = BuildPrimitiveAction(r);
+            if (action == null) 
+                return null;
+
+            return new PrimitiveTaskRef(action);
+        }
+
+        IAction<StoryActorContext, StoryWorldState> BuildPrimitiveAction(TaskReference taskRef)
+        {
+            if (string.IsNullOrEmpty(taskRef.Action))
             {
-                var json = r.ParametersJson ?? "{}";
-                using var reader = new JsonTextReader(new StringReader(json));
-                parameters = parameterSerializer.Deserialize(reader, paramType);
+                Debug.LogError("[StoryBlueprintParser] Primitive task is missing 'action' field.");
+                return null;
             }
 
-            return BlueprintTaskRef.ForPrimitive(r.Action, parameters);
+            if (!actionRegistry.TryGetValue(taskRef.Action, out var factory))
+            {
+                Debug.LogError($"[StoryBlueprintParser] No factory registered for action '{taskRef.Action}'.");
+                return null;
+            }
+
+            var json = taskRef.ParametersJson ?? "{}";
+            using var reader = new JsonTextReader(new StringReader(json));
+            var parameters = parameterSerializer.Deserialize(reader, factory.ParameterType);
+
+            return factory.Create(parameters);
         }
     }
 }

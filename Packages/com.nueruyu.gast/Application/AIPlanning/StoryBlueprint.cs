@@ -39,37 +39,12 @@ namespace Gast.Application.AIPlanning
     public class BlueprintMethod
     {
         public string Name { get; }
-        public IReadOnlyList<BlueprintTaskRef> Tasks { get; }
+        public IReadOnlyList<IBlueprintTaskRef> Tasks { get; }
 
-        public BlueprintMethod(string name, IReadOnlyList<BlueprintTaskRef> tasks)
+        public BlueprintMethod(string name, IReadOnlyList<IBlueprintTaskRef> tasks)
         {
             Name = name;
             Tasks = tasks;
         }
-    }
-
-    /// <summary>
-    /// A single entry in a method's task list: either a compound-task reference or an inline primitive action.
-    /// </summary>
-    public class BlueprintTaskRef
-    {
-        public string CompoundTaskName { get; }
-        public string ActionName { get; }
-        /// <summary>Pre-deserialized action parameters. Null for compound references.</summary>
-        public object Parameters { get; }
-        public bool IsCompound => CompoundTaskName != null;
-
-        BlueprintTaskRef(string compoundTaskName, string actionName, object parameters)
-        {
-            CompoundTaskName = compoundTaskName;
-            ActionName = actionName;
-            Parameters = parameters;
-        }
-
-        public static BlueprintTaskRef ForCompound(string taskName)
-            => new(taskName, null, null);
-
-        public static BlueprintTaskRef ForPrimitive(string actionName, object parameters)
-            => new(null, actionName, parameters);
     }
 }

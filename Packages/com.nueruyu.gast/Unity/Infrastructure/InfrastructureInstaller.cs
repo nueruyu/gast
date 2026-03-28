@@ -99,7 +99,7 @@ namespace Gast.Unity.Infrastructure
             builder.Register<WaitForCharacterDefeatedActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
             builder.Register<WaitForItemAcquiredActionFactory>(Lifetime.Singleton).As<IStoryActionFactory>();
             builder.Register<StoryBlueprintParser>(Lifetime.Singleton);
-            builder.Register<DynamicStoryDomainFactory>(Lifetime.Singleton);
+            builder.Register<StoryDomainFactory>(Lifetime.Singleton);
             builder.Register<StorySystem>(Lifetime.Singleton).As<IStoryRunner>();
         }
     }

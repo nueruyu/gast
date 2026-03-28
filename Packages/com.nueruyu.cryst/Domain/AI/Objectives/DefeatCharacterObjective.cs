@@ -14,7 +14,7 @@ namespace Cryst.Domain.AI.Objectives
         [AIObjectiveParameter("Number of enemies to defeat")]
         public int TargetQuantity { get; }
 
-        private readonly Live<int> currentQuantity = new(0);
+        readonly Live<int> currentQuantity = new(0);
         public ILive<int> CurrentQuantity => currentQuantity;
         public ILive<bool> IsCompleted { get; }
 
