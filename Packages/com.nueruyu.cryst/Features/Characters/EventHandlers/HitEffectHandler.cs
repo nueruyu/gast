@@ -1,28 +1,21 @@
 using Gast.Domain.Characters;
 using Cryst.Domain.Characters;
-using Gast.Domain.Loot;
 using Cryst.Domain.Combat;
-using Gast.Core.Events;
+using Cryst.Application.Characters;
 
 namespace Cryst.Features.Characters.EventHandlers
 {
     public class HitEffectHandler
     {
-        readonly IDomainEventPublisher eventPublisher;
         readonly ICharacterRepository characterRepository;
-        readonly ICharacterTypeRepository typeRepository;
-        readonly ICharacterBrainManager brainManager;
+        readonly ICharacterDeathService characterDeathService;
 
         public HitEffectHandler(
-            IDomainEventPublisher eventPublisher,
             ICharacterRepository characterRepository,
-            ICharacterTypeRepository typeRepository,
-            ICharacterBrainManager brainManager)
+            ICharacterDeathService characterDeathService)
         {
-            this.eventPublisher = eventPublisher;
             this.characterRepository = characterRepository;
-            this.typeRepository = typeRepository;
-            this.brainManager = brainManager;
+            this.characterDeathService = characterDeathService;
         }
 
         public void Handle(CharacterHitEvent<AttackInfo> e)
@@ -46,18 +39,7 @@ namespace Cryst.Features.Characters.EventHandlers
 
             if (result == TakeDamageResult.Defeated)
             {
-                brainManager.DetachBrain(hitActor.Id);
-
-                var typeDefinition = typeRepository.Get(hitActor.TypeId);
-
-                eventPublisher.Publish(
-                    new CharacterDefeatedEvent(e.HitCharacter, damageInfo.AttackerId));
-
-                if (typeDefinition.TryGetSettings<ILootTable>(out var lootTable))
-                {
-                    eventPublisher.Publish(
-                        new LootPotentialDropEvent(lootTable, hitActor.Body.Position));
-                }
+                characterDeathService.Kill(e.HitCharacter, damageInfo.AttackerId);
             }
         }
     }

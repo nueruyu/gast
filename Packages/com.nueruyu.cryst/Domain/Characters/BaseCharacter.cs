@@ -68,27 +68,23 @@ namespace Cryst.Domain.Characters
 
             if (Status.Health.Value <= 0)
             {
-                Die();
                 return TakeDamageResult.Defeated;
             }
 
             return TakeDamageResult.Alive;
         }
 
-        public void ApplyPassiveDamage(float amount)
+        public bool ApplyPassiveDamage(float amount)
         {
-            if (!Status.IsAlive.Value) return;
+            if (!Status.IsAlive.Value) return false;
 
             Status.SetHealth(Status.Health.Value - amount);
 
-            if (Status.Health.Value <= 0)
-            {
-                Die();
-            }
+            return Status.Health.Value <= 0;
         }
 
         void Hit(DamageInfo damageInfo) => actionController.ExecuteAction(new HitCommand(damageInfo));
 
-        void Die() => actionController.ExecuteAction(new DieCommand());
+        public void Die() => actionController.ExecuteAction(new DieCommand());
     }
 }

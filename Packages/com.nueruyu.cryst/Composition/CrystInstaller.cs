@@ -30,6 +30,7 @@ using Gast.Unity.Features.Characters;
 using Gast.Unity.Shared.DI;
 using Gast.Unity.UI.Hud.Objectives;
 using Gast.Unity.UI.Hud.PlayerStatus;
+using Cryst.Application.Characters;
 using Cryst.Features.Characters.Vitals;
 using GuardAction = Cryst.Features.CharacterActions.Actions.Guard.GuardAction;
 
@@ -59,6 +60,7 @@ namespace Cryst.Composition
             // Character
             builder.Register<CharacterActionFactory>().As<ICharacterActionFactory>();
             builder.Register<CharacterFactory>(Lifetime.Singleton).As<ICharacterFactory>();
+            builder.Register<CharacterDeathService>(Lifetime.Singleton).As<ICharacterDeathService>();
 
             // Character Actions (Transient)
             builder.Register<AttackAction>(Lifetime.Transient);
