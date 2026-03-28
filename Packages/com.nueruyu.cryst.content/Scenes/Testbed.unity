@@ -2713,6 +2713,7 @@ MonoBehaviour:
   itemDatabase: {fileID: 11400000, guid: a794ce9d766cf5743b1888538e212679, type: 2}
   gaiaServerSettings: {fileID: 11400000, guid: 223e8fcea14aac9429172af88416417c, type: 2}
   mockAIPlanningSettings: {fileID: 11400000, guid: 089904e82d149c6459e8caf3bbf99939, type: 2}
+  mockStoryGenerationSettings: {fileID: 11400000, guid: be24367c3aeec9941a1be3519944da04, type: 2}
   damageAreaSettings: {fileID: 11400000, guid: 2ab693018a44543469d9edba50b140ce, type: 2}
   uiAssetSettings: {fileID: 11400000, guid: 61e925689a3c27344b0af979a9ee3ccd, type: 2}
   cameraRegistry: {fileID: 313278518}

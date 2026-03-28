@@ -1,8 +1,13 @@
+using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
 using Gast.Unity.Features.Stories;
 using Gast.Unity.Features.Stories.Actions;
+using Gast.Unity.Infrastructure.JsonConverters;
 using Gast.Unity.Infrastructure.Remoting.AI;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,11 +15,25 @@ namespace Gast.Unity.Infrastructure.Stories.Factories
 {
     public class SetObjectivesActionFactory : IStoryActionFactory<SetObjectivesActionFactory.Params>
     {
-        readonly GoalInstantiator goalInstantiator;
+        readonly ObjectiveTypeResolver typeResolver;
+        readonly JsonSerializer objectiveSerializer;
 
-        public SetObjectivesActionFactory(GoalInstantiator goalInstantiator)
+        public SetObjectivesActionFactory(ObjectiveTypeResolver typeResolver)
         {
-            this.goalInstantiator = goalInstantiator;
+            this.typeResolver = typeResolver;
+            objectiveSerializer = JsonSerializer.Create(new JsonSerializerSettings
+            {
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new SnakeCaseNamingStrategy()
+                },
+                Converters =
+                {
+                    new CharacterIdJsonConverter(),
+                    new CharacterTypeIdJsonConverter(),
+                    new ItemIdJsonConverter()
+                }
+            });
         }
 
         public string ActionName => "SetObjectives";
@@ -23,9 +42,9 @@ namespace Gast.Unity.Infrastructure.Stories.Factories
         {
             var assignments = parameters.Assignments.Select(def =>
             {
-                var objective = goalInstantiator.CreateGoal(
-                    def.ObjectiveType,
-                    def.ObjectiveParameters ?? new Dictionary<string, object>());
+                var type = typeResolver.Resolve(def.ObjectiveType);
+                var jObject = JObject.FromObject(def.ObjectiveParameters ?? new Dictionary<string, object>());
+                var objective = (IAIObjective)jObject.ToObject(type, objectiveSerializer);
 
                 return new SetObjectivesAction.Assignment(def.CharacterId, objective);
             }).ToList();

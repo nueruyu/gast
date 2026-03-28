@@ -90,7 +90,7 @@ namespace Gast.Unity.Infrastructure
             // AI Tools & Objectives
             builder.Register<ReflectionToolRegistry>(Lifetime.Singleton).As<IToolRegistry>();
             builder.Register<ReflectionObjectiveRegistry>(Lifetime.Singleton).As<IObjectiveRegistry>();
-            builder.Register<GoalInstantiator>(Lifetime.Singleton);
+            builder.Register<ObjectiveTypeResolver>(Lifetime.Singleton);
             builder.Register<PlanConverter>(Lifetime.Singleton);
 
             // Story
