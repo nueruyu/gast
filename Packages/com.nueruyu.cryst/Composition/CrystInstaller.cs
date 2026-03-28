@@ -33,8 +33,6 @@ using Gast.Unity.UI.Hud.PlayerStatus;
 using Cryst.Application.Characters;
 using Cryst.Features.Characters.Vitals;
 using GuardAction = Cryst.Features.CharacterActions.Actions.Guard.GuardAction;
-using Cryst.Infrastructure.Stories;
-using Gast.Unity.Features.Stories;
 
 namespace Cryst.Composition
 {
@@ -110,8 +108,6 @@ namespace Cryst.Composition
             builder.Register<HitEffectHandler>(Lifetime.Singleton);
             builder.Register<CharacterDecompositionHandler>(Lifetime.Singleton);
 
-            // Story (Cryst-specific objective factories)
-            builder.Register<DefeatCharacterObjectiveFactory>(Lifetime.Singleton).As<IStoryObjectiveFactory>();
         }
     }
 }
