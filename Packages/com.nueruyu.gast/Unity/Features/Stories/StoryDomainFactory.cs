@@ -1,15 +1,16 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gast.Application.AIPlanning;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
-using UnityEngine;
 
 namespace Gast.Unity.Features.Stories
 {
     /// <summary>
     ///     Builds an <see cref="AIDomain{TActorContext,TWorldState}" /> from a <see cref="StoryBlueprint" />.
     ///     Parameters on each <see cref="IBlueprintTaskRef" /> are already fully deserialized by
+    ///     <see cref="Gast.Unity.Infrastructure.Remoting.AI.StoryBlueprintMapper" />.
     /// </summary>
     public class StoryDomainFactory
     {
@@ -26,30 +27,9 @@ namespace Gast.Unity.Features.Stories
             foreach (var taskDef in blueprint.Tasks.Where(t => t.Type == "compound"))
             {
                 var compoundBuilder = compoundBuilders[taskDef.Name];
-                if (taskDef.Methods == null)
-                {
-                    Debug.LogError(
-                        $"[StoryDomainFactory] Methods is null. task: {taskDef.Name}");
-                    continue;
-                }
-
-                if (taskDef.Methods.Count == 0)
-                {
-                    Debug.LogError(
-                        $"[StoryDomainFactory] Methods is empty. task: {taskDef.Name}");
-                    continue;
-                }
 
                 foreach (var methodDef in taskDef.Methods)
                 {
-                    if (methodDef.Tasks == null || methodDef.Tasks.Count == 0)
-                    {
-                        Debug.LogWarning(
-                            $"[StoryDomainFactory] Skipping method '{methodDef.Name}' " +
-                            $"with no tasks (task: {taskDef.Name}).");
-                        continue;
-                    }
-
                     var methodBuilder = compoundBuilder.AddMethod(methodDef.Name);
 
                     foreach (var taskRef in methodDef.Tasks)
@@ -59,26 +39,13 @@ namespace Gast.Unity.Features.Stories
                                 if (!compoundBuilders.TryGetValue(
                                         compoundRef.CompoundTaskName,
                                         out var referencedBuilder))
-                                {
-                                    Debug.LogError(
-                                        "[DynamicStoryDomainFactory] Unknown " +
-                                        $"compound task reference: '{compoundRef.CompoundTaskName}'.");
-                                    continue;
-                                }
+                                    throw new InvalidOperationException(
+                                        $"Unknown compound task reference: '{compoundRef.CompoundTaskName}'.");
 
                                 methodBuilder.Do(referencedBuilder);
                                 break;
                             case PrimitiveTaskRef primitiveRef:
-                                if (primitiveRef.Action == null)
-                                    Debug.LogError(
-                                        $"[DynamicStoryDomainFactory] Action is null. method: {methodDef.Name}, " +
-                                        $"task: {primitiveRef}");
-                                else
-                                    methodBuilder.Do(primitiveRef.Action);
-                                break;
-                            default:
-                                Debug.LogError(
-                                    $"[DynamicStoryDomainFactory] Unknown task {taskRef?.GetType()}");
+                                methodBuilder.Do(primitiveRef.Action);
                                 break;
                         }
                 }

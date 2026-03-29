@@ -31,7 +31,11 @@ namespace Gast.Lib.Gaia
     {
         public string Name { get; set; }
         public string Type { get; set; }
+
+        [JsonOptional]
         public string Selector { get; set; }
+
+        [JsonOptional]
         public List<MethodDefinitionDto> Methods { get; set; }
     }
 
@@ -49,16 +53,20 @@ namespace Gast.Lib.Gaia
     /// <summary>
     ///     Represents one entry in a method's task list.
     ///     Exactly one of <see cref="CompoundTaskName" /> or <see cref="Action" /> is set.
+    ///     Deserialized via <see cref="TaskReferenceDtoJsonConverter" />, so attributes do not apply.
     /// </summary>
     public class TaskReferenceDto
     {
         /// <summary>Name of a compound task to call (when the JSON value is a plain string).</summary>
+        [JsonOptional]
         public string CompoundTaskName { get; set; }
 
         /// <summary>Action name of an inline primitive task (when the JSON value is an object).</summary>
+        [JsonOptional]
         public string Action { get; set; }
 
         /// <summary>Parameters of an inline primitive task. Null when this is a compound reference.</summary>
+        [JsonOptional]
         public Dictionary<string, object> Parameters { get; set; }
 
         public bool IsCompound => CompoundTaskName != null;

@@ -29,8 +29,14 @@ namespace Gast.Lib.Gaia
     {
         public string SessionId { get; set; }
         public SessionStatus Status { get; set; }
+
+        [JsonOptional]
         public List<ToolCallDto> ToolCalls { get; set; }
+
+        [JsonOptional]
         public PlanDto Plan { get; set; }
+
+        [JsonOptional]
         public string ErrorMessage { get; set; }
     }
 
@@ -66,7 +72,11 @@ namespace Gast.Lib.Gaia
     {
         public string OverallObjective { get; set; }
         public List<ObjectiveDto> Objectives { get; set; }
+
+        [JsonOptional]
         public StrategyDto Strategy { get; set; }
+
+        [JsonOptional]
         public string Thought { get; set; }
     }
 
@@ -81,6 +91,8 @@ namespace Gast.Lib.Gaia
     {
         public string Priority { get; set; }
         public string Engagement { get; set; }
+
+        [JsonOptional]
         public Dictionary<string, object> RetreatCondition { get; set; }
     }
 }

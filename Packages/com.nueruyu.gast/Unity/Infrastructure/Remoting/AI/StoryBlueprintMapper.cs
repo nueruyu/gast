@@ -7,7 +7,6 @@ using Gast.Unity.Features.Stories;
 using Gast.Unity.Infrastructure.AI;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using UnityEngine;
 
 namespace Gast.Unity.Infrastructure.Remoting.AI
 {
@@ -36,20 +35,16 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
         {
             return new BlueprintTask(
                 t.Name, t.Type, t.Selector,
-                t.Methods.Select(MapMethod).ToList()
+                t.Methods?.Select(MapMethod).ToList()
             );
         }
 
         BlueprintMethod MapMethod(MethodDefinitionDto m)
         {
-            var taskRefs = m.Tasks.Select(MapTaskRef).Where(x => x != null).ToList();
-
-            if (m.Tasks.Count > 0 && taskRefs.Count == 0)
-                Debug.LogWarning(
-                    $"[StoryBlueprintMapper] All tasks in method '{m.Name}' failed to map " +
-                    $"({m.Tasks.Count} task(s) were filtered out).");
-
-            return new BlueprintMethod(m.Name, taskRefs);
+            return new BlueprintMethod(
+                m.Name,
+                m.Tasks.Select(MapTaskRef).ToList()
+            );
         }
 
         IBlueprintTaskRef MapTaskRef(TaskReferenceDto r)
@@ -57,36 +52,16 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
             if (r.IsCompound)
                 return new CompoundTaskRef(r.CompoundTaskName);
 
-            var action = BuildPrimitiveAction(r);
-            if (action == null)
-                return null;
-
-            return new PrimitiveTaskRef(action);
+            return new PrimitiveTaskRef(BuildPrimitiveAction(r));
         }
 
         IAction<StoryActorContext, StoryWorldState> BuildPrimitiveAction(TaskReferenceDto taskRef)
         {
-            if (string.IsNullOrEmpty(taskRef.Action))
-            {
-                Debug.LogError("[StoryBlueprintMapper] Primitive task is missing 'action' field.");
-                return null;
-            }
-
-            try
-            {
-                var actionType = actionTypeResolver.Resolve(taskRef.Action);
-                var jObj = taskRef.Parameters != null
-                    ? JObject.FromObject(taskRef.Parameters)
-                    : new JObject();
-                var actionInstance = jObj.ToObject(actionType, parameterSerializer);
-                return (IAction<StoryActorContext, StoryWorldState>)actionInstance;
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"[StoryBlueprintMapper] Failed to create action '{taskRef.Action}': {ex.Message}");
-                Debug.LogException(ex);
-                return null;
-            }
+            var actionType = actionTypeResolver.Resolve(taskRef.Action);
+            var jObj = taskRef.Parameters != null
+                ? JObject.FromObject(taskRef.Parameters)
+                : new JObject();
+            return (IAction<StoryActorContext, StoryWorldState>)jObj.ToObject(actionType, parameterSerializer);
         }
     }
 }

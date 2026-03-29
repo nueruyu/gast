@@ -1,3 +1,4 @@
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -10,7 +11,7 @@ namespace Gast.Lib.Gaia
         {
             return new JsonSerializerSettings
             {
-                ContractResolver = new DefaultContractResolver
+                ContractResolver = new RequiredByDefaultContractResolver
                 {
                     NamingStrategy = new SnakeCaseNamingStrategy()
                 },
@@ -20,6 +21,20 @@ namespace Gast.Lib.Gaia
                     new TaskReferenceDtoJsonConverter()
                 }
             };
+        }
+
+        class RequiredByDefaultContractResolver : DefaultContractResolver
+        {
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                var property = base.CreateProperty(member, memberSerialization);
+
+                if (property.Required == Required.Default)
+                    if (member.GetCustomAttribute<JsonOptionalAttribute>() == null)
+                        property.Required = Required.Always;
+
+                return property;
+            }
         }
     }
 }
