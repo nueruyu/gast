@@ -35,7 +35,7 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
         {
             return new BlueprintTask(
                 t.Name, t.Type, t.Selector,
-                t.Methods?.Select(MapMethod).ToList()
+                t.Methods?.Select(MapMethod).ToArray() ?? Array.Empty<BlueprintMethod>()
             );
         }
 
@@ -43,7 +43,7 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
         {
             return new BlueprintMethod(
                 m.Name,
-                m.Tasks.Select(MapTaskRef).ToList()
+                m.Tasks.Select(MapTaskRef).ToArray()
             );
         }
 

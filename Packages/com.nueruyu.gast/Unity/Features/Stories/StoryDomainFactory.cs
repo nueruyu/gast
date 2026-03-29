@@ -28,8 +28,16 @@ namespace Gast.Unity.Features.Stories
             {
                 var compoundBuilder = compoundBuilders[taskDef.Name];
 
+                if (taskDef.Methods.Count == 0)
+                    throw new InvalidOperationException(
+                        $"Compound task '{taskDef.Name}' has no methods.");
+
                 foreach (var methodDef in taskDef.Methods)
                 {
+                    if (methodDef.Tasks.Count == 0)
+                        throw new InvalidOperationException(
+                            $"Method '{methodDef.Name}' in task '{taskDef.Name}' has no tasks.");
+
                     var methodBuilder = compoundBuilder.AddMethod(methodDef.Name);
 
                     foreach (var taskRef in methodDef.Tasks)
@@ -47,6 +55,9 @@ namespace Gast.Unity.Features.Stories
                             case PrimitiveTaskRef primitiveRef:
                                 methodBuilder.Do(primitiveRef.Action);
                                 break;
+                            default:
+                                throw new InvalidOperationException(
+                                    $"Unknown task reference type: {taskRef.GetType().Name}");
                         }
                 }
             }
