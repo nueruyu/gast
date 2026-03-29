@@ -34,7 +34,7 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
         BlueprintTask MapTask(TaskDefinitionDto t)
         {
             return new BlueprintTask(
-                t.Name, t.Type, t.Selector,
+                t.Name, MapTaskType(t.Type), t.Selector,
                 t.Methods?.Select(MapMethod).ToArray() ?? Array.Empty<BlueprintMethod>()
             );
         }
@@ -54,6 +54,13 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
 
             return new PrimitiveTaskRef(BuildPrimitiveAction(r));
         }
+
+        static BlueprintTaskType MapTaskType(TaskType type) => type switch
+        {
+            TaskType.Compound => BlueprintTaskType.Compound,
+            TaskType.Primitive => BlueprintTaskType.Primitive,
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown task type.")
+        };
 
         IAction<StoryActorContext, StoryWorldState> BuildPrimitiveAction(TaskReferenceDto taskRef)
         {

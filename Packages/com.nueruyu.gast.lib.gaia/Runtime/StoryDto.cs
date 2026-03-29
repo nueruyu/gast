@@ -27,10 +27,16 @@ namespace Gast.Lib.Gaia
         public List<TaskDefinitionDto> Tasks { get; set; }
     }
 
+    public enum TaskType
+    {
+        Compound,
+        Primitive
+    }
+
     public class TaskDefinitionDto
     {
         public string Name { get; set; }
-        public string Type { get; set; }
+        public TaskType Type { get; set; }
 
         [JsonOptional]
         public string Selector { get; set; }

@@ -20,11 +20,11 @@ namespace Gast.Unity.Features.Stories
 
             // Pass 1: register all compound task builders so cross-references can be resolved
             var compoundBuilders = new Dictionary<string, CompoundTaskBuilder<StoryActorContext, StoryWorldState>>();
-            foreach (var taskDef in blueprint.Tasks.Where(t => t.Type == "compound"))
+            foreach (var taskDef in blueprint.Tasks.Where(t => t.Type == BlueprintTaskType.Compound))
                 compoundBuilders[taskDef.Name] = domainBuilder.DefineCompound(taskDef.Name);
 
             // Pass 2: populate each compound task with its methods and subtasks
-            foreach (var taskDef in blueprint.Tasks.Where(t => t.Type == "compound"))
+            foreach (var taskDef in blueprint.Tasks.Where(t => t.Type == BlueprintTaskType.Compound))
             {
                 var compoundBuilder = compoundBuilders[taskDef.Name];
 
