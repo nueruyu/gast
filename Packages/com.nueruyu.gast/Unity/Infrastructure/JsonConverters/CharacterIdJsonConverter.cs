@@ -15,7 +15,7 @@ namespace Gast.Unity.Infrastructure.JsonConverters
                 throw new JsonSerializationException(
                     $"Expected string for CharacterId, got {reader.TokenType}.");
 
-            return CharacterId.FromGuid(Guid.Parse((string)reader.Value));
+            return CharacterId.FromString((string)reader.Value);
         }
 
         public override void WriteJson(JsonWriter writer, CharacterId value, JsonSerializer serializer)

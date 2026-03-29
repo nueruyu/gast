@@ -10,7 +10,7 @@ namespace Gast.Unity.Features.Economy
         [SerializeField]
         string id;
 
-        public ItemId Id => ItemId.FromGuid(Guid.Parse(id));
+        public ItemId Id => ItemId.FromString(id);
 
         void OnValidate()
         {
