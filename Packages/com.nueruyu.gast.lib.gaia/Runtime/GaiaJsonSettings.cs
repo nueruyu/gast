@@ -29,9 +29,12 @@ namespace Gast.Lib.Gaia
             {
                 var property = base.CreateProperty(member, memberSerialization);
 
-                if (property.Required == Required.Default)
-                    if (member.GetCustomAttribute<JsonOptionalAttribute>() == null)
-                        property.Required = Required.Always;
+                if (property.Required == Required.Default
+                    && property.Writable
+                    && member.GetCustomAttribute<JsonOptionalAttribute>() == null)
+                {
+                    property.Required = Required.Always;
+                }
 
                 return property;
             }
