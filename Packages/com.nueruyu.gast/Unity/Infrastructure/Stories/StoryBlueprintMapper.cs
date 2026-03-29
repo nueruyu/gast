@@ -42,10 +42,16 @@ namespace Gast.Unity.Infrastructure.Stories
 
         BlueprintMethod MapMethod(MethodDefinitionDto m)
         {
-            return new BlueprintMethod(
-                m.Name,
-                m.Tasks?.Select(MapTaskRef).Where(x => x != null).ToList()
-            );
+            var taskRefs = m.Tasks?.Select(MapTaskRef).Where(x => x != null).ToList();
+
+            if (m.Tasks != null && m.Tasks.Count > 0 && (taskRefs == null || taskRefs.Count == 0))
+            {
+                Debug.LogWarning(
+                    $"[StoryBlueprintMapper] All tasks in method '{m.Name}' failed to map " +
+                    $"({m.Tasks.Count} task(s) were filtered out).");
+            }
+
+            return new BlueprintMethod(m.Name, taskRefs);
         }
 
         IBlueprintTaskRef MapTaskRef(TaskReferenceDto r)

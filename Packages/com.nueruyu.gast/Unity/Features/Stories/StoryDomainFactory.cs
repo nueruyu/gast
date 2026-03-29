@@ -8,8 +8,8 @@ using UnityEngine;
 namespace Gast.Unity.Features.Stories
 {
     /// <summary>
-    /// Builds an <see cref="AIDomain{TActorContext,TWorldState}"/> from a <see cref="StoryBlueprint"/>.
-    /// Parameters on each <see cref="IBlueprintTaskRef"/> are already fully deserialized by
+    ///     Builds an <see cref="AIDomain{TActorContext,TWorldState}" /> from a <see cref="StoryBlueprint" />.
+    ///     Parameters on each <see cref="IBlueprintTaskRef" /> are already fully deserialized by
     /// </summary>
     public class StoryDomainFactory
     {
@@ -20,25 +20,39 @@ namespace Gast.Unity.Features.Stories
             // Pass 1: register all compound task builders so cross-references can be resolved
             var compoundBuilders = new Dictionary<string, CompoundTaskBuilder<StoryActorContext, StoryWorldState>>();
             foreach (var taskDef in blueprint.Tasks.Where(t => t.Type == "compound"))
-            {
                 compoundBuilders[taskDef.Name] = domainBuilder.DefineCompound(taskDef.Name);
-            }
 
             // Pass 2: populate each compound task with its methods and subtasks
             foreach (var taskDef in blueprint.Tasks.Where(t => t.Type == "compound"))
             {
                 var compoundBuilder = compoundBuilders[taskDef.Name];
                 if (taskDef.Methods == null)
+                {
+                    Debug.LogError(
+                        $"[DynamicStoryDomainFactory] Methods is null. task: {taskDef.Name}");
                     continue;
+                }
+
+                if (taskDef.Methods.Count == 0)
+                {
+                    Debug.LogError(
+                        $"[DynamicStoryDomainFactory] Methods is empty. task: {taskDef.Name}");
+                    continue;
+                }
 
                 foreach (var methodDef in taskDef.Methods)
                 {
-                    var methodBuilder = compoundBuilder.AddMethod(methodDef.Name);
-                    if (methodDef.Tasks == null)
+                    if (methodDef.Tasks == null || methodDef.Tasks.Count == 0)
+                    {
+                        Debug.LogWarning(
+                            $"[StoryDomainFactory] Skipping method '{methodDef.Name}' " +
+                            $"with no tasks (task: {taskDef.Name}).");
                         continue;
+                    }
+
+                    var methodBuilder = compoundBuilder.AddMethod(methodDef.Name);
 
                     foreach (var taskRef in methodDef.Tasks)
-                    {
                         switch (taskRef)
                         {
                             case CompoundTaskRef compoundRef:
@@ -55,11 +69,18 @@ namespace Gast.Unity.Features.Stories
                                 methodBuilder.Do(referencedBuilder);
                                 break;
                             case PrimitiveTaskRef primitiveRef:
-                                if (primitiveRef.Action != null)
+                                if (primitiveRef.Action == null)
+                                    Debug.LogError(
+                                        $"[DynamicStoryDomainFactory] Action is null. method: {methodDef.Name}, " +
+                                        $"task: {primitiveRef}");
+                                else
                                     methodBuilder.Do(primitiveRef.Action);
                                 break;
+                            default:
+                                Debug.LogError(
+                                    $"[DynamicStoryDomainFactory] Unknown task {taskRef?.GetType()}");
+                                break;
                         }
-                    }
                 }
             }
 
