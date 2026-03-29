@@ -21,9 +21,7 @@ namespace Gast.Lib.AI.Builders
         internal ITask<TActorContext, TWorldState> GetTask(string name)
         {
             if (builtTasks.TryGetValue(name, out var task))
-            {
                 return task;
-            }
 
             if (builders.TryGetValue(name, out var builder))
             {
@@ -38,9 +36,8 @@ namespace Gast.Lib.AI.Builders
         public AIDomain<TActorContext, TWorldState> Build(string rootTaskName)
         {
             foreach (var name in builders.Keys)
-            {
                 GetTask(name);
-            }
+
             return new AIDomain<TActorContext, TWorldState>(builtTasks.Values, rootTaskName);
         }
     }
