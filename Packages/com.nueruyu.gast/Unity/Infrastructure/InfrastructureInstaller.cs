@@ -10,6 +10,7 @@ using Gast.Unity.Infrastructure.AI;
 using Gast.Unity.Infrastructure.Characters;
 using Gast.Unity.Infrastructure.HitDetection;
 using Gast.Unity.Infrastructure.Items;
+using Gast.Unity.Infrastructure.JsonConverters;
 using Gast.Unity.Infrastructure.Pickups;
 using Gast.Unity.Infrastructure.Remoting.AI;
 using Gast.Unity.Infrastructure.Services;
@@ -79,6 +80,7 @@ namespace Gast.Unity.Infrastructure
             builder.Register<ReflectionToolRegistry>().As<IToolRegistry>();
             builder.Register<ReflectionObjectiveRegistry>().As<IObjectiveRegistry>();
             builder.Register<ObjectiveTypeResolver>();
+            builder.Register<GastJsonSettings>();
             builder.Register<PlanConverter>();
             builder.Register<AIActionTypeResolver>();
 

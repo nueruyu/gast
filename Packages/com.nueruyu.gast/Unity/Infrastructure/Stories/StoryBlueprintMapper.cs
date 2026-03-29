@@ -17,10 +17,10 @@ namespace Gast.Unity.Infrastructure.Stories
         readonly AIActionTypeResolver actionTypeResolver;
         readonly JsonSerializer parameterSerializer;
 
-        public StoryBlueprintMapper(AIActionTypeResolver actionTypeResolver)
+        public StoryBlueprintMapper(AIActionTypeResolver actionTypeResolver, GastJsonSettings jsonSettings)
         {
             this.actionTypeResolver = actionTypeResolver;
-            parameterSerializer = JsonSerializer.Create(GastJsonSettings.Create());
+            parameterSerializer = JsonSerializer.Create(jsonSettings.Create());
         }
 
         public StoryBlueprint Map(StoryDefinitionDto def)
