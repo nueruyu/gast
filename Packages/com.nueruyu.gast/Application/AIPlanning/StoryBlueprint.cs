@@ -2,12 +2,6 @@ using System.Collections.Generic;
 
 namespace Gast.Application.AIPlanning
 {
-    public enum BlueprintTaskType
-    {
-        Compound,
-        Primitive
-    }
-
     /// <summary>
     ///     Domain model representing a parsed story definition.
     ///     Produced by <c>IStoryGenerationService</c> and consumed by <c>IStoryRunner</c>.
@@ -24,18 +18,19 @@ namespace Gast.Application.AIPlanning
         public IReadOnlyList<BlueprintTask> Tasks { get; }
     }
 
+    /// <summary>
+    ///     Represents a compound task definition with its methods.
+    /// </summary>
     public class BlueprintTask
     {
-        public BlueprintTask(string name, BlueprintTaskType type, string selector, IReadOnlyList<BlueprintMethod> methods)
+        public BlueprintTask(string name, string selector, IReadOnlyList<BlueprintMethod> methods)
         {
             Name = name;
-            Type = type;
             Selector = selector;
             Methods = methods;
         }
 
         public string Name { get; }
-        public BlueprintTaskType Type { get; }
         public string Selector { get; }
         public IReadOnlyList<BlueprintMethod> Methods { get; }
     }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Gast.Application.AIPlanning;
 using Gast.Lib.AI;
 using Gast.Lib.AI.Builders;
@@ -20,11 +19,11 @@ namespace Gast.Unity.Features.Stories
 
             // Pass 1: register all compound task builders so cross-references can be resolved
             var compoundBuilders = new Dictionary<string, CompoundTaskBuilder<StoryActorContext, StoryWorldState>>();
-            foreach (var taskDef in blueprint.Tasks.Where(t => t.Type == BlueprintTaskType.Compound))
+            foreach (var taskDef in blueprint.Tasks)
                 compoundBuilders[taskDef.Name] = domainBuilder.DefineCompound(taskDef.Name);
 
             // Pass 2: populate each compound task with its methods and subtasks
-            foreach (var taskDef in blueprint.Tasks.Where(t => t.Type == BlueprintTaskType.Compound))
+            foreach (var taskDef in blueprint.Tasks)
             {
                 var compoundBuilder = compoundBuilders[taskDef.Name];
 
