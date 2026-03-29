@@ -4,7 +4,6 @@ using Gast.Application.AIPlanning;
 using Gast.Lib.Gaia;
 using Gast.Unity.Infrastructure.Stories;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Gast.Unity.Infrastructure.Remoting.AI
 {
@@ -18,14 +17,7 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
         {
             this.settings = settings;
             this.mapper = mapper;
-            definitionSettings = new JsonSerializerSettings
-            {
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new SnakeCaseNamingStrategy()
-                },
-                Converters = { new TaskReferenceDtoJsonConverter() }
-            };
+            definitionSettings = GaiaJsonSettings.Create();
         }
 
         public Task<StoryBlueprint> GenerateStoryAsync(string instruction, CancellationToken cancellationToken)

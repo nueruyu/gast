@@ -3,8 +3,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 
 namespace Gast.Lib.Gaia
 {
@@ -18,18 +16,7 @@ namespace Gast.Lib.Gaia
         {
             this.settings = settings;
             httpClient = new HttpClient { Timeout = System.TimeSpan.FromSeconds(60) };
-            serializerSettings = new JsonSerializerSettings
-            {
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new SnakeCaseNamingStrategy(),
-                },
-                Converters =
-                {
-                    new StringEnumConverter(new SnakeCaseNamingStrategy()),
-                    new TaskReferenceDtoJsonConverter(),
-                }
-            };
+            serializerSettings = GaiaJsonSettings.Create();
         }
 
         public async Task<PlanningSessionDto> CreateSessionAsync(

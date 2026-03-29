@@ -8,7 +8,6 @@ using Gast.Unity.Infrastructure.AI;
 using Gast.Unity.Infrastructure.JsonConverters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using UnityEngine;
 
 namespace Gast.Unity.Infrastructure.Stories
@@ -21,22 +20,7 @@ namespace Gast.Unity.Infrastructure.Stories
         public StoryBlueprintMapper(AIActionTypeResolver actionTypeResolver)
         {
             this.actionTypeResolver = actionTypeResolver;
-
-            var contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new SnakeCaseNamingStrategy()
-            };
-
-            parameterSerializer = JsonSerializer.Create(new JsonSerializerSettings
-            {
-                ContractResolver = contractResolver,
-                Converters =
-                {
-                    new CharacterIdJsonConverter(),
-                    new CharacterTypeIdJsonConverter(),
-                    new ItemIdJsonConverter()
-                }
-            });
+            parameterSerializer = JsonSerializer.Create(GastJsonSettings.Create());
         }
 
         public StoryBlueprint Map(StoryDefinitionDto def)
