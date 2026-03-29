@@ -2,7 +2,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Gast.Application.AIPlanning;
 using Gast.Lib.Gaia;
-using Gast.Unity.Infrastructure.JsonConverters;
 using Gast.Unity.Infrastructure.Stories;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;

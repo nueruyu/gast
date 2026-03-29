@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using Gast.Application.AIPlanning;
 using Gast.Lib.AI;
@@ -8,6 +7,7 @@ using Gast.Unity.Features.Stories;
 using Gast.Unity.Infrastructure.AI;
 using Gast.Unity.Infrastructure.JsonConverters;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using UnityEngine;
 
@@ -87,9 +87,10 @@ namespace Gast.Unity.Infrastructure.Stories
             try
             {
                 var actionType = actionTypeResolver.Resolve(taskRef.Action);
-                var json = taskRef.ParametersJson ?? "{}";
-                using var reader = new JsonTextReader(new StringReader(json));
-                var actionInstance = parameterSerializer.Deserialize(reader, actionType);
+                var jObj = taskRef.Parameters != null
+                    ? JObject.FromObject(taskRef.Parameters)
+                    : new JObject();
+                var actionInstance = jObj.ToObject(actionType, parameterSerializer);
                 return (IAction<StoryActorContext, StoryWorldState>)actionInstance;
             }
             catch (Exception ex)

@@ -59,8 +59,8 @@ namespace Gast.Lib.Gaia
         /// <summary>Action name of an inline primitive task (when the JSON value is an object).</summary>
         public string Action { get; set; }
 
-        /// <summary>Raw JSON string of the action parameters object. Null when this is a compound reference.</summary>
-        public string ParametersJson { get; set; }
+        /// <summary>Parameters of an inline primitive task. Null when this is a compound reference.</summary>
+        public Dictionary<string, object> Parameters { get; set; }
 
         public bool IsCompound => CompoundTaskName != null;
     }

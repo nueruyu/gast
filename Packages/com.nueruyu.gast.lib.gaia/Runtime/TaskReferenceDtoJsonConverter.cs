@@ -1,9 +1,8 @@
 using System;
-using System.IO;
-using Gast.Lib.Gaia;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Gast.Unity.Infrastructure.JsonConverters
+namespace Gast.Lib.Gaia
 {
     /// <summary>
     /// Deserializes a task reference that is either a plain string (compound task name)
@@ -21,7 +20,7 @@ namespace Gast.Unity.Infrastructure.JsonConverters
 
             // Object form: { "action": "...", "parameters": { ... } }
             string action = null;
-            string parametersJson = null;
+            Dictionary<string, object> parameters = null;
 
             while (reader.Read() && reader.TokenType != JsonToken.EndObject)
             {
@@ -36,7 +35,7 @@ namespace Gast.Unity.Infrastructure.JsonConverters
                         action = (string)reader.Value;
                         break;
                     case "parameters":
-                        parametersJson = CaptureRawJson(reader);
+                        parameters = serializer.Deserialize<Dictionary<string, object>>(reader);
                         break;
                     default:
                         reader.Skip();
@@ -44,7 +43,7 @@ namespace Gast.Unity.Infrastructure.JsonConverters
                 }
             }
 
-            return new TaskReferenceDto { Action = action, ParametersJson = parametersJson };
+            return new TaskReferenceDto { Action = action, Parameters = parameters };
         }
 
         public override void WriteJson(JsonWriter writer, TaskReferenceDto value, JsonSerializer serializer)
@@ -58,20 +57,12 @@ namespace Gast.Unity.Infrastructure.JsonConverters
             writer.WriteStartObject();
             writer.WritePropertyName("action");
             writer.WriteValue(value.Action);
-            if (value.ParametersJson != null)
+            if (value.Parameters != null)
             {
                 writer.WritePropertyName("parameters");
-                writer.WriteRawValue(value.ParametersJson);
+                serializer.Serialize(writer, value.Parameters);
             }
             writer.WriteEndObject();
-        }
-
-        static string CaptureRawJson(JsonReader reader)
-        {
-            var sw = new StringWriter();
-            using var jw = new JsonTextWriter(sw);
-            jw.WriteToken(reader);
-            return sw.ToString();
         }
     }
 }

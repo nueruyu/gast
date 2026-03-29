@@ -27,6 +27,7 @@ namespace Gast.Lib.Gaia
                 Converters =
                 {
                     new StringEnumConverter(new SnakeCaseNamingStrategy()),
+                    new TaskReferenceDtoJsonConverter(),
                 }
             };
         }
