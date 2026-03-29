@@ -80,7 +80,7 @@ namespace Gast.Unity.Infrastructure
             builder.Register<ReflectionToolRegistry>().As<IToolRegistry>();
             builder.Register<ReflectionObjectiveRegistry>().As<IObjectiveRegistry>();
             builder.Register<ObjectiveTypeResolver>();
-            builder.Register<GastJsonSettings>();
+            builder.Register<GaiaJsonSettingsFactory>();
             builder.Register<PlanConverter>();
             builder.Register<AIActionTypeResolver>();
 

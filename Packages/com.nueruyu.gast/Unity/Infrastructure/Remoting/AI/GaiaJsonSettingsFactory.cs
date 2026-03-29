@@ -1,14 +1,14 @@
 using Gast.Lib.Gaia;
-using Gast.Unity.Infrastructure.Remoting.AI;
+using Gast.Unity.Infrastructure.JsonConverters;
 using Newtonsoft.Json;
 
-namespace Gast.Unity.Infrastructure.JsonConverters
+namespace Gast.Unity.Infrastructure.Remoting.AI
 {
-    public class GastJsonSettings
+    public class GaiaJsonSettingsFactory
     {
         readonly ObjectiveTypeResolver objectiveTypeResolver;
 
-        public GastJsonSettings(ObjectiveTypeResolver objectiveTypeResolver)
+        public GaiaJsonSettingsFactory(ObjectiveTypeResolver objectiveTypeResolver)
         {
             this.objectiveTypeResolver = objectiveTypeResolver;
         }

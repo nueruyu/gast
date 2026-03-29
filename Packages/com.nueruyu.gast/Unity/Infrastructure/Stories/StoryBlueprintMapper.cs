@@ -5,7 +5,7 @@ using Gast.Lib.AI;
 using Gast.Lib.Gaia;
 using Gast.Unity.Features.Stories;
 using Gast.Unity.Infrastructure.AI;
-using Gast.Unity.Infrastructure.JsonConverters;
+using Gast.Unity.Infrastructure.Remoting.AI;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
@@ -17,10 +17,11 @@ namespace Gast.Unity.Infrastructure.Stories
         readonly AIActionTypeResolver actionTypeResolver;
         readonly JsonSerializer parameterSerializer;
 
-        public StoryBlueprintMapper(AIActionTypeResolver actionTypeResolver, GastJsonSettings jsonSettings)
+        public StoryBlueprintMapper(AIActionTypeResolver actionTypeResolver,
+            GaiaJsonSettingsFactory jsonSettingsFactory)
         {
             this.actionTypeResolver = actionTypeResolver;
-            parameterSerializer = JsonSerializer.Create(jsonSettings.Create());
+            parameterSerializer = JsonSerializer.Create(jsonSettingsFactory.Create());
         }
 
         public StoryBlueprint Map(StoryDefinitionDto def)
@@ -45,11 +46,9 @@ namespace Gast.Unity.Infrastructure.Stories
             var taskRefs = m.Tasks?.Select(MapTaskRef).Where(x => x != null).ToList();
 
             if (m.Tasks != null && m.Tasks.Count > 0 && (taskRefs == null || taskRefs.Count == 0))
-            {
                 Debug.LogWarning(
                     $"[StoryBlueprintMapper] All tasks in method '{m.Name}' failed to map " +
                     $"({m.Tasks.Count} task(s) were filtered out).");
-            }
 
             return new BlueprintMethod(m.Name, taskRefs);
         }

@@ -29,14 +29,14 @@ namespace Gast.Unity.Features.Stories
                 if (taskDef.Methods == null)
                 {
                     Debug.LogError(
-                        $"[DynamicStoryDomainFactory] Methods is null. task: {taskDef.Name}");
+                        $"[StoryDomainFactory] Methods is null. task: {taskDef.Name}");
                     continue;
                 }
 
                 if (taskDef.Methods.Count == 0)
                 {
                     Debug.LogError(
-                        $"[DynamicStoryDomainFactory] Methods is empty. task: {taskDef.Name}");
+                        $"[StoryDomainFactory] Methods is empty. task: {taskDef.Name}");
                     continue;
                 }
 

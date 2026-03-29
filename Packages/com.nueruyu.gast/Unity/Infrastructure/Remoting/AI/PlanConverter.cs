@@ -15,10 +15,10 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
         readonly ObjectiveTypeResolver typeResolver;
         readonly JsonSerializer serializer;
 
-        public PlanConverter(ObjectiveTypeResolver typeResolver, GastJsonSettings jsonSettings)
+        public PlanConverter(ObjectiveTypeResolver typeResolver, GaiaJsonSettingsFactory jsonSettingsFactory)
         {
             this.typeResolver = typeResolver;
-            serializer = JsonSerializer.Create(jsonSettings.Create());
+            serializer = JsonSerializer.Create(jsonSettingsFactory.Create());
         }
 
         public List<IAIObjective> ToGoals(PlanDto plan)
