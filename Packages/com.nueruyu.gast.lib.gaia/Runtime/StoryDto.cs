@@ -30,10 +30,6 @@ namespace Gast.Lib.Gaia
     public class TaskDefinitionDto
     {
         public string Name { get; set; }
-
-        [JsonOptional]
-        public string Selector { get; set; }
-
         public List<MethodDefinitionDto> Methods { get; set; }
     }
 

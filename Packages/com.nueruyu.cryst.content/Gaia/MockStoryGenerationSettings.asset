@@ -14,12 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gast.Unity.Infrastructure::Gast.Unity.Infrastructure.Remoting.AI.MockStoryGenerationSettings
   isEnabled: 1
   mockStoryJson: "{\r\n  \"root_task\": \"ClearAndCollect\",\r\n  \"tasks\": [\r\n   
-    {\r\n      \"name\": \"ClearAndCollect\",\r\n      \"type\": \"compound\",\r\n     
-    \"selector\": \"sequence\",\r\n      \"methods\": [\r\n        {\r\n         
-    \"name\": \"ExecuteMission\",\r\n          \"tasks\": [\r\n            \"PrepareForMission\",\r\n           
-    \"LureAndAmbush\",\r\n            \"CollectStones\"\r\n          ]\r\n       
-    }\r\n      ]\r\n    },\r\n    {\r\n      \"name\": \"PrepareForMission\",\r\n     
-    \"type\": \"compound\",\r\n      \"selector\": \"sequence\",\r\n      \"methods\":
+    {\r\n      \"name\": \"ClearAndCollect\",\r\n      \"methods\": [\r\n       
+    {\r\n          \"name\": \"ExecuteMission\",\r\n          \"tasks\": [\r\n           
+    { \"name\": \"PrepareForMission\" },\r\n            { \"name\": \"LureAndAmbush\"
+    },\r\n            { \"name\": \"CollectStones\" }\r\n          ]\r\n        }\r\n     
+    ]\r\n    },\r\n    {\r\n      \"name\": \"PrepareForMission\",\r\n      \"methods\":
     [\r\n        {\r\n          \"name\": \"GetFood\",\r\n          \"tasks\": [\r\n           
     {\r\n              \"action\": \"SetObjectives\",\r\n              \"parameters\":
     {\r\n                \"assignments\": [\r\n                  {\r\n                   
@@ -31,24 +30,23 @@ MonoBehaviour:
     \"WaitForItemAcquired\",\r\n              \"parameters\": {\r\n               
     \"acquirer_character_id\": \"player\",\r\n                \"item_id\": \"meat\"\r\n             
     }\r\n            }\r\n          ]\r\n        }\r\n      ]\r\n    },\r\n    {\r\n     
-    \"name\": \"LureAndAmbush\",\r\n      \"type\": \"compound\",\r\n      \"selector\":
-    \"sequence\",\r\n      \"methods\": [\r\n        {\r\n          \"name\": \"ExecuteLureAndAmbush\",\r\n         
-    \"tasks\": [\r\n            \"LureBot\",\r\n            \"SpringTheTrap\",\r\n           
-    \"CounterAttack\"\r\n          ]\r\n        }\r\n      ]\r\n    },\r\n    {\r\n     
-    \"name\": \"LureBot\",\r\n      \"type\": \"compound\",\r\n      \"selector\":
-    \"sequence\",\r\n      \"methods\": [\r\n        {\r\n          \"name\": \"AssignAndDefeatBot\",\r\n         
-    \"tasks\": [\r\n            {\r\n              \"action\": \"SetObjectives\",\r\n             
-    \"parameters\": {\r\n                \"assignments\": [\r\n                 
-    {\r\n                    \"character_id\": \"player\",\r\n                   
-    \"objective\": {\r\n                      \"type\": \"DefeatCharacter\",\r\n                     
-    \"parameters\": {\r\n                        \"target_type_id\": \"default_bot\",\r\n                       
-    \"target_quantity\": 1\r\n                      }\r\n                    }\r\n                 
-    }\r\n                ]\r\n              }\r\n            },\r\n            {\r\n             
-    \"action\": \"WaitForCharacterDefeated\",\r\n              \"parameters\": {\r\n               
+    \"name\": \"LureAndAmbush\",\r\n      \"methods\": [\r\n        {\r\n         
+    \"name\": \"ExecuteLureAndAmbush\",\r\n          \"tasks\": [\r\n           
+    { \"name\": \"LureBot\" },\r\n            { \"name\": \"SpringTheTrap\" },\r\n           
+    { \"name\": \"CounterAttack\" }\r\n          ]\r\n        }\r\n      ]\r\n   
+    },\r\n    {\r\n      \"name\": \"LureBot\",\r\n      \"methods\": [\r\n       
+    {\r\n          \"name\": \"AssignAndDefeatBot\",\r\n          \"tasks\": [\r\n           
+    {\r\n              \"action\": \"SetObjectives\",\r\n              \"parameters\":
+    {\r\n                \"assignments\": [\r\n                  {\r\n                   
+    \"character_id\": \"player\",\r\n                    \"objective\": {\r\n                     
+    \"type\": \"DefeatCharacter\",\r\n                      \"parameters\": {\r\n                       
+    \"target_type_id\": \"default_bot\",\r\n                        \"target_quantity\":
+    1\r\n                      }\r\n                    }\r\n                  }\r\n               
+    ]\r\n              }\r\n            },\r\n            {\r\n              \"action\":
+    \"WaitForCharacterDefeated\",\r\n              \"parameters\": {\r\n               
     \"character_id\": \"bot_a\"\r\n              }\r\n            }\r\n         
     ]\r\n        }\r\n      ]\r\n    },\r\n    {\r\n      \"name\": \"SpringTheTrap\",\r\n     
-    \"type\": \"compound\",\r\n      \"selector\": \"sequence\",\r\n      \"methods\":
-    [\r\n        {\r\n          \"name\": \"OrderSoldiersToAttackPlayer\",\r\n         
+    \"methods\": [\r\n        {\r\n          \"name\": \"OrderSoldiersToAttackPlayer\",\r\n         
     \"tasks\": [\r\n            {\r\n              \"action\": \"SetObjectives\",\r\n             
     \"parameters\": {\r\n                \"assignments\": [\r\n                 
     {\r\n                    \"character_id\": \"soldier_a\",\r\n                   
@@ -65,8 +63,7 @@ MonoBehaviour:
     \"target_quantity\": 1\r\n                      }\r\n                    }\r\n                 
     }\r\n                ]\r\n              }\r\n            }\r\n          ]\r\n       
     }\r\n      ]\r\n    },\r\n    {\r\n      \"name\": \"CounterAttack\",\r\n     
-    \"type\": \"compound\",\r\n      \"selector\": \"sequence\",\r\n      \"methods\":
-    [\r\n        {\r\n          \"name\": \"AssignAndDefeatSurvivingSoldiers\",\r\n         
+    \"methods\": [\r\n        {\r\n          \"name\": \"AssignAndDefeatSurvivingSoldiers\",\r\n         
     \"tasks\": [\r\n            {\r\n              \"action\": \"SetObjectives\",\r\n             
     \"parameters\": {\r\n                \"assignments\": [\r\n                 
     {\r\n                    \"character_id\": \"player\",\r\n                   
@@ -85,15 +82,15 @@ MonoBehaviour:
     }\r\n            },\r\n            {\r\n              \"action\": \"WaitForCharacterDefeated\",\r\n             
     \"parameters\": {\r\n                \"character_id\": \"soldier_c\"\r\n             
     }\r\n            }\r\n          ]\r\n        }\r\n      ]\r\n    },\r\n    {\r\n     
-    \"name\": \"CollectStones\",\r\n      \"type\": \"compound\",\r\n      \"selector\":
-    \"sequence\",\r\n      \"methods\": [\r\n        {\r\n          \"name\": \"AssignAndCollectAllLoot\",\r\n         
-    \"tasks\": [\r\n            {\r\n              \"action\": \"SetObjectives\",\r\n             
-    \"parameters\": {\r\n                \"assignments\": [\r\n                 
+    \"name\": \"CollectStones\",\r\n      \"methods\": [\r\n        {\r\n         
+    \"name\": \"AssignAndCollectAllLoot\",\r\n          \"tasks\": [\r\n           
+    {\r\n              \"action\": \"SetObjectives\",\r\n              \"parameters\":
+    {\r\n                \"assignments\": [\r\n                  {\r\n                   
+    \"character_id\": \"player\",\r\n                    \"objective\": {\r\n                     
+    \"type\": \"AcquireItem\",\r\n                      \"parameters\": {\r\n                       
+    \"target_item_id\": \"yellow_stone\",\r\n                        \"target_quantity\":
+    1\r\n                      }\r\n                    }\r\n                  },\r\n                 
     {\r\n                    \"character_id\": \"player\",\r\n                   
-    \"objective\": {\r\n                      \"type\": \"AcquireItem\",\r\n                     
-    \"parameters\": {\r\n                        \"target_item_id\": \"yellow_stone\",\r\n                       
-    \"target_quantity\": 1\r\n                      }\r\n                    }\r\n                 
-    },\r\n                  {\r\n                    \"character_id\": \"player\",\r\n                   
     \"objective\": {\r\n                      \"type\": \"AcquireItem\",\r\n                     
     \"parameters\": {\r\n                        \"target_item_id\": \"blue_stone\",\r\n                       
     \"target_quantity\": 1\r\n                      }\r\n                    }\r\n                 
@@ -103,4 +100,4 @@ MonoBehaviour:
     }\r\n            },\r\n            {\r\n              \"action\": \"WaitForItemAcquired\",\r\n             
     \"parameters\": {\r\n                \"acquirer_character_id\": \"player\",\r\n               
     \"item_id\": \"blue_stone\"\r\n              }\r\n            }\r\n         
-    ]\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}"
+    ]\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n"

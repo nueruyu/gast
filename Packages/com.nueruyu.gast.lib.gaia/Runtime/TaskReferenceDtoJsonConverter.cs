@@ -5,8 +5,9 @@ using Newtonsoft.Json;
 namespace Gast.Lib.Gaia
 {
     /// <summary>
-    /// Deserializes a task reference that is either a plain string (compound task name)
-    /// or a JSON object with "action" and optional "parameters" fields (inline primitive task).
+    /// Deserializes a task reference object.
+    /// Compound: <c>{ "name": "task_name" }</c>
+    /// Primitive: <c>{ "action": "action_name", "parameters": { ... } }</c>
     /// </summary>
     public class TaskReferenceDtoJsonConverter : JsonConverter<TaskReferenceDto>
     {
@@ -15,10 +16,7 @@ namespace Gast.Lib.Gaia
             TaskReferenceDto existingValue, bool hasExistingValue,
             JsonSerializer serializer)
         {
-            if (reader.TokenType == JsonToken.String)
-                return new TaskReferenceDto { CompoundTaskName = (string)reader.Value };
-
-            // Object form: { "action": "...", "parameters": { ... } }
+            string name = null;
             string action = null;
             Dictionary<string, object> parameters = null;
 
@@ -31,6 +29,9 @@ namespace Gast.Lib.Gaia
 
                 switch (propName)
                 {
+                    case "name":
+                        name = (string)reader.Value;
+                        break;
                     case "action":
                         action = (string)reader.Value;
                         break;
@@ -43,25 +44,36 @@ namespace Gast.Lib.Gaia
                 }
             }
 
-            return new TaskReferenceDto { Action = action, Parameters = parameters };
+            if (name != null)
+                return new TaskReferenceDto { CompoundTaskName = name };
+
+            if (action != null)
+                return new TaskReferenceDto { Action = action, Parameters = parameters };
+
+            throw new JsonSerializationException(
+                "Task reference must have either a 'name' or 'action' field.");
         }
 
         public override void WriteJson(JsonWriter writer, TaskReferenceDto value, JsonSerializer serializer)
         {
+            writer.WriteStartObject();
+
             if (value.IsCompound)
             {
+                writer.WritePropertyName("name");
                 writer.WriteValue(value.CompoundTaskName);
-                return;
+            }
+            else
+            {
+                writer.WritePropertyName("action");
+                writer.WriteValue(value.Action);
+                if (value.Parameters != null)
+                {
+                    writer.WritePropertyName("parameters");
+                    serializer.Serialize(writer, value.Parameters);
+                }
             }
 
-            writer.WriteStartObject();
-            writer.WritePropertyName("action");
-            writer.WriteValue(value.Action);
-            if (value.Parameters != null)
-            {
-                writer.WritePropertyName("parameters");
-                serializer.Serialize(writer, value.Parameters);
-            }
             writer.WriteEndObject();
         }
     }

@@ -23,15 +23,13 @@ namespace Gast.Application.AIPlanning
     /// </summary>
     public class BlueprintTask
     {
-        public BlueprintTask(string name, string selector, IReadOnlyList<BlueprintMethod> methods)
+        public BlueprintTask(string name, IReadOnlyList<BlueprintMethod> methods)
         {
             Name = name;
-            Selector = selector;
             Methods = methods;
         }
 
         public string Name { get; }
-        public string Selector { get; }
         public IReadOnlyList<BlueprintMethod> Methods { get; }
     }
 

@@ -34,8 +34,8 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
         BlueprintTask MapTask(TaskDefinitionDto t)
         {
             return new BlueprintTask(
-                t.Name, t.Selector,
-                t.Methods?.Select(MapMethod).ToArray() ?? Array.Empty<BlueprintMethod>()
+                t.Name,
+                t.Methods.Select(MapMethod).ToArray()
             );
         }
 
