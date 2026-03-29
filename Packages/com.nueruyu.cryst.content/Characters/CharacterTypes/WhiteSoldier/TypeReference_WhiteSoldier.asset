@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1206cc837750441428799047d7f45525, type: 3}
   m_Name: TypeReference_WhiteSoldier
   m_EditorClassIdentifier: Gast.Features::Gast.Features.Characters.CharacterTypeReference
-  id: 4fbd3add-eca8-4b42-a62e-0d59de34bf72
+  id: white_soldier

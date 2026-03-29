@@ -8,7 +8,7 @@ namespace Cryst.Domain.AI.Objectives
     [AIObjective("DefeatCharacter", "Defeat a specific number of characters of a certain type.")]
     public class DefeatCharacterObjective : IAIObjective
     {
-        [AIObjectiveParameter("Target character type ID (Guid)", "string")]
+        [AIObjectiveParameter("Target character type ID", "string")]
         public CharacterTypeId TargetTypeId { get; }
 
         [AIObjectiveParameter("Number of enemies to defeat")]
