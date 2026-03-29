@@ -15,9 +15,16 @@ namespace Cryst.Infrastructure.Characters
         [SerializeField]
         Faction faction = Faction.Ally;
 
+        [SerializeField]
+        [Tooltip("Optional fixed character id. Leave empty for dynamic generation.")]
+        string fixedCharacterId;
+
         public override ICharacterCreationParameters Create()
         {
-            return new CharacterCreationParameters(characterTypeReference.Id, faction);
+            var fixedId = string.IsNullOrEmpty(fixedCharacterId)
+                ? (CharacterId?)null
+                : CharacterId.FromString(fixedCharacterId);
+            return new CharacterCreationParameters(characterTypeReference.Id, faction, fixedId: fixedId);
         }
     }
 }

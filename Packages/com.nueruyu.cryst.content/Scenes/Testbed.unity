@@ -592,6 +592,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2dbbd76a4339a64abcaa84f1a19aa4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Cryst::Cryst.Infrastructure.Characters.NpcSpawnSiteEntry
+  fixedCharacterId: solder_b
   characterTypeReference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
   faction: 2
 --- !u!1 &207331374
@@ -1344,6 +1345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2dbbd76a4339a64abcaa84f1a19aa4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Cryst::Cryst.Infrastructure.Characters.NpcSpawnSiteEntry
+  fixedCharacterId: bot_a
   characterTypeReference: {fileID: 11400000, guid: 74743be7f3db9d647b1ca2d8167fc767, type: 2}
   faction: 2
 --- !u!1 &990410302
@@ -2892,6 +2894,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2dbbd76a4339a64abcaa84f1a19aa4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Cryst::Cryst.Infrastructure.Characters.NpcSpawnSiteEntry
+  fixedCharacterId: solder_c
   characterTypeReference: {fileID: 11400000, guid: d84ffdeb244f09244a7266fba056d347, type: 2}
   faction: 2
 --- !u!1 &2101637810
@@ -3094,6 +3097,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2dbbd76a4339a64abcaa84f1a19aa4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Cryst::Cryst.Infrastructure.Characters.NpcSpawnSiteEntry
+  fixedCharacterId: solder_a
   characterTypeReference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
   faction: 2
 --- !u!1001 &8419556042836358336

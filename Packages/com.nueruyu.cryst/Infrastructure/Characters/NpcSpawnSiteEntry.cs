@@ -20,7 +20,7 @@ namespace Cryst.Infrastructure.Characters
                 var territory = spawnSite != null
                     ? new Territory(transform.position, spawnSite.TerritoryRadius)
                     : (Territory?)null;
-                return new CharacterCreationParameters(characterTypeReference.Id, faction, territory);
+                return new CharacterCreationParameters(characterTypeReference.Id, faction, territory, FixedCharacterId);
             }
         }
     }

@@ -42,7 +42,7 @@ namespace Cryst.Infrastructure.Characters
                 var prefabSettings = definition.GetSettings<CharacterPrefabSettings>();
                 var characterPrefab = prefabSettings.CharacterPrefab;
 
-                var characterId = CharacterId.New();
+                var characterId = parameters.FixedId ?? CharacterId.New();
                 var characterGo = UnityEngine.Object.Instantiate(characterPrefab, position, rotation);
                 characterGo.name = $"{definition.DisplayName}@{characterPrefab.name}:{characterId}";
 
