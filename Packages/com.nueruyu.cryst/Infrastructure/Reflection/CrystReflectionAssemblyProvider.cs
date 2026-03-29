@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 using System.Reflection;
+using Cryst.Domain.Characters;
+using Gast.Application.AI;
 using Gast.Application.Reflection;
+using Gast.Domain.AI;
+using Gast.Unity.Features.Characters;
 
 namespace Cryst.Infrastructure.Reflection
 {
@@ -10,9 +14,10 @@ namespace Cryst.Infrastructure.Reflection
         {
             return new[]
             {
-                typeof(Gast.Application.AI.ITool).Assembly,         // Gast.Application
-                typeof(Gast.Domain.AI.IAIObjective).Assembly,      // Gast.Domain
-                typeof(Cryst.Domain.Characters.Faction).Assembly   // Cryst
+                typeof(ITool).Assembly, // Gast.Application
+                typeof(IAIObjective).Assembly, // Gast.Domain
+                typeof(Character).Assembly, // Gast.Unity.Features
+                typeof(Faction).Assembly // Cryst
             };
         }
     }

@@ -80,6 +80,7 @@ namespace Gast.Unity.Infrastructure.Stories
             catch (Exception ex)
             {
                 Debug.LogError($"[StoryBlueprintMapper] Failed to create action '{taskRef.Action}': {ex.Message}");
+                Debug.LogException(ex);
                 return null;
             }
         }
