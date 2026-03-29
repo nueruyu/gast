@@ -10,18 +10,18 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
 {
     public class StoryGenerationService : IStoryGenerationService
     {
-        readonly IGaiaPlanningClient gaiaClient;
         readonly ICharacterRepository characterRepository;
-        readonly StoryBlueprintParser parser;
+        readonly IGaiaPlanningClient gaiaClient;
+        readonly StoryBlueprintMapper mapper;
 
         public StoryGenerationService(
             IGaiaPlanningClient gaiaClient,
             ICharacterRepository characterRepository,
-            StoryBlueprintParser parser)
+            StoryBlueprintMapper mapper)
         {
             this.gaiaClient = gaiaClient;
             this.characterRepository = characterRepository;
-            this.parser = parser;
+            this.mapper = mapper;
         }
 
         public async Task<StoryBlueprint> GenerateStoryAsync(string instruction, CancellationToken cancellationToken)
@@ -37,10 +37,10 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
             };
 
             var response = await gaiaClient.CreateStoryAsync(request, cancellationToken);
-            if (string.IsNullOrWhiteSpace(response?.StoryJson))
+            if (response?.Story == null)
                 return null;
 
-            return parser.Parse(response.StoryJson);
+            return mapper.Map(response.Story);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Gast.Lib.Gaia
             SubmitToolOutputsRequest request,
             CancellationToken cancellationToken);
 
-        Task<StoryResponse> CreateStoryAsync(
+        Task<StoryResponseDto> CreateStoryAsync(
             CreateStoryRequest request,
             CancellationToken cancellationToken);
     }

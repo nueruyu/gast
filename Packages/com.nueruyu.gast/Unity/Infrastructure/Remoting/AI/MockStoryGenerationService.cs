@@ -1,19 +1,32 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Gast.Application.AIPlanning;
+using Gast.Lib.Gaia;
+using Gast.Unity.Infrastructure.JsonConverters;
 using Gast.Unity.Infrastructure.Stories;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Gast.Unity.Infrastructure.Remoting.AI
 {
     public class MockStoryGenerationService : IStoryGenerationService
     {
+        readonly JsonSerializerSettings definitionSettings;
+        readonly StoryBlueprintMapper mapper;
         readonly MockStoryGenerationSettings settings;
-        readonly StoryBlueprintParser parser;
 
-        public MockStoryGenerationService(MockStoryGenerationSettings settings, StoryBlueprintParser parser)
+        public MockStoryGenerationService(MockStoryGenerationSettings settings, StoryBlueprintMapper mapper)
         {
             this.settings = settings;
-            this.parser = parser;
+            this.mapper = mapper;
+            definitionSettings = new JsonSerializerSettings
+            {
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new SnakeCaseNamingStrategy()
+                },
+                Converters = { new TaskReferenceDtoJsonConverter() }
+            };
         }
 
         public Task<StoryBlueprint> GenerateStoryAsync(string instruction, CancellationToken cancellationToken)
@@ -21,7 +34,9 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
             if (string.IsNullOrWhiteSpace(settings.MockStoryJson))
                 return Task.FromResult<StoryBlueprint>(null);
 
-            return Task.FromResult(parser.Parse(settings.MockStoryJson));
+            var storyDef =
+                JsonConvert.DeserializeObject<StoryDefinitionDto>(settings.MockStoryJson, definitionSettings);
+            return Task.FromResult(mapper.Map(storyDef));
         }
     }
 }

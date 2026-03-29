@@ -34,35 +34,24 @@ namespace Gast.Unity.Infrastructure
         {
             // Command & Event System
             builder.Register<CommandDispatcher>().AsImplementedInterfaces();
-            builder.Register<JsonCommandSerializer>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<JsonCommandSerializer>().AsImplementedInterfaces();
             builder.Register<DomainEventPublisher>().AsImplementedInterfaces();
 
             // Register GaiaPlanningClient only when at least one service needs the real API
-            bool needsRealGaiaClient = !mockAIPlanningSettings.IsEnabled || !mockStoryGenerationSettings.IsEnabled;
-            if (needsRealGaiaClient)
-            {
-                builder.Register<GaiaPlanningClient>().As<IGaiaPlanningClient>();
-            }
+            var needsRealGaiaClient = !mockAIPlanningSettings.IsEnabled || !mockStoryGenerationSettings.IsEnabled;
+            if (needsRealGaiaClient) builder.Register<GaiaPlanningClient>().As<IGaiaPlanningClient>();
 
             // AI Planning
             if (mockAIPlanningSettings.IsEnabled)
-            {
                 builder.Register<MockAIPlanningService>().As<IAIPlanningService>();
-            }
             else
-            {
                 builder.Register<AIPlanningService>().As<IAIPlanningService>();
-            }
 
             // Story Generation
             if (mockStoryGenerationSettings.IsEnabled)
-            {
                 builder.Register<MockStoryGenerationService>().As<IStoryGenerationService>();
-            }
             else
-            {
                 builder.Register<StoryGenerationService>().As<IStoryGenerationService>();
-            }
 
             // Character
             builder.Register<CharacterFactoryRegistry>().As<ICharacterFactoryRegistry>();
@@ -71,7 +60,7 @@ namespace Gast.Unity.Infrastructure
             builder.Register<CharacterBrainManager>().AsImplementedInterfaces();
 
             // Combat
-            builder.Register<HitAreaFactory>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<HitAreaFactory>().AsImplementedInterfaces();
 
             // Economy
             builder.Register<ItemRepository>().AsImplementedInterfaces().AsSelf();
@@ -87,17 +76,17 @@ namespace Gast.Unity.Infrastructure
             builder.Register<AIDebugInitializer>().AsImplementedInterfaces();
 
             // AI Tools & Objectives
-            builder.Register<ReflectionToolRegistry>(Lifetime.Singleton).As<IToolRegistry>();
-            builder.Register<ReflectionObjectiveRegistry>(Lifetime.Singleton).As<IObjectiveRegistry>();
-            builder.Register<ObjectiveTypeResolver>(Lifetime.Singleton);
-            builder.Register<PlanConverter>(Lifetime.Singleton);
-            builder.Register<AIActionTypeResolver>(Lifetime.Singleton);
+            builder.Register<ReflectionToolRegistry>().As<IToolRegistry>();
+            builder.Register<ReflectionObjectiveRegistry>().As<IObjectiveRegistry>();
+            builder.Register<ObjectiveTypeResolver>();
+            builder.Register<PlanConverter>();
+            builder.Register<AIActionTypeResolver>();
 
             // Story
-            builder.Register<StoryActorContext>(Lifetime.Singleton);
-            builder.Register<StoryBlueprintParser>(Lifetime.Singleton);
-            builder.Register<StoryDomainFactory>(Lifetime.Singleton);
-            builder.Register<StorySystem>(Lifetime.Singleton).As<IStoryRunner>();
+            builder.Register<StoryActorContext>();
+            builder.Register<StoryBlueprintMapper>();
+            builder.Register<StoryDomainFactory>();
+            builder.Register<StorySystem>().As<IStoryRunner>();
         }
     }
 }

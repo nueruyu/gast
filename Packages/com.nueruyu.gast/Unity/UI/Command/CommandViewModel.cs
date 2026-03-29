@@ -11,18 +11,27 @@ namespace Gast.Unity.UI.Command
     public class CommandViewModel : IDisposable
     {
         readonly ICommandDispatcher commandDispatcher;
-        readonly CompositeDisposable disposables = new();
         readonly CancellationTokenSource cts = new();
-
-        public ReactiveProperty<bool> IsVisible { get; } = new(false);
-        public ReactiveProperty<string> InstructionText { get; } = new("/story The local mine has been overrun by goblins. The blacksmith needs someone to clear them out, especially their shaman leader.");
-        public ReactiveProperty<bool> IsLoading { get; } = new(false);
-        public ReactiveProperty<string> StatusMessage { get; } = new("");
-        public ReactiveProperty<bool> HasError { get; } = new(false);
+        readonly CompositeDisposable disposables = new();
 
         public CommandViewModel(ICommandDispatcher commandDispatcher)
         {
             this.commandDispatcher = commandDispatcher;
+        }
+
+        public ReactiveProperty<bool> IsVisible { get; } = new(false);
+
+        public ReactiveProperty<string> InstructionText { get; } =
+            new("Explore the current area, eliminate any enemies, and collect healing items.");
+
+        public ReactiveProperty<bool> IsLoading { get; } = new(false);
+        public ReactiveProperty<string> StatusMessage { get; } = new("");
+        public ReactiveProperty<bool> HasError { get; } = new(false);
+
+        public void Dispose()
+        {
+            disposables.Dispose();
+            cts.Cancel();
         }
 
         public void SendInstruction()
@@ -77,12 +86,6 @@ namespace Gast.Unity.UI.Command
             {
                 IsLoading.Value = false;
             }
-        }
-
-        public void Dispose()
-        {
-            disposables.Dispose();
-            cts.Cancel();
         }
     }
 }

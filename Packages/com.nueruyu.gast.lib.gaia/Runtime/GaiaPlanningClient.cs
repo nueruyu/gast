@@ -46,11 +46,11 @@ namespace Gast.Lib.Gaia
             return await PostAsync<SubmitToolOutputsRequest, PlanningSessionDto>($"/planning/respond/{sessionId}", request, cancellationToken);
         }
 
-        public async Task<StoryResponse> CreateStoryAsync(
+        public async Task<StoryResponseDto> CreateStoryAsync(
             CreateStoryRequest request,
             CancellationToken cancellationToken)
         {
-            return await PostAsync<CreateStoryRequest, StoryResponse>("/story/generate", request, cancellationToken);
+            return await PostAsync<CreateStoryRequest, StoryResponseDto>("/story/generate", request, cancellationToken);
         }
 
         async Task<TResponse> PostAsync<TRequest, TResponse>(string path, TRequest request, CancellationToken cancellationToken)

@@ -9,15 +9,15 @@ namespace Gast.Unity.Infrastructure.JsonConverters
     /// Deserializes a task reference that is either a plain string (compound task name)
     /// or a JSON object with "action" and optional "parameters" fields (inline primitive task).
     /// </summary>
-    public class TaskReferenceJsonConverter : JsonConverter<TaskReference>
+    public class TaskReferenceDtoJsonConverter : JsonConverter<TaskReferenceDto>
     {
-        public override TaskReference ReadJson(
+        public override TaskReferenceDto ReadJson(
             JsonReader reader, Type objectType,
-            TaskReference existingValue, bool hasExistingValue,
+            TaskReferenceDto existingValue, bool hasExistingValue,
             JsonSerializer serializer)
         {
             if (reader.TokenType == JsonToken.String)
-                return new TaskReference { CompoundTaskName = (string)reader.Value };
+                return new TaskReferenceDto { CompoundTaskName = (string)reader.Value };
 
             // Object form: { "action": "...", "parameters": { ... } }
             string action = null;
@@ -44,10 +44,10 @@ namespace Gast.Unity.Infrastructure.JsonConverters
                 }
             }
 
-            return new TaskReference { Action = action, ParametersJson = parametersJson };
+            return new TaskReferenceDto { Action = action, ParametersJson = parametersJson };
         }
 
-        public override void WriteJson(JsonWriter writer, TaskReference value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, TaskReferenceDto value, JsonSerializer serializer)
         {
             if (value.IsCompound)
             {

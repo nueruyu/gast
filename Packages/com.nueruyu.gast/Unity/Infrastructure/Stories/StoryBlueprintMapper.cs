@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Gast.Application.AIPlanning;
@@ -14,13 +13,12 @@ using UnityEngine;
 
 namespace Gast.Unity.Infrastructure.Stories
 {
-    public class StoryBlueprintParser
+    public class StoryBlueprintMapper
     {
         readonly AIActionTypeResolver actionTypeResolver;
         readonly JsonSerializer parameterSerializer;
-        readonly JsonSerializerSettings definitionSettings;
 
-        public StoryBlueprintParser(AIActionTypeResolver actionTypeResolver)
+        public StoryBlueprintMapper(AIActionTypeResolver actionTypeResolver)
         {
             this.actionTypeResolver = actionTypeResolver;
 
@@ -39,37 +37,34 @@ namespace Gast.Unity.Infrastructure.Stories
                     new ItemIdJsonConverter()
                 }
             });
-
-            definitionSettings = new JsonSerializerSettings
-            {
-                ContractResolver = contractResolver,
-                Converters = { new TaskReferenceJsonConverter() }
-            };
         }
 
-        public StoryBlueprint Parse(string json)
+        public StoryBlueprint Map(StoryDefinitionDto def)
         {
-            var def = JsonConvert.DeserializeObject<StoryDefinition>(json, definitionSettings);
-            return Map(def);
+            return new StoryBlueprint(
+                def.DomainName,
+                def.RootTask,
+                def.Tasks.Select(MapTask).ToList()
+            );
         }
 
-        StoryBlueprint Map(StoryDefinition def) => new(
-            def.DomainName,
-            def.RootTask,
-            def.Tasks.Select(MapTask).ToList()
-        );
+        BlueprintTask MapTask(TaskDefinitionDto t)
+        {
+            return new BlueprintTask(
+                t.Name, t.Type, t.Selector,
+                t.Methods?.Select(MapMethod).ToList()
+            );
+        }
 
-        BlueprintTask MapTask(TaskDefinition t) => new(
-            t.Name, t.Type, t.Selector,
-            t.Methods?.Select(MapMethod).ToList()
-        );
+        BlueprintMethod MapMethod(MethodDefinitionDto m)
+        {
+            return new BlueprintMethod(
+                m.Name,
+                m.Tasks?.Select(MapTaskRef).Where(x => x != null).ToList()
+            );
+        }
 
-        BlueprintMethod MapMethod(MethodDefinition m) => new(
-            m.Name,
-            m.Tasks?.Select(MapTaskRef).Where(x => x != null).ToList()
-        );
-
-        IBlueprintTaskRef MapTaskRef(TaskReference r)
+        IBlueprintTaskRef MapTaskRef(TaskReferenceDto r)
         {
             if (r.IsCompound)
                 return new CompoundTaskRef(r.CompoundTaskName);
@@ -81,11 +76,11 @@ namespace Gast.Unity.Infrastructure.Stories
             return new PrimitiveTaskRef(action);
         }
 
-        IAction<StoryActorContext, StoryWorldState> BuildPrimitiveAction(TaskReference taskRef)
+        IAction<StoryActorContext, StoryWorldState> BuildPrimitiveAction(TaskReferenceDto taskRef)
         {
             if (string.IsNullOrEmpty(taskRef.Action))
             {
-                Debug.LogError("[StoryBlueprintParser] Primitive task is missing 'action' field.");
+                Debug.LogError("[StoryBlueprintMapper] Primitive task is missing 'action' field.");
                 return null;
             }
 
@@ -99,7 +94,7 @@ namespace Gast.Unity.Infrastructure.Stories
             }
             catch (Exception ex)
             {
-                Debug.LogError($"[StoryBlueprintParser] Failed to create action '{taskRef.Action}': {ex.Message}");
+                Debug.LogError($"[StoryBlueprintMapper] Failed to create action '{taskRef.Action}': {ex.Message}");
                 return null;
             }
         }
