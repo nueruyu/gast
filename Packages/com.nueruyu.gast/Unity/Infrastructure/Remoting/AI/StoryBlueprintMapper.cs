@@ -5,19 +5,19 @@ using Gast.Lib.AI;
 using Gast.Lib.Gaia;
 using Gast.Unity.Features.Stories;
 using Gast.Unity.Infrastructure.AI;
-using Gast.Unity.Infrastructure.Remoting.AI;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
-namespace Gast.Unity.Infrastructure.Stories
+namespace Gast.Unity.Infrastructure.Remoting.AI
 {
     public class StoryBlueprintMapper
     {
         readonly AIActionTypeResolver actionTypeResolver;
         readonly JsonSerializer parameterSerializer;
 
-        public StoryBlueprintMapper(AIActionTypeResolver actionTypeResolver,
+        public StoryBlueprintMapper(
+            AIActionTypeResolver actionTypeResolver,
             GaiaJsonSettingsFactory jsonSettingsFactory)
         {
             this.actionTypeResolver = actionTypeResolver;
@@ -27,7 +27,6 @@ namespace Gast.Unity.Infrastructure.Stories
         public StoryBlueprint Map(StoryDefinitionDto def)
         {
             return new StoryBlueprint(
-                def.DomainName,
                 def.RootTask,
                 def.Tasks.Select(MapTask).ToList()
             );
@@ -37,15 +36,15 @@ namespace Gast.Unity.Infrastructure.Stories
         {
             return new BlueprintTask(
                 t.Name, t.Type, t.Selector,
-                t.Methods?.Select(MapMethod).ToList()
+                t.Methods.Select(MapMethod).ToList()
             );
         }
 
         BlueprintMethod MapMethod(MethodDefinitionDto m)
         {
-            var taskRefs = m.Tasks?.Select(MapTaskRef).Where(x => x != null).ToList();
+            var taskRefs = m.Tasks.Select(MapTaskRef).Where(x => x != null).ToList();
 
-            if (m.Tasks != null && m.Tasks.Count > 0 && (taskRefs == null || taskRefs.Count == 0))
+            if (m.Tasks.Count > 0 && taskRefs.Count == 0)
                 Debug.LogWarning(
                     $"[StoryBlueprintMapper] All tasks in method '{m.Name}' failed to map " +
                     $"({m.Tasks.Count} task(s) were filtered out).");

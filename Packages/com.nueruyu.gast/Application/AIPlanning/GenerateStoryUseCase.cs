@@ -17,13 +17,10 @@ namespace Gast.Application.AIPlanning
             this.storyRunner = storyRunner;
         }
 
-        public async ValueTask<bool> ExecuteAsync(GenerateStoryCommand command, CancellationToken cancellationToken = default)
+        public async ValueTask<bool> ExecuteAsync(GenerateStoryCommand command,
+            CancellationToken cancellationToken = default)
         {
             var blueprint = await storyGenerationService.GenerateStoryAsync(command.Instruction, cancellationToken);
-
-            if (blueprint == null)
-                return false;
-
             storyRunner.StartStory(blueprint);
             return true;
         }

@@ -23,7 +23,6 @@ namespace Gast.Lib.Gaia
 
     public class StoryDefinitionDto
     {
-        public string DomainName { get; set; }
         public string RootTask { get; set; }
         public List<TaskDefinitionDto> Tasks { get; set; }
     }

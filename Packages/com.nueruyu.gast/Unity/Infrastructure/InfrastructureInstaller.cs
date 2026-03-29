@@ -10,11 +10,9 @@ using Gast.Unity.Infrastructure.AI;
 using Gast.Unity.Infrastructure.Characters;
 using Gast.Unity.Infrastructure.HitDetection;
 using Gast.Unity.Infrastructure.Items;
-using Gast.Unity.Infrastructure.JsonConverters;
 using Gast.Unity.Infrastructure.Pickups;
 using Gast.Unity.Infrastructure.Remoting.AI;
 using Gast.Unity.Infrastructure.Services;
-using Gast.Unity.Infrastructure.Stories;
 
 namespace Gast.Unity.Infrastructure
 {

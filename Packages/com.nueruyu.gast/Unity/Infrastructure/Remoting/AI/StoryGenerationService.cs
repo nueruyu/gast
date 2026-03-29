@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Gast.Application.AIPlanning;
 using Gast.Domain.Characters;
 using Gast.Lib.Gaia;
-using Gast.Unity.Infrastructure.Stories;
 
 namespace Gast.Unity.Infrastructure.Remoting.AI
 {
@@ -37,8 +36,6 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
             };
 
             var response = await gaiaClient.CreateStoryAsync(request, cancellationToken);
-            if (response?.Story == null)
-                return null;
 
             return mapper.Map(response.Story);
         }
