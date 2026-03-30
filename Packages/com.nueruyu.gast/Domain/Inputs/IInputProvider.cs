@@ -15,6 +15,8 @@ namespace Gast.Domain.Inputs
         bool InteractPressed { get; }
         bool InteractHeld { get; }
         bool Attack { get; }
+        bool HeavyAttack { get; }
+        bool Grapple { get; }
         bool Dash { get; }
         bool GuardHeld { get; }
         bool IsCursorOverridePressed { get; }

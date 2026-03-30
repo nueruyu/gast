@@ -3,7 +3,9 @@ using Cryst.Domain.Characters.Facets;
 using Cryst.Features.CharacterActions;
 using Cryst.Features.CharacterActions.Actions.Attack;
 using Cryst.Features.CharacterActions.Actions.Dash;
+using Cryst.Features.CharacterActions.Actions.Grapple;
 using Cryst.Features.CharacterActions.Actions.Guard;
+using Cryst.Features.CharacterActions.Actions.HeavyAttack;
 using Cryst.Features.CharacterActions.Actions.Jump;
 using Cysharp.Threading.Tasks;
 using Gast.Domain.AI;
@@ -108,8 +110,15 @@ namespace Cryst.Infrastructure.Characters
                 var stateStore = context.Resolve<CharacterActionStateStore>();
                 facets.Add(typeof(SprintableCharacter), new SprintableCharacter(stateStore));
 
-                if (actionSettingsTypes.Contains(typeof(AttackActionSettings)))
-                    facets.Add(typeof(AttackableCharacter), new AttackableCharacter(actionController));
+                if (actionSettingsTypes.Contains(typeof(AttackActionSettings))
+                    || actionSettingsTypes.Contains(typeof(HeavyAttackActionSettings)))
+                    facets.TryAdd(typeof(AttackableCharacter), new AttackableCharacter(actionController));
+
+                if (actionSettingsTypes.Contains(typeof(GrappleActionSettings)))
+                    facets.Add(typeof(GrappleableCharacter), new GrappleableCharacter(actionController));
+
+                if (actionSettingsTypes.Contains(typeof(GrappledActionSettings)))
+                    facets.Add(typeof(GrappleTargetableCharacter), new GrappleTargetableCharacter(actionController));
 
                 if (actionSettingsTypes.Contains(typeof(DashActionSettings)))
                     facets.Add(typeof(DashableCharacter), new DashableCharacter(actionController));

@@ -4,7 +4,9 @@ using Cryst.Features.CharacterActions.Actions.Attack;
 using Cryst.Features.CharacterActions.Actions.Dash;
 using Cryst.Features.CharacterActions.Actions.Default;
 using Cryst.Features.CharacterActions.Actions.Die;
+using Cryst.Features.CharacterActions.Actions.Grapple;
 using Cryst.Features.CharacterActions.Actions.Guard;
+using Cryst.Features.CharacterActions.Actions.HeavyAttack;
 using Cryst.Features.CharacterActions.Actions.Hit;
 using Cryst.Features.CharacterActions.Actions.Jump;
 using Cysharp.Threading.Tasks;
@@ -48,6 +50,10 @@ namespace Cryst.Infrastructure.Characters
 
             return settings switch
             {
+                HeavyAttackActionSettings => scope.Resolve<HeavyAttackAction>(),
+                GrappleActionSettings => scope.Resolve<GrappleAction>(),
+                GrappleThrowActionSettings => scope.Resolve<GrappleThrowAction>(),
+                GrappledActionSettings => scope.Resolve<GrappledAction>(),
                 AttackActionSettings => scope.Resolve<AttackAction>(),
                 DashActionSettings => scope.Resolve<DashAction>(),
                 DefaultActionSettings => scope.Resolve<DefaultAction>(),

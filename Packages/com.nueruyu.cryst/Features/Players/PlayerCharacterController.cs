@@ -6,6 +6,7 @@ using Cryst.Domain.Characters;
 using Cryst.Domain.Characters.Facets;
 using UnityEngine;
 
+
 namespace Cryst.Features.Players
 {
     public class PlayerCharacterController : IPlayerCharacterController
@@ -66,6 +67,22 @@ namespace Cryst.Features.Players
                 if (character.Is(out AttackableCharacter attackable))
                 {
                     attackable.Attack();
+                }
+            }
+
+            if (inputProvider.HeavyAttack)
+            {
+                if (character.Is(out AttackableCharacter attackable))
+                {
+                    attackable.HeavyAttack();
+                }
+            }
+
+            if (inputProvider.Grapple)
+            {
+                if (character.Is(out GrappleableCharacter grappleable))
+                {
+                    grappleable.Grapple();
                 }
             }
         }
