@@ -1,10 +1,7 @@
 using System;
-using System.Linq;
 using Cryst.Domain.Characters.Commands;
-using Cryst.Features.CharacterActions.Effects;
+using Cryst.Features.CharacterActions.Actions.Attack;
 using Gast.Unity.Features.Characters;
-using Gast.Unity.Shared.Animations;
-using UnityEngine;
 
 namespace Cryst.Features.CharacterActions.Actions.Grapple
 {
@@ -14,19 +11,9 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
     /// On hit, GrappleHitHandler transitions attacker to GrappleThrowAction
     /// and victim to GrappledAction.
     /// </summary>
-    public class GrappleAction : ICharacterExecutableAction<GrappleCommand>
+    public class GrappleAction : AttackActionBase, ICharacterExecutableAction<GrappleCommand>
     {
-        readonly GrappleActionSettings settings;
-        readonly CharacterAnimator animator;
-        readonly CharacterMovement movement;
-        readonly CharacterMovementSettings movementSettings;
-        readonly CharacterActionEffectDispatcher effectDispatcher;
-
-        float startTime;
-        float lastAttackTime = float.NegativeInfinity;
-
-        public Type CommandType => typeof(GrappleCommand);
-        public int Priority => 5;
+        public override Type CommandType => typeof(GrappleCommand);
 
         public GrappleAction(
             GrappleActionSettings settings,
@@ -34,53 +21,10 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
             CharacterMovement movement,
             CharacterMovementSettings movementSettings,
             CharacterActionEffectDispatcher effectDispatcher)
-        {
-            this.settings = settings;
-            this.animator = animator;
-            this.movement = movement;
-            this.movementSettings = movementSettings;
-            this.effectDispatcher = effectDispatcher;
-
-            if (animator)
-            {
-                animator.AnimationEventReceiver.EventReceived.Subscribe(OnAnimationEvent);
-            }
-        }
-
-        void OnAnimationEvent(AnimationEventSymbol eventSymbol)
-        {
-            var timedEffect = settings.TimedEffects.FirstOrDefault(e => e.EventSymbol == eventSymbol);
-            if (timedEffect?.Effect != null)
-            {
-                effectDispatcher.Dispatch(timedEffect.Effect);
-            }
-        }
-
-        public bool CanExecute()
-        {
-            return Time.time >= lastAttackTime + settings.Cooldown;
-        }
-
-        public void Execute(in GrappleCommand command)
-        {
-            startTime = Time.time;
-            lastAttackTime = startTime;
-
-            animator.PlayAttack();
-        }
-
-        public bool OnUpdate()
-        {
-            return Time.time < startTime + settings.Duration;
-        }
-
-        public void Move(Vector3 direction)
-        {
-            movement.Move(direction, movementSettings.WalkSpeed);
-        }
-
-        public void OnEnd()
+            : base(settings, animator, movement, movementSettings, effectDispatcher)
         {
         }
+
+        public void Execute(in GrappleCommand command) => BeginAttack();
     }
 }

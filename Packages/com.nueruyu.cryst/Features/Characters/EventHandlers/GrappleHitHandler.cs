@@ -21,23 +21,18 @@ namespace Cryst.Features.Characters.EventHandlers
 
             if (attacker == victim) return;
 
-            // Faction check: no friendly-fire grapples
+            // No friendly-fire grapples
             if (attacker.Is(out BaseCharacter attackerBase) && victim.Is(out BaseCharacter victimBase))
             {
                 if (attackerBase.Faction == victimBase.Faction) return;
             }
 
-            if (!victim.Is(out GrappleTargetableCharacter _)) return;
+            if (!victim.Is(out GrappleTargetableCharacter targetable)) return;
 
             if (attacker.Is(out GrappleableCharacter grappleable))
-            {
                 grappleable.StartThrow(victim);
-            }
 
-            if (victim.Is(out GrappleTargetableCharacter targetable))
-            {
-                targetable.GetGrappledBy(attacker);
-            }
+            targetable.GetGrappledBy(attacker);
         }
     }
 }

@@ -11,15 +11,14 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
     /// <summary>
     /// Victim-side grapple action. Triggered by GrappledCommand from GrappleHitHandler.
     /// Disables input movement and moves the victim toward the attacker each frame.
-    /// If a CharacterIKController is present on the character, it activates IK weight
-    /// for the left hand to simulate being grabbed.
+    /// If a CharacterIKController is present, it activates IK weight for the left hand
+    /// to simulate being grabbed.
     /// </summary>
     public class GrappledAction : ICharacterExecutableAction<GrappledCommand>
     {
         readonly GrappledActionSettings settings;
         readonly CharacterBody body;
-        // Resolved at construction time from the character hierarchy; may be null if
-        // IK rig has not been set up on this character.
+        // Resolved from the character root at construction time; null when IK rig is absent.
         readonly CharacterIKController ikController;
 
         ICharacter attacker;
@@ -34,8 +33,7 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
         {
             this.settings = settings;
             this.body = body;
-            // Walk up the hierarchy from CharacterBody to find the IK controller on the
-            // root GameObject (placed there by IKRigBuilder).
+            // IKRigBuilder places CharacterIKController on the root GameObject.
             ikController = body.transform.root.GetComponent<CharacterIKController>();
         }
 
@@ -47,8 +45,7 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
             startTime = Time.time;
             body.IsInputMovementEnabled = false;
 
-            // Activate IK weight for the grabbed hand at current world position.
-            // Passing null as target keeps the IK target where it is; only the weight changes.
+            // Passing null keeps the IK target at its current world position; only weight changes.
             ikController?.SetIKTarget(AvatarIKGoal.LeftHand, null, 1f);
         }
 
@@ -57,18 +54,15 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
             if (attacker == null) return false;
             if (Time.time >= startTime + settings.Duration) return false;
 
-            // Move victim to stay in front of the attacker using forced velocity so it
-            // ignores the IsInputMovementEnabled = false flag.
             var attackerBody = attacker.As<BaseCharacter>().Body;
             var targetPos = attackerBody.Position + attackerBody.Forward * 0.6f;
             var delta = targetPos - body.Position;
 
-            if (delta.sqrMagnitude > 0.0025f) // 0.05m dead-zone
+            if (delta.sqrMagnitude > 0.0025f) // 0.05 m dead-zone
             {
-                // Divide by deltaTime to express as velocity; CharacterBody multiplies by
-                // deltaTime internally, effectively snapping to target this frame.
-                var snap = new Vector3(delta.x, 0f, delta.z) / Time.deltaTime;
-                body.SetForcedVelocity(snap);
+                // delta / deltaTime expresses the displacement as velocity;
+                // CharacterBody.ApplyPhysics multiplies by deltaTime, snapping to target each frame.
+                body.SetForcedVelocity(delta / Time.deltaTime);
             }
 
             return true;

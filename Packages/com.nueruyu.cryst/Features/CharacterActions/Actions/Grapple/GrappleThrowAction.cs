@@ -1,6 +1,5 @@
 using System;
 using Cryst.Domain.Characters.Commands;
-using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
 using UnityEngine;
 
@@ -18,7 +17,6 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
         readonly CharacterAnimator animator;
 
         float startTime;
-        ICharacter victim;
 
         public Type CommandType => typeof(GrappleThrowCommand);
         public int Priority => 7;
@@ -38,11 +36,10 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
         public void Execute(in GrappleThrowCommand command)
         {
             startTime = Time.time;
-            victim = command.Victim;
             body.IsInputMovementEnabled = false;
 
-            // Placeholder: reuse attack animation until a dedicated throw animation is added
-            // to CharacterAnimator (e.g. animator.PlayGrappleThrow())
+            // Placeholder: reuse attack animation until a dedicated throw animation is
+            // added to CharacterAnimator (e.g. animator.PlayGrappleThrow())
             if (animator)
                 animator.PlayAttack();
         }
@@ -59,7 +56,6 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
         public void OnEnd()
         {
             body.IsInputMovementEnabled = true;
-            victim = null;
         }
     }
 }

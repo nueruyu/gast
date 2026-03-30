@@ -6,7 +6,6 @@ using Cryst.Domain.Characters;
 using Cryst.Domain.Characters.Facets;
 using UnityEngine;
 
-
 namespace Cryst.Features.Players
 {
     public class PlayerCharacterController : IPlayerCharacterController
