@@ -20,6 +20,8 @@ using Cryst.Features.CharacterActions.Actions.Attack;
 using Cryst.Features.CharacterActions.Actions.Dash;
 using Cryst.Features.CharacterActions.Actions.Default;
 using Cryst.Features.CharacterActions.Actions.Die;
+using Cryst.Features.CharacterActions.Actions.Grapple;
+using Cryst.Features.CharacterActions.Actions.HeavyAttack;
 using Cryst.Features.CharacterActions.Actions.Hit;
 using Cryst.Features.CharacterActions.Actions.Jump;
 using Cryst.Domain.Characters.Facets;
@@ -64,6 +66,10 @@ namespace Cryst.Composition
 
             // Character Actions (Transient)
             builder.Register<AttackAction>(Lifetime.Transient);
+            builder.Register<HeavyAttackAction>(Lifetime.Transient);
+            builder.Register<GrappleAction>(Lifetime.Transient);
+            builder.Register<GrappleThrowAction>(Lifetime.Transient);
+            builder.Register<GrappledAction>(Lifetime.Transient);
             builder.Register<DashAction>(Lifetime.Transient);
             builder.Register<DefaultAction>(Lifetime.Transient);
             builder.Register<DieAction>(Lifetime.Transient);
@@ -74,10 +80,13 @@ namespace Cryst.Composition
             // Character Action Effects
             builder.Register<PlaySoundEffectHandler>(Lifetime.Transient).As<ICharacterActionEffectHandler>();
             builder.Register<SpawnHitAreaEffectHandler>(Lifetime.Transient).As<ICharacterActionEffectHandler>();
+            builder.Register<SpawnGrappleAreaEffectHandler>(Lifetime.Transient).As<ICharacterActionEffectHandler>();
             builder.Register<SpawnVfxEffectHandler>(Lifetime.Transient).As<ICharacterActionEffectHandler>();
 
             // Character Facets (Transient)
             builder.Register<AttackableCharacter>(Lifetime.Transient);
+            builder.Register<GrappleableCharacter>(Lifetime.Transient);
+            builder.Register<GrappleTargetableCharacter>(Lifetime.Transient);
             builder.Register<DashableCharacter>(Lifetime.Transient);
             builder.Register<GuardableCharacter>(Lifetime.Transient);
             builder.Register<JumpableCharacter>(Lifetime.Transient);
@@ -106,6 +115,7 @@ namespace Cryst.Composition
             builder.Register<EventBindingRunner>(Lifetime.Singleton).As<ILifecycleTask>();
             builder.Register<HitFeedbackHandler>(Lifetime.Singleton);
             builder.Register<HitEffectHandler>(Lifetime.Singleton);
+            builder.Register<GrappleHitHandler>(Lifetime.Singleton);
             builder.Register<CharacterDecompositionHandler>(Lifetime.Singleton);
         }
     }

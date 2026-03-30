@@ -1,8 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using Cryst.Domain.Combat;
 using Cryst.Domain.Characters;
+using Cryst.Domain.Combat;
 using Cryst.Features.Characters.EventHandlers;
 using Gast.Core.Events;
 using Gast.Core.Tasks;
@@ -17,17 +17,20 @@ namespace Cryst.Infrastructure
         readonly CharacterDecompositionHandler characterDecompositionHandler;
         readonly HitEffectHandler hitEffectHandler;
         readonly HitFeedbackHandler hitFeedbackHandler;
+        readonly GrappleHitHandler grappleHitHandler;
 
         public EventBindingRunner(
             IDomainEventSubscriber eventSubscriber,
             CharacterDecompositionHandler characterDecompositionHandler,
             HitEffectHandler hitEffectHandler,
-            HitFeedbackHandler hitFeedbackHandler)
+            HitFeedbackHandler hitFeedbackHandler,
+            GrappleHitHandler grappleHitHandler)
         {
             this.eventSubscriber = eventSubscriber;
             this.characterDecompositionHandler = characterDecompositionHandler;
             this.hitEffectHandler = hitEffectHandler;
             this.hitFeedbackHandler = hitFeedbackHandler;
+            this.grappleHitHandler = grappleHitHandler;
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
@@ -37,6 +40,8 @@ namespace Cryst.Infrastructure
             eventSubscriber.Subscribe<CharacterHitEvent<AttackInfo>>(hitEffectHandler.Handle)
                 .AddTo(cancellationToken);
             eventSubscriber.Subscribe<CharacterHitEvent<AttackInfo>>(hitFeedbackHandler.Handle)
+                .AddTo(cancellationToken);
+            eventSubscriber.Subscribe<CharacterHitEvent<GrappleAttackInfo>>(grappleHitHandler.Handle)
                 .AddTo(cancellationToken);
 
             await UniTask.WaitUntilCanceled(cancellationToken);

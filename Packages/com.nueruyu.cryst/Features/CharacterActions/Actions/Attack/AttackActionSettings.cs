@@ -17,12 +17,17 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
         [SerializeField]
         float duration = 0.6f;
 
+        [Header("Animation")]
+        [SerializeField]
+        AnimatorTriggerSymbol animationTrigger;
+
         [Header("Effects Triggered by Animation Events")]
         [SerializeField]
         List<TimedEffect> timedEffects = new();
 
         public float Cooldown => cooldown;
         public float Duration => duration;
+        public AnimatorTriggerSymbol AnimationTrigger => animationTrigger;
         public IReadOnlyList<TimedEffect> TimedEffects => timedEffects;
 
         [Serializable]

@@ -28,6 +28,8 @@ namespace Gast.Unity.Features.Inputs
         readonly InputAction sprintAction;
         readonly InputAction interactAction;
         readonly InputAction attackAction;
+        readonly InputAction heavyAttackAction;
+        readonly InputAction grappleAction;
         readonly InputAction guardAction;
         readonly InputAction showMenuAction;
         readonly InputAction hideMenuAction;
@@ -46,6 +48,8 @@ namespace Gast.Unity.Features.Inputs
         public bool InteractPressed { get; private set; }
         public bool InteractHeld { get; private set; }
         public bool Attack { get; private set; }
+        public bool HeavyAttack { get; private set; }
+        public bool Grapple { get; private set; }
         public bool Dash { get; private set; }
         public bool GuardHeld { get; private set; }
         public bool IsCursorOverridePressed { get; private set; }
@@ -68,6 +72,8 @@ namespace Gast.Unity.Features.Inputs
             sprintAction = playerActionMap.FindAction("Sprint");
             interactAction = playerActionMap.FindAction("Interact");
             attackAction = playerActionMap.FindAction("Attack");
+            heavyAttackAction = playerActionMap.FindAction("HeavyAttack");
+            grappleAction = playerActionMap.FindAction("Grapple");
             guardAction = playerActionMap.FindAction("Guard");
             showMenuAction = playerActionMap.FindAction("ShowMenu");
             hideMenuAction = menuActionMap.FindAction("HideMenu");
@@ -85,6 +91,8 @@ namespace Gast.Unity.Features.Inputs
             interactAction.SubscribePerformed(OnInteractPerformed).AddTo(cancellationToken);
             interactAction.SubscribeCanceled(OnInteractCanceled).AddTo(cancellationToken);
             attackAction.SubscribePerformed(OnAttackPerformed).AddTo(cancellationToken);
+            heavyAttackAction.SubscribePerformed(OnHeavyAttackPerformed).AddTo(cancellationToken);
+            grappleAction.SubscribePerformed(OnGrapplePerformed).AddTo(cancellationToken);
             sprintAction.SubscribePerformed(OnSprintPerformed).AddTo(cancellationToken);
             showMenuAction.SubscribePerformed(OnShowMenuPerformed).AddTo(cancellationToken);
             hideMenuAction.SubscribePerformed(OnHideMenuPerformed).AddTo(cancellationToken);
@@ -108,6 +116,8 @@ namespace Gast.Unity.Features.Inputs
                     Jump = false;
                     InteractPressed = false;
                     Attack = false;
+                    HeavyAttack = false;
+                    Grapple = false;
                     Dash = false;
 
                     await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
@@ -165,6 +175,16 @@ namespace Gast.Unity.Features.Inputs
         void OnAttackPerformed(InputAction.CallbackContext _)
         {
             Attack = true;
+        }
+
+        void OnHeavyAttackPerformed(InputAction.CallbackContext _)
+        {
+            HeavyAttack = true;
+        }
+
+        void OnGrapplePerformed(InputAction.CallbackContext _)
+        {
+            Grapple = true;
         }
 
         void OnSprintPerformed(InputAction.CallbackContext context)

@@ -14,5 +14,7 @@ namespace Cryst.Domain.Characters.Facets
 
         public bool CanAttack() => actionController.CanExecuteAction<AttackCommand>();
         public void Attack() => actionController.ExecuteAction(new AttackCommand());
+        public bool CanHeavyAttack() => actionController.CanExecuteAction<HeavyAttackCommand>();
+        public void HeavyAttack() => actionController.ExecuteAction(new HeavyAttackCommand());
     }
 }

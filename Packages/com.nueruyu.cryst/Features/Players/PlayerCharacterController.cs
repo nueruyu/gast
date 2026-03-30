@@ -68,6 +68,22 @@ namespace Cryst.Features.Players
                     attackable.Attack();
                 }
             }
+
+            if (inputProvider.HeavyAttack)
+            {
+                if (character.Is(out AttackableCharacter attackable))
+                {
+                    attackable.HeavyAttack();
+                }
+            }
+
+            if (inputProvider.Grapple)
+            {
+                if (character.Is(out GrappleableCharacter grappleable))
+                {
+                    grappleable.Grapple();
+                }
+            }
         }
 
         Vector3 CalculateMoveDirection(Vector2 input, ICameraService cameraService, BaseCharacter actor)
