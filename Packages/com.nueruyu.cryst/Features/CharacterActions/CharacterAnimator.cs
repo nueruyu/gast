@@ -1,6 +1,7 @@
 using Gast.Unity.Shared.Animations;
 using UnityEngine;
 
+
 namespace Cryst.Features.CharacterActions
 {
     [RequireComponent(typeof(Animator))]
@@ -41,6 +42,12 @@ namespace Cryst.Features.CharacterActions
         {
             if (!isActiveAndEnabled) return;
             animator.SetTrigger(attackHash);
+        }
+
+        public void PlayTrigger(AnimatorTriggerSymbol symbol)
+        {
+            if (!isActiveAndEnabled || symbol == null) return;
+            animator.SetTrigger(symbol.Hash);
         }
 
         public void PlayDash()

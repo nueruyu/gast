@@ -57,7 +57,8 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
         {
             startTime = Time.time;
             lastAttackTime = startTime;
-            animator.PlayAttack();
+            if (animator)
+                animator.PlayTrigger(settings.AnimationTrigger);
         }
 
         public bool OnUpdate() => Time.time < startTime + settings.Duration;
