@@ -12,7 +12,8 @@
         "UniTask",
         "R3.Unity",
         "Cinemachine",
-        "VContainer"
+        "VContainer",
+        "Unity.Animation.Rigging"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

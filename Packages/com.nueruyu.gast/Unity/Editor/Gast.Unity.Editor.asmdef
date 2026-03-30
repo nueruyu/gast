@@ -5,7 +5,9 @@
         "Gast.Core",
         "Gast.Domain",
         "Gast.Unity.Features",
-        "Gast.Lib.AI.Editor"
+        "Gast.Lib.AI.Editor",
+        "Unity.Animation.Rigging.Editor",
+        "Unity.Animation.Rigging"
     ],
     "includePlatforms": [
         "Editor"
