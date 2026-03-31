@@ -5,12 +5,12 @@ using Gast.Lib.AI.Testing;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
-namespace Gast.Lib.AI.Tests
+namespace Gast.Lib.AI.Tests.Editor
 {
     [TestFixture]
     public class AISimulatorTests
     {
-        private AIDomain<TestActorContext, TestWorldState> domain;
+        AIDomain<TestActorContext, TestWorldState> domain;
 
         [SetUp]
         public void SetUp()
@@ -69,7 +69,7 @@ namespace Gast.Lib.AI.Tests
         }
     }
 
-    internal static class TaskExtensions
+    static class TaskExtensions
     {
         internal static IAction<TActorContext, TWorldState> Unwrap<TActorContext, TWorldState>(this ITask task)
             where TWorldState : class, IWorldState<TWorldState>

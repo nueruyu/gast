@@ -53,9 +53,6 @@ namespace Gast.Lib.AI.Tasks
             if (method == null)
                 return;
 
-            // Restore state to pre-selection so subtask SimulateAsync applies effects exactly once.
-            simulationState.WriteTo(ref worldState);
-
             if (!context.PlanFound)
                 context.RootMethodName = method.Name;
 

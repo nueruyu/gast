@@ -1,7 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Gast.Lib.AI.Tests
+namespace Gast.Lib.AI.Tests.Editor
 {
     public class TestWorldState : IWorldState<TestWorldState>
     {
@@ -35,7 +35,7 @@ namespace Gast.Lib.AI.Tests
 
     public abstract class TestAction : IAction<TestActorContext, TestWorldState>
     {
-        private readonly string name;
+        readonly string name;
         public int ExecutionCount { get; private set; }
 
         protected TestAction(string name)

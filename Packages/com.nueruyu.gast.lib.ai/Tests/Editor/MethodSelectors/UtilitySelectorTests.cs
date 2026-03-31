@@ -5,7 +5,7 @@ using Gast.Lib.AI.MethodSelectors;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
-namespace Gast.Lib.AI.Tests.MethodSelectors
+namespace Gast.Lib.AI.Tests.Editor.MethodSelectors
 {
     [TestFixture]
     public class UtilitySelectorTests
