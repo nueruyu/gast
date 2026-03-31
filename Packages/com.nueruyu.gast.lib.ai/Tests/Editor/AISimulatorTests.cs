@@ -1,6 +1,8 @@
-using System.Reflection;
+using System;
+using System.Collections;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI.Builders;
+using Gast.Lib.AI.Tasks;
 using Gast.Lib.AI.Testing;
 using NUnit.Framework;
 using UnityEngine.TestTools;
@@ -18,18 +20,18 @@ namespace Gast.Lib.AI.Tests.Editor
             var builder = new AIDomainBuilder<TestActorContext, TestWorldState>();
             var openDoorTask = builder.DefineCompound("OpenDoorTask");
             openDoorTask.AddMethod("FindKeyAndOpen")
-                .Condition(state => !state.HasKey)
+                .When(state => !state.HasKey)
                 .Do(new FindKeyAction())
                 .Do(new OpenDoorAction());
             openDoorTask.AddMethod("OpenImmediately")
-                .Condition(state => state.HasKey)
+                .When(state => state.HasKey)
                 .Do(new OpenDoorAction());
 
             domain = builder.Build("OpenDoorTask");
         }
 
         [UnityTest]
-        public System.Collections.IEnumerator SimulateAsync_WhenKeyIsHeld_ShouldGeneratePlanToOpenDoor()
+        public IEnumerator SimulateAsync_WhenKeyIsHeld_ShouldGeneratePlanToOpenDoor()
         {
             return Run_SimulateAsync_WhenKeyIsHeld().ToCoroutine();
         }
@@ -43,12 +45,13 @@ namespace Gast.Lib.AI.Tests.Editor
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.SimulatedTaskSequence.Count);
-            Assert.IsInstanceOf<OpenDoorAction>(result.SimulatedTaskSequence[0].Unwrap<TestActorContext, TestWorldState>());
+            Assert.IsInstanceOf<OpenDoorAction>(result.SimulatedTaskSequence[0]
+                .Unwrap<TestActorContext, TestWorldState>());
             Assert.IsTrue(result.FinalWorldState.IsDoorOpen);
         }
 
         [UnityTest]
-        public System.Collections.IEnumerator SimulateAsync_WhenKeyIsNotHeld_ShouldGeneratePlanToFindKeyAndOpenDoor()
+        public IEnumerator SimulateAsync_WhenKeyIsNotHeld_ShouldGeneratePlanToFindKeyAndOpenDoor()
         {
             return Run_SimulateAsync_WhenKeyIsNotHeld().ToCoroutine();
         }
@@ -62,8 +65,10 @@ namespace Gast.Lib.AI.Tests.Editor
 
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.SimulatedTaskSequence.Count);
-            Assert.IsInstanceOf<FindKeyAction>(result.SimulatedTaskSequence[0].Unwrap<TestActorContext, TestWorldState>());
-            Assert.IsInstanceOf<OpenDoorAction>(result.SimulatedTaskSequence[1].Unwrap<TestActorContext, TestWorldState>());
+            Assert.IsInstanceOf<FindKeyAction>(result.SimulatedTaskSequence[0]
+                .Unwrap<TestActorContext, TestWorldState>());
+            Assert.IsInstanceOf<OpenDoorAction>(result.SimulatedTaskSequence[1]
+                .Unwrap<TestActorContext, TestWorldState>());
             Assert.IsTrue(result.FinalWorldState.HasKey);
             Assert.IsTrue(result.FinalWorldState.IsDoorOpen);
         }
@@ -75,8 +80,9 @@ namespace Gast.Lib.AI.Tests.Editor
             where TWorldState : class, IWorldState<TWorldState>
             where TActorContext : class, IActorContext<TWorldState>
         {
-            var field = task.GetType().GetField("action", BindingFlags.NonPublic | BindingFlags.Instance);
-            return (IAction<TActorContext, TWorldState>)field.GetValue(task);
+            if (task is PrimitiveTask<TActorContext, TWorldState> primitiveTask) 
+                return primitiveTask.Action;
+            throw new InvalidCastException($"Cannot unwrap {task.GetType().Name} to an IAction.");
         }
     }
 }

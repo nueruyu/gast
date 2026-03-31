@@ -9,14 +9,14 @@ namespace Gast.Lib.AI.Tasks
         where TWorldState : class, IWorldState<TWorldState>
         where TActorContext : class, IActorContext<TWorldState>
     {
-        readonly IAction<TActorContext, TWorldState> action;
+        public IAction<TActorContext, TWorldState> Action { get; }
 
         public PrimitiveTask(IAction<TActorContext, TWorldState> action)
         {
-            this.action = action;
+            Action = action;
         }
 
-        public string Name => action.ToString();
+        public string Name => Action.ToString();
 
         public UniTask<bool> ValidateAsync(
             ValidationContext<TWorldState> context,
@@ -24,23 +24,23 @@ namespace Gast.Lib.AI.Tasks
         {
             if (ReferenceEquals(this, context.CurrentlyExecutingTask))
             {
-                action.Simulate(context.WorldState);
+                Action.Simulate(context.WorldState);
                 return UniTask.FromResult(true);
             }
 
-            if (!action.IsAvailable(context.WorldState))
+            if (!Action.IsAvailable(context.WorldState))
                 return UniTask.FromResult(false);
 
-            action.Simulate(context.WorldState);
+            Action.Simulate(context.WorldState);
 
             return UniTask.FromResult(true);
         }
 
         public UniTask SimulateAsync(SimulationContext<TWorldState> context, CancellationToken cancellationToken)
         {
-            if (action.IsAvailable(context.WorldState))
+            if (Action.IsAvailable(context.WorldState))
             {
-                action.Simulate(context.WorldState);
+                Action.Simulate(context.WorldState);
                 context.SimulatedPlan.Add(this);
             }
 
@@ -54,7 +54,7 @@ namespace Gast.Lib.AI.Tasks
             DebugLogger.EnterTask(context.Key, Name);
             try
             {
-                await action.ExecuteAsync(context.ActorContext, cancellationToken);
+                await Action.ExecuteAsync(context.ActorContext, cancellationToken);
             }
             finally
             {

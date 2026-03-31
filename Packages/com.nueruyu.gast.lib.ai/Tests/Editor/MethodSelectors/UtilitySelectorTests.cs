@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Lib.AI.MethodSelectors;
@@ -11,7 +11,7 @@ namespace Gast.Lib.AI.Tests.Editor.MethodSelectors
     public class UtilitySelectorTests
     {
         [UnityTest]
-        public System.Collections.IEnumerator SelectAsync_ShouldReturnMethodWithHighestScore()
+        public IEnumerator SelectAsync_ShouldReturnMethodWithHighestScore()
         {
             return Run_SelectAsync_ShouldReturnMethodWithHighestScore().ToCoroutine();
         }
@@ -19,37 +19,12 @@ namespace Gast.Lib.AI.Tests.Editor.MethodSelectors
         async UniTask Run_SelectAsync_ShouldReturnMethodWithHighestScore()
         {
             var selector = new UtilitySelector<TestActorContext, TestWorldState>();
-
-            // Method constructor: (name, index, subTasks, startCondition, continuationCondition, scorer, interruptionCost)
-            var methodLow = new Method<TestActorContext, TestWorldState>(
-                "Low", 0,
-                new List<ITask<TestActorContext, TestWorldState>>(),
-                s => true,
-                null,
-                s => 10f);
-            var methodMid = new Method<TestActorContext, TestWorldState>(
-                "Mid", 1,
-                new List<ITask<TestActorContext, TestWorldState>>(),
-                s => true,
-                null,
-                s => 50f);
-            var methodHigh = new Method<TestActorContext, TestWorldState>(
-                "High", 2,
-                new List<ITask<TestActorContext, TestWorldState>>(),
-                s => true,
-                null,
-                s => 100f);
-            var methodInvalid = new Method<TestActorContext, TestWorldState>(
-                "Invalid", 3,
-                new List<ITask<TestActorContext, TestWorldState>>(),
-                s => false,
-                null,
-                s => 200f);
-
-            var methods = new List<Method<TestActorContext, TestWorldState>>
-            {
-                methodLow, methodMid, methodHigh, methodInvalid
-            };
+            var methods = new TestScenarioBuilder()
+                .AddMethod("Low", scorer: s => 10f)
+                .AddMethod("Mid", scorer: s => 50f)
+                .AddMethod("High", scorer: s => 100f)
+                .AddMethod("Invalid", startCondition: s => false, scorer: s => 200f)
+                .BuildMethods();
 
             var context = new ValidationContext<TestWorldState>(new TestWorldState(), new PlanningStateStore());
 
@@ -60,7 +35,7 @@ namespace Gast.Lib.AI.Tests.Editor.MethodSelectors
         }
 
         [UnityTest]
-        public System.Collections.IEnumerator SelectInterruptsAsync_WhenNewMethodIsBetter_ShouldReturnNewMethod()
+        public IEnumerator SelectInterruptsAsync_WhenNewMethodIsBetter_ShouldReturnNewMethod()
         {
             return Run_SelectInterruptsAsync_WhenNewMethodIsBetter().ToCoroutine();
         }
@@ -69,35 +44,23 @@ namespace Gast.Lib.AI.Tests.Editor.MethodSelectors
         {
             var selector = new UtilitySelector<TestActorContext, TestWorldState>();
 
-            // currentMethod: score=50, interruptionCost=20
-            // betterMethod: score=80
-            // Interrupt check: 80 > 50 + 20 = 80 > 70 → true
-            var currentMethod = new Method<TestActorContext, TestWorldState>(
-                "Current", 0,
-                new List<ITask<TestActorContext, TestWorldState>>(),
-                s => true,
-                null,
-                s => 50f,
-                s => 20f);
-            var betterMethod = new Method<TestActorContext, TestWorldState>(
-                "Better", 1,
-                new List<ITask<TestActorContext, TestWorldState>>(),
-                s => true,
-                null,
-                s => 80f);
+            var (methods, currentMethodInfo) = new TestScenarioBuilder()
+                .AddMethod("Current", scorer: s => 50f, interruptionCost: s => 20f)
+                .AddMethod("Better", scorer: s => 80f)
+                .SetCurrentMethod("Current")
+                .Build();
 
-            var methods = new List<Method<TestActorContext, TestWorldState>> { currentMethod, betterMethod };
             var context = new ValidationContext<TestWorldState>(new TestWorldState(), new PlanningStateStore());
-            var currentMethodInfo = new CurrentMethodInfo<TestActorContext, TestWorldState>(currentMethod);
 
-            var selectedMethod = await selector.SelectInterruptsAsync(methods, currentMethodInfo, context, CancellationToken.None);
+            var selectedMethod =
+                await selector.SelectInterruptsAsync(methods, currentMethodInfo, context, CancellationToken.None);
 
             Assert.IsNotNull(selectedMethod);
             Assert.AreEqual("Better", selectedMethod.Name);
         }
 
         [UnityTest]
-        public System.Collections.IEnumerator SelectInterruptsAsync_WhenNewMethodIsNotGoodEnough_ShouldReturnNull()
+        public IEnumerator SelectInterruptsAsync_WhenNewMethodIsNotGoodEnough_ShouldReturnNull()
         {
             return Run_SelectInterruptsAsync_WhenNewMethodIsNotGoodEnough().ToCoroutine();
         }
@@ -106,28 +69,16 @@ namespace Gast.Lib.AI.Tests.Editor.MethodSelectors
         {
             var selector = new UtilitySelector<TestActorContext, TestWorldState>();
 
-            // currentMethod: score=50, interruptionCost=20
-            // notGoodEnoughMethod: score=60
-            // Interrupt check: 60 > 50 + 20 = 60 > 70 → false → null
-            var currentMethod = new Method<TestActorContext, TestWorldState>(
-                "Current", 0,
-                new List<ITask<TestActorContext, TestWorldState>>(),
-                s => true,
-                null,
-                s => 50f,
-                s => 20f);
-            var notGoodEnoughMethod = new Method<TestActorContext, TestWorldState>(
-                "NotGoodEnough", 1,
-                new List<ITask<TestActorContext, TestWorldState>>(),
-                s => true,
-                null,
-                s => 60f);
+            var (methods, currentMethodInfo) = new TestScenarioBuilder()
+                .AddMethod("Current", scorer: s => 50f, interruptionCost: s => 20f)
+                .AddMethod("NotGoodEnough", scorer: s => 60f)
+                .SetCurrentMethod("Current")
+                .Build();
 
-            var methods = new List<Method<TestActorContext, TestWorldState>> { currentMethod, notGoodEnoughMethod };
             var context = new ValidationContext<TestWorldState>(new TestWorldState(), new PlanningStateStore());
-            var currentMethodInfo = new CurrentMethodInfo<TestActorContext, TestWorldState>(currentMethod);
 
-            var selectedMethod = await selector.SelectInterruptsAsync(methods, currentMethodInfo, context, CancellationToken.None);
+            var selectedMethod =
+                await selector.SelectInterruptsAsync(methods, currentMethodInfo, context, CancellationToken.None);
 
             Assert.IsNull(selectedMethod);
         }
