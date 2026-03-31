@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Gast.Core.Commands;
@@ -12,19 +14,32 @@ namespace Gast.Application.AIPlanning
         readonly IAIPlanningService aiAgentService;
         readonly IPlayerManager playerManager;
         readonly ICharacterAIBrainFactory aiBrainFactory;
+        readonly IEnumerable<ISlashCommandHandler> slashHandlers;
 
         public CommandAIUseCase(
             IAIPlanningService aiAgentService,
             IPlayerManager playerManager,
-            ICharacterAIBrainFactory aiBrainFactory)
+            ICharacterAIBrainFactory aiBrainFactory,
+            IEnumerable<ISlashCommandHandler> slashHandlers)
         {
             this.aiAgentService = aiAgentService;
             this.playerManager = playerManager;
             this.aiBrainFactory = aiBrainFactory;
+            this.slashHandlers = slashHandlers;
         }
 
         public async ValueTask<CommandAIResult> ExecuteAsync(CommandAICommand command, CancellationToken cancellationToken)
         {
+            foreach (var handler in slashHandlers)
+            {
+                var prefix = handler.Prefix + " ";
+                if (command.Instruction.StartsWith(prefix, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    var slashInstruction = command.Instruction[prefix.Length..];
+                    return await handler.HandleAsync(slashInstruction, cancellationToken);
+                }
+            }
+
             AIPlanningResult result;
             try
             {
@@ -57,19 +72,19 @@ namespace Gast.Application.AIPlanning
     {
         public bool IsSuccess { get; }
         public int GoalCount { get; }
-        public string ErrorMessage { get; }
+        public string Message { get; }
 
-        CommandAIResult(bool isSuccess, int goalCount, string errorMessage)
+        CommandAIResult(bool isSuccess, int goalCount, string message)
         {
             IsSuccess = isSuccess;
             GoalCount = goalCount;
-            ErrorMessage = errorMessage;
+            Message = message;
         }
 
-        public static CommandAIResult Success(int goalCount)
-            => new(true, goalCount, null);
+        public static CommandAIResult Success(int goalCount, string message = null)
+            => new(true, goalCount, message);
 
-        public static CommandAIResult Failure(string errorMessage)
-            => new(false, 0, errorMessage);
+        public static CommandAIResult Failure(string message)
+            => new(false, 0, message);
     }
 }

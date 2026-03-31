@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5f9eb7513a5bf6439bf110cf5336e3d, type: 3}
   m_Name: Meat
   m_EditorClassIdentifier: Gast.Features::Gast.Features.Economy.ItemReference
-  id: afaa88f0-6a79-4e9b-a41f-ffec72a3bbfc
+  id: meat

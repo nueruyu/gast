@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Cryst.Domain.AI.Objectives;
 using Cryst.Domain.Characters;
+using Gast.Domain.Characters;
 using Gast.Core.Events;
 using Gast.Domain.AI;
-using Gast.Domain.Characters;
 using Gast.Domain.Economy;
 using R3;
 

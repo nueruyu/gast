@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1206cc837750441428799047d7f45525, type: 3}
   m_Name: TypeReference_DefaultHuman
   m_EditorClassIdentifier: Gast.Features::Gast.Features.Characters.CharacterTypeReference
-  id: 6f1da252-dcf6-4b4c-b4d8-1aba34106341
+  id: default_human

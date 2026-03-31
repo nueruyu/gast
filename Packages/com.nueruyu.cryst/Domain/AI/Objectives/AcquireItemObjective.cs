@@ -8,7 +8,7 @@ namespace Cryst.Domain.AI.Objectives
     [AIObjective("AcquireItem", "Collect a specific number of items.")]
     public class AcquireItemObjective : IAIObjective
     {
-        [AIObjectiveParameter("Target item ID (Guid)", "string")]
+        [AIObjectiveParameter("Target item ID", "string")]
         public ItemId TargetItemId { get; }
 
         [AIObjectiveParameter("Number of items to collect")]

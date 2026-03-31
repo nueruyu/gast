@@ -8,12 +8,18 @@ namespace Cryst.Infrastructure.Characters
         public CharacterTypeId TypeId { get; }
         public Faction Faction { get; }
         public Territory? Territory { get; }
+        public CharacterId? FixedId { get; }
 
-        public CharacterCreationParameters(CharacterTypeId typeId, Faction faction, Territory? territory = null)
+        public CharacterCreationParameters(
+            CharacterTypeId typeId,
+            Faction faction,
+            Territory? territory = null,
+            CharacterId? fixedId = null)
         {
             TypeId = typeId;
             Faction = faction;
             Territory = territory;
+            FixedId = fixedId;
         }
     }
 }

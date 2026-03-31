@@ -12,6 +12,7 @@ namespace Gast.Lib.AI.Builders
     {
         readonly string methodName;
         readonly List<ITask<TActorContext, TWorldState>> subTasks = new();
+        readonly List<DeferredTaskRef> deferredRefs = new();
         Func<TWorldState, bool> when = _ => true;
         Func<TWorldState, bool> whileCondition;
         Func<TWorldState, float> interruptionCost;
@@ -65,13 +66,17 @@ namespace Gast.Lib.AI.Builders
 
         public MethodBuilder<TActorContext, TWorldState> Do(CompoundTaskBuilder<TActorContext, TWorldState> builder)
         {
-            var task = builder.DomainBuilder.GetTask(builder.Name);
-            subTasks.Add(task);
+            var insertIndex = subTasks.Count;
+            subTasks.Add(default); // placeholder
+            deferredRefs.Add(new DeferredTaskRef(builder.DomainBuilder, builder.Name, insertIndex));
             return this;
         }
 
         internal Method<TActorContext, TWorldState> Build(int index)
         {
+            foreach (var deferred in deferredRefs)
+                subTasks[deferred.Index] = deferred.DomainBuilder.GetTask(deferred.TaskName);
+
             return new Method<TActorContext, TWorldState>(
                 methodName,
                 index,
@@ -80,6 +85,23 @@ namespace Gast.Lib.AI.Builders
                 whileCondition,
                 scorer,
                 interruptionCost);
+        }
+
+        readonly struct DeferredTaskRef
+        {
+            public AIDomainBuilder<TActorContext, TWorldState> DomainBuilder { get; }
+            public string TaskName { get; }
+            public int Index { get; }
+
+            public DeferredTaskRef(
+                AIDomainBuilder<TActorContext, TWorldState> domainBuilder,
+                string taskName,
+                int index)
+            {
+                DomainBuilder = domainBuilder;
+                TaskName = taskName;
+                Index = index;
+            }
         }
 
         class ActionAdapter : IAction<TActorContext, TWorldState>

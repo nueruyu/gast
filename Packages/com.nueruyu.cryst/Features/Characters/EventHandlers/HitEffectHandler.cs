@@ -1,7 +1,7 @@
-using Gast.Domain.Characters;
 using Cryst.Domain.Characters;
 using Cryst.Domain.Combat;
 using Cryst.Application.Characters;
+using Gast.Domain.Characters;
 
 namespace Cryst.Features.Characters.EventHandlers
 {

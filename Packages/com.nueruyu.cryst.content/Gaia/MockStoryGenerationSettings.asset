@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90ffd601334e8cb44944c3e25111449c, type: 3}
+  m_Name: MockStoryGenerationSettings
+  m_EditorClassIdentifier: Gast.Unity.Infrastructure::Gast.Unity.Infrastructure.Remoting.AI.MockStoryGenerationSettings
+  isEnabled: 1
+  mockStoryJson: "{\r\n  \"root_task\": \"ClearAndCollect\",\r\n  \"tasks\": [\r\n   
+    {\r\n      \"name\": \"ClearAndCollect\",\r\n      \"methods\": [\r\n       
+    {\r\n          \"name\": \"ExecuteMission\",\r\n          \"tasks\": [\r\n           
+    { \"name\": \"PrepareForMission\" },\r\n            { \"name\": \"LureAndAmbush\"
+    },\r\n            { \"name\": \"CollectStones\" }\r\n          ]\r\n        }\r\n     
+    ]\r\n    },\r\n    {\r\n      \"name\": \"PrepareForMission\",\r\n      \"methods\":
+    [\r\n        {\r\n          \"name\": \"GetFood\",\r\n          \"tasks\": [\r\n           
+    {\r\n              \"action\": \"SetObjectives\",\r\n              \"parameters\":
+    {\r\n                \"assignments\": [\r\n                  {\r\n                   
+    \"character_id\": \"player\",\r\n                    \"objective\": {\r\n                     
+    \"type\": \"AcquireItem\",\r\n                      \"parameters\": {\r\n                       
+    \"target_item_id\": \"meat\",\r\n                        \"target_quantity\":
+    1\r\n                      }\r\n                    }\r\n                  }\r\n               
+    ]\r\n              }\r\n            },\r\n            {\r\n              \"action\":
+    \"WaitForItemAcquired\",\r\n              \"parameters\": {\r\n               
+    \"acquirer_character_id\": \"player\",\r\n                \"item_id\": \"meat\"\r\n             
+    }\r\n            }\r\n          ]\r\n        }\r\n      ]\r\n    },\r\n    {\r\n     
+    \"name\": \"LureAndAmbush\",\r\n      \"methods\": [\r\n        {\r\n         
+    \"name\": \"ExecuteLureAndAmbush\",\r\n          \"tasks\": [\r\n           
+    { \"name\": \"LureBot\" },\r\n            { \"name\": \"SpringTheTrap\" },\r\n           
+    { \"name\": \"CounterAttack\" }\r\n          ]\r\n        }\r\n      ]\r\n   
+    },\r\n    {\r\n      \"name\": \"LureBot\",\r\n      \"methods\": [\r\n       
+    {\r\n          \"name\": \"AssignAndDefeatBot\",\r\n          \"tasks\": [\r\n           
+    {\r\n              \"action\": \"SetObjectives\",\r\n              \"parameters\":
+    {\r\n                \"assignments\": [\r\n                  {\r\n                   
+    \"character_id\": \"player\",\r\n                    \"objective\": {\r\n                     
+    \"type\": \"DefeatCharacter\",\r\n                      \"parameters\": {\r\n                       
+    \"target_type_id\": \"default_bot\",\r\n                        \"target_quantity\":
+    1\r\n                      }\r\n                    }\r\n                  }\r\n               
+    ]\r\n              }\r\n            },\r\n            {\r\n              \"action\":
+    \"WaitForCharacterDefeated\",\r\n              \"parameters\": {\r\n               
+    \"character_id\": \"bot_a\"\r\n              }\r\n            }\r\n         
+    ]\r\n        }\r\n      ]\r\n    },\r\n    {\r\n      \"name\": \"SpringTheTrap\",\r\n     
+    \"methods\": [\r\n        {\r\n          \"name\": \"OrderSoldiersToAttackPlayer\",\r\n         
+    \"tasks\": [\r\n            {\r\n              \"action\": \"SetObjectives\",\r\n             
+    \"parameters\": {\r\n                \"assignments\": [\r\n                 
+    {\r\n                    \"character_id\": \"soldier_a\",\r\n                   
+    \"objective\": {\r\n                      \"type\": \"DefeatCharacter\",\r\n                     
+    \"parameters\": {\r\n                        \"target_type_id\": \"default_human\",\r\n                       
+    \"target_quantity\": 1\r\n                      }\r\n                    }\r\n                 
+    },\r\n                  {\r\n                    \"character_id\": \"soldier_b\",\r\n                   
+    \"objective\": {\r\n                      \"type\": \"DefeatCharacter\",\r\n                     
+    \"parameters\": {\r\n                        \"target_type_id\": \"default_human\",\r\n                       
+    \"target_quantity\": 1\r\n                      }\r\n                    }\r\n                 
+    },\r\n                  {\r\n                    \"character_id\": \"soldier_c\",\r\n                   
+    \"objective\": {\r\n                      \"type\": \"DefeatCharacter\",\r\n                     
+    \"parameters\": {\r\n                        \"target_type_id\": \"default_human\",\r\n                       
+    \"target_quantity\": 1\r\n                      }\r\n                    }\r\n                 
+    }\r\n                ]\r\n              }\r\n            }\r\n          ]\r\n       
+    }\r\n      ]\r\n    },\r\n    {\r\n      \"name\": \"CounterAttack\",\r\n     
+    \"methods\": [\r\n        {\r\n          \"name\": \"AssignAndDefeatSurvivingSoldiers\",\r\n         
+    \"tasks\": [\r\n            {\r\n              \"action\": \"SetObjectives\",\r\n             
+    \"parameters\": {\r\n                \"assignments\": [\r\n                 
+    {\r\n                    \"character_id\": \"player\",\r\n                   
+    \"objective\": {\r\n                      \"type\": \"DefeatCharacter\",\r\n                     
+    \"parameters\": {\r\n                        \"target_type_id\": \"blue_soldier\",\r\n                       
+    \"target_quantity\": 2\r\n                      }\r\n                    }\r\n                 
+    },\r\n                  {\r\n                    \"character_id\": \"player\",\r\n                   
+    \"objective\": {\r\n                      \"type\": \"DefeatCharacter\",\r\n                     
+    \"parameters\": {\r\n                        \"target_type_id\": \"white_soldier\",\r\n                       
+    \"target_quantity\": 1\r\n                      }\r\n                    }\r\n                 
+    }\r\n                ]\r\n              }\r\n            },\r\n            {\r\n             
+    \"action\": \"WaitForCharacterDefeated\",\r\n              \"parameters\": {\r\n               
+    \"character_id\": \"soldier_a\"\r\n              }\r\n            },\r\n           
+    {\r\n              \"action\": \"WaitForCharacterDefeated\",\r\n             
+    \"parameters\": {\r\n                \"character_id\": \"soldier_b\"\r\n             
+    }\r\n            },\r\n            {\r\n              \"action\": \"WaitForCharacterDefeated\",\r\n             
+    \"parameters\": {\r\n                \"character_id\": \"soldier_c\"\r\n             
+    }\r\n            }\r\n          ]\r\n        }\r\n      ]\r\n    },\r\n    {\r\n     
+    \"name\": \"CollectStones\",\r\n      \"methods\": [\r\n        {\r\n         
+    \"name\": \"AssignAndCollectAllLoot\",\r\n          \"tasks\": [\r\n           
+    {\r\n              \"action\": \"SetObjectives\",\r\n              \"parameters\":
+    {\r\n                \"assignments\": [\r\n                  {\r\n                   
+    \"character_id\": \"player\",\r\n                    \"objective\": {\r\n                     
+    \"type\": \"AcquireItem\",\r\n                      \"parameters\": {\r\n                       
+    \"target_item_id\": \"yellow_stone\",\r\n                        \"target_quantity\":
+    1\r\n                      }\r\n                    }\r\n                  },\r\n                 
+    {\r\n                    \"character_id\": \"player\",\r\n                   
+    \"objective\": {\r\n                      \"type\": \"AcquireItem\",\r\n                     
+    \"parameters\": {\r\n                        \"target_item_id\": \"blue_stone\",\r\n                       
+    \"target_quantity\": 1\r\n                      }\r\n                    }\r\n                 
+    }\r\n                ]\r\n              }\r\n            },\r\n            {\r\n             
+    \"action\": \"WaitForItemAcquired\",\r\n              \"parameters\": {\r\n               
+    \"acquirer_character_id\": \"player\",\r\n                \"item_id\": \"yellow_stone\"\r\n             
+    }\r\n            },\r\n            {\r\n              \"action\": \"WaitForItemAcquired\",\r\n             
+    \"parameters\": {\r\n                \"acquirer_character_id\": \"player\",\r\n               
+    \"item_id\": \"blue_stone\"\r\n              }\r\n            }\r\n         
+    ]\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n"

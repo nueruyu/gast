@@ -3,17 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using Gast.Domain.AI;
 using Gast.Lib.Gaia;
+using Gast.Unity.Infrastructure.JsonConverters;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace Gast.Unity.Infrastructure.Remoting.AI
 {
     public class PlanConverter
     {
-        readonly GoalInstantiator goalInstantiator;
+        readonly ObjectiveTypeResolver typeResolver;
+        readonly JsonSerializer serializer;
 
-        public PlanConverter(GoalInstantiator goalInstantiator)
+        public PlanConverter(ObjectiveTypeResolver typeResolver, GaiaJsonSettingsFactory jsonSettingsFactory)
         {
-            this.goalInstantiator = goalInstantiator;
+            this.typeResolver = typeResolver;
+            serializer = JsonSerializer.Create(jsonSettingsFactory.Create());
         }
 
         public List<IAIObjective> ToGoals(PlanDto plan)
@@ -34,7 +39,9 @@ namespace Gast.Unity.Infrastructure.Remoting.AI
         {
             try
             {
-                return goalInstantiator.CreateGoal(objective.Type, objective.Parameters);
+                var type = typeResolver.Resolve(objective.Type);
+                var jObject = JObject.FromObject(objective.Parameters);
+                return (IAIObjective)jObject.ToObject(type, serializer);
             }
             catch (Exception ex)
             {

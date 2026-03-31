@@ -107,6 +107,7 @@ namespace Cryst.Composition
             builder.Register<HitFeedbackHandler>(Lifetime.Singleton);
             builder.Register<HitEffectHandler>(Lifetime.Singleton);
             builder.Register<CharacterDecompositionHandler>(Lifetime.Singleton);
+
         }
     }
 }

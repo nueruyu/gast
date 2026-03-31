@@ -1,7 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
 using Gast.Domain.Characters;
-using Cryst.Domain.Characters;
 
 namespace Cryst.Features.Characters.EventHandlers
 {
