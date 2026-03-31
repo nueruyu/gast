@@ -23,11 +23,6 @@ namespace Gast.Lib.AI.Builders
             this.methodName = methodName;
         }
 
-        public MethodBuilder<TActorContext, TWorldState> Condition(Func<TWorldState, bool> predicate)
-        {
-            return When(predicate);
-        }
-
         public MethodBuilder<TActorContext, TWorldState> When(Func<TWorldState, bool> predicate)
         {
             when = predicate ?? throw new ArgumentNullException(nameof(predicate));
