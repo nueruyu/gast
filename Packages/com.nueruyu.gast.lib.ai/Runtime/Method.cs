@@ -1,7 +1,5 @@
-using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Gast.Lib.AI
 {
@@ -11,7 +9,21 @@ namespace Gast.Lib.AI
     {
         public string Name { get; }
         public int Index { get; }
-        public IReadOnlyList<ITask<TActorContext, TWorldState>> SubTasks { get; }
+
+        readonly IReadOnlyList<Func<ITask<TActorContext, TWorldState>>> subTaskProviders;
+        ITask<TActorContext, TWorldState>[] resolvedSubTasks;
+
+        public IReadOnlyList<ITask<TActorContext, TWorldState>> SubTasks
+        {
+            get
+            {
+                if (resolvedSubTasks != null) return resolvedSubTasks;
+                resolvedSubTasks = new ITask<TActorContext, TWorldState>[subTaskProviders.Count];
+                for (var i = 0; i < subTaskProviders.Count; i++)
+                    resolvedSubTasks[i] = subTaskProviders[i]();
+                return resolvedSubTasks;
+            }
+        }
 
         readonly Func<TWorldState, bool> startCondition;
         readonly Func<TWorldState, bool> continuationCondition;
@@ -21,7 +33,7 @@ namespace Gast.Lib.AI
         internal Method(
             string name,
             int index,
-            IEnumerable<ITask<TActorContext, TWorldState>> subTasks,
+            IReadOnlyList<Func<ITask<TActorContext, TWorldState>>> subTaskProviders,
             Func<TWorldState, bool> startCondition,
             Func<TWorldState, bool> continuationCondition,
             Func<TWorldState, float> scorer = null,
@@ -29,7 +41,7 @@ namespace Gast.Lib.AI
         {
             Name = name;
             Index = index;
-            SubTasks = subTasks.ToArray();
+            this.subTaskProviders = subTaskProviders;
             this.startCondition = startCondition;
             this.continuationCondition = continuationCondition ?? (_ => true);
             this.scorer = scorer ?? (_ => 0f);
