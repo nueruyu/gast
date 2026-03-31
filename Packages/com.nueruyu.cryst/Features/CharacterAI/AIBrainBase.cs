@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Lib.AI;
+using Gast.Lib.AI.Debugging;
 
 namespace Cryst.Features.CharacterAI
 {

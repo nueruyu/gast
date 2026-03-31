@@ -9,16 +9,16 @@ using UnityEngine;
 namespace Gast.Unity.Features.Stories
 {
     /// <summary>
-    /// Executes HTN story domains on demand. Starting a new story cancels any currently running one.
+    ///     Executes HTN story domains on demand. Starting a new story cancels any currently running one.
     /// </summary>
     public class StorySystem : IStoryRunner, IDisposable
     {
-        readonly StoryDomainFactory domainFactory;
         readonly StoryActorContext actorContext;
         readonly IContextRegistry contextRegistry;
+        readonly StoryDomainFactory domainFactory;
+        ContextKey? activeContextKey;
 
         CancellationTokenSource storyCts;
-        ContextKey? activeContextKey;
 
         public StorySystem(
             StoryDomainFactory domainFactory,
@@ -30,16 +30,16 @@ namespace Gast.Unity.Features.Stories
             this.contextRegistry = contextRegistry;
         }
 
+        public void Dispose()
+        {
+            CleanupActiveStory();
+        }
+
         public void StartStory(StoryBlueprint blueprint)
         {
             CleanupActiveStory();
             storyCts = new CancellationTokenSource();
             RunStoryAsync(blueprint, storyCts.Token).Forget();
-        }
-
-        public void Dispose()
-        {
-            CleanupActiveStory();
         }
 
         void CleanupActiveStory()
@@ -50,7 +50,6 @@ namespace Gast.Unity.Features.Stories
 
             if (activeContextKey.HasValue)
             {
-                DebugLogger.ClearContext(activeContextKey.Value);
                 contextRegistry.Unregister(activeContextKey.Value);
                 activeContextKey = null;
             }
@@ -68,7 +67,7 @@ namespace Gast.Unity.Features.Stories
                 var contextKey = new ContextKey("storyteller", domainName);
 
                 activeContextKey = contextKey;
-                contextRegistry.Register(contextKey, actorContext.WorldState);
+                contextRegistry.Register(contextKey, actorContext.WorldState, "Story Teller");
 
                 var process = new DomainProcess<StoryActorContext, StoryWorldState>(brain, actorContext, contextKey);
                 await process.RunAsync(cancellationToken);
@@ -83,7 +82,6 @@ namespace Gast.Unity.Features.Stories
             {
                 if (activeContextKey.HasValue)
                 {
-                    DebugLogger.ClearContext(activeContextKey.Value);
                     contextRegistry.Unregister(activeContextKey.Value);
                     activeContextKey = null;
                 }

@@ -1,11 +1,11 @@
-using Gast.Lib.AI.Debugging;
-using ObservableCollections;
-using R3;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Gast.Lib.AI.Debugging;
+using ObservableCollections;
+using R3;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -15,39 +15,27 @@ namespace Gast.Lib.AI.Editor.Debugging
 {
     public class AIDebuggerWindow : EditorWindow
     {
-        [MenuItem("Gast/Tools/AI Debugger")]
-        public static void ShowWindow()
-        {
-            GetWindow<AIDebuggerWindow>("AI Debugger");
-        }
-
         const string ActiveItemClass = "list-item--active";
-
-        private struct ActorInfo
-        {
-            public object Id;
-            public string Name;
-        }
 
         [SerializeField] VisualTreeAsset visualTreeAsset;
 
-        readonly CompositeDisposable disposables = new();
-
         readonly ReactiveProperty<IReadOnlyDictionary<ContextKey, AIDebugInfo>> allDebugInfo = new();
+
+        readonly CompositeDisposable disposables = new();
+        readonly ReactiveProperty<bool> logAutoScroll = new(true);
         readonly ReactiveProperty<int> selectedActorIndex = new();
         readonly ReactiveProperty<int> selectedDomainIndex = new();
-        readonly ReactiveProperty<bool> logAutoScroll = new(true);
 
         ReadOnlyReactiveProperty<ActorInfo[]> actors;
-        ReadOnlyReactiveProperty<object> selectedActorId;
+        Label currentMethodLabel;
 
         ReadOnlyReactiveProperty<string[]> domainNameChoices;
-        ReadOnlyReactiveProperty<string> selectedDomainName;
+        ReadOnlyReactiveProperty<object> selectedActorId;
 
         ReadOnlyReactiveProperty<AIDebugInfo> selectedDebugInfo;
+        ReadOnlyReactiveProperty<string> selectedDomainName;
 
         VisualElement worldStateContainer;
-        Label currentMethodLabel;
 
         protected virtual void OnEnable()
         {
@@ -64,10 +52,11 @@ namespace Gast.Lib.AI.Editor.Debugging
                 .ToReadOnlyReactiveProperty();
 
             selectedActorId = actors
-                .CombineLatest(selectedActorIndex, (actorInfos, index) =>
-                {
-                    return index >= 0 && index < actorInfos.Length ? actorInfos[index].Id : null;
-                })
+                .CombineLatest(selectedActorIndex,
+                    (actorInfos, index) =>
+                    {
+                        return index >= 0 && index < actorInfos.Length ? actorInfos[index].Id : null;
+                    })
                 .ToReadOnlyReactiveProperty();
 
             domainNameChoices = allDebugInfo
@@ -85,10 +74,8 @@ namespace Gast.Lib.AI.Editor.Debugging
                 .ToReadOnlyReactiveProperty();
 
             selectedDomainName = domainNameChoices
-                .CombineLatest(selectedDomainIndex, (domains, index) =>
-                {
-                    return index >= 0 && index < domains.Length ? domains[index] : null;
-                })
+                .CombineLatest(selectedDomainIndex,
+                    (domains, index) => { return index >= 0 && index < domains.Length ? domains[index] : null; })
                 .ToReadOnlyReactiveProperty();
 
             selectedDebugInfo = allDebugInfo
@@ -108,25 +95,6 @@ namespace Gast.Lib.AI.Editor.Debugging
         {
             EditorApplication.update -= OnEditorUpdate;
             disposables.Clear();
-        }
-
-        void OnEditorUpdate()
-        {
-            if (!EditorApplication.isPlaying)
-                return;
-            if (!AIDebuggerBridge.IsInitialized)
-                return;
-
-            var latestAllDebugInfo = AIDebuggerBridge.GetAllDebugInfo();
-            if (!DictionaryEquals(allDebugInfo.Value, latestAllDebugInfo))
-            {
-                allDebugInfo.Value = latestAllDebugInfo.ToDictionary(x => x.Key, x => x.Value);
-            }
-
-            if (worldStateContainer != null && selectedDebugInfo?.CurrentValue != null)
-            {
-                RenderWorldState(worldStateContainer, selectedDebugInfo.CurrentValue.WorldState);
-            }
         }
 
         public virtual void CreateGUI()
@@ -160,12 +128,30 @@ namespace Gast.Lib.AI.Editor.Debugging
             BindToSelectedInfo(planList, logList, logClearButton);
         }
 
+        [MenuItem("Gast/Tools/AI Debugger")]
+        public static void ShowWindow()
+        {
+            GetWindow<AIDebuggerWindow>("AI Debugger");
+        }
+
+        void OnEditorUpdate()
+        {
+            if (!EditorApplication.isPlaying)
+                return;
+            if (!AIDebuggerBridge.IsInitialized)
+                return;
+
+            var latestAllDebugInfo = AIDebuggerBridge.GetAllDebugInfo();
+            if (!DictionaryEquals(allDebugInfo.Value, latestAllDebugInfo))
+                allDebugInfo.Value = latestAllDebugInfo.ToDictionary(x => x.Key, x => x.Value);
+
+            if (worldStateContainer != null && selectedDebugInfo?.CurrentValue != null)
+                RenderWorldState(worldStateContainer, selectedDebugInfo.CurrentValue.WorldState);
+        }
+
         void SetupActorList(ListView actorList)
         {
-            actorList.makeItem = () =>
-            {
-                return new Label();
-            };
+            actorList.makeItem = () => { return new Label(); };
 
             actorList.bindItem = (element, i) =>
             {
@@ -179,17 +165,14 @@ namespace Gast.Lib.AI.Editor.Debugging
                 actorList.Rebuild();
             }).AddTo(disposables);
 
-            Action<IEnumerable<object>> onSelectionChanged = (selection) =>
+            Action<IEnumerable<object>> onSelectionChanged = selection =>
             {
                 selectedActorIndex.Value = actorList.selectedIndex;
             };
             actorList.selectionChanged += onSelectionChanged;
             disposables.Add(Disposable.Create(() => actorList.selectionChanged -= onSelectionChanged));
 
-            selectedActorIndex.Subscribe(index =>
-            {
-                actorList.selectedIndex = index;
-            }).AddTo(disposables);
+            selectedActorIndex.Subscribe(index => { actorList.selectedIndex = index; }).AddTo(disposables);
         }
 
         void SetupDomainToolbar(VisualElement domainToolbar)
@@ -206,9 +189,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                 if (domains.Length > 0)
                 {
                     if (selectedDomainIndex.Value < 0 || selectedDomainIndex.Value >= domains.Length)
-                    {
                         selectedDomainIndex.Value = 0;
-                    }
                 }
                 else
                 {
@@ -240,10 +221,7 @@ namespace Gast.Lib.AI.Editor.Debugging
             selectedDomainIndex.Subscribe(index =>
             {
                 var toggles = domainToolbar.Query<ToolbarToggle>().ToList();
-                for (var i = 0; i < toggles.Count; i++)
-                {
-                    toggles[i].SetValueWithoutNotify(i == index);
-                }
+                for (var i = 0; i < toggles.Count; i++) toggles[i].SetValueWithoutNotify(i == index);
             }).AddTo(disposables);
         }
 
@@ -283,10 +261,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                 actorBindings = BindDebugInfo(info, planList, logList, logClearButton);
             }).AddTo(disposables);
 
-            Disposable.Create(() =>
-            {
-                actorBindings?.Dispose();
-            }).AddTo(disposables);
+            Disposable.Create(() => { actorBindings?.Dispose(); }).AddTo(disposables);
         }
 
         void ClearUI(ListView planList, ListView logList)
@@ -304,7 +279,9 @@ namespace Gast.Lib.AI.Editor.Debugging
         {
             var bindings = new CompositeDisposable();
 
-            info.CurrentMethodName.SubscribeToText(currentMethodLabel).AddTo(bindings);
+            info.CurrentMethodName
+                .Subscribe(text => currentMethodLabel.text = text)
+                .AddTo(bindings);
 
             IReadOnlyList<string> currentPlan = null;
             string currentTaskPath = null;
@@ -353,10 +330,7 @@ namespace Gast.Lib.AI.Editor.Debugging
             {
                 logListSource.Insert(e.Index, e.Value);
                 logList.RefreshItems();
-                if (logAutoScroll.Value)
-                {
-                    logList.ScrollToItem(logListSource.Count - 1);
-                }
+                if (logAutoScroll.Value) logList.ScrollToItem(logListSource.Count - 1);
             }).AddTo(bindings);
 
             logs.ObserveRemove().Subscribe(e =>
@@ -403,9 +377,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                 valueLabel.AddToClassList("world-state-value");
 
                 if (value is bool boolValue)
-                {
                     valueLabel.AddToClassList(boolValue ? "world-state-value--true" : "world-state-value--false");
-                }
 
                 row.Add(nameLabel);
                 row.Add(valueLabel);
@@ -452,6 +424,12 @@ namespace Gast.Lib.AI.Editor.Debugging
             }
 
             return true;
+        }
+
+        struct ActorInfo
+        {
+            public object Id;
+            public string Name;
         }
     }
 }

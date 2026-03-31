@@ -43,8 +43,6 @@ namespace Cryst.Domain.Characters
 
         public INavigationProvider NavigationProvider { get; }
 
-        public INavigationProvider NavigationProvider { get; }
-
         public CharacterStatus Status { get; }
 
         public bool IsThreatTo(BaseCharacter other)
