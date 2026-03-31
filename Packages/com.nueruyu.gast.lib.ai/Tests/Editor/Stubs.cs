@@ -123,17 +123,17 @@ namespace Gast.Lib.AI.Tests.Editor
             Func<TestWorldState, float> interruptionCost = null,
             List<IAction<TestActorContext, TestWorldState>> subTasks = null)
         {
-            var taskList = new List<ITask<TestActorContext, TestWorldState>>();
+            var providers = new List<Func<ITask<TestActorContext, TestWorldState>>>();
             if (subTasks != null)
             {
                 foreach (var action in subTasks)
-                    taskList.Add(new PrimitiveTask<TestActorContext, TestWorldState>(action));
+                    providers.Add(() => new PrimitiveTask<TestActorContext, TestWorldState>(action));
             }
 
             var method = new Method<TestActorContext, TestWorldState>(
                 name,
                 methods.Count,
-                taskList,
+                providers,
                 startCondition ?? (_ => true),
                 null,
                 scorer,
