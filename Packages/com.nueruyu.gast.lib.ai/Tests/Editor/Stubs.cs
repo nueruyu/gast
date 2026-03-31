@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gast.Lib.AI.MethodSelectors;
+using Gast.Lib.AI.Tasks;
 
 namespace Gast.Lib.AI.Tests.Editor
 {
@@ -9,17 +11,19 @@ namespace Gast.Lib.AI.Tests.Editor
     {
         public bool HasKey { get; set; }
         public bool IsDoorOpen { get; set; }
+        public int Value { get; set; }
 
         public void WriteTo(ref TestWorldState destination)
         {
             destination ??= new TestWorldState();
             destination.HasKey = HasKey;
             destination.IsDoorOpen = IsDoorOpen;
+            destination.Value = Value;
         }
 
         public override string ToString()
         {
-            return $"State(HasKey: {HasKey}, IsDoorOpen: {IsDoorOpen})";
+            return $"State(HasKey: {HasKey}, IsDoorOpen: {IsDoorOpen}, Value: {Value})";
         }
     }
 
@@ -84,6 +88,29 @@ namespace Gast.Lib.AI.Tests.Editor
         public override void Simulate(TestWorldState worldState) => worldState.IsDoorOpen = true;
     }
 
+    public class SetValueAction : TestAction
+    {
+        readonly int value;
+
+        public SetValueAction(int value) : base($"{nameof(SetValueAction)}({value})")
+        {
+            this.value = value;
+        }
+
+        public override bool IsAvailable(TestWorldState worldState) => true;
+        public override void Simulate(TestWorldState worldState) => worldState.Value = value;
+    }
+
+    class TestEnvironmentModel : IEnvironmentModel<TestWorldState>
+    {
+        public int SimulationCount { get; private set; }
+
+        public void Simulate(TestWorldState state)
+        {
+            SimulationCount++;
+        }
+    }
+
     class TestScenarioBuilder
     {
         readonly List<Method<TestActorContext, TestWorldState>> methods = new();
@@ -93,12 +120,20 @@ namespace Gast.Lib.AI.Tests.Editor
             string name,
             Func<TestWorldState, bool> startCondition = null,
             Func<TestWorldState, float> scorer = null,
-            Func<TestWorldState, float> interruptionCost = null)
+            Func<TestWorldState, float> interruptionCost = null,
+            List<IAction<TestActorContext, TestWorldState>> subTasks = null)
         {
+            var taskList = new List<ITask<TestActorContext, TestWorldState>>();
+            if (subTasks != null)
+            {
+                foreach (var action in subTasks)
+                    taskList.Add(new PrimitiveTask<TestActorContext, TestWorldState>(action));
+            }
+
             var method = new Method<TestActorContext, TestWorldState>(
                 name,
                 methods.Count,
-                new List<ITask<TestActorContext, TestWorldState>>(),
+                taskList,
                 startCondition ?? (_ => true),
                 null,
                 scorer,

@@ -75,7 +75,8 @@ namespace Gast.Lib.AI.Builders
         internal Method<TActorContext, TWorldState> Build(int index)
         {
             foreach (var deferred in deferredRefs)
-                subTasks[deferred.Index] = deferred.DomainBuilder.GetTask(deferred.TaskName);
+                subTasks[deferred.Index] = new LazyTask<TActorContext, TWorldState>(
+                    () => deferred.DomainBuilder.GetTask(deferred.TaskName));
 
             return new Method<TActorContext, TWorldState>(
                 methodName,
