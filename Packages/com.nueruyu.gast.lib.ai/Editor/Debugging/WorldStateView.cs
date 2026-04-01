@@ -12,7 +12,30 @@ namespace Gast.Lib.AI.Editor.Debugging
     [UxmlElement]
     partial class WorldStateView : VisualElement, IDisposable
     {
+        public static readonly string UssClassName = "world-state-view";
+        static readonly string HeaderUssClassName = "section-header";
+        static readonly string ContainerUssClassName = "world-state-container";
+        static readonly string RowUssClassName = "world-state-row";
+        static readonly string NameUssClassName = "world-state-name";
+        static readonly string ValueUssClassName = "world-state-value";
+        static readonly string ValueTrueUssClassName = "world-state-value--true";
+        static readonly string ValueFalseUssClassName = "world-state-value--false";
+
+        readonly VisualElement container;
         readonly CompositeDisposable disposables = new();
+
+        public WorldStateView()
+        {
+            AddToClassList(UssClassName);
+
+            var header = new Label("World State");
+            header.AddToClassList(HeaderUssClassName);
+            Add(header);
+
+            container = new VisualElement();
+            container.AddToClassList(ContainerUssClassName);
+            Add(container);
+        }
 
         public void Bind(AIDebuggerViewModel vm)
         {
@@ -21,7 +44,7 @@ namespace Gast.Lib.AI.Editor.Debugging
             vm.SelectedDebugInfo.Subscribe(info =>
             {
                 currentInfo = info;
-                if (info == null) Clear();
+                if (info == null) container.Clear();
             }).AddTo(disposables);
 
             void OnUpdate()
@@ -36,7 +59,7 @@ namespace Gast.Lib.AI.Editor.Debugging
 
         void Render(object state)
         {
-            Clear();
+            container.Clear();
 
             if (state == null) return;
 
@@ -48,21 +71,21 @@ namespace Gast.Lib.AI.Editor.Debugging
             foreach (var property in properties)
             {
                 var row = new VisualElement();
-                row.AddToClassList("world-state-row");
+                row.AddToClassList(RowUssClassName);
 
                 var nameLabel = new Label(property.Name);
-                nameLabel.AddToClassList("world-state-name");
+                nameLabel.AddToClassList(NameUssClassName);
 
                 var value = property.GetValue(state);
                 var valueLabel = new Label(FormatValue(value));
-                valueLabel.AddToClassList("world-state-value");
+                valueLabel.AddToClassList(ValueUssClassName);
 
                 if (value is bool boolValue)
-                    valueLabel.AddToClassList(boolValue ? "world-state-value--true" : "world-state-value--false");
+                    valueLabel.AddToClassList(boolValue ? ValueTrueUssClassName : ValueFalseUssClassName);
 
                 row.Add(nameLabel);
                 row.Add(valueLabel);
-                Add(row);
+                container.Add(row);
             }
         }
 

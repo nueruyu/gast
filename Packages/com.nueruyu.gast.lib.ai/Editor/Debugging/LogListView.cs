@@ -9,22 +9,54 @@ namespace Gast.Lib.AI.Editor.Debugging
     [UxmlElement]
     partial class LogListView : VisualElement, IDisposable
     {
+        public static readonly string UssClassName = "log-list-view";
+        static readonly string HeaderUssClassName = "log-header";
+        static readonly string SectionLabelUssClassName = "section-header";
+        static readonly string ControlsUssClassName = "log-controls";
+        static readonly string ListUssClassName = "log-list";
+        static readonly string ListItemUssClassName = "list-item";
+        static readonly string ListItemLogUssClassName = "list-item--log";
+
+        readonly ListView logList;
+        readonly Toggle autoScrollToggle;
+        readonly Button clearButton;
         readonly CompositeDisposable disposables = new();
 
-        public void Bind(AIDebuggerViewModel vm)
+        public LogListView()
         {
-            var logList = this.Q<ListView>("log-list");
-            var autoScrollToggle = this.Q<Toggle>("log-autoscroll-toggle");
-            var clearButton = this.Q<Button>("log-clear-button");
+            AddToClassList(UssClassName);
 
+            var header = new VisualElement();
+            header.AddToClassList(HeaderUssClassName);
+
+            var sectionLabel = new Label("Logs");
+            sectionLabel.AddToClassList(SectionLabelUssClassName);
+            header.Add(sectionLabel);
+
+            var controls = new VisualElement();
+            controls.AddToClassList(ControlsUssClassName);
+            autoScrollToggle = new Toggle("Auto-scroll") { value = true };
+            clearButton = new Button { text = "Clear" };
+            controls.Add(autoScrollToggle);
+            controls.Add(clearButton);
+            header.Add(controls);
+
+            Add(header);
+
+            logList = new ListView();
+            logList.AddToClassList(ListUssClassName);
             logList.makeItem = () =>
             {
                 var label = new Label();
-                label.AddToClassList("list-item");
-                label.AddToClassList("list-item--log");
+                label.AddToClassList(ListItemUssClassName);
+                label.AddToClassList(ListItemLogUssClassName);
                 return label;
             };
+            Add(logList);
+        }
 
+        public void Bind(AIDebuggerViewModel vm)
+        {
             autoScrollToggle.value = vm.LogAutoScroll.Value;
             autoScrollToggle.RegisterValueChangedCallback(evt => vm.LogAutoScroll.Value = evt.newValue);
 

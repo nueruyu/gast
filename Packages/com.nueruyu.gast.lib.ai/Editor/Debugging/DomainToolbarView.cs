@@ -8,7 +8,14 @@ namespace Gast.Lib.AI.Editor.Debugging
     [UxmlElement]
     partial class DomainToolbarView : VisualElement, IDisposable
     {
+        public static readonly string UssClassName = "domain-toolbar";
+
         readonly CompositeDisposable disposables = new();
+
+        public DomainToolbarView()
+        {
+            AddToClassList(UssClassName);
+        }
 
         public void Bind(AIDebuggerViewModel vm)
         {

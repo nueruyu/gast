@@ -2,41 +2,18 @@
     <Style src="AIDebuggerWindow.uss" />
 
     <ui:TwoPaneSplitView fixed-pane-index="0" fixed-pane-initial-dimension="250">
-        <d:ActorListView class="pane">
-            <ui:Label text="Actors" class="section-header" />
-            <ui:ListView name="actor-list" class="actor-list" />
-        </d:ActorListView>
+        <d:ActorListView class="pane" />
 
-        <ui:VisualElement name="right-pane-container" class="pane">
-            <d:DomainToolbarView class="domain-toolbar" />
+        <ui:VisualElement class="pane">
+            <d:DomainToolbarView />
 
             <ui:TwoPaneSplitView fixed-pane-index="0" orientation="Vertical" fixed-pane-initial-dimension="300">
-                <ui:VisualElement name="right-top-pane" class="pane">
-                    <ui:ScrollView mode="Vertical">
-                        <ui:Label text="World State" class="section-header" />
-                        <d:WorldStateView class="world-state-container" />
+                <ui:ScrollView class="pane" mode="Vertical">
+                    <d:WorldStateView />
+                    <d:CurrentPlanView />
+                </ui:ScrollView>
 
-                        <ui:Label text="Current Plan" class="section-header section-header--plan" />
-                        <d:CurrentPlanView>
-                            <ui:VisualElement name="current-method-container" class="info-row">
-                                <ui:Label text="Method:" class="info-label" />
-                                <ui:Label name="current-method-label" class="info-value" />
-                            </ui:VisualElement>
-                            <ui:ListView name="plan-list" class="plan-list" />
-                        </d:CurrentPlanView>
-                    </ui:ScrollView>
-                </ui:VisualElement>
-
-                <d:LogListView class="pane">
-                    <ui:VisualElement class="log-header">
-                        <ui:Label text="Logs" class="section-header" />
-                        <ui:VisualElement class="log-controls">
-                            <ui:Toggle name="log-autoscroll-toggle" label="Auto-scroll" value="true" />
-                            <ui:Button name="log-clear-button" text="Clear" />
-                        </ui:VisualElement>
-                    </ui:VisualElement>
-                    <ui:ListView name="log-list" class="log-list" />
-                </d:LogListView>
+                <d:LogListView class="pane" />
             </ui:TwoPaneSplitView>
         </ui:VisualElement>
     </ui:TwoPaneSplitView>

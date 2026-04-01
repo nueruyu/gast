@@ -9,22 +9,52 @@ namespace Gast.Lib.AI.Editor.Debugging
     [UxmlElement]
     partial class CurrentPlanView : VisualElement, IDisposable
     {
-        const string ActiveItemClass = "list-item--active";
+        public static readonly string UssClassName = "current-plan-view";
+        static readonly string HeaderUssClassName = "section-header";
+        static readonly string HeaderModifierUssClassName = "section-header--plan";
+        static readonly string InfoRowUssClassName = "info-row";
+        static readonly string InfoLabelUssClassName = "info-label";
+        static readonly string InfoValueUssClassName = "info-value";
+        static readonly string ListUssClassName = "plan-list";
+        static readonly string ListItemUssClassName = "list-item";
+        static readonly string ActiveItemUssClassName = "list-item--active";
 
+        readonly Label currentMethodLabel;
+        readonly ListView planList;
         readonly CompositeDisposable disposables = new();
 
-        public void Bind(AIDebuggerViewModel vm)
+        public CurrentPlanView()
         {
-            var currentMethodLabel = this.Q<Label>("current-method-label");
-            var planList = this.Q<ListView>("plan-list");
+            AddToClassList(UssClassName);
 
+            var header = new Label("Current Plan");
+            header.AddToClassList(HeaderUssClassName);
+            header.AddToClassList(HeaderModifierUssClassName);
+            Add(header);
+
+            var infoRow = new VisualElement();
+            infoRow.AddToClassList(InfoRowUssClassName);
+            var infoLabel = new Label("Method:");
+            infoLabel.AddToClassList(InfoLabelUssClassName);
+            currentMethodLabel = new Label();
+            currentMethodLabel.AddToClassList(InfoValueUssClassName);
+            infoRow.Add(infoLabel);
+            infoRow.Add(currentMethodLabel);
+            Add(infoRow);
+
+            planList = new ListView();
+            planList.AddToClassList(ListUssClassName);
             planList.makeItem = () =>
             {
                 var label = new Label();
-                label.AddToClassList("list-item");
+                label.AddToClassList(ListItemUssClassName);
                 return label;
             };
+            Add(planList);
+        }
 
+        public void Bind(AIDebuggerViewModel vm)
+        {
             IDisposable infoBindings = null;
 
             vm.SelectedDebugInfo.Subscribe(info =>
@@ -34,7 +64,7 @@ namespace Gast.Lib.AI.Editor.Debugging
 
                 if (info == null)
                 {
-                    if (currentMethodLabel != null) currentMethodLabel.text = "";
+                    currentMethodLabel.text = "";
                     planList.itemsSource = null;
                     planList.Rebuild();
                     return;
@@ -55,7 +85,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                     var item = currentPlan[index];
                     var label = (Label)element;
                     label.text = item;
-                    label.EnableInClassList(ActiveItemClass, currentTaskPath?.EndsWith(item) ?? false);
+                    label.EnableInClassList(ActiveItemUssClassName, currentTaskPath?.EndsWith(item) ?? false);
                 };
 
                 info.CurrentPlan.Subscribe(items =>

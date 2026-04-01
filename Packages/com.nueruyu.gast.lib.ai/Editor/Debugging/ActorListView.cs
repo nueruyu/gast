@@ -8,13 +8,29 @@ namespace Gast.Lib.AI.Editor.Debugging
     [UxmlElement]
     partial class ActorListView : VisualElement, IDisposable
     {
+        public static readonly string UssClassName = "actor-list-view";
+        static readonly string ListUssClassName = "actor-list";
+        static readonly string HeaderUssClassName = "section-header";
+
+        readonly ListView actorList;
         readonly CompositeDisposable disposables = new();
+
+        public ActorListView()
+        {
+            AddToClassList(UssClassName);
+
+            var header = new Label("Actors");
+            header.AddToClassList(HeaderUssClassName);
+            Add(header);
+
+            actorList = new ListView();
+            actorList.AddToClassList(ListUssClassName);
+            actorList.makeItem = () => new Label();
+            Add(actorList);
+        }
 
         public void Bind(AIDebuggerViewModel vm)
         {
-            var actorList = this.Q<ListView>();
-
-            actorList.makeItem = () => new Label();
             actorList.bindItem = (element, i) =>
             {
                 var actor = vm.Actors.CurrentValue[i];
