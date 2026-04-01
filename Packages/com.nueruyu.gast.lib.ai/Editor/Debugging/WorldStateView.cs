@@ -13,13 +13,13 @@ namespace Gast.Lib.AI.Editor.Debugging
     partial class WorldStateView : VisualElement, IDisposable
     {
         public static readonly string UssClassName = "world-state-view";
-        static readonly string HeaderUssClassName = "section-header";
-        static readonly string ContainerUssClassName = "world-state-container";
-        static readonly string RowUssClassName = "world-state-row";
-        static readonly string NameUssClassName = "world-state-name";
-        static readonly string ValueUssClassName = "world-state-value";
-        static readonly string ValueTrueUssClassName = "world-state-value--true";
-        static readonly string ValueFalseUssClassName = "world-state-value--false";
+        static readonly string HeaderUssClassName = UssClassName + "__header";
+        static readonly string ContainerUssClassName = UssClassName + "__container";
+        static readonly string RowUssClassName = UssClassName + "__row";
+        static readonly string NameUssClassName = UssClassName + "__name";
+        static readonly string ValueUssClassName = UssClassName + "__value";
+        static readonly string ValueTrueUssClassName = UssClassName + "__value--true";
+        static readonly string ValueFalseUssClassName = UssClassName + "__value--false";
 
         readonly VisualElement container;
         readonly CompositeDisposable disposables = new();

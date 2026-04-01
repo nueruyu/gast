@@ -10,14 +10,13 @@ namespace Gast.Lib.AI.Editor.Debugging
     partial class CurrentPlanView : VisualElement, IDisposable
     {
         public static readonly string UssClassName = "current-plan-view";
-        static readonly string HeaderUssClassName = "section-header";
-        static readonly string HeaderModifierUssClassName = "section-header--plan";
-        static readonly string InfoRowUssClassName = "info-row";
-        static readonly string InfoLabelUssClassName = "info-label";
-        static readonly string InfoValueUssClassName = "info-value";
-        static readonly string ListUssClassName = "plan-list";
-        static readonly string ListItemUssClassName = "list-item";
-        static readonly string ActiveItemUssClassName = "list-item--active";
+        static readonly string HeaderUssClassName = UssClassName + "__header";
+        static readonly string InfoRowUssClassName = UssClassName + "__info-row";
+        static readonly string InfoLabelUssClassName = UssClassName + "__info-label";
+        static readonly string InfoValueUssClassName = UssClassName + "__info-value";
+        static readonly string ListUssClassName = UssClassName + "__list";
+        static readonly string ItemUssClassName = UssClassName + "__item";
+        static readonly string ActiveItemUssClassName = UssClassName + "__item--active";
 
         readonly Label currentMethodLabel;
         readonly ListView planList;
@@ -29,7 +28,6 @@ namespace Gast.Lib.AI.Editor.Debugging
 
             var header = new Label("Current Plan");
             header.AddToClassList(HeaderUssClassName);
-            header.AddToClassList(HeaderModifierUssClassName);
             Add(header);
 
             var infoRow = new VisualElement();
@@ -47,7 +45,7 @@ namespace Gast.Lib.AI.Editor.Debugging
             planList.makeItem = () =>
             {
                 var label = new Label();
-                label.AddToClassList(ListItemUssClassName);
+                label.AddToClassList(ItemUssClassName);
                 return label;
             };
             Add(planList);

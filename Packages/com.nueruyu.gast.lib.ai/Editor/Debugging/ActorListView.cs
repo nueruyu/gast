@@ -9,8 +9,9 @@ namespace Gast.Lib.AI.Editor.Debugging
     partial class ActorListView : VisualElement, IDisposable
     {
         public static readonly string UssClassName = "actor-list-view";
-        static readonly string ListUssClassName = "actor-list";
-        static readonly string HeaderUssClassName = "section-header";
+        static readonly string HeaderUssClassName = UssClassName + "__header";
+        static readonly string ListUssClassName = UssClassName + "__list";
+        static readonly string ItemUssClassName = UssClassName + "__item";
 
         readonly ListView actorList;
         readonly CompositeDisposable disposables = new();
@@ -25,7 +26,12 @@ namespace Gast.Lib.AI.Editor.Debugging
 
             actorList = new ListView();
             actorList.AddToClassList(ListUssClassName);
-            actorList.makeItem = () => new Label();
+            actorList.makeItem = () =>
+            {
+                var label = new Label();
+                label.AddToClassList(ItemUssClassName);
+                return label;
+            };
             Add(actorList);
         }
 

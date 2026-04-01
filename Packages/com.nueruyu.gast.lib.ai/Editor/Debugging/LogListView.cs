@@ -10,12 +10,11 @@ namespace Gast.Lib.AI.Editor.Debugging
     partial class LogListView : VisualElement, IDisposable
     {
         public static readonly string UssClassName = "log-list-view";
-        static readonly string HeaderUssClassName = "log-header";
-        static readonly string SectionLabelUssClassName = "section-header";
-        static readonly string ControlsUssClassName = "log-controls";
-        static readonly string ListUssClassName = "log-list";
-        static readonly string ListItemUssClassName = "list-item";
-        static readonly string ListItemLogUssClassName = "list-item--log";
+        static readonly string HeaderUssClassName = UssClassName + "__header";
+        static readonly string SectionLabelUssClassName = UssClassName + "__section-label";
+        static readonly string ControlsUssClassName = UssClassName + "__controls";
+        static readonly string ListUssClassName = UssClassName + "__list";
+        static readonly string ItemUssClassName = UssClassName + "__item";
 
         readonly ListView logList;
         readonly Toggle autoScrollToggle;
@@ -48,8 +47,7 @@ namespace Gast.Lib.AI.Editor.Debugging
             logList.makeItem = () =>
             {
                 var label = new Label();
-                label.AddToClassList(ListItemUssClassName);
-                label.AddToClassList(ListItemLogUssClassName);
+                label.AddToClassList(ItemUssClassName);
                 return label;
             };
             Add(logList);
