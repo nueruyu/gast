@@ -6,18 +6,17 @@ using UnityEngine.UIElements;
 
 namespace Gast.Lib.AI.Editor.Debugging
 {
-    class CurrentPlanView : IDisposable
+    [UxmlElement]
+    partial class CurrentPlanView : VisualElement, IDisposable
     {
         const string ActiveItemClass = "list-item--active";
 
-        readonly Label currentMethodLabel;
-        readonly ListView planList;
         readonly CompositeDisposable disposables = new();
 
-        public CurrentPlanView(Label currentMethodLabel, ListView planList)
+        public void Bind(AIDebuggerViewModel vm)
         {
-            this.currentMethodLabel = currentMethodLabel;
-            this.planList = planList;
+            var currentMethodLabel = this.Q<Label>("current-method-label");
+            var planList = this.Q<ListView>("plan-list");
 
             planList.makeItem = () =>
             {
@@ -25,10 +24,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                 label.AddToClassList("list-item");
                 return label;
             };
-        }
 
-        public void Bind(AIDebuggerViewModel vm)
-        {
             IDisposable infoBindings = null;
 
             vm.SelectedDebugInfo.Subscribe(info =>

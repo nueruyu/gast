@@ -5,15 +5,10 @@ using UnityEngine.UIElements;
 
 namespace Gast.Lib.AI.Editor.Debugging
 {
-    class DomainToolbarView : IDisposable
+    [UxmlElement]
+    partial class DomainToolbarView : VisualElement, IDisposable
     {
-        readonly VisualElement container;
         readonly CompositeDisposable disposables = new();
-
-        public DomainToolbarView(VisualElement container)
-        {
-            this.container = container;
-        }
 
         public void Bind(AIDebuggerViewModel vm)
         {
@@ -24,7 +19,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                 toggleDisposables?.Dispose();
                 toggleDisposables = new CompositeDisposable();
 
-                container.Clear();
+                Clear();
 
                 if (domains.Length > 0)
                 {
@@ -48,7 +43,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                     });
                     toggle.RegisterValueChangedCallback(callback);
                     toggleDisposables.Add(Disposable.Create(() => toggle.UnregisterValueChangedCallback(callback)));
-                    container.Add(toggle);
+                    Add(toggle);
                 }
             }).AddTo(disposables);
 
@@ -56,7 +51,7 @@ namespace Gast.Lib.AI.Editor.Debugging
 
             vm.SelectedDomainIndex.Subscribe(index =>
             {
-                var toggles = container.Query<ToolbarToggle>().ToList();
+                var toggles = this.Query<ToolbarToggle>().ToList();
                 for (var i = 0; i < toggles.Count; i++) toggles[i].SetValueWithoutNotify(i == index);
             }).AddTo(disposables);
         }

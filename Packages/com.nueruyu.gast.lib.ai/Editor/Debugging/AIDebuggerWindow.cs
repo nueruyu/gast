@@ -54,16 +54,11 @@ namespace Gast.Lib.AI.Editor.Debugging
 
             visualTreeAsset.CloneTree(root);
 
-            actorListView = new ActorListView(root.Q<ListView>("actor-list"));
-            domainToolbarView = new DomainToolbarView(root.Q<VisualElement>("domain-toolbar"));
-            worldStateView = new WorldStateView(root.Q<VisualElement>("world-state-container"));
-            currentPlanView = new CurrentPlanView(
-                root.Q<Label>("current-method-label"),
-                root.Q<ListView>("plan-list"));
-            logListView = new LogListView(
-                root.Q<ListView>("log-list"),
-                root.Q<Toggle>("log-autoscroll-toggle"),
-                root.Q<Button>("log-clear-button"));
+            actorListView = root.Q<ActorListView>();
+            domainToolbarView = root.Q<DomainToolbarView>();
+            worldStateView = root.Q<WorldStateView>();
+            currentPlanView = root.Q<CurrentPlanView>();
+            logListView = root.Q<LogListView>();
 
             actorListView.Bind(viewModel);
             domainToolbarView.Bind(viewModel);

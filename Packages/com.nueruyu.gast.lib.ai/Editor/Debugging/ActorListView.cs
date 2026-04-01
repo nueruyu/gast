@@ -5,19 +5,16 @@ using UnityEngine.UIElements;
 
 namespace Gast.Lib.AI.Editor.Debugging
 {
-    class ActorListView : IDisposable
+    [UxmlElement]
+    partial class ActorListView : VisualElement, IDisposable
     {
-        readonly ListView actorList;
         readonly CompositeDisposable disposables = new();
-
-        public ActorListView(ListView actorList)
-        {
-            this.actorList = actorList;
-            actorList.makeItem = () => new Label();
-        }
 
         public void Bind(AIDebuggerViewModel vm)
         {
+            var actorList = this.Q<ListView>();
+
+            actorList.makeItem = () => new Label();
             actorList.bindItem = (element, i) =>
             {
                 var actor = vm.Actors.CurrentValue[i];

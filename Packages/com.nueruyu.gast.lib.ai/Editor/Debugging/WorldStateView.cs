@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Gast.Lib.AI.Debugging;
 using R3;
 using UnityEditor;
 using UnityEngine;
@@ -8,24 +9,19 @@ using UnityEngine.UIElements;
 
 namespace Gast.Lib.AI.Editor.Debugging
 {
-    class WorldStateView : IDisposable
+    [UxmlElement]
+    partial class WorldStateView : VisualElement, IDisposable
     {
-        readonly VisualElement container;
         readonly CompositeDisposable disposables = new();
-
-        public WorldStateView(VisualElement container)
-        {
-            this.container = container;
-        }
 
         public void Bind(AIDebuggerViewModel vm)
         {
-            Gast.Lib.AI.Debugging.AIDebugInfo currentInfo = null;
+            AIDebugInfo currentInfo = null;
 
             vm.SelectedDebugInfo.Subscribe(info =>
             {
                 currentInfo = info;
-                if (info == null) container.Clear();
+                if (info == null) Clear();
             }).AddTo(disposables);
 
             void OnUpdate()
@@ -40,7 +36,7 @@ namespace Gast.Lib.AI.Editor.Debugging
 
         void Render(object state)
         {
-            container.Clear();
+            Clear();
 
             if (state == null) return;
 
@@ -66,7 +62,7 @@ namespace Gast.Lib.AI.Editor.Debugging
 
                 row.Add(nameLabel);
                 row.Add(valueLabel);
-                container.Add(row);
+                Add(row);
             }
         }
 

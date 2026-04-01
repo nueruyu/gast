@@ -6,18 +6,16 @@ using UnityEngine.UIElements;
 
 namespace Gast.Lib.AI.Editor.Debugging
 {
-    class LogListView : IDisposable
+    [UxmlElement]
+    partial class LogListView : VisualElement, IDisposable
     {
-        readonly ListView logList;
-        readonly Toggle autoScrollToggle;
-        readonly Button clearButton;
         readonly CompositeDisposable disposables = new();
 
-        public LogListView(ListView logList, Toggle autoScrollToggle, Button clearButton)
+        public void Bind(AIDebuggerViewModel vm)
         {
-            this.logList = logList;
-            this.autoScrollToggle = autoScrollToggle;
-            this.clearButton = clearButton;
+            var logList = this.Q<ListView>("log-list");
+            var autoScrollToggle = this.Q<Toggle>("log-autoscroll-toggle");
+            var clearButton = this.Q<Button>("log-clear-button");
 
             logList.makeItem = () =>
             {
@@ -26,10 +24,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                 label.AddToClassList("list-item--log");
                 return label;
             };
-        }
 
-        public void Bind(AIDebuggerViewModel vm)
-        {
             autoScrollToggle.value = vm.LogAutoScroll.Value;
             autoScrollToggle.RegisterValueChangedCallback(evt => vm.LogAutoScroll.Value = evt.newValue);
 
