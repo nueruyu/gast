@@ -58,5 +58,10 @@ namespace Gast.Unity.Shared.Observables
                 return signal.Subscribe(value => observer.OnNext(value));
             });
         }
+
+        public static Observable<Unit> AsUnitObservable<T>(this ILive<T> live)
+        {
+            return live.ToObservable().Select(_ => Unit.Default);
+        }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using Gast.Domain.Economy;
 using Gast.Domain.Equipment;
 using Gast.Domain.Players;
+using Gast.Unity.Shared.Observables;
 using Gast.Unity.UI.Hud.Inventory;
 using R3;
 
@@ -29,7 +30,7 @@ namespace Gast.Unity.UI.Hud.Equipment
                 .Select(c =>
                 {
                     if (c == null || !c.Is(out IEquipmentHost h)) return Observable.Return<ItemId?>(null);
-                    return (Observable<ItemId?>)h.Head;
+                    return h.Head.ToObservable();
                 })
                 .Switch()
                 .ToReadOnlyReactiveProperty()
@@ -39,7 +40,7 @@ namespace Gast.Unity.UI.Hud.Equipment
                 .Select(c =>
                 {
                     if (c == null || !c.Is(out IEquipmentHost h)) return Observable.Return<ItemId?>(null);
-                    return (Observable<ItemId?>)h.Body;
+                    return h.Body.ToObservable();
                 })
                 .Switch()
                 .ToReadOnlyReactiveProperty()
@@ -49,7 +50,7 @@ namespace Gast.Unity.UI.Hud.Equipment
                 .Select(c =>
                 {
                     if (c == null || !c.Is(out IEquipmentHost h)) return Observable.Return<ItemId?>(null);
-                    return (Observable<ItemId?>)h.Weapon;
+                    return h.Weapon.ToObservable();
                 })
                 .Switch()
                 .ToReadOnlyReactiveProperty()

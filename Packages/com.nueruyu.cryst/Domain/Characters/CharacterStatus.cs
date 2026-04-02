@@ -9,6 +9,7 @@ namespace Cryst.Domain.Characters
         readonly Live<float> maxHealth;
         readonly Live<float> hunger;
         readonly Live<float> maxHunger;
+        readonly float baseMaxHealth;
 
         public ILive<float> Health => health;
         public ILive<float> MaxHealth => maxHealth;
@@ -18,6 +19,7 @@ namespace Cryst.Domain.Characters
 
         public CharacterStatus(float maxHealth, float maxHunger)
         {
+            baseMaxHealth = maxHealth;
             health = new Live<float>(maxHealth);
             this.maxHealth = new Live<float>(maxHealth);
             hunger = new Live<float>(maxHunger);
@@ -34,6 +36,13 @@ namespace Cryst.Domain.Characters
         public void SetHunger(float newHunger)
         {
             hunger.Value = Mathf.Clamp(newHunger, 0, maxHunger.Value);
+        }
+
+        public void ApplyEquipmentBonuses(StatBuilder builder)
+        {
+            var newMaxHealth = baseMaxHealth + builder.MaxHpBonus;
+            maxHealth.Value = newMaxHealth;
+            health.Value = Mathf.Clamp(health.Value, 0, newMaxHealth);
         }
     }
 }

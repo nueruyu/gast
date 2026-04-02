@@ -32,6 +32,7 @@ using Gast.Unity.UI.Hud.Objectives;
 using Gast.Unity.UI.Hud.PlayerStatus;
 using Cryst.Application.Characters;
 using Cryst.Features.Characters.Vitals;
+using Cryst.Features.Equipment;
 using GuardAction = Cryst.Features.CharacterActions.Actions.Guard.GuardAction;
 
 namespace Cryst.Composition
@@ -98,6 +99,9 @@ namespace Cryst.Composition
 
             // Vitals
             builder.Register<VitalsSystem>(Lifetime.Singleton).As<ILifecycleTask>();
+
+            // Equipment
+            builder.Register<EquipmentService>(Lifetime.Singleton).As<ILifecycleTask>();
 
             // Feedbacks
             builder.Register<CharacterFeedbackService>(Lifetime.Singleton);

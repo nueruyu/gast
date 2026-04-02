@@ -1,18 +1,18 @@
+using Gast.Core.Observables;
 using Gast.Domain.Economy;
 using Gast.Domain.Equipment;
-using R3;
 
 namespace Cryst.Infrastructure.Characters
 {
     class EquipmentHost : IEquipmentHost
     {
-        readonly ReactiveProperty<ItemId?> head = new(null);
-        readonly ReactiveProperty<ItemId?> body = new(null);
-        readonly ReactiveProperty<ItemId?> weapon = new(null);
+        readonly Live<ItemId?> head = new(null);
+        readonly Live<ItemId?> body = new(null);
+        readonly Live<ItemId?> weapon = new(null);
 
-        public ReadOnlyReactiveProperty<ItemId?> Head => head;
-        public ReadOnlyReactiveProperty<ItemId?> Body => body;
-        public ReadOnlyReactiveProperty<ItemId?> Weapon => weapon;
+        public ILive<ItemId?> Head => head;
+        public ILive<ItemId?> Body => body;
+        public ILive<ItemId?> Weapon => weapon;
 
         public void Equip(EquipmentSlot slot, ItemId itemId)
         {

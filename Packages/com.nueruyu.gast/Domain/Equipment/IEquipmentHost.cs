@@ -1,14 +1,14 @@
+using Gast.Core.Observables;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
-using R3;
 
 namespace Gast.Domain.Equipment
 {
     public interface IEquipmentHost : ICharacterFacet
     {
-        ReadOnlyReactiveProperty<ItemId?> Head { get; }
-        ReadOnlyReactiveProperty<ItemId?> Body { get; }
-        ReadOnlyReactiveProperty<ItemId?> Weapon { get; }
+        ILive<ItemId?> Head { get; }
+        ILive<ItemId?> Body { get; }
+        ILive<ItemId?> Weapon { get; }
 
         void Equip(EquipmentSlot slot, ItemId itemId);
         void Unequip(EquipmentSlot slot);
