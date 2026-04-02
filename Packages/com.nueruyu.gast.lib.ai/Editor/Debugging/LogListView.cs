@@ -85,11 +85,22 @@ namespace Gast.Lib.AI.Editor.Debugging
                 logList.itemsSource = logListSource;
                 logList.Rebuild();
 
+                var scrollView = logList.Q<ScrollView>();
+
                 logs.ObserveAdd().Subscribe(e =>
                 {
                     logListSource.Insert(e.Index, e.Value);
-                    logList.RefreshItems();
-                    if (vm.LogAutoScroll.Value) logList.ScrollToItem(logListSource.Count - 1);
+                    if (vm.LogAutoScroll.Value)
+                    {
+                        logList.RefreshItems();
+                        logList.ScrollToItem(logListSource.Count - 1);
+                    }
+                    else
+                    {
+                        var offset = scrollView.scrollOffset;
+                        logList.RefreshItems();
+                        scrollView.scrollOffset = offset;
+                    }
                 }).AddTo(bindings);
 
                 logs.ObserveRemove().Subscribe(e =>
