@@ -1,7 +1,8 @@
-﻿using Gast.Core.DI;
+using Gast.Core.DI;
 using UnityEngine;
 using Cryst.Infrastructure.CharacterAI;
 using Cryst.Infrastructure.Characters;
+using Cryst.Infrastructure.Equipment;
 using Cryst.Features.Players;
 using Cryst.Features.CharacterAI;
 using Gast.Domain.Characters;
@@ -27,12 +28,12 @@ using Cryst.Features.CharacterActions.Effects;
 using Cryst.UI.Hud.PlayerStatus;
 using Gast.Application.Reflection;
 using Gast.Unity.Features.Characters;
+using Gast.Unity.Features.Equipment;
 using Gast.Unity.Shared.DI;
 using Gast.Unity.UI.Hud.Objectives;
 using Gast.Unity.UI.Hud.PlayerStatus;
 using Cryst.Application.Characters;
 using Cryst.Features.Characters.Vitals;
-using Cryst.Features.Equipment;
 using GuardAction = Cryst.Features.CharacterActions.Actions.Guard.GuardAction;
 
 namespace Cryst.Composition
@@ -46,11 +47,15 @@ namespace Cryst.Composition
         [SerializeField]
         VitalsSettings vitalsSettings;
 
+        [SerializeField]
+        CrystEquipmentSlotSettings equipmentSlotSettings;
+
         public override void Install(IContainerBuilder builder)
         {
             // Settings
             builder.RegisterInstance(meleeAttackEffectSettings);
             builder.RegisterInstance(vitalsSettings);
+            builder.RegisterInstance(equipmentSlotSettings).As<ICrystEquipmentSlots>().As<IEquipmentSlotProvider>();
 
             // Reflection
             builder.Register<CrystReflectionAssemblyProvider>().As<IReflectionAssemblyProvider>();
@@ -100,9 +105,6 @@ namespace Cryst.Composition
             // Vitals
             builder.Register<VitalsSystem>(Lifetime.Singleton).As<ILifecycleTask>();
 
-            // Equipment
-            builder.Register<EquipmentService>(Lifetime.Singleton).As<ILifecycleTask>();
-
             // Feedbacks
             builder.Register<CharacterFeedbackService>(Lifetime.Singleton);
 
@@ -111,7 +113,6 @@ namespace Cryst.Composition
             builder.Register<HitFeedbackHandler>(Lifetime.Singleton);
             builder.Register<HitEffectHandler>(Lifetime.Singleton);
             builder.Register<CharacterDecompositionHandler>(Lifetime.Singleton);
-
         }
     }
 }

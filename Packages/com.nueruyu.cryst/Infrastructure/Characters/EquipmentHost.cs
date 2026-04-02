@@ -1,37 +1,35 @@
+using System.Collections.Generic;
 using Gast.Core.Observables;
 using Gast.Domain.Economy;
 using Gast.Domain.Equipment;
+using Gast.Unity.Infrastructure.Equipment;
 
 namespace Cryst.Infrastructure.Characters
 {
     class EquipmentHost : IEquipmentHost
     {
-        readonly Live<ItemId?> head = new(null);
-        readonly Live<ItemId?> body = new(null);
-        readonly Live<ItemId?> weapon = new(null);
+        readonly Dictionary<EquipmentSlotId, Live<ItemId?>> slots = new();
 
-        public ILive<ItemId?> Head => head;
-        public ILive<ItemId?> Body => body;
-        public ILive<ItemId?> Weapon => weapon;
-
-        public void Equip(EquipmentSlot slot, ItemId itemId)
+        public EquipmentHost(IEnumerable<EquipmentSlotDefinition> slotDefinitions)
         {
-            switch (slot)
-            {
-                case EquipmentSlot.Head: head.Value = itemId; break;
-                case EquipmentSlot.Body: body.Value = itemId; break;
-                case EquipmentSlot.Weapon: weapon.Value = itemId; break;
-            }
+            foreach (var def in slotDefinitions)
+                slots[def.Id] = new Live<ItemId?>(null);
         }
 
-        public void Unequip(EquipmentSlot slot)
+        public IEnumerable<EquipmentSlotId> Slots => slots.Keys;
+
+        public ILive<ItemId?> GetSlot(EquipmentSlotId slotId) => slots[slotId];
+
+        public void Equip(EquipmentSlotId slotId, ItemId itemId)
         {
-            switch (slot)
-            {
-                case EquipmentSlot.Head: head.Value = null; break;
-                case EquipmentSlot.Body: body.Value = null; break;
-                case EquipmentSlot.Weapon: weapon.Value = null; break;
-            }
+            if (slots.TryGetValue(slotId, out var live))
+                live.Value = itemId;
+        }
+
+        public void Unequip(EquipmentSlotId slotId)
+        {
+            if (slots.TryGetValue(slotId, out var live))
+                live.Value = null;
         }
     }
 }

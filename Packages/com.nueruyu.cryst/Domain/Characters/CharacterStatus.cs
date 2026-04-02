@@ -1,15 +1,19 @@
 using Gast.Core.Observables;
+using Gast.Core.Stats;
+using Gast.Domain.Equipment;
 using UnityEngine;
 
 namespace Cryst.Domain.Characters
 {
-    public class CharacterStatus
+    public class CharacterStatus : IEquipmentBonusApplicable
     {
         readonly Live<float> health;
         readonly Live<float> maxHealth;
         readonly Live<float> hunger;
         readonly Live<float> maxHunger;
         readonly float baseMaxHealth;
+
+        public static readonly TypedKey<float> MaxHpKey = new();
 
         public ILive<float> Health => health;
         public ILive<float> MaxHealth => maxHealth;
@@ -38,9 +42,9 @@ namespace Cryst.Domain.Characters
             hunger.Value = Mathf.Clamp(newHunger, 0, maxHunger.Value);
         }
 
-        public void ApplyEquipmentBonuses(StatBuilder builder)
+        public void ApplyEquipmentBonuses(StatBuilder stats)
         {
-            var newMaxHealth = baseMaxHealth + builder.MaxHpBonus;
+            var newMaxHealth = baseMaxHealth + stats.Get(MaxHpKey);
             maxHealth.Value = newMaxHealth;
             health.Value = Mathf.Clamp(health.Value, 0, newMaxHealth);
         }

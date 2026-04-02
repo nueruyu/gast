@@ -1,6 +1,5 @@
 using System;
 using Gast.Domain.Economy;
-using Gast.Domain.Equipment;
 using R3;
 using UnityEngine.UIElements;
 
@@ -8,50 +7,51 @@ namespace Gast.Unity.UI.Hud.Equipment
 {
     public class EquipmentView : VisualElement
     {
+        const string SlotUssClassName = "equipment__slot";
         const string SlotFilledUssClassName = "equipment__slot--filled";
+        const string SlotTitleUssClassName = "equipment__slot-title";
         const string SlotLabelUssClassName = "equipment__slot-label";
-
-        VisualElement headSlot;
-        VisualElement bodySlot;
-        VisualElement weaponSlot;
-
-        EquipmentViewModel viewModel;
 
         public EquipmentView(VisualTreeAsset asset)
         {
             asset.CloneTree(this);
-
-            headSlot = this.Q<VisualElement>("head-slot");
-            bodySlot = this.Q<VisualElement>("body-slot");
-            weaponSlot = this.Q<VisualElement>("weapon-slot");
-
-            headSlot.RegisterCallback<PointerDownEvent>(_ => viewModel?.RequestUnequip(EquipmentSlot.Head));
-            bodySlot.RegisterCallback<PointerDownEvent>(_ => viewModel?.RequestUnequip(EquipmentSlot.Body));
-            weaponSlot.RegisterCallback<PointerDownEvent>(_ => viewModel?.RequestUnequip(EquipmentSlot.Weapon));
         }
 
-        public IDisposable Bind(EquipmentViewModel vm)
+        public IDisposable Bind(EquipmentViewModel viewModel)
         {
-            viewModel = vm;
             var disposables = new CompositeDisposable();
 
-            vm.HeadItem.Subscribe(itemId => UpdateSlotUI(headSlot, itemId)).AddTo(disposables);
-            vm.BodyItem.Subscribe(itemId => UpdateSlotUI(bodySlot, itemId)).AddTo(disposables);
-            vm.WeaponItem.Subscribe(itemId => UpdateSlotUI(weaponSlot, itemId)).AddTo(disposables);
+            Clear();
+            foreach (var slotVM in viewModel.SlotViewModels)
+                Add(CreateSlotElement(slotVM, disposables));
 
             return disposables;
         }
 
-        void UpdateSlotUI(VisualElement slot, ItemId? itemId)
+        VisualElement CreateSlotElement(EquipmentSlotViewModel slotVM, CompositeDisposable disposables)
         {
-            var label = slot.Q<Label>(className: SlotLabelUssClassName);
-            if (label == null)
-            {
-                label = new Label();
-                label.AddToClassList(SlotLabelUssClassName);
-                slot.Add(label);
-            }
+            var slot = new VisualElement();
+            slot.AddToClassList(SlotUssClassName);
 
+            var title = new Label(slotVM.Definition.DisplayName);
+            title.AddToClassList(SlotTitleUssClassName);
+            slot.Add(title);
+
+            var label = new Label();
+            label.AddToClassList(SlotLabelUssClassName);
+            slot.Add(label);
+
+            slotVM.Item
+                .Subscribe(itemId => UpdateSlot(slot, label, itemId))
+                .AddTo(disposables);
+
+            slot.RegisterCallback<PointerDownEvent>(_ => slotVM.RequestUnequip());
+
+            return slot;
+        }
+
+        void UpdateSlot(VisualElement slot, Label label, ItemId? itemId)
+        {
             if (itemId.HasValue)
             {
                 slot.AddToClassList(SlotFilledUssClassName);

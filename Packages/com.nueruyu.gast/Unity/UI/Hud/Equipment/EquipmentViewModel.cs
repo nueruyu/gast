@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Gast.Domain.Economy;
 using Gast.Domain.Equipment;
 using Gast.Domain.Players;
+using Gast.Unity.Features.Equipment;
 using Gast.Unity.Shared.Observables;
 using Gast.Unity.UI.Hud.Inventory;
 using R3;
@@ -14,11 +17,12 @@ namespace Gast.Unity.UI.Hud.Equipment
 
         IEquipmentHost equipmentHost;
 
-        public ReadOnlyReactiveProperty<ItemId?> HeadItem { get; }
-        public ReadOnlyReactiveProperty<ItemId?> BodyItem { get; }
-        public ReadOnlyReactiveProperty<ItemId?> WeaponItem { get; }
+        public IReadOnlyList<EquipmentSlotViewModel> SlotViewModels { get; }
 
-        public EquipmentViewModel(IPlayerManager playerManager, InventoryViewModel inventoryViewModel)
+        public EquipmentViewModel(
+            IPlayerManager playerManager,
+            IEquipmentSlotProvider slotProvider,
+            InventoryViewModel inventoryViewModel)
         {
             var characterStream = playerManager.CurrentCharacter.ToObservable();
 
@@ -26,68 +30,46 @@ namespace Gast.Unity.UI.Hud.Equipment
                 .Subscribe(c => equipmentHost = c != null && c.Is(out IEquipmentHost h) ? h : null)
                 .AddTo(disposables);
 
-            HeadItem = characterStream
-                .Select(c =>
-                {
-                    if (c == null || !c.Is(out IEquipmentHost h)) return Observable.Return<ItemId?>(null);
-                    return h.Head.ToObservable();
-                })
-                .Switch()
-                .ToReadOnlyReactiveProperty()
-                .AddTo(disposables);
+            SlotViewModels = slotProvider.Slots.Select(def =>
+            {
+                var item = characterStream
+                    .Select(c =>
+                    {
+                        if (c == null || !c.Is(out IEquipmentHost h)) return Observable.Return<ItemId?>(null);
+                        return h.GetSlot(def.Id).ToObservable();
+                    })
+                    .Switch()
+                    .ToReadOnlyReactiveProperty()
+                    .AddTo(disposables);
 
-            BodyItem = characterStream
-                .Select(c =>
-                {
-                    if (c == null || !c.Is(out IEquipmentHost h)) return Observable.Return<ItemId?>(null);
-                    return h.Body.ToObservable();
-                })
-                .Switch()
-                .ToReadOnlyReactiveProperty()
-                .AddTo(disposables);
-
-            WeaponItem = characterStream
-                .Select(c =>
-                {
-                    if (c == null || !c.Is(out IEquipmentHost h)) return Observable.Return<ItemId?>(null);
-                    return h.Weapon.ToObservable();
-                })
-                .Switch()
-                .ToReadOnlyReactiveProperty()
-                .AddTo(disposables);
+                return new EquipmentSlotViewModel(def, item, slotId => equipmentHost?.Unequip(slotId));
+            }).ToArray();
 
             inventoryViewModel.ItemSelected
                 .Subscribe(EquipToFirstAvailableSlot)
                 .AddTo(disposables);
         }
 
-        public void RequestEquip(EquipmentSlot slot, ItemId itemId)
-        {
-            equipmentHost?.Equip(slot, itemId);
-        }
-
-        public void RequestUnequip(EquipmentSlot slot)
-        {
-            equipmentHost?.Unequip(slot);
-        }
-
         void EquipToFirstAvailableSlot(ItemId itemId)
         {
             if (equipmentHost == null) return;
 
-            if (!equipmentHost.Head.Value.HasValue)
-                equipmentHost.Equip(EquipmentSlot.Head, itemId);
-            else if (!equipmentHost.Body.Value.HasValue)
-                equipmentHost.Equip(EquipmentSlot.Body, itemId);
-            else if (!equipmentHost.Weapon.Value.HasValue)
-                equipmentHost.Equip(EquipmentSlot.Weapon, itemId);
-            else
-                equipmentHost.Equip(EquipmentSlot.Head, itemId);
+            foreach (var slotId in equipmentHost.Slots)
+            {
+                if (!equipmentHost.GetSlot(slotId).Value.HasValue)
+                {
+                    equipmentHost.Equip(slotId, itemId);
+                    return;
+                }
+            }
+
+            var first = equipmentHost.Slots.FirstOrDefault();
+            equipmentHost.Equip(first, itemId);
         }
 
-        public void Dispose()
-        {
-            disposables.Dispose();
-        }
+        public void RequestEquip(EquipmentSlotId slotId, ItemId itemId) =>
+            equipmentHost?.Equip(slotId, itemId);
+
+        public void Dispose() => disposables.Dispose();
     }
 }

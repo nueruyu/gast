@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Gast.Domain.Economy;
+using Gast.Domain.Equipment;
 using Gast.Unity.Features.Economy;
 using UnityEngine;
 
@@ -34,8 +35,14 @@ namespace Gast.Unity.Infrastructure.Items
         [SerializeField]
         List<ItemEffect> effects = new();
 
+        [SerializeField]
+        List<EquipmentEffect> equipmentEffects = new();
+
         [NonSerialized]
         IReadOnlyList<IItemEffect> effectsCache;
+
+        [NonSerialized]
+        IReadOnlyList<IEquipmentEffect> equipmentEffectsCache;
 
         public ItemId Id => itemReference.Id;
         public string Name => displayName;
@@ -53,9 +60,19 @@ namespace Gast.Unity.Infrastructure.Items
             }
         }
 
+        public IReadOnlyList<IEquipmentEffect> EquipmentEffects
+        {
+            get
+            {
+                equipmentEffectsCache ??= equipmentEffects.ConvertAll(e => (IEquipmentEffect)e);
+                return equipmentEffectsCache;
+            }
+        }
+
         void OnValidate()
         {
             effectsCache = null;
+            equipmentEffectsCache = null;
         }
     }
 }

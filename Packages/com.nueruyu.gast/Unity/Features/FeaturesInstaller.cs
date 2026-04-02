@@ -1,5 +1,6 @@
 using Gast.Core.DI;
 using Gast.Unity.Features.Cameras;
+using Gast.Unity.Features.Equipment;
 using Gast.Unity.Features.Gameplay;
 using Gast.Unity.Features.Gathering;
 using Gast.Unity.Features.Inputs;
@@ -43,6 +44,9 @@ namespace Gast.Unity.Features
 
             // Spawn Sites
             builder.Register<SpawnSiteSystem>().AsImplementedInterfaces();
+
+            // Equipment
+            builder.Register<EquipmentService>().AsImplementedInterfaces();
         }
     }
 }

@@ -1,9 +1,1 @@
-namespace Gast.Domain.Equipment
-{
-    public enum EquipmentSlot
-    {
-        Head,
-        Body,
-        Weapon
-    }
-}
+namespace Gast.Domain.Equipment { }
