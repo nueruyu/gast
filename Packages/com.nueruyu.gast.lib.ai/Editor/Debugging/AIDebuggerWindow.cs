@@ -75,7 +75,6 @@ namespace Gast.Lib.AI.Editor.Debugging
 
         void OnEditorUpdate()
         {
-            if (!EditorApplication.isPlaying) return;
             viewModel.Update();
         }
     }

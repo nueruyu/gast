@@ -47,13 +47,34 @@ namespace Gast.Lib.AI.Editor.Debugging
             {
                 actorList.itemsSource = actors;
                 actorList.Rebuild();
+
+                if (vm.SelectedActorId.Value != null)
+                {
+                    for (var i = 0; i < actors.Length; i++)
+                    {
+                        if (Equals(actors[i].Id, vm.SelectedActorId.Value))
+                        {
+                            actorList.SetSelectionWithoutNotify(new[] { i });
+                            return;
+                        }
+                    }
+                }
+                actorList.ClearSelection();
             }).AddTo(disposables);
 
-            Action<IEnumerable<object>> onSelectionChanged = _ => vm.SelectedActorIndex.Value = actorList.selectedIndex;
+            Action<IEnumerable<object>> onSelectionChanged = _ =>
+            {
+                if (actorList.selectedIndex >= 0 && actorList.selectedIndex < vm.Actors.CurrentValue.Length)
+                {
+                    vm.SelectedActorId.Value = vm.Actors.CurrentValue[actorList.selectedIndex].Id;
+                }
+                else
+                {
+                    vm.SelectedActorId.Value = null;
+                }
+            };
             actorList.selectionChanged += onSelectionChanged;
             disposables.Add(Disposable.Create(() => actorList.selectionChanged -= onSelectionChanged));
-
-            vm.SelectedActorIndex.Subscribe(index => actorList.selectedIndex = index).AddTo(disposables);
         }
 
         public void Dispose()

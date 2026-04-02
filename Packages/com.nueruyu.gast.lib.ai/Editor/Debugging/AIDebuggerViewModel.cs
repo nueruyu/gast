@@ -21,7 +21,7 @@ namespace Gast.Lib.AI.Editor.Debugging
         ReadOnlyReactiveProperty<string> selectedDomainName;
 
         public ReactiveProperty<bool> LogAutoScroll { get; } = new(true);
-        public ReactiveProperty<int> SelectedActorIndex { get; } = new(-1);
+        public ReactiveProperty<object> SelectedActorId { get; } = new((object)null);
         public ReactiveProperty<int> SelectedDomainIndex { get; } = new(-1);
 
         public ReadOnlyReactiveProperty<ActorInfo[]> Actors { get; }
@@ -40,10 +40,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                     .ToArray())
                 .ToReadOnlyReactiveProperty();
 
-            selectedActorId = Actors
-                .CombineLatest(SelectedActorIndex,
-                    (actorInfos, index) => index >= 0 && index < actorInfos.Length ? actorInfos[index].Id : null)
-                .ToReadOnlyReactiveProperty();
+            selectedActorId = SelectedActorId.ToReadOnlyReactiveProperty();
 
             DomainNameChoices = allDebugInfo
                 .CombineLatest(selectedActorId, (dict, actorId) =>
@@ -74,7 +71,14 @@ namespace Gast.Lib.AI.Editor.Debugging
 
         public void Update()
         {
-            if (!AIDebuggerBridge.IsInitialized) return;
+            if (!AIDebuggerBridge.IsInitialized)
+            {
+                if (allDebugInfo.Value.Count > 0)
+                {
+                    allDebugInfo.Value = new Dictionary<ContextKey, AIDebugInfo>();
+                }
+                return;
+            }
 
             var latestAllDebugInfo = AIDebuggerBridge.GetAllDebugInfo();
             if (!DictionaryEquals(allDebugInfo.Value, latestAllDebugInfo))

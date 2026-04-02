@@ -95,6 +95,12 @@ namespace Gast.Lib.AI.Editor.Debugging
                 logs.ObserveRemove().Subscribe(e =>
                 {
                     logListSource.RemoveAt(e.Index);
+
+                    if (!vm.LogAutoScroll.Value && logList.selectedIndex > e.Index)
+                    {
+                        logList.SetSelectionWithoutNotify(new[] { logList.selectedIndex - 1 });
+                    }
+
                     logList.RefreshItems();
                 }).AddTo(bindings);
 
