@@ -1,6 +1,7 @@
 using Gast.Application.AIPlanning;
 using Gast.Application.Characters;
 using Gast.Application.Economy;
+using Gast.Application.Equipment;
 using Gast.Application.Interactions;
 using Gast.Application.Items;
 using Gast.Core.DI;
@@ -20,6 +21,10 @@ namespace Gast.Application
             builder.Register<BuyItemUseCase>().AsImplementedInterfaces();
             builder.Register<PickUpItemUseCase>().AsImplementedInterfaces();
             builder.Register<UseItemUseCase>().AsImplementedInterfaces();
+
+            // Equipment
+            builder.Register<EquipItemUseCase>();
+            builder.Register<UnequipItemUseCase>();
 
             // Items
             builder.Register<SpawnItemUseCase>().AsImplementedInterfaces();

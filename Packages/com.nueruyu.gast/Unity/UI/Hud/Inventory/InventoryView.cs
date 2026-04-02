@@ -44,7 +44,7 @@ namespace Gast.Unity.UI.Hud.Inventory
                 text.AddToClassList(ItemTextUssClassName);
                 slot.Add(text);
 
-                slot.RegisterCallback<PointerDownEvent>(_ => viewModel.SelectItem(stackViewModel.ItemStack.ItemId));
+                slot.RegisterCallback<PointerDownEvent>(_ => viewModel.EquipItem(stackViewModel.ItemStack.ItemId));
             }
 
             Add(slot);

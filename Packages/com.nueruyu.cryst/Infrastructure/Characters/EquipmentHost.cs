@@ -8,15 +8,19 @@ namespace Cryst.Infrastructure.Characters
 {
     class EquipmentHost : IEquipmentHost
     {
+        readonly List<EquipmentSlotId> slotOrder = new();
         readonly Dictionary<EquipmentSlotId, Live<ItemId?>> slots = new();
 
         public EquipmentHost(IEnumerable<EquipmentSlotDefinition> slotDefinitions)
         {
             foreach (var def in slotDefinitions)
+            {
+                slotOrder.Add(def.Id);
                 slots[def.Id] = new Live<ItemId?>(null);
+            }
         }
 
-        public IEnumerable<EquipmentSlotId> Slots => slots.Keys;
+        public IEnumerable<EquipmentSlotId> Slots => slotOrder;
 
         public ILive<ItemId?> GetSlot(EquipmentSlotId slotId) => slots[slotId];
 
