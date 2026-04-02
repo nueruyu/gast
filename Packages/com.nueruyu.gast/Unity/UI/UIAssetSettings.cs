@@ -56,6 +56,12 @@ namespace Gast.Unity.UI
 
         public VisualTreeAsset CommandView => commandView;
 
+        [Header("HUD Equipment")]
+        [SerializeField]
+        VisualTreeAsset equipmentView;
+
+        public VisualTreeAsset EquipmentView => equipmentView;
+
         [Header("HUD Objectives")]
         [SerializeField]
         VisualTreeAsset aiObjectiveView;

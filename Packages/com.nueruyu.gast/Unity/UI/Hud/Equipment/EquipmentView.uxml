@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" class="equipment">
+    <Style src="EquipmentView.uss" />
+    <ui:VisualElement name="head-slot" class="equipment__slot">
+        <ui:Label text="Head" class="equipment__slot-title" />
+    </ui:VisualElement>
+    <ui:VisualElement name="body-slot" class="equipment__slot">
+        <ui:Label text="Body" class="equipment__slot-title" />
+    </ui:VisualElement>
+    <ui:VisualElement name="weapon-slot" class="equipment__slot">
+        <ui:Label text="Weapon" class="equipment__slot-title" />
+    </ui:VisualElement>
+</ui:UXML>

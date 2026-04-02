@@ -11,8 +11,11 @@ namespace Gast.Unity.UI.Hud.Inventory
     public class InventoryViewModel : IDisposable
     {
         readonly CompositeDisposable disposables = new();
+        readonly Subject<ItemId> itemSelectedSubject = new();
 
         public int HotbarSize => 10;
+
+        public Observable<ItemId> ItemSelected => itemSelectedSubject;
 
         public ReadOnlyReactiveProperty<IReadOnlyList<ItemStackViewModel>> InventoryItems { get; }
 
@@ -47,9 +50,15 @@ namespace Gast.Unity.UI.Hud.Inventory
             return (index + 1).ToString();
         }
 
+        public void SelectItem(ItemId itemId)
+        {
+            itemSelectedSubject.OnNext(itemId);
+        }
+
         public void Dispose()
         {
             disposables.Dispose();
+            itemSelectedSubject.Dispose();
         }
     }
 }

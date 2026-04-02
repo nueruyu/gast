@@ -8,4 +8,5 @@
     <ui:VisualElement name="AIStatusContainer" class="game-hud__ai-status-container" />
     <ui:VisualElement name="AIObjectivesContainer" class="game-hud__ai-objectives-container" />
     <ui:VisualElement name="InventoryContainer" class="game-hud__inventory-container" />
+    <ui:VisualElement name="EquipmentContainer" class="game-hud__equipment-container" />
 </ui:UXML>

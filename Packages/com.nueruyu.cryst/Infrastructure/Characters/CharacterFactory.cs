@@ -9,6 +9,7 @@ using Cysharp.Threading.Tasks;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
+using Gast.Domain.Equipment;
 using Gast.Domain.Interactions;
 using R3;
 using R3.Triggers;
@@ -81,6 +82,7 @@ namespace Cryst.Infrastructure.Characters
                 facets[typeof(BaseCharacter)] = baseCharacter;
                 facets[typeof(IWalletHost)] = new WalletHost(wallet);
                 facets[typeof(IInventoryHost)] = new InventoryHost(inventory);
+                facets[typeof(IEquipmentHost)] = new EquipmentHost();
                 facets[typeof(ICameraFocusTarget)] = new CameraFocusTarget(characterGo.transform);
                 facets[typeof(IInteractor)] = interactor;
 
