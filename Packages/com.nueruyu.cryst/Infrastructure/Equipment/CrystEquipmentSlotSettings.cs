@@ -17,10 +17,25 @@ namespace Cryst.Infrastructure.Equipment
         [SerializeField]
         EquipmentSlotDefinition weapon;
 
+        [System.NonSerialized]
+        IReadOnlyList<EquipmentSlotDefinition> slotsCache;
+
         public EquipmentSlotDefinition Head => head;
         public EquipmentSlotDefinition Body => body;
         public EquipmentSlotDefinition Weapon => weapon;
 
-        public IReadOnlyList<EquipmentSlotDefinition> Slots => new[] { head, body, weapon };
+        public IReadOnlyList<EquipmentSlotDefinition> Slots
+        {
+            get
+            {
+                slotsCache ??= new[] { head, body, weapon };
+                return slotsCache;
+            }
+        }
+
+        void OnValidate()
+        {
+            slotsCache = null;
+        }
     }
 }
