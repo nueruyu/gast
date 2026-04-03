@@ -43,6 +43,8 @@ namespace Gast.Unity.UI.Hud.Inventory
                     $"{stackViewModel.ItemDefinition.Name}\nx{stackViewModel.ItemStack.Quantity}");
                 text.AddToClassList(ItemTextUssClassName);
                 slot.Add(text);
+
+                slot.RegisterCallback<PointerDownEvent>(_ => viewModel.EquipItem(stackViewModel.ItemStack.ItemId));
             }
 
             Add(slot);

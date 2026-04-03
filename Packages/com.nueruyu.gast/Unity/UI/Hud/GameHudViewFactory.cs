@@ -1,6 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Gast.Unity.UI.Hud.AIStatus;
+using Gast.Unity.UI.Hud.Equipment;
 using Gast.Unity.UI.Hud.Inventory;
 using Gast.Unity.UI.Hud.Objectives;
 using Gast.Unity.UI.Hud.PlayerStatus;
@@ -15,6 +16,7 @@ namespace Gast.Unity.UI.Hud
         readonly InventoryViewFactory inventoryViewFactory;
         readonly AIStatusViewFactory aiStatusViewFactory;
         readonly AIObjectivesViewFactory aiObjectivesViewFactory;
+        readonly EquipmentViewFactory equipmentViewFactory;
 
         public GameHudViewFactory(
             GameHudViewModel hudViewModel,
@@ -22,7 +24,8 @@ namespace Gast.Unity.UI.Hud
             IPlayerStatusViewFactory playerStatusViewFactory,
             InventoryViewFactory inventoryViewFactory,
             AIStatusViewFactory aiStatusViewFactory,
-            AIObjectivesViewFactory aiObjectivesViewFactory)
+            AIObjectivesViewFactory aiObjectivesViewFactory,
+            EquipmentViewFactory equipmentViewFactory)
         {
             this.hudViewModel = hudViewModel;
             this.assetSettings = assetSettings;
@@ -30,6 +33,7 @@ namespace Gast.Unity.UI.Hud
             this.inventoryViewFactory = inventoryViewFactory;
             this.aiStatusViewFactory = aiStatusViewFactory;
             this.aiObjectivesViewFactory = aiObjectivesViewFactory;
+            this.equipmentViewFactory = equipmentViewFactory;
         }
 
         public GameHudView Create(CancellationToken cancellationToken)
@@ -38,13 +42,15 @@ namespace Gast.Unity.UI.Hud
             var inventoryView = inventoryViewFactory.Create(cancellationToken);
             var aiStatusView = aiStatusViewFactory.Create(cancellationToken);
             var aiObjectivesView = aiObjectivesViewFactory.Create(cancellationToken);
+            var equipmentView = equipmentViewFactory.Create(cancellationToken);
 
             var view = new GameHudView(
                 assetSettings.GameHudView,
                 playerStatusView,
                 inventoryView,
                 aiStatusView,
-                aiObjectivesView);
+                aiObjectivesView,
+                equipmentView);
 
             view.Bind(hudViewModel).AddTo(cancellationToken);
             return view;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gast.Application.Equipment;
 using Gast.Domain.Economy;
 using Gast.Domain.Players;
 using Gast.Unity.Shared.Observables;
@@ -11,13 +12,21 @@ namespace Gast.Unity.UI.Hud.Inventory
     public class InventoryViewModel : IDisposable
     {
         readonly CompositeDisposable disposables = new();
+        readonly IPlayerManager playerManager;
+        readonly EquipItemUseCase equipUseCase;
 
         public int HotbarSize => 10;
 
         public ReadOnlyReactiveProperty<IReadOnlyList<ItemStackViewModel>> InventoryItems { get; }
 
-        public InventoryViewModel(IPlayerManager playerManager, ItemStackViewModelFactory itemStackViewModelFactory)
+        public InventoryViewModel(
+            IPlayerManager playerManager,
+            ItemStackViewModelFactory itemStackViewModelFactory,
+            EquipItemUseCase equipUseCase)
         {
+            this.playerManager = playerManager;
+            this.equipUseCase = equipUseCase;
+
             InventoryItems = playerManager.CurrentCharacter.ToObservable()
                 .Select(character =>
                 {
@@ -38,12 +47,16 @@ namespace Gast.Unity.UI.Hud.Inventory
                 .AddTo(disposables);
         }
 
+        public void EquipItem(ItemId itemId)
+        {
+            var character = playerManager.CurrentCharacter.Value;
+            if (character == null) return;
+            equipUseCase.Execute(new EquipItemCommand(character.Id, itemId));
+        }
+
         public string GetSlotNumberText(int index)
         {
-            if (HotbarSize == 10 && index == 9)
-            {
-                return "0";
-            }
+            if (HotbarSize == 10 && index == 9) return "0";
             return (index + 1).ToString();
         }
 

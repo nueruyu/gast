@@ -1,6 +1,7 @@
 using System;
 using Gast.Unity.Shared.UnityExtensions;
 using Gast.Unity.UI.Hud.AIStatus;
+using Gast.Unity.UI.Hud.Equipment;
 using Gast.Unity.UI.Hud.Inventory;
 using Gast.Unity.UI.Hud.Objectives;
 using R3;
@@ -15,7 +16,8 @@ namespace Gast.Unity.UI.Hud
             VisualElement playerStatusView,
             InventoryView inventoryView,
             AIStatusView aiStatusView,
-            AIObjectivesView aiObjectivesView)
+            AIObjectivesView aiObjectivesView,
+            EquipmentView equipmentView)
         {
             asset.CloneTree(this);
             focusable = true;
@@ -25,6 +27,7 @@ namespace Gast.Unity.UI.Hud
             this.Q("InventoryContainer").Add(inventoryView);
             this.Q("AIStatusContainer").Add(aiStatusView);
             this.Q("AIObjectivesContainer").Add(aiObjectivesView);
+            this.Q("EquipmentContainer").Add(equipmentView);
         }
 
         public IDisposable Bind(GameHudViewModel viewModel)

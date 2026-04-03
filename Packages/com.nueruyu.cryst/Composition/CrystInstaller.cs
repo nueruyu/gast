@@ -1,7 +1,8 @@
-﻿using Gast.Core.DI;
+using Gast.Core.DI;
 using UnityEngine;
 using Cryst.Infrastructure.CharacterAI;
 using Cryst.Infrastructure.Characters;
+using Cryst.Infrastructure.Equipment;
 using Cryst.Features.Players;
 using Cryst.Features.CharacterAI;
 using Gast.Domain.Characters;
@@ -27,6 +28,7 @@ using Cryst.Features.CharacterActions.Effects;
 using Cryst.UI.Hud.PlayerStatus;
 using Gast.Application.Reflection;
 using Gast.Unity.Features.Characters;
+using Gast.Unity.Features.Equipment;
 using Gast.Unity.Shared.DI;
 using Gast.Unity.UI.Hud.Objectives;
 using Gast.Unity.UI.Hud.PlayerStatus;
@@ -45,11 +47,15 @@ namespace Cryst.Composition
         [SerializeField]
         VitalsSettings vitalsSettings;
 
+        [SerializeField]
+        CrystEquipmentSlotSettings equipmentSlotSettings;
+
         public override void Install(IContainerBuilder builder)
         {
             // Settings
             builder.RegisterInstance(meleeAttackEffectSettings);
             builder.RegisterInstance(vitalsSettings);
+            builder.RegisterInstance(equipmentSlotSettings).As<ICrystEquipmentSlots>().As<IEquipmentSlotProvider>();
 
             // Reflection
             builder.Register<CrystReflectionAssemblyProvider>().As<IReflectionAssemblyProvider>();
@@ -107,7 +113,6 @@ namespace Cryst.Composition
             builder.Register<HitFeedbackHandler>(Lifetime.Singleton);
             builder.Register<HitEffectHandler>(Lifetime.Singleton);
             builder.Register<CharacterDecompositionHandler>(Lifetime.Singleton);
-
         }
     }
 }

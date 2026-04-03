@@ -1,0 +1,1 @@
+namespace Gast.Domain.Equipment { }

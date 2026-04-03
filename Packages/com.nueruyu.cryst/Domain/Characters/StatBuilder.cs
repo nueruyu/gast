@@ -1,0 +1,1 @@
+namespace Cryst.Domain.Characters { }

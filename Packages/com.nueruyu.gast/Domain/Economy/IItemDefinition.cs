@@ -1,10 +1,8 @@
 using System.Collections.Generic;
+using Gast.Domain.Equipment;
 
 namespace Gast.Domain.Economy
 {
-    /// <summary>
-    /// Item definition data.
-    /// </summary>
     public interface IItemDefinition
     {
         public ItemId Id { get; }
@@ -13,5 +11,6 @@ namespace Gast.Domain.Economy
         public int MaxStack { get; }
         public string Description { get; }
         IReadOnlyList<IItemEffect> Effects { get; }
+        IReadOnlyList<IEquipmentEffect> EquipmentEffects { get; }
     }
 }

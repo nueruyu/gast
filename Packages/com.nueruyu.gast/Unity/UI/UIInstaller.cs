@@ -3,6 +3,7 @@ using Gast.Core.Tasks;
 using Gast.Unity.UI.Command;
 using Gast.Unity.UI.Hud;
 using Gast.Unity.UI.Hud.AIStatus;
+using Gast.Unity.UI.Hud.Equipment;
 using Gast.Unity.UI.Hud.Inventory;
 using Gast.Unity.UI.Hud.Objectives;
 using Gast.Unity.UI.Interactions;
@@ -26,6 +27,8 @@ namespace Gast.Unity.UI
             // HUD Children
             builder.Register<InventoryViewModel>();
             builder.Register<InventoryViewFactory>();
+            builder.Register<EquipmentViewModel>();
+            builder.Register<EquipmentViewFactory>();
             builder.Register<AIStatusViewModel>();
             builder.Register<AIStatusViewFactory>();
             builder.Register<AIObjectivesViewModel>();

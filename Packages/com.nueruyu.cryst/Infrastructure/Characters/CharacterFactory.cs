@@ -6,9 +6,11 @@ using Cryst.Features.CharacterActions.Actions.Dash;
 using Cryst.Features.CharacterActions.Actions.Guard;
 using Cryst.Features.CharacterActions.Actions.Jump;
 using Cysharp.Threading.Tasks;
+using Cryst.Infrastructure.Equipment;
 using Gast.Domain.AI;
 using Gast.Domain.Characters;
 using Gast.Domain.Economy;
+using Gast.Domain.Equipment;
 using Gast.Domain.Interactions;
 using R3;
 using R3.Triggers;
@@ -32,7 +34,8 @@ namespace Cryst.Infrastructure.Characters
 
         public CharacterFactory(
             ICharacterTypeRepository typeRepository,
-            ICharacterActionFactory actionFactory)
+            ICharacterActionFactory actionFactory,
+            ICrystEquipmentSlots equipmentSlots)
         {
             factory = Create;
 
@@ -81,6 +84,8 @@ namespace Cryst.Infrastructure.Characters
                 facets[typeof(BaseCharacter)] = baseCharacter;
                 facets[typeof(IWalletHost)] = new WalletHost(wallet);
                 facets[typeof(IInventoryHost)] = new InventoryHost(inventory);
+                facets[typeof(IEquipmentHost)] = new EquipmentHost(new[] { equipmentSlots.Head, equipmentSlots.Body, equipmentSlots.Weapon });
+                facets[typeof(IEquipmentBonusApplicable)] = status;
                 facets[typeof(ICameraFocusTarget)] = new CameraFocusTarget(characterGo.transform);
                 facets[typeof(IInteractor)] = interactor;
 

@@ -1,0 +1,38 @@
+.equipment {
+    flex-direction: column;
+}
+
+.equipment__slot {
+    width: 80px;
+    height: 80px;
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(0, 0, 0, 0.5);
+    margin-bottom: 4px;
+    align-items: center;
+    justify-content: center;
+}
+
+.equipment__slot--filled {
+    border-color: rgba(255, 220, 80, 0.9);
+    background-color: rgba(80, 60, 0, 0.6);
+}
+
+.equipment__slot-title {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    top: 2px;
+    left: 4px;
+}
+
+.equipment__slot-label {
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.9);
+    -unity-text-overflow-position: end;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 72px;
+    -unity-text-align: middle-center;
+    margin-top: 14px;
+}
