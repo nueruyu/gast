@@ -1,55 +1,62 @@
-using System.Collections.Concurrent;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
+using ObservableCollections;
 
 namespace Gast.Lib.AI.Debugging
 {
     public class AIDebugger : IContextRegistry, IAIDebugger
     {
-        readonly ConcurrentDictionary<ContextKey, AIDebugInfo> debugInfoMap = new();
+        readonly ObservableDictionary<ContextKey, AIDebugInfo> allDebugInfo = new();
+        int registrationCounter;
 
-        public void Register(ContextKey contextKey, object worldState)
-        {
-            var added = debugInfoMap.TryAdd(contextKey, new AIDebugInfo(contextKey, worldState));
-            Debug.Log($"[AIDebugger] Register: {contextKey}, Added: {added}, Total: {debugInfoMap.Count}");
-        }
-
-        public void Unregister(ContextKey contextKey)
-        {
-            debugInfoMap.TryRemove(contextKey, out _);
-        }
-
-        public IReadOnlyDictionary<ContextKey, AIDebugInfo> GetAllDebugInfo()
-        {
-            return debugInfoMap;
-        }
+        public IReadOnlyObservableDictionary<ContextKey, AIDebugInfo> AllDebugInfo => allDebugInfo;
 
         public void UpdatePlan(ContextKey contextKey, IReadOnlyList<string> plan)
         {
-            if (debugInfoMap.TryGetValue(contextKey, out var info))
-            {
-                info.CurrentPlan.Value = plan;
-            }
+            WithInfo(contextKey, info => info.CurrentPlan.Value = plan);
         }
 
-        public void UpdateActiveTaskPath(ContextKey contextKey, string taskPath)
+        public void UpdateCurrentMethod(ContextKey contextKey, string methodName)
         {
-            if (debugInfoMap.TryGetValue(contextKey, out var info))
-            {
-                info.ActiveTaskPath.Value = taskPath;
-            }
+            WithInfo(contextKey, info => info.CurrentMethodName.Value = methodName);
+        }
+
+        public void EnterTask(ContextKey contextKey, string taskName)
+        {
+            WithInfo(contextKey, info => info.EnterTask(taskName));
+        }
+
+        public void ExitTask(ContextKey contextKey)
+        {
+            WithInfo(contextKey, info => info.ExitTask());
         }
 
         public void AddLog(ContextKey contextKey, string log)
         {
-            if (debugInfoMap.TryGetValue(contextKey, out var info))
+            WithInfo(contextKey, info =>
             {
-                info.Logs.Add(log);
+                var timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
+                info.Logs.Add($"[{timestamp}] {log}");
                 if (info.Logs.Count > 100)
-                {
                     info.Logs.RemoveAt(0);
-                }
-            }
+            });
+        }
+
+        public void Register(ContextKey contextKey, object worldState, string actorName)
+        {
+            if (!allDebugInfo.ContainsKey(contextKey))
+                allDebugInfo.Add(contextKey, new AIDebugInfo(contextKey, actorName, worldState, registrationCounter++));
+        }
+
+        public void Unregister(ContextKey contextKey)
+        {
+            allDebugInfo.Remove(contextKey);
+        }
+
+        void WithInfo(ContextKey contextKey, Action<AIDebugInfo> action)
+        {
+            if (allDebugInfo.TryGetValue(contextKey, out var info))
+                action(info);
         }
     }
 }

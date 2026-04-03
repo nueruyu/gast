@@ -34,6 +34,7 @@ namespace Cryst.Domain.Characters
         public CharacterId Id { get; }
 
         public CharacterTypeId TypeId => typeDefinition.TypeId;
+        public string DisplayName => typeDefinition.DisplayName;
         public Faction Faction { get; }
 
         public ICharacterBody Body { get; }

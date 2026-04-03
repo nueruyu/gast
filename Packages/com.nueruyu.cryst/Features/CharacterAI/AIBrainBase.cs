@@ -97,10 +97,7 @@ namespace Cryst.Features.CharacterAI
                 brain.characterCts.Token.Register(() =>
                 {
                     foreach (var key in contextKeys.Values)
-                    {
-                        DebugLogger.ClearContext(key);
                         brain.contextRegistry.Unregister(key);
-                    }
                 });
             }
 
@@ -118,7 +115,7 @@ namespace Cryst.Features.CharacterAI
             {
                 var contextKey = new ContextKey(brain.actor.Id, domainName);
                 contextKeys[contextKey.DomainName] = contextKey;
-                brain.contextRegistry.Register(contextKey, worldState);
+                brain.contextRegistry.Register(contextKey, worldState, brain.actor.DisplayName);
 
                 var actorContext = new ActorContext<TWorldState>(
                     brain.services,
