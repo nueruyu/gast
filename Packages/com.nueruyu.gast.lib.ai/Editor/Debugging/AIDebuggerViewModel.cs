@@ -128,15 +128,24 @@ namespace Gast.Lib.AI.Editor.Debugging
 
         void UpdateDomainNameChoices(object actorId)
         {
-            DomainNameChoices.Clear();
-
             if (actorId == null ||
                 !AIDebuggerBridge.IsInitialized.CurrentValue)
+            {
+                DomainNameChoices.Clear();
                 return;
+            }
 
-            foreach (var kvp in AIDebuggerBridge.AllDebugInfo)
-                if (Equals(kvp.Key.ActorId, actorId))
-                    DomainNameChoices.Add(kvp.Key.DomainName);
+            var newDomainNames = AIDebuggerBridge.AllDebugInfo
+                .Where(kvp => Equals(kvp.Key.ActorId, actorId))
+                .OrderBy(kvp => kvp.Value.RegistrationIndex)
+                .Select(kvp => kvp.Key.DomainName)
+                .ToArray();
+
+            if (!DomainNameChoices.SequenceEqual(newDomainNames))
+            {
+                DomainNameChoices.Clear();
+                DomainNameChoices.AddRange(newDomainNames);
+            }
         }
     }
 }
