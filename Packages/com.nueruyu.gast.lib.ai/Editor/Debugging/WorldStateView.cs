@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using Gast.Lib.AI.Debugging;
 using R3;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Gast.Lib.AI.Editor.Debugging
@@ -21,8 +22,14 @@ namespace Gast.Lib.AI.Editor.Debugging
         static readonly string ValueTrueUssClassName = UssClassName + "__value--true";
         static readonly string ValueFalseUssClassName = UssClassName + "__value--false";
 
+        static readonly Dictionary<Type, PropertyInfo[]> propertyCache = new();
+
         readonly VisualElement container;
         readonly CompositeDisposable disposables = new();
+        PropertyInfo[] currentProperties;
+
+        Type currentStateType;
+        Label[] valueLabels;
 
         public WorldStateView()
         {
@@ -37,6 +44,11 @@ namespace Gast.Lib.AI.Editor.Debugging
             Add(container);
         }
 
+        public void Dispose()
+        {
+            disposables.Dispose();
+        }
+
         public void Bind(AIDebuggerViewModel vm)
         {
             AIDebugInfo currentInfo = null;
@@ -44,12 +56,16 @@ namespace Gast.Lib.AI.Editor.Debugging
             vm.SelectedDebugInfo.Subscribe(info =>
             {
                 currentInfo = info;
-                if (info == null) container.Clear();
+                if (info == null)
+                    container.Clear();
             }).AddTo(disposables);
 
             void OnUpdate()
             {
-                if (!EditorApplication.isPlaying || currentInfo == null) return;
+                if (!EditorApplication.isPlaying ||
+                    currentInfo == null)
+                    return;
+
                 Render(currentInfo.WorldState);
             }
 
@@ -59,29 +75,45 @@ namespace Gast.Lib.AI.Editor.Debugging
 
         void Render(object state)
         {
-            container.Clear();
+            if (state == null)
+            {
+                if (currentStateType != null)
+                {
+                    container.Clear();
+                    currentStateType = null;
+                    currentProperties = null;
+                    valueLabels = null;
+                }
 
-            if (state == null) return;
+                return;
+            }
 
             var type = state.GetType();
-            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.CanRead)
-                .OrderBy(p => p.Name);
+            if (currentStateType != type)
+                RebuildUI(type);
 
-            foreach (var property in properties)
+            UpdateValues(state);
+        }
+
+        void RebuildUI(Type type)
+        {
+            container.Clear();
+            currentStateType = type;
+            currentProperties = GetProperties(type);
+            valueLabels = new Label[currentProperties.Length];
+
+            for (var i = 0; i < currentProperties.Length; i++)
             {
+                var property = currentProperties[i];
                 var row = new VisualElement();
                 row.AddToClassList(RowUssClassName);
 
                 var nameLabel = new Label(property.Name);
                 nameLabel.AddToClassList(NameUssClassName);
 
-                var value = property.GetValue(state);
-                var valueLabel = new Label(FormatValue(value));
+                var valueLabel = new Label();
                 valueLabel.AddToClassList(ValueUssClassName);
-
-                if (value is bool boolValue)
-                    valueLabel.AddToClassList(boolValue ? ValueTrueUssClassName : ValueFalseUssClassName);
+                valueLabels[i] = valueLabel;
 
                 row.Add(nameLabel);
                 row.Add(valueLabel);
@@ -89,20 +121,64 @@ namespace Gast.Lib.AI.Editor.Debugging
             }
         }
 
-        string FormatValue(object value)
+        PropertyInfo[] GetProperties(Type type)
         {
-            if (value == null) return "null";
-            if (value is bool boolValue) return boolValue ? "True" : "False";
-            if (value is float floatValue) return floatValue.ToString("F2");
-            if (value is double doubleValue) return doubleValue.ToString("F2");
-            if (value is Vector3 vec3) return $"({vec3.x:F2}, {vec3.y:F2}, {vec3.z:F2})";
-            if (value is Vector2 vec2) return $"({vec2.x:F2}, {vec2.y:F2})";
-            return value.ToString();
+            if (!propertyCache.TryGetValue(type, out var properties))
+            {
+                properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(p => p.CanRead)
+                    .OrderBy(p => p.Name)
+                    .ToArray();
+
+                propertyCache[type] = properties;
+            }
+
+            return properties;
         }
 
-        public void Dispose()
+        void UpdateValues(object state)
         {
-            disposables.Dispose();
+            for (var i = 0; i < currentProperties.Length; i++)
+            {
+                var property = currentProperties[i];
+                var value = property.GetValue(state);
+                var valueLabel = valueLabels[i];
+
+                valueLabel.text = FormatValue(value);
+
+                if (value is bool boolValue)
+                {
+                    valueLabel.EnableInClassList(ValueTrueUssClassName, boolValue);
+                    valueLabel.EnableInClassList(ValueFalseUssClassName, !boolValue);
+                }
+                else
+                {
+                    valueLabel.EnableInClassList(ValueTrueUssClassName, false);
+                    valueLabel.EnableInClassList(ValueFalseUssClassName, false);
+                }
+            }
+        }
+
+        string FormatValue(object value)
+        {
+            if (value == null)
+                return "null";
+            if (value is bool boolValue)
+                return boolValue ? "True" : "False";
+            if (value is float floatValue)
+                return floatValue.ToString("F2");
+            if (value is double doubleValue)
+                return doubleValue.ToString("F2");
+            if (value is Vector3 vec3Num)
+                return $"({vec3Num.X:F2}, {vec3Num.Y:F2}, {vec3Num.Z:F2})";
+            if (value is Vector2 vec2Num)
+                return $"({vec2Num.X:F2}, {vec2Num.Y:F2})";
+            if (value is UnityEngine.Vector3 vec3)
+                return $"({vec3.x:F2}, {vec3.y:F2}, {vec3.z:F2})";
+            if (value is UnityEngine.Vector2 vec2)
+                return $"({vec2.x:F2}, {vec2.y:F2})";
+
+            return value.ToString();
         }
     }
 }
