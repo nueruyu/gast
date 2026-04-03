@@ -1,30 +1,22 @@
-using System.Collections.Generic;
+using ObservableCollections;
 
 namespace Gast.Lib.AI.Debugging
 {
     public static class AIDebuggerBridge
     {
-        static IAIDebugger instance;
+        public static bool IsInitialized => Debugger != null;
+        public static IAIDebugger Debugger { get; private set; }
 
-        public static bool IsInitialized => instance != null;
-        public static IAIDebugger Debugger => instance;
+        public static IReadOnlyObservableDictionary<ContextKey, AIDebugInfo> AllDebugInfo => Debugger?.AllDebugInfo;
 
         public static void SetInstance(IAIDebugger debugger)
         {
-            instance = debugger;
+            Debugger = debugger;
         }
 
         public static void ClearInstance()
         {
-            instance = null;
-        }
-
-        public static IReadOnlyDictionary<ContextKey, AIDebugInfo> GetAllDebugInfo()
-        {
-            if (instance == null)
-                throw new System.InvalidOperationException("AIDebuggerBridge instance is not initialized.");
-
-            return instance.GetAllDebugInfo();
+            Debugger = null;
         }
     }
 }

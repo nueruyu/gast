@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gast.Lib.AI.Debugging;
+using ObservableCollections;
 using R3;
 
 namespace Gast.Lib.AI.Editor.Debugging
@@ -14,96 +15,96 @@ namespace Gast.Lib.AI.Editor.Debugging
 
     public class AIDebuggerViewModel : IDisposable
     {
-        readonly ReactiveProperty<IReadOnlyDictionary<ContextKey, AIDebugInfo>> allDebugInfo = new();
+        readonly Dictionary<object, int> actorReferenceCounts = new();
         readonly CompositeDisposable disposables = new();
-
-        ReadOnlyReactiveProperty<object> selectedActorId;
-        ReadOnlyReactiveProperty<string> selectedDomainName;
-
-        public ReactiveProperty<bool> LogAutoScroll { get; } = new(true);
-        public ReactiveProperty<object> SelectedActorId { get; } = new((object)null);
-        public ReactiveProperty<int> SelectedDomainIndex { get; } = new(-1);
-
-        public ReadOnlyReactiveProperty<ActorInfo[]> Actors { get; }
-        public ReadOnlyReactiveProperty<string[]> DomainNameChoices { get; }
-        public ReadOnlyReactiveProperty<AIDebugInfo> SelectedDebugInfo { get; }
 
         public AIDebuggerViewModel()
         {
-            allDebugInfo.Value = new Dictionary<ContextKey, AIDebugInfo>();
-
-            Actors = allDebugInfo
-                .Select(dict => dict.Values
-                    .GroupBy(info => info.ContextKey.ActorId)
-                    .OrderBy(g => g.Min(info => info.RegistrationIndex))
-                    .Select(g => new ActorInfo { Id = g.Key, Name = g.First().ActorName })
-                    .ToArray())
-                .ToReadOnlyReactiveProperty();
-
-            selectedActorId = SelectedActorId.ToReadOnlyReactiveProperty();
-
-            DomainNameChoices = allDebugInfo
-                .CombineLatest(selectedActorId, (dict, actorId) =>
+            SelectedDebugInfo = SelectedActorId
+                .CombineLatest(SelectedDomainIndex, (actorId, domainIndex) =>
                 {
-                    if (actorId == null) return Array.Empty<string>();
-                    return dict.Keys
-                        .Where(key => Equals(key.ActorId, actorId))
-                        .Select(key => key.DomainName)
-                        .OrderBy(x => x)
-                        .ToArray();
-                })
-                .ToReadOnlyReactiveProperty();
-
-            selectedDomainName = DomainNameChoices
-                .CombineLatest(SelectedDomainIndex,
-                    (domains, index) => index >= 0 && index < domains.Length ? domains[index] : null)
-                .ToReadOnlyReactiveProperty();
-
-            SelectedDebugInfo = allDebugInfo
-                .CombineLatest(selectedActorId, selectedDomainName, (dict, actorId, domain) =>
-                {
-                    if (actorId == null || domain == null) return null;
-                    dict.TryGetValue(new ContextKey(actorId, domain), out var info);
+                    if (actorId == null || domainIndex < 0 || domainIndex >= DomainNameChoices.Count) return null;
+                    var domainName = DomainNameChoices[domainIndex];
+                    var key = new ContextKey(actorId, domainName);
+                    AIDebuggerBridge.AllDebugInfo.TryGetValue(key, out var info);
                     return info;
                 })
                 .ToReadOnlyReactiveProperty();
-        }
 
-        public void Update()
-        {
-            if (!AIDebuggerBridge.IsInitialized)
+            SelectedActorId.Subscribe(UpdateDomainNameChoices).AddTo(disposables);
+
+            if (AIDebuggerBridge.AllDebugInfo != null)
             {
-                if (allDebugInfo.Value.Count > 0)
-                {
-                    allDebugInfo.Value = new Dictionary<ContextKey, AIDebugInfo>();
-                }
-                return;
-            }
+                AIDebuggerBridge.AllDebugInfo.ObserveAdd().Subscribe(e => OnDebugInfoAdded(e.Value.Value))
+                    .AddTo(disposables);
+                AIDebuggerBridge.AllDebugInfo.ObserveRemove().Subscribe(e => OnDebugInfoRemoved(e.Value.Value))
+                    .AddTo(disposables);
+                AIDebuggerBridge.AllDebugInfo.ObserveReset().Subscribe(_ => OnDebugInfoReset()).AddTo(disposables);
 
-            var latestAllDebugInfo = AIDebuggerBridge.GetAllDebugInfo();
-            if (!DictionaryEquals(allDebugInfo.Value, latestAllDebugInfo))
-                allDebugInfo.Value = latestAllDebugInfo.ToDictionary(x => x.Key, x => x.Value);
+                foreach (var (_, info) in AIDebuggerBridge.AllDebugInfo)
+                    OnDebugInfoAdded(info);
+            }
         }
+
+        public ReactiveProperty<bool> LogAutoScroll { get; } = new(true);
+        public ReactiveProperty<object> SelectedActorId { get; } = new(null);
+        public ReactiveProperty<int> SelectedDomainIndex { get; } = new(-1);
+
+        public ObservableList<ActorInfo> Actors { get; } = new();
+        public ObservableList<string> DomainNameChoices { get; } = new();
+        public ReadOnlyReactiveProperty<AIDebugInfo> SelectedDebugInfo { get; }
 
         public void Dispose()
         {
             disposables.Dispose();
         }
 
-        static bool DictionaryEquals(
-            IReadOnlyDictionary<ContextKey, AIDebugInfo> a,
-            IReadOnlyDictionary<ContextKey, AIDebugInfo> b)
+        void OnDebugInfoAdded(AIDebugInfo info)
         {
-            if (a == null || b == null) return false;
-            if (a.Count != b.Count) return false;
-
-            foreach (var kvp in a)
+            var actorId = info.ContextKey.ActorId;
+            if (!actorReferenceCounts.ContainsKey(actorId))
             {
-                if (!b.TryGetValue(kvp.Key, out var bValue)) return false;
-                if (!ReferenceEquals(kvp.Value, bValue)) return false;
+                actorReferenceCounts[actorId] = 0;
+                Actors.Add(new ActorInfo { Id = actorId, Name = info.ActorName });
             }
 
-            return true;
+            actorReferenceCounts[actorId]++;
+
+            if (Equals(SelectedActorId.Value, actorId)) DomainNameChoices.Add(info.ContextKey.DomainName);
+        }
+
+        void OnDebugInfoRemoved(AIDebugInfo info)
+        {
+            var actorId = info.ContextKey.ActorId;
+            if (actorReferenceCounts.ContainsKey(actorId))
+            {
+                actorReferenceCounts[actorId]--;
+                if (actorReferenceCounts[actorId] <= 0)
+                {
+                    actorReferenceCounts.Remove(actorId);
+                    var actorToRemove = Actors.First(a => Equals(a.Id, actorId));
+                    Actors.Remove(actorToRemove);
+                }
+            }
+
+            if (Equals(SelectedActorId.Value, actorId)) DomainNameChoices.Remove(info.ContextKey.DomainName);
+        }
+
+        void OnDebugInfoReset()
+        {
+            actorReferenceCounts.Clear();
+            Actors.Clear();
+            DomainNameChoices.Clear();
+        }
+
+        void UpdateDomainNameChoices(object actorId)
+        {
+            DomainNameChoices.Clear();
+            if (actorId == null || AIDebuggerBridge.AllDebugInfo == null) return;
+
+            foreach (var kvp in AIDebuggerBridge.AllDebugInfo)
+                if (Equals(kvp.Key.ActorId, actorId))
+                    DomainNameChoices.Add(kvp.Key.DomainName);
         }
     }
 }

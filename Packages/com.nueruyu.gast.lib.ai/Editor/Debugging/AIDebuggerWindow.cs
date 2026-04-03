@@ -10,7 +10,6 @@ namespace Gast.Lib.AI.Editor.Debugging
         [SerializeField] VisualTreeAsset visualTreeAsset;
 
         AIDebuggerViewModel viewModel;
-        CompositeDisposable disposables;
 
         ActorListView actorListView;
         DomainToolbarView domainToolbarView;
@@ -21,14 +20,10 @@ namespace Gast.Lib.AI.Editor.Debugging
         protected virtual void OnEnable()
         {
             viewModel = new AIDebuggerViewModel();
-            disposables = new CompositeDisposable();
-            EditorApplication.update += OnEditorUpdate;
         }
 
         protected virtual void OnDisable()
         {
-            EditorApplication.update -= OnEditorUpdate;
-            disposables?.Dispose();
             viewModel?.Dispose();
         }
 
@@ -71,11 +66,6 @@ namespace Gast.Lib.AI.Editor.Debugging
         public static void ShowWindow()
         {
             GetWindow<AIDebuggerWindow>("AI Debugger");
-        }
-
-        void OnEditorUpdate()
-        {
-            viewModel.Update();
         }
     }
 }

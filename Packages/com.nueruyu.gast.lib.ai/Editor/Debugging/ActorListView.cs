@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ObservableCollections;
 using R3;
 using UnityEngine.UIElements;
 
@@ -35,51 +36,62 @@ namespace Gast.Lib.AI.Editor.Debugging
             Add(actorList);
         }
 
+        public void Dispose()
+        {
+            disposables.Dispose();
+        }
+
         public void Bind(AIDebuggerViewModel vm)
         {
+            var actorListSource = new List<ActorInfo>();
+            actorList.itemsSource = actorListSource;
+
+            vm.Actors.ObserveAdd().Subscribe(e =>
+            {
+                actorListSource.Insert(e.Index, e.Value);
+                actorList.RefreshItems();
+            }).AddTo(disposables);
+
+            vm.Actors.ObserveRemove().Subscribe(e =>
+            {
+                actorListSource.RemoveAt(e.Index);
+                actorList.RefreshItems();
+            }).AddTo(disposables);
+
+            vm.Actors.ObserveReset().Subscribe(_ =>
+            {
+                actorListSource.Clear();
+                actorList.RefreshItems();
+            }).AddTo(disposables);
+
             actorList.bindItem = (element, i) =>
             {
-                var actor = vm.Actors.CurrentValue[i];
+                var actor = actorListSource[i];
                 ((Label)element).text = $"{actor.Name} ({actor.Id})";
             };
 
-            vm.Actors.Subscribe(actors =>
+            vm.SelectedActorId.Subscribe(id =>
             {
-                actorList.itemsSource = actors;
-                actorList.Rebuild();
-
-                if (vm.SelectedActorId.Value != null)
-                {
-                    for (var i = 0; i < actors.Length; i++)
-                    {
-                        if (Equals(actors[i].Id, vm.SelectedActorId.Value))
+                if (id != null)
+                    for (var i = 0; i < actorListSource.Count; i++)
+                        if (Equals(actorListSource[i].Id, id))
                         {
                             actorList.SetSelectionWithoutNotify(new[] { i });
                             return;
                         }
-                    }
-                }
+
                 actorList.ClearSelection();
             }).AddTo(disposables);
 
             Action<IEnumerable<object>> onSelectionChanged = _ =>
             {
-                if (actorList.selectedIndex >= 0 && actorList.selectedIndex < vm.Actors.CurrentValue.Length)
-                {
-                    vm.SelectedActorId.Value = vm.Actors.CurrentValue[actorList.selectedIndex].Id;
-                }
+                if (actorList.selectedIndex >= 0 && actorList.selectedIndex < actorListSource.Count)
+                    vm.SelectedActorId.Value = actorListSource[actorList.selectedIndex].Id;
                 else
-                {
                     vm.SelectedActorId.Value = null;
-                }
             };
             actorList.selectionChanged += onSelectionChanged;
             disposables.Add(Disposable.Create(() => actorList.selectionChanged -= onSelectionChanged));
-        }
-
-        public void Dispose()
-        {
-            disposables.Dispose();
         }
     }
 }

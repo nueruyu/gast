@@ -1,4 +1,5 @@
 using System;
+using ObservableCollections;
 using R3;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -21,16 +22,16 @@ namespace Gast.Lib.AI.Editor.Debugging
         {
             CompositeDisposable toggleDisposables = null;
 
-            vm.DomainNameChoices.Subscribe(domains =>
+            void RebuildToggles()
             {
                 toggleDisposables?.Dispose();
                 toggleDisposables = new CompositeDisposable();
 
                 Clear();
 
-                if (domains.Length > 0)
+                if (vm.DomainNameChoices.Count > 0)
                 {
-                    if (vm.SelectedDomainIndex.Value < 0 || vm.SelectedDomainIndex.Value >= domains.Length)
+                    if (vm.SelectedDomainIndex.Value < 0 || vm.SelectedDomainIndex.Value >= vm.DomainNameChoices.Count)
                         vm.SelectedDomainIndex.Value = 0;
                 }
                 else
@@ -38,10 +39,10 @@ namespace Gast.Lib.AI.Editor.Debugging
                     vm.SelectedDomainIndex.Value = -1;
                 }
 
-                for (var i = 0; i < domains.Length; i++)
+                for (var i = 0; i < vm.DomainNameChoices.Count; i++)
                 {
                     var index = i;
-                    var toggle = new ToolbarToggle { text = domains[i] };
+                    var toggle = new ToolbarToggle { text = vm.DomainNameChoices[i] };
                     toggle.SetValueWithoutNotify(index == vm.SelectedDomainIndex.Value);
 
                     var callback = new EventCallback<ChangeEvent<bool>>(evt =>
@@ -52,7 +53,11 @@ namespace Gast.Lib.AI.Editor.Debugging
                     toggleDisposables.Add(Disposable.Create(() => toggle.UnregisterValueChangedCallback(callback)));
                     Add(toggle);
                 }
-            }).AddTo(disposables);
+            }
+
+            vm.DomainNameChoices.ObserveAdd().Subscribe(_ => RebuildToggles()).AddTo(disposables);
+            vm.DomainNameChoices.ObserveRemove().Subscribe(_ => RebuildToggles()).AddTo(disposables);
+            vm.DomainNameChoices.ObserveReset().Subscribe(_ => RebuildToggles()).AddTo(disposables);
 
             disposables.Add(Disposable.Create(() => toggleDisposables?.Dispose()));
 

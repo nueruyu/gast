@@ -1,37 +1,35 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using ObservableCollections;
 
 namespace Gast.Lib.AI.Debugging
 {
     public class AIDebugger : IContextRegistry, IAIDebugger
     {
-        readonly ConcurrentDictionary<ContextKey, AIDebugInfo> debugInfoMap = new();
+        readonly ObservableDictionary<ContextKey, AIDebugInfo> allDebugInfo = new();
         int registrationCounter;
 
-        public void Register(ContextKey contextKey, object worldState, string actorName)
+        public IReadOnlyObservableDictionary<ContextKey, AIDebugInfo> AllDebugInfo => allDebugInfo;
+
+        public void UpdatePlan(ContextKey contextKey, IReadOnlyList<string> plan)
         {
-            debugInfoMap.TryAdd(contextKey, new AIDebugInfo(contextKey, actorName, worldState, registrationCounter++));
-        }
-
-        public void Unregister(ContextKey contextKey)
-        {
-            debugInfoMap.TryRemove(contextKey, out _);
-        }
-
-        public IReadOnlyDictionary<ContextKey, AIDebugInfo> GetAllDebugInfo() => debugInfoMap;
-
-        public void UpdatePlan(ContextKey contextKey, IReadOnlyList<string> plan) =>
             WithInfo(contextKey, info => info.CurrentPlan.Value = plan);
+        }
 
-        public void UpdateCurrentMethod(ContextKey contextKey, string methodName) =>
+        public void UpdateCurrentMethod(ContextKey contextKey, string methodName)
+        {
             WithInfo(contextKey, info => info.CurrentMethodName.Value = methodName);
+        }
 
-        public void EnterTask(ContextKey contextKey, string taskName) =>
+        public void EnterTask(ContextKey contextKey, string taskName)
+        {
             WithInfo(contextKey, info => info.EnterTask(taskName));
+        }
 
-        public void ExitTask(ContextKey contextKey) =>
+        public void ExitTask(ContextKey contextKey)
+        {
             WithInfo(contextKey, info => info.ExitTask());
+        }
 
         public void AddLog(ContextKey contextKey, string log)
         {
@@ -44,9 +42,20 @@ namespace Gast.Lib.AI.Debugging
             });
         }
 
+        public void Register(ContextKey contextKey, object worldState, string actorName)
+        {
+            if (!allDebugInfo.ContainsKey(contextKey))
+                allDebugInfo.Add(contextKey, new AIDebugInfo(contextKey, actorName, worldState, registrationCounter++));
+        }
+
+        public void Unregister(ContextKey contextKey)
+        {
+            allDebugInfo.Remove(contextKey);
+        }
+
         void WithInfo(ContextKey contextKey, Action<AIDebugInfo> action)
         {
-            if (debugInfoMap.TryGetValue(contextKey, out var info))
+            if (allDebugInfo.TryGetValue(contextKey, out var info))
                 action(info);
         }
     }

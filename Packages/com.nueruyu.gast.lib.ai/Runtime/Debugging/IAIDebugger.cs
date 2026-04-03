@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using ObservableCollections;
 
 namespace Gast.Lib.AI.Debugging
 {
     public interface IAIDebugger
     {
-        IReadOnlyDictionary<ContextKey, AIDebugInfo> GetAllDebugInfo();
+        IReadOnlyObservableDictionary<ContextKey, AIDebugInfo> AllDebugInfo { get; }
 
         void UpdatePlan(ContextKey contextKey, IReadOnlyList<string> plan);
 
