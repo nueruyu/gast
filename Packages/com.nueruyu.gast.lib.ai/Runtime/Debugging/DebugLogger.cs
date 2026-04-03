@@ -7,7 +7,7 @@ namespace Gast.Lib.AI.Debugging
     {
         public static bool EnableLogging { get; set; } = true;
 
-        static bool CanLog => EnableLogging && AIDebuggerBridge.IsInitialized;
+        static bool CanLog => EnableLogging && AIDebuggerBridge.IsInitialized.CurrentValue;
 
         public static void Log(ContextKey contextKey, string message)
         {

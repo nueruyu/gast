@@ -18,7 +18,7 @@ namespace Gast.Unity.Infrastructure.Services
         public void Start()
         {
             AIDebuggerBridge.SetInstance(debugger);
-            Debug.Log($"[AIDebugInitializer] Start called, Bridge initialized: {AIDebuggerBridge.IsInitialized}");
+            Debug.Log($"[AIDebugInitializer] Start called, Bridge initialized: {AIDebuggerBridge.IsInitialized.CurrentValue}");
         }
 
         public void Dispose()

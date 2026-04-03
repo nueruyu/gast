@@ -50,18 +50,24 @@ namespace Gast.Lib.AI.Editor.Debugging
             {
                 actorListSource.Insert(e.Index, e.Value);
                 actorList.RefreshItems();
+
+                UpdateSelection();
             }).AddTo(disposables);
 
             vm.Actors.ObserveRemove().Subscribe(e =>
             {
                 actorListSource.RemoveAt(e.Index);
                 actorList.RefreshItems();
+
+                UpdateSelection();
             }).AddTo(disposables);
 
             vm.Actors.ObserveReset().Subscribe(_ =>
             {
                 actorListSource.Clear();
                 actorList.RefreshItems();
+
+                UpdateSelection();
             }).AddTo(disposables);
 
             actorList.bindItem = (element, i) =>
@@ -70,8 +76,26 @@ namespace Gast.Lib.AI.Editor.Debugging
                 ((Label)element).text = $"{actor.Name} ({actor.Id})";
             };
 
-            vm.SelectedActorId.Subscribe(id =>
+            vm.SelectedActorId
+                .Subscribe(_ => UpdateSelection())
+                .AddTo(disposables);
+
+            Action<IEnumerable<object>> onSelectionChanged = _ =>
             {
+                if (actorList.selectedIndex >= 0 &&
+                    actorList.selectedIndex < actorListSource.Count)
+                    vm.SelectedActorId.Value = actorListSource[actorList.selectedIndex].Id;
+                else
+                    vm.SelectedActorId.Value = null;
+            };
+            actorList.selectionChanged += onSelectionChanged;
+            disposables.Add(Disposable.Create(() => { actorList.selectionChanged -= onSelectionChanged; }));
+            return;
+
+            void UpdateSelection()
+            {
+                var id = vm.SelectedActorId.CurrentValue;
+
                 if (id != null)
                     for (var i = 0; i < actorListSource.Count; i++)
                         if (Equals(actorListSource[i].Id, id))
@@ -81,17 +105,7 @@ namespace Gast.Lib.AI.Editor.Debugging
                         }
 
                 actorList.ClearSelection();
-            }).AddTo(disposables);
-
-            Action<IEnumerable<object>> onSelectionChanged = _ =>
-            {
-                if (actorList.selectedIndex >= 0 && actorList.selectedIndex < actorListSource.Count)
-                    vm.SelectedActorId.Value = actorListSource[actorList.selectedIndex].Id;
-                else
-                    vm.SelectedActorId.Value = null;
-            };
-            actorList.selectionChanged += onSelectionChanged;
-            disposables.Add(Disposable.Create(() => actorList.selectionChanged -= onSelectionChanged));
+            }
         }
     }
 }
