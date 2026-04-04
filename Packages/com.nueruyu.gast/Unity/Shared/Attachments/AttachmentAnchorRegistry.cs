@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using Gast.Domain.Characters;
 using UnityEngine;
 
 namespace Gast.Unity.Shared.Attachments
 {
-    public class AttachmentAnchorRegistry
+    public class AttachmentAnchorRegistry : ICharacterFacet
     {
         readonly Dictionary<AttachmentAnchorSymbol, Transform> anchors;
 

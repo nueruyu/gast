@@ -1,11 +1,10 @@
 using System;
-using Gast.Domain.Characters;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
 namespace Gast.Unity.Features.Characters.IK
 {
-    public class CharacterIKController : MonoBehaviour, ICharacterFacet
+    public class CharacterIKController : MonoBehaviour
     {
         [SerializeField]
         IKGoalReferences rightHand;

@@ -22,7 +22,6 @@ using Gast.Unity.Features.Cameras;
 using Gast.Unity.Features.Characters;
 using Gast.Unity.Features.Navigations;
 using Gast.Unity.Features.Sensors;
-using Gast.Unity.Features.Characters.IK;
 using Gast.Unity.Shared.Attachments;
 using Gast.Unity.Shared.UnityExtensions;
 using UnityEngine;
@@ -111,8 +110,8 @@ namespace Cryst.Infrastructure.Characters
                 var stateStore = context.Resolve<CharacterActionStateStore>();
                 facets.Add(typeof(SprintableCharacter), new SprintableCharacter(stateStore));
 
-                if (context.TryResolve<CharacterIKController>(out var ikController) && ikController != null)
-                    facets.Add(typeof(CharacterIKController), ikController);
+                if (context.TryResolve<AttachmentAnchorRegistry>(out var anchorRegistry) && anchorRegistry != null)
+                    facets.Add(typeof(AttachmentAnchorRegistry), anchorRegistry);
 
                 if (actionSettingsTypes.Contains(typeof(AttackActionSettings))
                     || actionSettingsTypes.Contains(typeof(HeavyAttackActionSettings)))
