@@ -23,18 +23,23 @@ namespace Gast.Unity.Features.Characters.IK
             var references = GetReferences(goal);
             if (references?.Constraint == null) return;
 
-            var rig = references.Constraint.rig;
-            if(rig == null) return;
+            references.Constraint.weight = weight;
 
-            rig.weight = weight;
-
-            if (references.Target != null)
+            if (references.Target != null && target != null)
             {
-                if (target != null)
-                {
-                    references.Target.position = target.position;
-                    references.Target.rotation = target.rotation;
-                }
+                references.Target.position = target.position;
+                references.Target.rotation = target.rotation;
+            }
+        }
+
+        public void SetGoalReferences(AvatarIKGoal goal, IKGoalReferences references)
+        {
+            switch (goal)
+            {
+                case AvatarIKGoal.RightHand: rightHand = references; break;
+                case AvatarIKGoal.LeftHand:  leftHand  = references; break;
+                case AvatarIKGoal.RightFoot: rightFoot = references; break;
+                case AvatarIKGoal.LeftFoot:  leftFoot  = references; break;
             }
         }
 

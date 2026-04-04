@@ -151,12 +151,8 @@ namespace Gast.Unity.Editor.Character
                 Hint = hintGo.transform
             };
 
-            var fieldInfo = controller.GetType().GetField(char.ToLower(goal.ToString()[0]) + goal.ToString().Substring(1), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (fieldInfo != null)
-            {
-                fieldInfo.SetValue(controller, references);
-                EditorUtility.SetDirty(controller);
-            }
+            controller.SetGoalReferences(goal, references);
+            EditorUtility.SetDirty(controller);
         }
     }
 }
