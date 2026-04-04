@@ -13,8 +13,10 @@ namespace Gast.Unity.Shared.Animations
         [SerializeField]
         string triggerName;
 
-        // Lazily cached; computed on first access so the asset needs no OnEnable.
+        // Lazily cached; cleared in OnValidate so Inspector changes take effect immediately.
         int? hash;
         public int Hash => hash ??= Animator.StringToHash(triggerName);
+
+        void OnValidate() => hash = null;
     }
 }

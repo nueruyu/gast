@@ -46,7 +46,8 @@ namespace Cryst.Features.CharacterActions
 
         public void PlayTrigger(AnimatorTriggerSymbol symbol)
         {
-            if (!isActiveAndEnabled || symbol == null) return;
+            if (symbol == null) throw new System.ArgumentNullException(nameof(symbol));
+            if (!isActiveAndEnabled) return;
             animator.SetTrigger(symbol.Hash);
         }
 
