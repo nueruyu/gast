@@ -17,8 +17,10 @@ using R3.Triggers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cryst.Features.Characters;
 using Cryst.Features.Characters.Footsteps;
 using Gast.Unity.Features.Cameras;
+using Gast.Unity.Features.Characters.IK;
 using Gast.Unity.Features.Characters;
 using Gast.Unity.Features.Navigations;
 using Gast.Unity.Features.Sensors;
@@ -110,8 +112,9 @@ namespace Cryst.Infrastructure.Characters
                 var stateStore = context.Resolve<CharacterActionStateStore>();
                 facets.Add(typeof(SprintableCharacter), new SprintableCharacter(stateStore));
 
-                if (context.TryResolve<AttachmentAnchorRegistry>(out var anchorRegistry) && anchorRegistry != null)
-                    facets.Add(typeof(AttachmentAnchorRegistry), anchorRegistry);
+                context.TryResolve<CharacterIKController>(out var ikController);
+                var anchorRegistry = context.Resolve<AttachmentAnchorRegistry>();
+                facets.Add(typeof(CharacterRigFacet), new CharacterRigFacet(anchorRegistry, ikController));
 
                 if (actionSettingsTypes.Contains(typeof(AttackActionSettings))
                     || actionSettingsTypes.Contains(typeof(HeavyAttackActionSettings)))
