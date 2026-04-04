@@ -56,7 +56,7 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
             if (Time.time >= startTime + settings.Duration) return false;
 
             if (victim != null
-                && victim.Is(out CharacterRigFacet victimRig)
+                && victim.Is(out RiggedCharacter victimRig)
                 && victimRig.IKController != null)
             {
                 foreach (var binding in settings.IKBindings)
@@ -78,7 +78,7 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
             body.IsInputMovementEnabled = true;
 
             if (victim != null
-                && victim.Is(out CharacterRigFacet victimRig)
+                && victim.Is(out RiggedCharacter victimRig)
                 && victimRig.IKController != null)
             {
                 foreach (var binding in settings.IKBindings)

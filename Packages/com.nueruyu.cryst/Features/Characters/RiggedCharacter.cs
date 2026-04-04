@@ -8,12 +8,12 @@ namespace Cryst.Features.Characters
     /// Exposes a character's rig components (IK controller and attachment anchors) as a facet,
     /// allowing other characters' actions to read anchor positions or drive IK goals on this character.
     /// </summary>
-    public class CharacterRigFacet : ICharacterFacet
+    public class RiggedCharacter : ICharacterFacet
     {
         public AttachmentAnchorRegistry AnchorRegistry { get; }
         public CharacterIKController IKController { get; }
 
-        public CharacterRigFacet(AttachmentAnchorRegistry anchorRegistry, CharacterIKController ikController)
+        public RiggedCharacter(AttachmentAnchorRegistry anchorRegistry, CharacterIKController ikController)
         {
             AnchorRegistry = anchorRegistry;
             IKController = ikController;

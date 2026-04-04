@@ -114,7 +114,7 @@ namespace Cryst.Infrastructure.Characters
 
                 context.TryResolve<CharacterIKController>(out var ikController);
                 var anchorRegistry = context.Resolve<AttachmentAnchorRegistry>();
-                facets.Add(typeof(CharacterRigFacet), new CharacterRigFacet(anchorRegistry, ikController));
+                facets.Add(typeof(RiggedCharacter), new RiggedCharacter(anchorRegistry, ikController));
 
                 if (actionSettingsTypes.Contains(typeof(AttackActionSettings))
                     || actionSettingsTypes.Contains(typeof(HeavyAttackActionSettings)))
