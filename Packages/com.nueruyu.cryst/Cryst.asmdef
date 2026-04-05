@@ -12,7 +12,8 @@
         "Gast.Lib.AI",
         "VContainer",
         "UniTask",
-        "R3.Unity"
+        "R3.Unity",
+        "Unity.Animation.Rigging"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

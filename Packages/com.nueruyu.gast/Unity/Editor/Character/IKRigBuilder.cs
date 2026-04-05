@@ -5,6 +5,7 @@ using Gast.Unity.Features.Characters.IK;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using AvatarIKGoal = Gast.Unity.Features.Characters.IK.AvatarIKGoal;
 
 namespace Gast.Unity.Editor.Character
 {
@@ -46,11 +47,15 @@ namespace Gast.Unity.Editor.Character
             else
             {
                 SetupForGeneric(animator, rigGo, ikController);
-                Debug.Log($"Attempted to set up Generic IK rig for {selectedObject.name}. Please verify the bone assignments in the Inspector.");
+                Debug.Log(
+                    $"Attempted to set up Generic IK rig for {selectedObject.name}. Please verify the bone assignments in the Inspector.");
             }
         }
 
-        static void SetupForHumanoid(Animator animator, GameObject rigGo, CharacterIKController ikController)
+        static void SetupForHumanoid(
+            Animator animator,
+            GameObject rigGo,
+            CharacterIKController ikController)
         {
             CreateAndAssignConstraint(ikController, AvatarIKGoal.RightHand, rigGo,
                 animator.GetBoneTransform(HumanBodyBones.RightUpperArm),
@@ -74,17 +79,30 @@ namespace Gast.Unity.Editor.Character
             );
         }
 
-        static void SetupForGeneric(Animator animator, GameObject rigGo, CharacterIKController ikController)
+        static void SetupForGeneric(
+            Animator animator,
+            GameObject rigGo,
+            CharacterIKController ikController)
         {
             var allBones = animator.transform.GetComponentsInChildren<Transform>();
 
-            FindAndCreateConstraint(ikController, AvatarIKGoal.RightHand, "Hand", new[] { "right", "r" }, rigGo, allBones);
-            FindAndCreateConstraint(ikController, AvatarIKGoal.LeftHand, "Hand", new[] { "left", "l" }, rigGo, allBones);
-            FindAndCreateConstraint(ikController, AvatarIKGoal.RightFoot, "Foot", new[] { "right", "r" }, rigGo, allBones);
-            FindAndCreateConstraint(ikController, AvatarIKGoal.LeftFoot, "Foot", new[] { "left", "l" }, rigGo, allBones);
+            FindAndCreateConstraint(ikController, AvatarIKGoal.RightHand, "Hand", new[] { "right", "r" }, rigGo,
+                allBones);
+            FindAndCreateConstraint(ikController, AvatarIKGoal.LeftHand, "Hand", new[] { "left", "l" }, rigGo,
+                allBones);
+            FindAndCreateConstraint(ikController, AvatarIKGoal.RightFoot, "Foot", new[] { "right", "r" }, rigGo,
+                allBones);
+            FindAndCreateConstraint(ikController, AvatarIKGoal.LeftFoot, "Foot", new[] { "left", "l" }, rigGo,
+                allBones);
         }
 
-        static void FindAndCreateConstraint(CharacterIKController controller, AvatarIKGoal goal, string primaryKeyword, string[] sideKeywords, GameObject rigGo, Transform[] allBones)
+        static void FindAndCreateConstraint(
+            CharacterIKController controller,
+            AvatarIKGoal goal,
+            string primaryKeyword,
+            string[] sideKeywords,
+            GameObject rigGo,
+            Transform[] allBones)
         {
             var tip = FindBone(allBones, primaryKeyword, sideKeywords);
             if (tip == null)
@@ -97,7 +115,8 @@ namespace Gast.Unity.Editor.Character
             var mid = tip.parent;
             if (mid == null)
             {
-                Debug.LogWarning($"Could not find mid bone for {goal} (parent of {tip.name}). Please assign it manually.");
+                Debug.LogWarning(
+                    $"Could not find mid bone for {goal} (parent of {tip.name}). Please assign it manually.");
                 CreateAndAssignConstraint(controller, goal, rigGo, null, null, tip);
                 return;
             }
@@ -105,7 +124,8 @@ namespace Gast.Unity.Editor.Character
             var root = mid.parent;
             if (root == null)
             {
-                Debug.LogWarning($"Could not find root bone for {goal} (parent of {mid.name}). Please assign it manually.");
+                Debug.LogWarning(
+                    $"Could not find root bone for {goal} (parent of {mid.name}). Please assign it manually.");
                 CreateAndAssignConstraint(controller, goal, rigGo, null, mid, tip);
                 return;
             }
@@ -114,7 +134,10 @@ namespace Gast.Unity.Editor.Character
             CreateAndAssignConstraint(controller, goal, rigGo, root, mid, tip);
         }
 
-        static Transform FindBone(IEnumerable<Transform> bones, string primaryKeyword, string[] sideKeywords)
+        static Transform FindBone(
+            IEnumerable<Transform> bones,
+            string primaryKeyword,
+            string[] sideKeywords)
         {
             return bones.FirstOrDefault(b =>
             {
@@ -123,7 +146,13 @@ namespace Gast.Unity.Editor.Character
             });
         }
 
-        static void CreateAndAssignConstraint(CharacterIKController controller, AvatarIKGoal goal, GameObject rigGo, Transform root, Transform mid, Transform tip)
+        static void CreateAndAssignConstraint(
+            CharacterIKController controller,
+            AvatarIKGoal goal,
+            GameObject rigGo,
+            Transform root,
+            Transform mid,
+            Transform tip)
         {
             var goalGo = new GameObject($"{goal} IK");
             Undo.RegisterCreatedObjectUndo(goalGo, $"Create {goal} IK object");

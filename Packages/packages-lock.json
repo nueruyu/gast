@@ -63,7 +63,8 @@
         "com.unity.textmeshpro": "3.0.6",
         "jp.hadashikick.vcontainer": "1.15.0",
         "com.cysharp.r3": "1.1.0",
-        "com.cysharp.unitask": "2.5.0"
+        "com.cysharp.unitask": "2.5.0",
+        "com.unity.animation.rigging": "1.4.1"
       }
     },
     "com.nueruyu.gast.lib.ai": {
@@ -92,9 +93,20 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.animation.rigging": {
+      "version": "1.4.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.burst": "1.4.1",
+        "com.unity.test-framework": "1.1.24",
+        "com.unity.modules.animation": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.burst": {
       "version": "1.8.25",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.mathematics": "1.2.1",

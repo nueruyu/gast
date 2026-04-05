@@ -14,6 +14,7 @@
     "com.unity.textmeshpro": "3.0.6",
     "jp.hadashikick.vcontainer": "1.15.0",
     "com.cysharp.r3": "1.1.0",
-    "com.cysharp.unitask": "2.5.0"
+    "com.cysharp.unitask": "2.5.0",
+    "com.unity.animation.rigging": "1.4.1"
   }
 }

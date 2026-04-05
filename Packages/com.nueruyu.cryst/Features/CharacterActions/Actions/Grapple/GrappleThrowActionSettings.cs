@@ -4,6 +4,7 @@ using Gast.Unity.Features.Characters.IK;
 using Gast.Unity.Shared.Animations;
 using Gast.Unity.Shared.Attachments;
 using UnityEngine;
+using AvatarIKGoal = Gast.Unity.Features.Characters.IK.AvatarIKGoal;
 
 namespace Cryst.Features.CharacterActions.Actions.Grapple
 {
