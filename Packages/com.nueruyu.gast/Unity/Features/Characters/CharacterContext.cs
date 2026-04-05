@@ -18,12 +18,14 @@ namespace Gast.Unity.Features.Characters
 
         public void Register<T>(T service) where T : class
         {
+            if (service == null)
+                throw new  ArgumentNullException(nameof(service));
             Register(typeof(T), service);
         }
 
         public void Register(Type type, object service)
         {
-            services[type] = service;
+            services[type] = service ?? throw new  ArgumentNullException(nameof(service));
         }
 
         public bool TryResolve<T>(out T service) where T : class

@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 122ed5642ad21f447b5f527b9361837c, type: 3}
-  m_Name: SwordSwing_ActionSettings
-  m_EditorClassIdentifier: Gast.Features::Gast.Features.Characters.Actions.AttackActionSettings
+  m_Script: {fileID: 11500000, guid: ad884617ea78f734db96b1f027bb16a9, type: 3}
+  m_Name: Thrust_ActionSettings
+  m_EditorClassIdentifier: Cryst::Cryst.Features.CharacterActions.Actions.HeavyAttack.HeavyAttackActionSettings
   cooldown: 0.2
   duration: 0.6
-  animationTrigger: {fileID: 11400000, guid: 9dd23d379857c824198fcf3ee3567c4a, type: 2}
+  animationTrigger: {fileID: 11400000, guid: 0a3c9be34337f9a478d41d535c63138d, type: 2}
   timedEffects:
   - eventSymbol: {fileID: 11400000, guid: d061093224140af48bcb95d17005a0a4, type: 2}
-    effect: {fileID: 11400000, guid: 25ef8d32592af7849894c4c9ea6761c4, type: 2}
+    effect: {fileID: 11400000, guid: a086d0a18d301934c9008d6131744d32, type: 2}
   - eventSymbol: {fileID: 11400000, guid: 96d7053ce32021b48b7f920f4f3eaaed, type: 2}
-    effect: {fileID: 11400000, guid: 81dfadd4481a19048bb97a6f1260f00f, type: 2}
+    effect: {fileID: 11400000, guid: 5148ec1f4f7858245a2b129358c9e742, type: 2}

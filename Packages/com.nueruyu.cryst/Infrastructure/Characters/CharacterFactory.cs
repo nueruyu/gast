@@ -40,7 +40,10 @@ namespace Cryst.Infrastructure.Characters
         {
             factory = Create;
 
-            ICharacter Create(Vector3 position, Quaternion rotation, CharacterCreationParameters parameters)
+            ICharacter Create(
+                Vector3 position,
+                Quaternion rotation,
+                CharacterCreationParameters parameters)
             {
                 var definition = typeRepository.Get(parameters.TypeId);
                 var prefabSettings = definition.GetSettings<CharacterPrefabSettings>();
@@ -90,7 +93,8 @@ namespace Cryst.Infrastructure.Characters
 
                 if (parameters.Territory.HasValue)
                 {
-                    facets[typeof(TerritorialCharacter)] = new TerritorialCharacter(parameters.Territory.Value, context.Resolve<ICharacterBody>());
+                    facets[typeof(TerritorialCharacter)] = new TerritorialCharacter(parameters.Territory.Value,
+                        context.Resolve<ICharacterBody>());
                 }
 
                 var character = new Character(context, facets);
@@ -138,7 +142,10 @@ namespace Cryst.Infrastructure.Characters
                 return facets;
             }
 
-            void InitializeContext(CharacterContext context, GameObject gameObject, ICharacterTypeDefinition typeDefinition)
+            void InitializeContext(
+                CharacterContext context,
+                GameObject gameObject,
+                ICharacterTypeDefinition typeDefinition)
             {
                 var body = gameObject.RequireComponentInChildren<CharacterBody>();
                 var visionSensor = gameObject.RequireComponentInChildren<ConeVisionSensor>();
@@ -168,7 +175,8 @@ namespace Cryst.Infrastructure.Characters
                 context.Register(audio);
 
                 var ikController = gameObject.GetComponentInChildren<CharacterIKController>();
-                context.Register(ikController);
+                if (ikController != null)
+                    context.Register(ikController);
 
                 var attachmentAnchors = gameObject.GetComponentsInChildren<AttachmentAnchor>();
                 var anchorRegistry = new AttachmentAnchorRegistry(attachmentAnchors);
@@ -181,7 +189,9 @@ namespace Cryst.Infrastructure.Characters
                 new CharacterFootstepHandler(animator, audio, footstepSettings).AddTo(gameObject);
             }
 
-            CharacterActionController CreateActionController(CharacterContext context, IReadOnlyList<CharacterActionSettings> actionSettings) 
+            CharacterActionController CreateActionController(
+                CharacterContext context,
+                IReadOnlyList<CharacterActionSettings> actionSettings)
             {
                 var actionController = new CharacterActionController();
 
@@ -202,7 +212,10 @@ namespace Cryst.Infrastructure.Characters
             }
         }
 
-        public ICharacter Create(Vector3 position, Quaternion rotation, CharacterCreationParameters parameters)
+        public ICharacter Create(
+            Vector3 position,
+            Quaternion rotation,
+            CharacterCreationParameters parameters)
         {
             return factory(position, rotation, parameters);
         }

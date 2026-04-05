@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Gast.Features::Gast.Features.Characters.Actions.AttackActionSettings
   cooldown: 0.2
   duration: 0.6
+  animationTrigger: {fileID: 11400000, guid: edc2e47ae7b6d4142a13cfecda6c6778, type: 2}
   timedEffects:
   - eventSymbol: {fileID: 11400000, guid: d061093224140af48bcb95d17005a0a4, type: 2}
     effect: {fileID: 11400000, guid: b81df4378bb0bed4db4066c199a30822, type: 2}
