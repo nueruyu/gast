@@ -23,6 +23,7 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
 
         float startTime;
         float lastAttackTime = float.NegativeInfinity;
+        bool isExecuting;
 
         public abstract Type CommandType { get; }
         public int Priority => 5;
@@ -46,6 +47,9 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
 
         void OnAnimationEvent(AnimationEventSymbol eventSymbol)
         {
+            if (!isExecuting)
+                return;
+            
             var timedEffect = settings.TimedEffects.FirstOrDefault(e => e.EventSymbol == eventSymbol);
             if (timedEffect?.Effect != null)
                 effectDispatcher.Dispatch(timedEffect.Effect);
@@ -57,6 +61,7 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
         {
             startTime = Time.time;
             lastAttackTime = startTime;
+            isExecuting = true;
             if (animator)
                 animator.PlayTrigger(settings.AnimationTrigger);
         }
@@ -65,6 +70,9 @@ namespace Cryst.Features.CharacterActions.Actions.Attack
 
         public void Move(Vector3 direction) => movement.Move(direction, movementSettings.WalkSpeed);
 
-        public void OnEnd() { }
+        public void OnEnd()
+        {
+            isExecuting = false;
+        }
     }
 }

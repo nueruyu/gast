@@ -18,10 +18,12 @@ namespace Gast.Unity.Features.Characters.IK
         [SerializeField]
         IKGoalReferences leftFoot;
 
-        public void SetIKTarget(AvatarIKGoal goal, Transform target, float weight)
+        public void SetIKTarget(
+            AvatarIKGoal goal,
+            Transform target,
+            float weight)
         {
             var references = GetReferences(goal);
-            if (references?.Constraint == null) return;
 
             references.Constraint.weight = weight;
 
@@ -32,14 +34,22 @@ namespace Gast.Unity.Features.Characters.IK
             }
         }
 
-        public void SetGoalReferences(AvatarIKGoal goal, IKGoalReferences references)
+        public void SetGoalReferences(
+            AvatarIKGoal goal,
+            IKGoalReferences references)
         {
             switch (goal)
             {
-                case AvatarIKGoal.RightHand: rightHand = references; break;
-                case AvatarIKGoal.LeftHand:  leftHand  = references; break;
-                case AvatarIKGoal.RightFoot: rightFoot = references; break;
-                case AvatarIKGoal.LeftFoot:  leftFoot  = references; break;
+                case AvatarIKGoal.RightHand:
+                    rightHand = references; break;
+                case AvatarIKGoal.LeftHand:
+                    leftHand = references; break;
+                case AvatarIKGoal.RightFoot:
+                    rightFoot = references; break;
+                case AvatarIKGoal.LeftFoot:
+                    leftFoot = references; break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(goal), goal, null);
             }
         }
 
@@ -51,7 +61,7 @@ namespace Gast.Unity.Features.Characters.IK
                 AvatarIKGoal.LeftHand => leftHand,
                 AvatarIKGoal.RightFoot => rightFoot,
                 AvatarIKGoal.LeftFoot => leftFoot,
-                _ => null
+                _ => throw new ArgumentOutOfRangeException(nameof(goal), goal, null)
             };
         }
 

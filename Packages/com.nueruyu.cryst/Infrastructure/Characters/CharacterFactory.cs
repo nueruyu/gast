@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cryst.Features.Characters;
+using Cryst.Features.Characters.Facets;
 using Cryst.Features.Characters.Footsteps;
 using Gast.Unity.Features.Cameras;
 using Gast.Unity.Features.Characters.IK;

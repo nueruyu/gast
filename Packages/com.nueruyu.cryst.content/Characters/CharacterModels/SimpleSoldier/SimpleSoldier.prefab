@@ -739,6 +739,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 632833823623373162}
+  - component: {fileID: 724664164062300843}
   m_Layer: 6
   m_Name: HandL
   m_TagString: Untagged
@@ -761,6 +762,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6420604004850930686}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &724664164062300843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2530980200923550374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13033b75f08814b4d8f47b2cb0398e79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gast.Unity.Shared::Gast.Unity.Shared.Attachments.AttachmentAnchor
+  symbol: {fileID: 11400000, guid: ad1319656b6de2946bc0423f3af2dcea, type: 2}
 --- !u!1 &2811558058247741526
 GameObject:
   m_ObjectHideFlags: 0
@@ -1162,6 +1176,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1536697497204147717}
+  - component: {fileID: 6226181422152792258}
   m_Layer: 6
   m_Name: HandR
   m_TagString: Untagged
@@ -1184,6 +1199,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2812456397665607115}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6226181422152792258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4529485145619878886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13033b75f08814b4d8f47b2cb0398e79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gast.Unity.Shared::Gast.Unity.Shared.Attachments.AttachmentAnchor
+  symbol: {fileID: 11400000, guid: 7e2f58e8d97490a4aa644b12bdf7dda3, type: 2}
 --- !u!1 &4611385902212945303
 GameObject:
   m_ObjectHideFlags: 0

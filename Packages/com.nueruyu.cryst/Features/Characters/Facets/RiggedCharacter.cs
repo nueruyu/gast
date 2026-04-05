@@ -2,7 +2,7 @@ using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters.IK;
 using Gast.Unity.Shared.Attachments;
 
-namespace Cryst.Features.Characters
+namespace Cryst.Features.Characters.Facets
 {
     /// <summary>
     /// Exposes a character's rig components (IK controller and attachment anchors) as a facet,

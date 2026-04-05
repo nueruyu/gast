@@ -45,8 +45,10 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
 
         public bool OnUpdate()
         {
-            if (attacker == null) return false;
-            if (Time.time >= startTime + settings.Duration) return false;
+            if (attacker == null) 
+                return false;
+            if (Time.time >= startTime + settings.Duration) 
+                return false;
 
             var attackerBody = attacker.As<BaseCharacter>().Body;
             var targetPos = attackerBody.Position + attackerBody.Forward * 0.6f;

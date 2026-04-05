@@ -1,6 +1,7 @@
 using System;
 using Cryst.Domain.Characters.Commands;
 using Cryst.Features.Characters;
+using Cryst.Features.Characters.Facets;
 using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
 using Gast.Unity.Shared.Attachments;
@@ -53,11 +54,12 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
 
         public bool OnUpdate()
         {
-            if (Time.time >= startTime + settings.Duration) return false;
+            if (Time.time >= startTime + settings.Duration) 
+                return false;
 
-            if (victim != null
-                && victim.Is(out RiggedCharacter victimRig)
-                && victimRig.IKController != null)
+            if (victim != null && 
+                victim.Is(out RiggedCharacter victimRig) &&
+                victimRig.IKController != null)
             {
                 foreach (var binding in settings.IKBindings)
                 {
