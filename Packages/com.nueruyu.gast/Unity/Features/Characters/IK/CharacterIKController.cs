@@ -18,14 +18,11 @@ namespace Gast.Unity.Features.Characters.IK
         [SerializeField]
         IKGoalReferences leftFoot;
 
-        public void SetIKTarget(
+        public void SetIKTargetPose(
             AvatarIKGoal goal,
-            Transform target,
-            float weight)
+            Transform target)
         {
             var references = GetReferences(goal);
-
-            references.Constraint.weight = weight;
 
             if (references.Target != null && target != null)
             {

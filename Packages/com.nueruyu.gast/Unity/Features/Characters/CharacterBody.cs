@@ -54,6 +54,16 @@ namespace Gast.Unity.Features.Characters
             }
         }
 
+        public void SetPosition(Vector3 position)
+        {
+            transform.position = position;
+        }
+
+        public void SetRotation(Quaternion rotation)
+        {
+            transform.rotation = rotation;
+        }
+
         /// <summary>
         /// Set forced velocity from actions (dash, knockback, etc.).
         /// This bypasses input control and is always applied.

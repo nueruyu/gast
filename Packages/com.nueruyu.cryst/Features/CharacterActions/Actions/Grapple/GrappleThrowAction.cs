@@ -64,7 +64,7 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
                 foreach (var binding in settings.IKBindings)
                 {
                     if (anchorRegistry.TryGetAnchor(binding.AttackerAnchor, out var anchor))
-                        victimRig.IKController.SetIKTarget(binding.VictimGoal, anchor, 1f);
+                        victimRig.IKController.SetIKTargetPose(binding.VictimGoal, anchor);
                 }
             }
 
@@ -78,15 +78,6 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
         public void OnEnd()
         {
             body.IsInputMovementEnabled = true;
-
-            if (victim != null
-                && victim.Is(out RiggedCharacter victimRig)
-                && victimRig.IKController != null)
-            {
-                foreach (var binding in settings.IKBindings)
-                    victimRig.IKController.SetIKTarget(binding.VictimGoal, null, 0f);
-            }
-
             victim = null;
         }
     }

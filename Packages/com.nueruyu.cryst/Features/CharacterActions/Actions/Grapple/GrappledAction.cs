@@ -52,11 +52,9 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
 
             var attackerBody = attacker.As<BaseCharacter>().Body;
             var targetPos = attackerBody.Position + attackerBody.Forward * 0.6f;
-            var delta = targetPos - body.Position;
-
-            if (delta.sqrMagnitude > 0.0025f)
-                body.SetForcedVelocity(delta / Time.deltaTime);
-
+            body.SetPosition(targetPos);
+            body.SetRotation(Quaternion.LookRotation(-attackerBody.Forward));
+            
             return true;
         }
 
