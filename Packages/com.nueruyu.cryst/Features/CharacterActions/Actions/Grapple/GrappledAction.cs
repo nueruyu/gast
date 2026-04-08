@@ -1,5 +1,4 @@
 using System;
-using Cryst.Domain.Characters;
 using Cryst.Domain.Characters.Commands;
 using Gast.Domain.Characters;
 using Gast.Unity.Features.Characters;
@@ -45,16 +44,11 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
 
         public bool OnUpdate()
         {
-            if (attacker == null) 
+            if (attacker == null)
                 return false;
-            if (Time.time >= startTime + settings.Duration) 
+            if (Time.time >= startTime + settings.Duration)
                 return false;
 
-            var attackerBody = attacker.As<BaseCharacter>().Body;
-            var targetPos = attackerBody.Position + attackerBody.Forward * 0.6f;
-            body.SetPosition(targetPos);
-            body.SetRotation(Quaternion.LookRotation(-attackerBody.Forward));
-            
             return true;
         }
 

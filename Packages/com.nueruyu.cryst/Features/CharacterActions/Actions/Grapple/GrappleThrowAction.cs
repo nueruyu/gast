@@ -1,4 +1,5 @@
 using System;
+using Cryst.Domain.Characters;
 using Cryst.Domain.Characters.Commands;
 using Cryst.Features.Characters;
 using Cryst.Features.Characters.Facets;
@@ -54,10 +55,12 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
 
         public bool OnUpdate()
         {
-            if (Time.time >= startTime + settings.Duration) 
+            if (Time.time >= startTime + settings.Duration)
                 return false;
 
-            if (victim != null && 
+            UpdateGrappledCharacter();
+
+            if (victim != null &&
                 victim.Is(out RiggedCharacter victimRig) &&
                 victimRig.IKController != null)
             {
@@ -69,6 +72,20 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
             }
 
             return true;
+        }
+
+        void UpdateGrappledCharacter()
+        {
+            if (victim == null) 
+                return;
+            var victimBody = victim.As<BaseCharacter>().Body as CharacterBody;
+            if (victimBody == null) 
+                return;
+
+            var targetPosition = body.transform.TransformPoint(settings.GrappledPositionOffset);
+            var targetRotation = body.transform.rotation * Quaternion.Euler(settings.GrappledRotationOffset);
+            victimBody.SetPosition(targetPosition);
+            victimBody.SetRotation(targetRotation);
         }
 
         public void Move(Vector3 direction)

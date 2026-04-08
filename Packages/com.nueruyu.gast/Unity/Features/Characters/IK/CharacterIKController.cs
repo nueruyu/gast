@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Gast.Unity.Shared.Attachments;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -7,23 +9,22 @@ namespace Gast.Unity.Features.Characters.IK
     public class CharacterIKController : MonoBehaviour
     {
         [SerializeField]
-        IKGoalReferences rightHand;
+        List<IKGoalBinding> goalBindings = new List<IKGoalBinding>();
 
-        [SerializeField]
-        IKGoalReferences leftHand;
+        Dictionary<AttachmentAnchorSymbol, IKGoalReferences> goals;
 
-        [SerializeField]
-        IKGoalReferences rightFoot;
-
-        [SerializeField]
-        IKGoalReferences leftFoot;
-
-        public void SetIKTargetPose(
-            AvatarIKGoal goal,
-            Transform target)
+        void Awake()
         {
-            var references = GetReferences(goal);
+            goals = new Dictionary<AttachmentAnchorSymbol, IKGoalReferences>();
+            foreach (var binding in goalBindings)
+                if (binding.Symbol != null)
+                    goals[binding.Symbol] = binding.References;
+        }
 
+        public void SetIKTargetPose(AttachmentAnchorSymbol symbol, Transform target)
+        {
+            if (!goals.TryGetValue(symbol, out var references)) 
+                return;
             if (references.Target != null && target != null)
             {
                 references.Target.position = target.position;
@@ -31,35 +32,16 @@ namespace Gast.Unity.Features.Characters.IK
             }
         }
 
-        public void SetGoalReferences(
-            AvatarIKGoal goal,
-            IKGoalReferences references)
+        public void SetGoalReferences(AttachmentAnchorSymbol symbol, IKGoalReferences references)
         {
-            switch (goal)
-            {
-                case AvatarIKGoal.RightHand:
-                    rightHand = references; break;
-                case AvatarIKGoal.LeftHand:
-                    leftHand = references; break;
-                case AvatarIKGoal.RightFoot:
-                    rightFoot = references; break;
-                case AvatarIKGoal.LeftFoot:
-                    leftFoot = references; break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(goal), goal, null);
-            }
+            goals[symbol] = references;
         }
 
-        IKGoalReferences GetReferences(AvatarIKGoal goal)
+        [Serializable]
+        public class IKGoalBinding
         {
-            return goal switch
-            {
-                AvatarIKGoal.RightHand => rightHand,
-                AvatarIKGoal.LeftHand => leftHand,
-                AvatarIKGoal.RightFoot => rightFoot,
-                AvatarIKGoal.LeftFoot => leftFoot,
-                _ => throw new ArgumentOutOfRangeException(nameof(goal), goal, null)
-            };
+            public AttachmentAnchorSymbol Symbol;
+            public IKGoalReferences References;
         }
 
         [Serializable]

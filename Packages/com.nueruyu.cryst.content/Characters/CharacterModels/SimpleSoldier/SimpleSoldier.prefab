@@ -1220,6 +1220,7 @@ GameObject:
   - component: {fileID: 8831625433265664855}
   - component: {fileID: 8624534545129011106}
   - component: {fileID: 1586465679881323727}
+  - component: {fileID: 5022457320024835728}
   m_Layer: 6
   m_Name: SimpleSoldier
   m_TagString: Untagged
@@ -1258,7 +1259,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: d49e4b28e54c96049b62ba365df12949, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -1320,22 +1321,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06891010d8d4ace4e8820207e32f0dc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Gast.Unity.Features::Gast.Unity.Features.Characters.IK.CharacterIKController
-  rightHand:
-    Constraint: {fileID: 2990001703596310044}
-    Target: {fileID: 2411438503123302374}
-    Hint: {fileID: 7967925938472630879}
-  leftHand:
-    Constraint: {fileID: 1154180111602991178}
-    Target: {fileID: 98160318204921019}
-    Hint: {fileID: 653911836326208988}
-  rightFoot:
-    Constraint: {fileID: 5070833272258361724}
-    Target: {fileID: 5633530390782585258}
-    Hint: {fileID: 268052924122989202}
-  leftFoot:
-    Constraint: {fileID: 4273155883671995818}
-    Target: {fileID: 6982449799784178234}
-    Hint: {fileID: 3116647111719406249}
+  goalBindings:
+  - Symbol: {fileID: 11400000, guid: ad1319656b6de2946bc0423f3af2dcea, type: 2}
+    References:
+      Constraint: {fileID: 1154180111602991178}
+      Target: {fileID: 98160318204921019}
+      Hint: {fileID: 653911836326208988}
+  - Symbol: {fileID: 11400000, guid: 7e2f58e8d97490a4aa644b12bdf7dda3, type: 2}
+    References:
+      Constraint: {fileID: 2990001703596310044}
+      Target: {fileID: 2411438503123302374}
+      Hint: {fileID: 7967925938472630879}
+--- !u!114 &5022457320024835728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4611385902212945303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d499582141e134ea2a3d1ff76c630f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Gast.Unity.Features::Gast.Unity.Features.Characters.CharacterRootMotionTransmitter
 --- !u!1 &4920730149372092476
 GameObject:
   m_ObjectHideFlags: 0

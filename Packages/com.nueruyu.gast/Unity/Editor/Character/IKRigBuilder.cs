@@ -1,16 +1,22 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gast.Unity.Features.Characters.IK;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
-using AvatarIKGoal = Gast.Unity.Features.Characters.IK.AvatarIKGoal;
 
 namespace Gast.Unity.Editor.Character
 {
     public static class IKRigBuilder
     {
+        static readonly (string Label, string Primary, string[] Sides)[] LimbDefinitions =
+        {
+            ("RightHand", "Hand", new[] { "right", "r" }),
+            ("LeftHand",  "Hand", new[] { "left",  "l" }),
+            ("RightFoot", "Foot", new[] { "right", "r" }),
+            ("LeftFoot",  "Foot", new[] { "left",  "l" }),
+        };
+
         [MenuItem("Gast/Tools/Setup IK Rig for Character")]
         static void SetupIKRig()
         {
@@ -42,63 +48,49 @@ namespace Gast.Unity.Editor.Character
             if (animator.isHuman)
             {
                 SetupForHumanoid(animator, rigGo, ikController);
-                Debug.Log($"Successfully set up Humanoid IK rig for {selectedObject.name}.");
+                Debug.Log($"Successfully set up Humanoid IK rig for {selectedObject.name}. Assign AttachmentAnchorSymbols to each IK goal binding in the Inspector.");
             }
             else
             {
                 SetupForGeneric(animator, rigGo, ikController);
-                Debug.Log(
-                    $"Attempted to set up Generic IK rig for {selectedObject.name}. Please verify the bone assignments in the Inspector.");
+                Debug.Log($"Attempted to set up Generic IK rig for {selectedObject.name}. Verify bone assignments and assign AttachmentAnchorSymbols in the Inspector.");
             }
         }
 
-        static void SetupForHumanoid(
-            Animator animator,
-            GameObject rigGo,
-            CharacterIKController ikController)
+        static void SetupForHumanoid(Animator animator, GameObject rigGo, CharacterIKController ikController)
         {
-            CreateAndAssignConstraint(ikController, AvatarIKGoal.RightHand, rigGo,
+            CreateAndAssignConstraint(ikController, "RightHand", rigGo,
                 animator.GetBoneTransform(HumanBodyBones.RightUpperArm),
                 animator.GetBoneTransform(HumanBodyBones.RightLowerArm),
-                animator.GetBoneTransform(HumanBodyBones.RightHand)
-            );
-            CreateAndAssignConstraint(ikController, AvatarIKGoal.LeftHand, rigGo,
+                animator.GetBoneTransform(HumanBodyBones.RightHand));
+
+            CreateAndAssignConstraint(ikController, "LeftHand", rigGo,
                 animator.GetBoneTransform(HumanBodyBones.LeftUpperArm),
                 animator.GetBoneTransform(HumanBodyBones.LeftLowerArm),
-                animator.GetBoneTransform(HumanBodyBones.LeftHand)
-            );
-            CreateAndAssignConstraint(ikController, AvatarIKGoal.RightFoot, rigGo,
+                animator.GetBoneTransform(HumanBodyBones.LeftHand));
+
+            CreateAndAssignConstraint(ikController, "RightFoot", rigGo,
                 animator.GetBoneTransform(HumanBodyBones.RightUpperLeg),
                 animator.GetBoneTransform(HumanBodyBones.RightLowerLeg),
-                animator.GetBoneTransform(HumanBodyBones.RightFoot)
-            );
-            CreateAndAssignConstraint(ikController, AvatarIKGoal.LeftFoot, rigGo,
+                animator.GetBoneTransform(HumanBodyBones.RightFoot));
+
+            CreateAndAssignConstraint(ikController, "LeftFoot", rigGo,
                 animator.GetBoneTransform(HumanBodyBones.LeftUpperLeg),
                 animator.GetBoneTransform(HumanBodyBones.LeftLowerLeg),
-                animator.GetBoneTransform(HumanBodyBones.LeftFoot)
-            );
+                animator.GetBoneTransform(HumanBodyBones.LeftFoot));
         }
 
-        static void SetupForGeneric(
-            Animator animator,
-            GameObject rigGo,
-            CharacterIKController ikController)
+        static void SetupForGeneric(Animator animator, GameObject rigGo, CharacterIKController ikController)
         {
             var allBones = animator.transform.GetComponentsInChildren<Transform>();
 
-            FindAndCreateConstraint(ikController, AvatarIKGoal.RightHand, "Hand", new[] { "right", "r" }, rigGo,
-                allBones);
-            FindAndCreateConstraint(ikController, AvatarIKGoal.LeftHand, "Hand", new[] { "left", "l" }, rigGo,
-                allBones);
-            FindAndCreateConstraint(ikController, AvatarIKGoal.RightFoot, "Foot", new[] { "right", "r" }, rigGo,
-                allBones);
-            FindAndCreateConstraint(ikController, AvatarIKGoal.LeftFoot, "Foot", new[] { "left", "l" }, rigGo,
-                allBones);
+            foreach (var def in LimbDefinitions)
+                FindAndCreateConstraint(ikController, def.Label, def.Primary, def.Sides, rigGo, allBones);
         }
 
         static void FindAndCreateConstraint(
             CharacterIKController controller,
-            AvatarIKGoal goal,
+            string label,
             string primaryKeyword,
             string[] sideKeywords,
             GameObject rigGo,
@@ -107,37 +99,32 @@ namespace Gast.Unity.Editor.Character
             var tip = FindBone(allBones, primaryKeyword, sideKeywords);
             if (tip == null)
             {
-                Debug.LogWarning($"Could not find tip bone for {goal}. Please assign it manually.");
-                CreateAndAssignConstraint(controller, goal, rigGo, null, null, null);
+                Debug.LogWarning($"Could not find tip bone for {label}. Please assign it manually.");
+                CreateAndAssignConstraint(controller, label, rigGo, null, null, null);
                 return;
             }
 
             var mid = tip.parent;
             if (mid == null)
             {
-                Debug.LogWarning(
-                    $"Could not find mid bone for {goal} (parent of {tip.name}). Please assign it manually.");
-                CreateAndAssignConstraint(controller, goal, rigGo, null, null, tip);
+                Debug.LogWarning($"Could not find mid bone for {label} (parent of {tip.name}). Please assign it manually.");
+                CreateAndAssignConstraint(controller, label, rigGo, null, null, tip);
                 return;
             }
 
             var root = mid.parent;
             if (root == null)
             {
-                Debug.LogWarning(
-                    $"Could not find root bone for {goal} (parent of {mid.name}). Please assign it manually.");
-                CreateAndAssignConstraint(controller, goal, rigGo, null, mid, tip);
+                Debug.LogWarning($"Could not find root bone for {label} (parent of {mid.name}). Please assign it manually.");
+                CreateAndAssignConstraint(controller, label, rigGo, null, mid, tip);
                 return;
             }
 
-            Debug.Log($"Found bone chain for {goal}: Root=[{root.name}], Mid=[{mid.name}], Tip=[{tip.name}]");
-            CreateAndAssignConstraint(controller, goal, rigGo, root, mid, tip);
+            Debug.Log($"Found bone chain for {label}: Root=[{root.name}], Mid=[{mid.name}], Tip=[{tip.name}]");
+            CreateAndAssignConstraint(controller, label, rigGo, root, mid, tip);
         }
 
-        static Transform FindBone(
-            IEnumerable<Transform> bones,
-            string primaryKeyword,
-            string[] sideKeywords)
+        static Transform FindBone(IEnumerable<Transform> bones, string primaryKeyword, string[] sideKeywords)
         {
             return bones.FirstOrDefault(b =>
             {
@@ -148,14 +135,14 @@ namespace Gast.Unity.Editor.Character
 
         static void CreateAndAssignConstraint(
             CharacterIKController controller,
-            AvatarIKGoal goal,
+            string label,
             GameObject rigGo,
             Transform root,
             Transform mid,
             Transform tip)
         {
-            var goalGo = new GameObject($"{goal} IK");
-            Undo.RegisterCreatedObjectUndo(goalGo, $"Create {goal} IK object");
+            var goalGo = new GameObject($"{label} IK");
+            Undo.RegisterCreatedObjectUndo(goalGo, $"Create {label} IK object");
             goalGo.transform.SetParent(rigGo.transform);
 
             var constraint = Undo.AddComponent<TwoBoneIKConstraint>(goalGo);
@@ -163,24 +150,27 @@ namespace Gast.Unity.Editor.Character
             constraint.data.mid = mid;
             constraint.data.tip = tip;
 
-            var targetGo = new GameObject($"{goal} Target");
-            Undo.RegisterCreatedObjectUndo(targetGo, $"Create {goal} Target");
+            var targetGo = new GameObject($"{label} Target");
+            Undo.RegisterCreatedObjectUndo(targetGo, $"Create {label} Target");
             targetGo.transform.SetParent(rigGo.transform);
             constraint.data.target = targetGo.transform;
 
-            var hintGo = new GameObject($"{goal} Hint");
-            Undo.RegisterCreatedObjectUndo(hintGo, $"Create {goal} Hint");
+            var hintGo = new GameObject($"{label} Hint");
+            Undo.RegisterCreatedObjectUndo(hintGo, $"Create {label} Hint");
             hintGo.transform.SetParent(rigGo.transform);
             constraint.data.hint = hintGo.transform;
 
-            var references = new CharacterIKController.IKGoalReferences
-            {
-                Constraint = constraint,
-                Target = targetGo.transform,
-                Hint = hintGo.transform
-            };
+            var so = new SerializedObject(controller);
+            var listProp = so.FindProperty("goalBindings");
+            listProp.arraySize++;
+            var element = listProp.GetArrayElementAtIndex(listProp.arraySize - 1);
+            element.FindPropertyRelative("Symbol").objectReferenceValue = null;
+            var refProp = element.FindPropertyRelative("References");
+            refProp.FindPropertyRelative("Constraint").objectReferenceValue = constraint;
+            refProp.FindPropertyRelative("Target").objectReferenceValue = targetGo.transform;
+            refProp.FindPropertyRelative("Hint").objectReferenceValue = hintGo.transform;
+            so.ApplyModifiedProperties();
 
-            controller.SetGoalReferences(goal, references);
             EditorUtility.SetDirty(controller);
         }
     }
