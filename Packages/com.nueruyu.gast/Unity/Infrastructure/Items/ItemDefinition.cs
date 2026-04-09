@@ -37,6 +37,13 @@ namespace Gast.Unity.Infrastructure.Items
         [NonSerialized]
         IReadOnlyList<IItemEffect> effectsCache;
 
+        [Header("Placement")]
+        [SerializeField]
+        bool placeable;
+
+        [SerializeField]
+        GameObject placementPrefab;
+
         public ItemId Id => itemReference.Id;
         public string Name => displayName;
         public int Price => price;
@@ -52,6 +59,9 @@ namespace Gast.Unity.Infrastructure.Items
                 return effectsCache;
             }
         }
+
+        public bool Placeable => placeable;
+        public GameObject PlacementPrefab => placementPrefab;
 
         void OnValidate()
         {

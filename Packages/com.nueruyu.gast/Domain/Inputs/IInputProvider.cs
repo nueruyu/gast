@@ -21,5 +21,8 @@ namespace Gast.Domain.Inputs
         ISignal ShowMenu { get; }
         ISignal HideMenu { get; }
         ISignal<int> UseItemSlot { get; }
+        bool Place { get; }
+        bool Cancel { get; }
+        bool Rotate { get; }
     }
 }

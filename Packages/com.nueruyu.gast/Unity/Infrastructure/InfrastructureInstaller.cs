@@ -65,6 +65,7 @@ namespace Gast.Unity.Infrastructure
             builder.Register<ItemRepository>().AsImplementedInterfaces().AsSelf();
             builder.Register<ItemAssetService>().As<IItemAssetService>();
             builder.Register<ShopInitializer>().AsImplementedInterfaces();
+            builder.Register<PlacedItemFactory>().AsImplementedInterfaces();
 
             // Pickups
             builder.Register<PickupFactory>().AsImplementedInterfaces();
