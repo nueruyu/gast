@@ -37,6 +37,7 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
             attacker = command.Attacker;
             startTime = Time.time;
             body.IsInputMovementEnabled = false;
+            body.IsGravityEnabled = false;
 
             if (animator)
                 animator.PlayTrigger(settings.GrappledTrigger);
@@ -59,6 +60,7 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
         public void OnEnd()
         {
             body.IsInputMovementEnabled = true;
+            body.IsGravityEnabled = true;
             attacker = null;
         }
     }

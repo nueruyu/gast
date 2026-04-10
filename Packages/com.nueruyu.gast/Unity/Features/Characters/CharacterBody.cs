@@ -21,6 +21,7 @@ namespace Gast.Unity.Features.Characters
         Vector3 forcedVelocity;
 
         public bool IsInputMovementEnabled { get; set; } = true;
+        public bool IsGravityEnabled { get; set; } = true;
 
         // ICharacterBody implementation (read-only)
         public bool IsGrounded => controller.isGrounded;
@@ -104,20 +105,26 @@ namespace Gast.Unity.Features.Characters
             if (!controller.enabled)
                 return;
 
-            if (controller.isGrounded && verticalVelocity.y < 0)
+            if (IsGravityEnabled)
             {
-                verticalVelocity.y = -2f; // Small downward force to keep grounded
-            }
+                if (controller.isGrounded && verticalVelocity.y < 0)
+                {
+                    verticalVelocity.y = -2f; // Small downward force to keep grounded
+                }
 
-            verticalVelocity.y += gravity * Time.deltaTime;
+                verticalVelocity.y += gravity * Time.deltaTime;
+            }
 
             // Combine input velocity (if enabled) with forced velocity
             var moveVelocity = (IsInputMovementEnabled ? currentInputVelocity : Vector3.zero) + forcedVelocity;
 
-            // Apply movement
-            var finalMove = moveVelocity * Time.deltaTime;
-            finalMove.y += verticalVelocity.y * Time.deltaTime;
-            controller.Move(finalMove);
+            if (moveVelocity.sqrMagnitude > 0)
+            {
+                // Apply movement
+                var finalMove = moveVelocity * Time.deltaTime;
+                finalMove.y += verticalVelocity.y * Time.deltaTime;
+                controller.Move(finalMove);
+            }
 
             // Reset velocities for next frame
             currentInputVelocity = Vector3.zero;

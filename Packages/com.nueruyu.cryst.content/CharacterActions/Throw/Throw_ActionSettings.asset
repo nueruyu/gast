@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Cryst::Cryst.Features.CharacterActions.Actions.Grapple.GrappleThrowActionSettings
   duration: 1.5
   throwTrigger: {fileID: 11400000, guid: d5b539e04e281f349b3f37f8a4a13d2d, type: 2}
-  grappledPositionOffset: {x: 0, y: 0, z: 0.4}
+  grappledPositionOffset: {x: 0, y: 0, z: 0.6}
   grappledRotationOffset: {x: 0, y: 180, z: 0}
   ikBindings:
   - VictimGoal: {fileID: 11400000, guid: ad1319656b6de2946bc0423f3af2dcea, type: 2}

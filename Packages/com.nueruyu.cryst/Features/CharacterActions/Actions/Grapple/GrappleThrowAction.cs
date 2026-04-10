@@ -49,16 +49,16 @@ namespace Cryst.Features.CharacterActions.Actions.Grapple
             victim = command.Victim;
             body.IsInputMovementEnabled = false;
 
+            UpdateGrappledCharacter();
             if (animator)
                 animator.PlayTrigger(settings.ThrowTrigger);
+            
         }
 
         public bool OnUpdate()
         {
             if (Time.time >= startTime + settings.Duration)
                 return false;
-
-            UpdateGrappledCharacter();
 
             if (victim != null &&
                 victim.Is(out RiggedCharacter victimRig) &&
