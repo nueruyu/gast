@@ -891,7 +891,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2dbbd76a4339a64abcaa84f1a19aa4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Cryst::Cryst.Infrastructure.Characters.NpcSpawnSiteEntry
-  characterTypeReference: {fileID: 11400000, guid: ace29b990b0ccbc4f99e6a40b4d2d056, type: 2}
+  characterTypeReference: {fileID: 11400000, guid: e9db19cfea39ace4fb8ba7c43866f726, type: 2}
   faction: 2
 --- !u!1 &687701542
 GameObject:
@@ -2735,7 +2735,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2037068026
 Transform:
   m_ObjectHideFlags: 0
@@ -2911,7 +2911,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2084794414
 MonoBehaviour:
   m_ObjectHideFlags: 0

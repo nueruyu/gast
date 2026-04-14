@@ -7,53 +7,65 @@ AvatarMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: SimpleSoldier_UpperBodyMask
-  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Mask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
   m_Elements:
   - m_Path: 
     m_Weight: 1
-  - m_Path: Renderers
+  - m_Path: Armature
     m_Weight: 0
-  - m_Path: Renderers/Head
+  - m_Path: Armature/Hips
     m_Weight: 0
-  - m_Path: Renderers/Head/Head Renderer
+  - m_Path: Armature/Hips/Spine
     m_Weight: 0
-  - m_Path: Renderers/Head/Helmet_1
+  - m_Path: Armature/Hips/Spine/Chest
     m_Weight: 0
-  - m_Path: Renderers/Head/Helmet_2
+  - m_Path: Armature/Hips/Spine/Chest/Neck
     m_Weight: 0
-  - m_Path: Renderers/Head/Helmet_3
+  - m_Path: Armature/Hips/Spine/Chest/Neck/Head
     m_Weight: 0
-  - m_Path: Renderers/Body
+  - m_Path: Armature/Hips/Spine/Chest/Shoulder.L
     m_Weight: 0
-  - m_Path: Renderers/Body/Body Renderer
+  - m_Path: Armature/Hips/Spine/Chest/Shoulder.L/UpperArm.L
     m_Weight: 0
-  - m_Path: Renderers/LegL
+  - m_Path: Armature/Hips/Spine/Chest/Shoulder.L/UpperArm.L/LowerArm.L
     m_Weight: 0
-  - m_Path: Renderers/LegL/LegL
+  - m_Path: Armature/Hips/Spine/Chest/Shoulder.L/UpperArm.L/LowerArm.L/Hand.L
     m_Weight: 0
-  - m_Path: Renderers/LegR
+  - m_Path: Armature/Hips/Spine/Chest/Shoulder.R
     m_Weight: 0
-  - m_Path: Renderers/LegR/LegR
+  - m_Path: Armature/Hips/Spine/Chest/Shoulder.R/UpperArm.R
     m_Weight: 0
-  - m_Path: Renderers/ArmR
+  - m_Path: Armature/Hips/Spine/Chest/Shoulder.R/UpperArm.R/LowerArm.R
     m_Weight: 0
-  - m_Path: Renderers/ArmR/ArmL Renderer
+  - m_Path: Armature/Hips/Spine/Chest/Shoulder.R/UpperArm.R/LowerArm.R/Hand.R
     m_Weight: 0
-  - m_Path: Renderers/ArmL
+  - m_Path: Armature/Hips/UpperLeg.L
     m_Weight: 0
-  - m_Path: Renderers/ArmL/ArmR Renderer
+  - m_Path: Armature/Hips/UpperLeg.L/LowerLeg.L
     m_Weight: 0
-  - m_Path: Root
+  - m_Path: Armature/Hips/UpperLeg.L/LowerLeg.L/Foot.L
     m_Weight: 0
-  - m_Path: Root/Body
-    m_Weight: 1
-  - m_Path: Root/Body/Head
-    m_Weight: 1
-  - m_Path: Root/Body/LegL
+  - m_Path: Armature/Hips/UpperLeg.R
     m_Weight: 0
-  - m_Path: Root/Body/LegR
+  - m_Path: Armature/Hips/UpperLeg.R/LowerLeg.R
     m_Weight: 0
-  - m_Path: Root/Body/ArmL
-    m_Weight: 1
-  - m_Path: Root/Body/ArmR
-    m_Weight: 1
+  - m_Path: Armature/Hips/UpperLeg.R/LowerLeg.R/Foot.R
+    m_Weight: 0
+  - m_Path: Body_Mesh
+    m_Weight: 0
+  - m_Path: Foots_Mesh
+    m_Weight: 0
+  - m_Path: Hands_Mesh
+    m_Weight: 0
+  - m_Path: Head_Mesh
+    m_Weight: 0
+  - m_Path: Helmet_Mesh
+    m_Weight: 0
+  - m_Path: LowerArms_Mesh
+    m_Weight: 0
+  - m_Path: LowerLegs_Mesh
+    m_Weight: 0
+  - m_Path: UpperArms_Mesh
+    m_Weight: 0
+  - m_Path: UpperLegs_Mesh
+    m_Weight: 0

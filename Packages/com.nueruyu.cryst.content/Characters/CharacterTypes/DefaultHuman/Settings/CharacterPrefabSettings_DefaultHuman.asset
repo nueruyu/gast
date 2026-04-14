@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: CharacterPrefabSettings_DefaultHuman
   m_EditorClassIdentifier: Cryst::Cryst.Infrastructure.Characters.CharacterPrefabSettings
   characterPrefab: {fileID: 2658092247619174625, guid: 0b12064fcc816e540a373842a74f91ce, type: 3}
-  visualPrefab: {fileID: 7277852281077827636, guid: cf3978a651c28dc46ac192462806073e, type: 3}
+  visualPrefab: {fileID: 3757061258694981477, guid: 2fc47eb18a2041347983ee39aaffa427, type: 3}
